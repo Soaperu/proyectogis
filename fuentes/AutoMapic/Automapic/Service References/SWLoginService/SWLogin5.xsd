@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Capa_Entidad" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Capa_Entidad" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Capa_Entidad.Bitacora" />
+  <xs:complexType name="Cls_Ent_Auditoria">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="AUTORIZADO" type="xs:boolean" />
+      <xs:element minOccurs="0" name="EJECUCION_PROCEDIMIENTO" type="xs:boolean" />
+      <xs:element minOccurs="0" name="ERROR_LOG" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MENSAJE_SALIDA" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="OBJETO" nillable="true" type="xs:anyType" />
+      <xs:element minOccurs="0" name="RECHAZAR" type="xs:boolean" />
+      <xs:element minOccurs="0" name="URL" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Cls_Ent_Auditoria" nillable="true" type="tns:Cls_Ent_Auditoria" />
+  <xs:complexType name="ArrayOfCls_Ent_Sistemas_Modulos">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Cls_Ent_Sistemas_Modulos" nillable="true" type="tns:Cls_Ent_Sistemas_Modulos" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCls_Ent_Sistemas_Modulos" nillable="true" type="tns:ArrayOfCls_Ent_Sistemas_Modulos" />
+  <xs:complexType name="Cls_Ent_Sistemas_Modulos">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Cls_Ent_Base">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="DESC_MODULO" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DESC_TIPO_MODULO" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ID_A" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ID_LI" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ID_PERFIL" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ID_SISTEMA" type="xs:int" />
+          <xs:element minOccurs="0" name="ID_SISTEMA_MODULO" type="xs:int" />
+          <xs:element minOccurs="0" name="ID_SISTEMA_MODULO_PADRE" type="xs:int" />
+          <xs:element minOccurs="0" name="ID_TIPO_MODULO" type="xs:int" />
+          <xs:element minOccurs="0" name="ID_USUARIO" type="xs:long" />
+          <xs:element minOccurs="0" name="IMAGEN" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="Modulos_Hijos" nillable="true" type="tns:ArrayOfCls_Ent_Sistemas_Modulos" />
+          <xs:element minOccurs="0" name="NIVEL" type="xs:int" />
+          <xs:element minOccurs="0" name="ORDEN" type="xs:int" />
+          <xs:element minOccurs="0" name="URL_MODULO" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Cls_Ent_Sistemas_Modulos" nillable="true" type="tns:Cls_Ent_Sistemas_Modulos" />
+  <xs:complexType name="Cls_Ent_Base">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ACCION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FEC_CREACION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FEC_MODIFICACION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="FLG_ESTADO" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IP_CREACION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="IP_MODIFICACION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="USU_CREACION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="USU_MODIFICACION" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Cls_Ent_Base" nillable="true" type="tns:Cls_Ent_Base" />
+  <xs:complexType name="Cls_Ent_Usuario">
+    <xs:complexContent mixed="false">
+      <xs:extension base="tns:Cls_Ent_Base">
+        <xs:sequence>
+          <xs:element minOccurs="0" name="CLAVE_USUARIO" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="COD_USUARIO" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="DESC_OFICINA" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="FECHA_ACTIVACION" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="FECHA_DESACTIVACION" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="FLG_ACTIVEDIRECTORY" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ID_OFICINA" nillable="true" type="xs:string" />
+          <xs:element minOccurs="0" name="ID_PERFIL" type="xs:int" />
+          <xs:element minOccurs="0" name="ID_SISTEMA" type="xs:int" />
+          <xs:element minOccurs="0" name="ID_TIPO_USUARIO" type="xs:int" />
+          <xs:element minOccurs="0" name="ID_USUARIO" type="xs:long" />
+          <xs:element minOccurs="0" name="Perfil" nillable="true" type="tns:ArrayOfCls_Ent_Perfil" />
+          <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Capa_Entidad.Bitacora" minOccurs="0" name="Persona" nillable="true" type="q1:Cls_Ent_Persona" />
+          <xs:element minOccurs="0" name="TOKEN" nillable="true" type="xs:string" />
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:element name="Cls_Ent_Usuario" nillable="true" type="tns:Cls_Ent_Usuario" />
+  <xs:complexType name="ArrayOfCls_Ent_Perfil">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Cls_Ent_Perfil" nillable="true" type="tns:Cls_Ent_Perfil" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="ArrayOfCls_Ent_Perfil" nillable="true" type="tns:ArrayOfCls_Ent_Perfil" />
+  <xs:complexType name="Cls_Ent_Perfil">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="DESC_OFICINA" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="DESC_PERFIL" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID_OFICINA" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID_PERFIL" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Cls_Ent_Perfil" nillable="true" type="tns:Cls_Ent_Perfil" />
+  <xs:complexType name="Cls_Ent_Solicitud_Usuario_Login">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="COD_USUARIO" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="EXPIRADO" type="xs:boolean" />
+      <xs:element minOccurs="0" name="FEC_CREACION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="ID" type="xs:long" />
+      <xs:element minOccurs="0" name="ID_SISTEMA_ACTUAL" type="xs:long" />
+      <xs:element minOccurs="0" name="ID_SISTEMA_REDIRIGIR" type="xs:long" />
+      <xs:element minOccurs="0" name="ID_USUARIO" type="xs:long" />
+      <xs:element minOccurs="0" name="IP_CREACION" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="MINUTOS_EXPIRA" type="xs:short" />
+      <xs:element minOccurs="0" name="SISTEMA_REDIRIGIR_DESC" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="URL_SISTEMA" nillable="true" type="xs:string" />
+      <xs:element minOccurs="0" name="USU_CREACION" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Cls_Ent_Solicitud_Usuario_Login" nillable="true" type="tns:Cls_Ent_Solicitud_Usuario_Login" />
+</xs:schema>
