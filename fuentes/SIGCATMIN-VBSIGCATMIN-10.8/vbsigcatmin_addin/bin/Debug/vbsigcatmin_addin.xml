@@ -1,0 +1,71 @@
+﻿<?xml version="1.0"?>
+<doc>
+<assembly>
+<name>
+vbsigcatmin_addin
+</name>
+</assembly>
+<members>
+<member name="T:vbsigcatmin_addin.My.ThisAddIn">
+<summary>
+A class for looking up declarative information in the associated configuration xml file (.esriaddinx).
+</summary>
+</member>
+<member name="T:vbsigcatmin_addin.My.ThisAddIn.IDs">
+<summary>
+A class for looking up Add-in id strings declared in the associated configuration xml file (.esriaddinx).
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.ThisAddIn.IDs.Login">
+<summary>
+Returns 'Ingemmet_vbsigcatmin_addin_Login', the id declared for Add-in Button class 'Login'
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.ThisAddIn.IDs.Logout">
+<summary>
+Returns 'Ingemmet_vbsigcatmin_addin_Logout', the id declared for Add-in Button class 'Logout'
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.ThisAddIn.IDs.GraficarExcel">
+<summary>
+Returns 'Ingemmet_vbsigcatmin_addin_GraficarExcel', the id declared for Add-in Button class 'GraficarExcel'
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.ThisAddIn.IDs.PlanosMasivos">
+<summary>
+Returns 'Ingemmet_vbsigcatmin_addin_PlanosMasivos', the id declared for Add-in Button class 'PlanosMasivos'
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.ThisAddIn.IDs.About">
+<summary>
+Returns 'Ingemmet_vbsigcatmin_addin_About', the id declared for Add-in Button class 'About'
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.ThisAddIn.IDs.UserGuide">
+<summary>
+Returns 'Ingemmet_vbsigcatmin_addin_UserGuide', the id declared for Add-in Button class 'UserGuide'
+</summary>
+</member>
+<member name="M:vbsigcatmin_addin.My.Internal.AddInStartupObject.GetThis">
+ <summary>
+ Expose this instance of Add-in class externally
+ </summary>
+</member>
+<member name="T:vbsigcatmin_addin.My.Resources.Resources">
+<summary>
+  Clase de recurso fuertemente tipado, para buscar cadenas traducidas, etc.
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.Resources.Resources.ResourceManager">
+<summary>
+  Devuelve la instancia de ResourceManager almacenada en caché utilizada por esta clase.
+</summary>
+</member>
+<member name="P:vbsigcatmin_addin.My.Resources.Resources.Culture">
+<summary>
+  Reemplaza la propiedad CurrentUICulture del subproceso actual para todas las
+  búsquedas de recursos mediante esta clase de recurso fuertemente tipado.
+</summary>
+</member>
+</members>
+</doc>
