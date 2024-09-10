@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="ee4c4921-3944-497b-a09d-947456fefc98" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+  <ClientOptions>
+    <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
+    <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
+    <EnableDataBinding>true</EnableDataBinding>
+    <ExcludedTypes />
+    <ImportXmlTypes>false</ImportXmlTypes>
+    <GenerateInternalTypes>false</GenerateInternalTypes>
+    <GenerateMessageContracts>false</GenerateMessageContracts>
+    <NamespaceMappings />
+    <CollectionMappings />
+    <GenerateSerializableTypes>true</GenerateSerializableTypes>
+    <Serializer>Auto</Serializer>
+    <UseSerializerForFaults>true</UseSerializerForFaults>
+    <ReferenceAllAssemblies>true</ReferenceAllAssemblies>
+    <ReferencedAssemblies />
+    <ReferencedDataContractTypes />
+    <ServiceContractMappings />
+  </ClientOptions>
+  <MetadataSources>
+    <MetadataSource Address="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?wsdl" Protocol="http" SourceId="1" />
+  </MetadataSources>
+  <Metadata>
+    <MetadataFile FileName="SWLogin.xsd" MetadataType="Schema" ID="c9e07af1-4275-41ca-ac3e-237ef825fdc3" SourceId="1" SourceUrl="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd1" />
+    <MetadataFile FileName="SWLogin1.xsd" MetadataType="Schema" ID="a444faf2-0071-44c4-92ae-dd3c8d4e4eac" SourceId="1" SourceUrl="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd2" />
+    <MetadataFile FileName="SWLogin2.xsd" MetadataType="Schema" ID="a2340f08-4042-4a50-9267-a5a6dcd867f3" SourceId="1" SourceUrl="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd5" />
+    <MetadataFile FileName="SWLogin3.xsd" MetadataType="Schema" ID="8c59ead3-3728-44c9-a88d-25abda959378" SourceId="1" SourceUrl="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd0" />
+    <MetadataFile FileName="Service1.wsdl" MetadataType="Wsdl" ID="736e9834-cf8b-46b4-97c2-51cfc79baa8a" SourceId="1" SourceUrl="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?wsdl" />
+    <MetadataFile FileName="SWLogin4.xsd" MetadataType="Schema" ID="9fd51437-0d4f-4e4a-9af8-a9a8ccfd3634" SourceId="1" SourceUrl="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd4" />
+    <MetadataFile FileName="SWLogin5.xsd" MetadataType="Schema" ID="277a2a79-3d3e-4194-93cc-cdeb6851c834" SourceId="1" SourceUrl="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd3" />
+  </Metadata>
+  <Extensions>
+    <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
+    <ExtensionFile FileName="configuration.svcinfo" Name="configuration.svcinfo" />
+  </Extensions>
+</ReferenceGroup>

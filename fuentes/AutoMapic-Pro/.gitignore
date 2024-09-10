@@ -1,0 +1,12 @@
+Automapic/bin
+Automapic/obj
+*.user
+*.suo
+_ReSharper.*
+*.sln.cache
+*.pyc
+.idea
+descarga.pdf
+prueba.txt
+test_jorge.py
+packages

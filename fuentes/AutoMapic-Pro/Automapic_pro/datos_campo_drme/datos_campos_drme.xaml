@@ -1,0 +1,30 @@
+﻿<Page x:Class="Automapic_pro.datos_campo_drme.datos_campos_drme"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Automapic_pro.datos_campo_drme"
+      xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+      mc:Ignorable="d" 
+      d:DesignHeight="600" d:DesignWidth="450"
+      Title="datos_campos_drme">
+
+    <Page.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter"/>
+        <HierarchicalDataTemplate DataType="{x:Type local:NodeItem}" ItemsSource="{Binding Children}">
+            <StackPanel Orientation="Horizontal">
+                <CheckBox IsChecked="{Binding IsChecked, Mode=TwoWay}" Margin="3"
+                          Visibility="{Binding IsChild, Converter={StaticResource booleanToVisibilityConverter}}" />
+                <Image Source="{Binding ImagePath}" Width="16" Height="16" Margin="3"
+                       Visibility="{Binding IsChild, Converter={StaticResource booleanToVisibilityConverter}}"/>
+                <!-- Añade esta línea -->
+                <TextBlock Text="{Binding Title}" Margin="5,0" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <!--<dxg:TreeViewControl x:Name="tvc_campodrme_layers"/>-->
+        <TreeView x:Name="tvc_campodrme_layers"/>
+    </Grid>
+</Page>

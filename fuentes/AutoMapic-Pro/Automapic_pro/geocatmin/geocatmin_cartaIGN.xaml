@@ -1,0 +1,370 @@
+﻿<Page x:Class="Automapic_pro.modulos.geocatmin_cartaIGN"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Automapic_pro.modulos"
+      mc:Ignorable="d" 
+      
+      Title="geocatmin_cartaIGN">
+
+    <Page.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ControlStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!--Put all previous resources in the App.xaml here-->
+        </ResourceDictionary>
+    </Page.Resources>
+
+    <Grid>
+        <!--<Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStop Offset="0.25" Color="#006DA0" />
+                    <GradientStop Offset="1.8" Color="White" />
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+        </Grid.Background>-->
+        <Grid.RowDefinitions>
+            <!--<RowDefinition Height="10"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="30"/>
+            <RowDefinition Height="35"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="30"/>-->
+            <RowDefinition Height="20"/>
+            <RowDefinition Height="30*" MinHeight="30"/>
+            <RowDefinition Height="30*" MinHeight="30"/>
+            <RowDefinition Height="30*" MinHeight="30"/>
+            <RowDefinition Height="30*" MinHeight="30"/>
+            <RowDefinition Height="30*" MinHeight="30"/>
+            <RowDefinition Height="30" MinHeight="30"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="30*" MinHeight="30"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="6"/>
+            <ColumnDefinition Width="40*" MinWidth="150"/>
+            <ColumnDefinition Width="60*" MinWidth="150"/>
+            <ColumnDefinition Width="5"/>
+        </Grid.ColumnDefinitions>
+        <Label Grid.Column="1" Content="Seleccionar una opcion" Foreground="White" Padding="5,4,5,0"/>
+        <RadioButton x:Name="rbtn_ign250k" Grid.Column="1"
+                     Foreground="White" IsEnabled="False"
+                     Content="Carta IGN-250 000" Margin="3,0,0,0"
+                     HorizontalAlignment="Left" Grid.ColumnSpan="2"
+                     Grid.Row="1" VerticalAlignment="Center" Checked="rbtn_ign250k_Checked"
+                     Unchecked="rbtn_ign250k_Unchecked"/>
+        <RadioButton x:Name="rbtn_ign100k" Grid.Column="1" 
+                     Foreground="White" IsEnabled="False"
+                     Content="Carta IGN-100 000" Margin="3,0,0,0"
+                     HorizontalAlignment="Left" Grid.ColumnSpan="2"
+                     Grid.Row="2" VerticalAlignment="Center" Checked="rbtn_ign100k_Checked"/>
+        <RadioButton x:Name="rbtn_UG" IsEnabled="False"
+                     Grid.Column="1" Grid.ColumnSpan="2"
+                     Foreground="White"
+                     Content="Ubicación Geográfica" 
+                     HorizontalAlignment="Left" Margin="3,0,0,0"
+                     Grid.Row="3" VerticalAlignment="Center" Checked="rbtn_UG_Checked"
+                     Unchecked="rbtn_UG_Unchecked"/>
+        <StackPanel Grid.Column="2" x:Name="stackp_carta"
+                    Grid.Row="1" Margin="0,0,3,0"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right">
+            <Label Content="Carta: " Padding="3,1,1,0" x:Name="lbl_carta"
+                   VerticalContentAlignment="Center"
+                   Foreground="White"/>
+            <ComboBox HorizontalAlignment="Stretch"
+                      x:Name="cbx_cartaIGN" 
+                      Width="120" Height="20" SelectionChanged="cbx_cartaIGN_SelectionChanged"/>
+        </StackPanel>
+        <StackPanel Grid.Column="2" x:Name="stackp_cuadr"
+                    Grid.Row="2"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Right" Margin="0,0,3,0">
+            <Label Content="Cuadrante:" x:Name="lbl_cuadrante"
+                   VerticalContentAlignment="Center"
+                   Padding="5,1,5,0" Foreground="White"/>
+            <ComboBox HorizontalAlignment="Left"
+                      x:Name="cbx_cuadrante"
+                      Width="80" Height="20" SelectionChanged="cbx_cuadrante_SelectionChanged"/>
+        </StackPanel>
+
+        <Grid x:Name="grid_UG" Grid.Column="2" Visibility="Hidden" HorizontalAlignment="Stretch"
+              Grid.Row="1" Grid.RowSpan="3" VerticalAlignment="Stretch">
+            <!--<Grid.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStop Offset="0.0" Color="#006DA0" />
+                        <GradientStop Offset="1.0" Color="#1A7CAA" />
+                    </LinearGradientBrush.GradientStops>
+                </LinearGradientBrush>
+            </Grid.Background>-->
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30*" />
+                <RowDefinition Height="30*"/>
+                <RowDefinition Height="30*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="60*"/>
+            </Grid.ColumnDefinitions>
+            <Label Content="Departamento: " Padding="0,1,1,0" x:Name="lbl_dpto"
+                   VerticalContentAlignment="Center" Grid.Row="0" Grid.Column="0"
+                   Foreground="White" HorizontalAlignment="Right" Margin="-17,0,0,0"/>
+            <Label Content="Provincia: " Padding="0,1,0,0" x:Name="lbl_prov"
+                   VerticalContentAlignment="Center" Grid.Row="1" Grid.Column="0"
+                   Foreground="White" HorizontalAlignment="Right"/>
+            <Label Content="Distrito: " Padding="3,1,0,0" x:Name="lbl_dist"
+                   VerticalContentAlignment="Center" Grid.Row="2" Grid.Column="0"
+                   Foreground="White" HorizontalAlignment="Right"/>
+            <ComboBox HorizontalAlignment="Center" Grid.Column="1" Grid.Row="0" Margin="2,0,2,0"
+                      x:Name="cbx_dpto" Width="100" Height="20" SelectionChanged="cbx_dpto_SelectionChanged"
+                      BorderBrush="White" Background="White"/>
+            <ComboBox HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" IsTextSearchEnabled="True"
+                      x:Name="cbx_prov" Width="100" Height="20" SelectionChanged="cbx_prov_SelectionChanged"
+                      Margin="2,0,2,0"/>
+            <ComboBox HorizontalAlignment="Center" Grid.Column="1" Grid.Row="2" IsTextSearchEnabled="True"
+                      x:Name="cbx_dist" Width="100" Height="20" SelectionChanged="cbx_dist_SelectionChanged"
+                      Margin="2,0,2,0"/>
+        </Grid>
+        <GroupBox Grid.Column="1" Margin="2,12,2,0" x:Name="gbox_area_estudio"
+                  Grid.ColumnSpan="2" Foreground="White" Visibility="Collapsed"
+                  Header="Cargue una capa local" MaxWidth="290"
+                  Grid.Row="7" BorderBrush="White"
+                  BorderThickness="1,1,1,1">
+            <Grid x:Name="grid_area_estudio" Visibility="Visible"
+            Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="70*"/>
+                    <ColumnDefinition Width="30*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="10"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="10"/>
+                </Grid.RowDefinitions>
+                <Button x:Name="btn_ae_loadShp" Grid.Column="1" Margin="5"
+                    Content="Cargar" Grid.Row="1"
+                    Style="{StaticResource ButtonStyle}" Click="btn_ae_loadShp_Click"/>
+                <TextBox x:Name="tbx_shpPath"
+                Grid.Column="0" Height="25" Grid.Row="1"
+                     Margin="5" IsReadOnly="True"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Margin="2,12,2,0" x:Name="gbox_coordenadas"
+                  Grid.ColumnSpan="2" Foreground="White" Visibility="Collapsed"
+                  Header="Ingrese coordenadas" MaxWidth="290"
+                  Grid.Row="7" BorderBrush="White"
+                  BorderThickness="1,1,1,1">
+        <Grid x:Name="grid_coordenadas"
+            Grid.Column="1" Grid.Row="6" Grid.ColumnSpan="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="22*"/>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="18*"/>
+                <ColumnDefinition Width="30*"/>
+                    <ColumnDefinition Width="5"/>
+                </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+            </Grid.RowDefinitions>
+            <Label Grid.Column="1" Content="Longitud:" Foreground="White"
+                   HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            <Label Grid.Column="3" Content="Latitud:" Foreground="White"
+                   HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            <Label x:Name="lbl_scrMap"
+                Grid.Column="2" Grid.ColumnSpan="2"
+                   Grid.Row="1"
+                   Content="" 
+                   Foreground="White"
+                   HorizontalAlignment="Left"/>
+            <TextBox x:Name="tbx_coord_x" Grid.Column="2" Margin="0,0,3,0"
+                     Height="20" TextAlignment="Center" VerticalAlignment="Bottom"/>
+            <TextBox x:Name="tbx_coord_y" Grid.Column="4" Margin="0,0,3,0"
+                     Height="20" TextAlignment="Center" VerticalAlignment="Bottom"/>
+            <Button x:Name="btn_consult_xy" Grid.Column="4" Width="70"
+                    Grid.Row="1" Height="20" Content="Consultar"
+                    HorizontalAlignment="Right" Margin="0,0,3,0" VerticalAlignment="Center"
+                    Style="{StaticResource ButtonStyle}" Click="btn_consult_xy_Click"/>
+        </Grid>
+        </GroupBox>
+        <GroupBox Grid.Column="1" Margin="2,12,2,0" x:Name="gbox_datosIGN"
+                  Grid.ColumnSpan="2" Foreground="White" Visibility="Visible"
+                  Header="Datos de Carta - IGN" MaxWidth="290"
+                  Grid.Row="7" BorderBrush="White"
+                  BorderThickness="1,1,1,1">
+            <Grid x:Name="grid_datosIGN">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="3"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="1" Grid.Row="1" Foreground="White"
+                       Content="Nombre:" Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Center" Padding="5,0,5,0"/>
+                <Label Grid.Column="1" Grid.Row="2" 
+                       Content="Zona:" Foreground="White"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Center" Padding="5,0,5,0"/>
+                <TextBox x:Name="tbx_nombre" Grid.Column="2" Margin="5,0,0,0"
+                         Grid.ColumnSpan="3" 
+                         HorizontalAlignment="Left"
+                         Grid.Row="1" Height="20"
+                         TextWrapping="Wrap" Text=""
+                         Width="150"/>
+                <TextBox x:Name="tbx_zona" Grid.Column="2" Margin="5,0,0,0"
+                         Grid.ColumnSpan="3" 
+                         HorizontalAlignment="Left"
+                         Grid.Row="2" Height="20"
+                         TextWrapping="Wrap" Text=""
+                         Width="150"/>
+                <Label Grid.Column="1" Grid.Row="3" Foreground="White"
+                       Content="Limites Mínimos y Máximos:"
+                       HorizontalAlignment="Left" Grid.ColumnSpan="4"
+                       VerticalAlignment="Bottom" Padding="5,0,5,0"/>
+                <TextBox Grid.Column="1" x:Name="tbx_Xmin"
+                         Margin="5,0,0,0"
+                         Grid.ColumnSpan="3" 
+                         HorizontalAlignment="Left"
+                         Grid.Row="4" Height="20"
+                         TextWrapping="Wrap" Text=""
+                         Width="90"/>
+                <TextBox Grid.Column="3" x:Name="tbx_Xmax"
+                         Margin="10,0,0,0"
+                         Grid.ColumnSpan="3" 
+                         HorizontalAlignment="Left"
+                         Grid.Row="4" Height="20"
+                         TextWrapping="Wrap" Text=""
+                         Width="90"/>
+                <TextBox Grid.Column="1" x:Name="tbx_Ymin"
+                         Margin="5,0,0,0"
+                         Grid.ColumnSpan="3" 
+                         HorizontalAlignment="Left"
+                         Grid.Row="5" Height="20"
+                         TextWrapping="Wrap" Text=""
+                         Width="90"/>
+                <TextBox Grid.Column="3" x:Name="tbx_Ymax"
+                         Margin="10,0,0,0"
+                         Grid.ColumnSpan="3" 
+                         HorizontalAlignment="Left"
+                         Grid.Row="5" Height="20"
+                         TextWrapping="Wrap" Text=""
+                         Width="90" VerticalContentAlignment="Center"/>
+            </Grid>
+        </GroupBox>
+        <CheckBox Grid.Column="1" x:Name="chbx_cartaIGN"
+                  Grid.ColumnSpan="2"
+                  Content="Activa/Desactiva todas las capas del mapa"
+                  HorizontalAlignment="Left" Foreground="White"
+                  Margin="5,10,0,0" Grid.Row="8"
+                  VerticalAlignment="Stretch" Checked="chbx_cartaIGN_Checked" Unchecked="chbx_cartaIGN_Unchecked"/>
+        <RadioButton x:Name="rbtn_area_estudio" Grid.Column="1"
+                     Foreground="White" IsEnabled="False"
+                     Content="Área de Estudio" Margin="3,0,0,0"
+                     HorizontalAlignment="Left" Grid.ColumnSpan="2"
+                     Grid.Row="4" VerticalAlignment="Center" Checked="rbtn_area_estudio_Checked"
+                     Unchecked="rbtn_area_estudio_Unchecked"/>
+        <RadioButton x:Name="rbtn_punto_xy" Grid.Column="1"
+                     Foreground="White" IsEnabled="False"
+                     Content="Coordenadas" Margin="3,0,0,0"
+                     HorizontalAlignment="Left" Grid.ColumnSpan="2"
+                     Grid.Row="5" VerticalAlignment="Center" Checked="rbtn_punto_xy_Checked"
+                     Unchecked="rbtn_punto_xy_Unchecked"/>
+        <RadioButton x:Name="rbtn_geocat_catastro" Foreground="White" Content="Catastro Minero"
+                     HorizontalAlignment="Left" VerticalAlignment="Center" Grid.Row="6" IsEnabled="False"
+                     Grid.Column="1" Margin="3,0,0,0" Checked="rbtn_geocat_catastro_Checked" Unchecked="rbtn_geocat_catastro_Unchecked"/>
+        <GroupBox Grid.Column="1" Margin="2,12,2,0" x:Name="gbox_geocat_catastro"
+                  Grid.ColumnSpan="2" Foreground="White" Visibility="Collapsed"
+                  Header="Busqueda Derecho Minero" MaxWidth="290"
+                  Grid.Row="7" BorderBrush="White"
+                  BorderThickness="1,1,1,1">
+            <Grid x:Name="grid_geocat_catastro">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="3"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="20"/>
+                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="35"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Column="1" Grid.Row="1" Foreground="White"
+                       Content="Codigo:" Grid.ColumnSpan="2"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Bottom" Padding="5,0,0,0"/>
+                <Label Grid.Column="1" Grid.Row="3" 
+                       Content="Nombre:" Foreground="White"
+                       HorizontalAlignment="Left" 
+                       VerticalAlignment="Center" Padding="5,0,5,0"/>
+                <TextBox x:Name="tbx_geocat_cod_dm" Grid.Column="1" Margin="5,0,5,0"
+                         Grid.ColumnSpan="4" 
+                         HorizontalAlignment="Stretch"
+                         Grid.Row="2" Height="20"
+                         TextWrapping="Wrap" Text=""/>
+                <TextBox x:Name="tbx_geocat_nombre_dm" Grid.Column="1" Margin="5,0,5,0"
+                         Grid.ColumnSpan="4" 
+                         HorizontalAlignment="Stretch"
+                         Grid.Row="4" Height="20"
+                         TextWrapping="Wrap" Text=""/>
+                <Label Grid.Column="1" Grid.Row="5" Foreground="White"
+                       Content="Titular:" HorizontalAlignment="Left" Grid.ColumnSpan="4"
+                       VerticalAlignment="Bottom" Padding="5,0,5,0"/>
+                <TextBox Grid.Column="1" x:Name="tbx_geocat_titular_dm"
+                         Margin="5,0,5,0" HorizontalAlignment="Stretch"
+                         Grid.ColumnSpan="4"
+                         Grid.Row="6" Height="20"
+                         TextWrapping="Wrap" Text=""/>
+                <Button Grid.Row="7" Grid.Column="1" Width="80" Grid.ColumnSpan="2" Height="25"
+                        Style="{StaticResource IconButtonStyle}" x:Name="btn_geocat_clean" Click="btn_geocat_clean_Click">
+                    <StackPanel Orientation="Horizontal" Background="White">
+                        <Image Source="/Automapic_pro;component/Images/bdgeocientifica/clean.png" Height="18"/>
+                        <Label Content="Limpiar" VerticalContentAlignment="Center"
+                           Margin="5,0,0,0" VerticalAlignment="Center"
+                           HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                           Padding="0,0,0,0"/>
+                    </StackPanel>
+                </Button>
+                <Button Grid.Row="7" Grid.Column="3" Width="80" Grid.ColumnSpan="2" Height="25"
+                        Style="{StaticResource IconButtonStyle}" x:Name="btn_geocat_searchDM" Click="btn_geocat_searchDM_Click">
+                    <StackPanel Orientation="Horizontal" Background="White">
+                        <Image Source="/Automapic_pro;component/Images/mg_search.png" Height="18"/>
+                        <Label Content="Buscar" VerticalContentAlignment="Center"
+                           Margin="5,0,0,0" VerticalAlignment="Center"
+                           HorizontalAlignment="Center" HorizontalContentAlignment="Center"
+                           Padding="0,0,0,0"/>
+                    </StackPanel>
+                </Button>
+            </Grid>
+        </GroupBox>
+        
+    </Grid>
+</Page>

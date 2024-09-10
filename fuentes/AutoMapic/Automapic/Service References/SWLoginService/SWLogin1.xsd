@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://schemas.datacontract.org/2004/07/Servicio_Seguridad" elementFormDefault="qualified" targetNamespace="http://schemas.datacontract.org/2004/07/Servicio_Seguridad" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Capa_Entidad" />
+  <xs:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Capa_Entidad.Bitacora" />
+  <xs:complexType name="RespuestaSeguridadM">
+    <xs:sequence>
+      <xs:element xmlns:q1="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Auditoria" nillable="true" type="q1:Cls_Ent_Auditoria" />
+      <xs:element xmlns:q2="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Modulos" nillable="true" type="q2:ArrayOfCls_Ent_Sistemas_Modulos" />
+      <xs:element minOccurs="0" name="ModulosHtml" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaSeguridadM" nillable="true" type="tns:RespuestaSeguridadM" />
+  <xs:complexType name="RespuestaSeguridadU">
+    <xs:sequence>
+      <xs:element xmlns:q3="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Auditoria" nillable="true" type="q3:Cls_Ent_Auditoria" />
+      <xs:element xmlns:q4="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Usuario" nillable="true" type="q4:Cls_Ent_Usuario" />
+      <xs:element minOccurs="0" name="Usuario_Valido" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaSeguridadU" nillable="true" type="tns:RespuestaSeguridadU" />
+  <xs:complexType name="RespuestaAuditoria">
+    <xs:sequence>
+      <xs:element xmlns:q5="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Auditoria" nillable="true" type="q5:Cls_Ent_Auditoria" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaAuditoria" nillable="true" type="tns:RespuestaAuditoria" />
+  <xs:complexType name="RespuestaSeguridadID">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ID_USUARIO" type="xs:long" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaSeguridadID" nillable="true" type="tns:RespuestaSeguridadID" />
+  <xs:complexType name="RespuestaSeguridadBool">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="Valido" type="xs:boolean" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaSeguridadBool" nillable="true" type="tns:RespuestaSeguridadBool" />
+  <xs:complexType name="SeguridadArchivo">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="ARCHIVO" nillable="true" type="xs:base64Binary" />
+      <xs:element minOccurs="0" name="NOMBRE_ARCHIVO" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="SeguridadArchivo" nillable="true" type="tns:SeguridadArchivo" />
+  <xs:complexType name="RespuestaPerfil">
+    <xs:sequence>
+      <xs:element xmlns:q6="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Auditoria" nillable="true" type="q6:Cls_Ent_Auditoria" />
+      <xs:element xmlns:q7="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Perfiles" nillable="true" type="q7:ArrayOfCls_Ent_Perfil" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaPerfil" nillable="true" type="tns:RespuestaPerfil" />
+  <xs:complexType name="RespuestaOficina">
+    <xs:sequence>
+      <xs:element xmlns:q8="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Auditoria" nillable="true" type="q8:Cls_Ent_Auditoria" />
+      <xs:element xmlns:q9="http://schemas.datacontract.org/2004/07/Capa_Entidad.Bitacora" minOccurs="0" name="Oficinas" nillable="true" type="q9:ArrayOfCls_Ent_Oficina" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaOficina" nillable="true" type="tns:RespuestaOficina" />
+  <xs:complexType name="RespuestaSolicitudLogin">
+    <xs:sequence>
+      <xs:element xmlns:q10="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Auditoria" nillable="true" type="q10:Cls_Ent_Auditoria" />
+      <xs:element xmlns:q11="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Solicitud" nillable="true" type="q11:Cls_Ent_Solicitud_Usuario_Login" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaSolicitudLogin" nillable="true" type="tns:RespuestaSolicitudLogin" />
+  <xs:complexType name="RespuestaSolicitudLoginRegistro">
+    <xs:sequence>
+      <xs:element xmlns:q12="http://schemas.datacontract.org/2004/07/Capa_Entidad" minOccurs="0" name="Auditoria" nillable="true" type="q12:Cls_Ent_Auditoria" />
+      <xs:element minOccurs="0" name="SolicitudId" type="xs:long" />
+      <xs:element minOccurs="0" name="Token" nillable="true" type="xs:string" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="RespuestaSolicitudLoginRegistro" nillable="true" type="tns:RespuestaSolicitudLoginRegistro" />
+</xs:schema>

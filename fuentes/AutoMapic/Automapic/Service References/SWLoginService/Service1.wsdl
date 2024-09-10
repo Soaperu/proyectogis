@@ -1,0 +1,951 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://tempuri.org/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="Service1" targetNamespace="http://tempuri.org/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="BasicHttpsBinding_ISWLogin_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <sp:HttpsToken RequireClientCertificate="false" />
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://tempuri.org/Imports">
+      <xsd:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd0" namespace="http://tempuri.org/" />
+      <xsd:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd1" namespace="http://schemas.microsoft.com/2003/10/Serialization/" />
+      <xsd:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd2" namespace="http://schemas.datacontract.org/2004/07/Servicio_Seguridad" />
+      <xsd:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd3" namespace="http://schemas.datacontract.org/2004/07/Capa_Entidad" />
+      <xsd:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd4" namespace="http://schemas.datacontract.org/2004/07/Capa_Entidad.Bitacora" />
+      <xsd:import schemaLocation="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc?xsd=xsd5" namespace="http://schemas.microsoft.com/2003/10/Serialization/Arrays" />
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="ISWLogin_Usuario_ObtenerModulos_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_ObtenerModulos" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_ObtenerModulos_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_ObtenerModulosResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Login_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Login" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Login_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioLoginAD_InputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioLoginAD" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioLoginAD_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioLoginADResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioValidarAD_InputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioValidarAD" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioValidarAD_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioValidarADResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioActiveDirectory_Login1_InputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioActiveDirectory_Login1" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioActiveDirectory_Login1_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioActiveDirectory_Login1Response" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioActiveDirectory_Login2_InputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioActiveDirectory_Login2" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_UsuarioActiveDirectory_Login2_OutputMessage">
+    <wsdl:part name="parameters" element="tns:UsuarioActiveDirectory_Login2Response" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Sistema_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Sistema" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Sistema_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_SistemaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Eliminar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Eliminar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Eliminar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_EliminarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Estado_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Estado" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Estado_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_EstadoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Insertar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Insertar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Insertar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_InsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Actualizar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Actualizar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Actualizar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_ActualizarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_ActualizarActivacion_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_ActualizarActivacion" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_ActualizarActivacion_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_ActualizarActivacionResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Obtener_Id_Usuario_InputMessage">
+    <wsdl:part name="parameters" element="tns:Obtener_Id_Usuario" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Obtener_Id_Usuario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Obtener_Id_UsuarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Obtener_Cod_Usuario_InputMessage">
+    <wsdl:part name="parameters" element="tns:Obtener_Cod_Usuario" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Obtener_Cod_Usuario_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Obtener_Cod_UsuarioResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Obtener_Id_Persona_InputMessage">
+    <wsdl:part name="parameters" element="tns:Obtener_Id_Persona" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Obtener_Id_Persona_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Obtener_Id_PersonaResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Validar_Token_InputMessage">
+    <wsdl:part name="parameters" element="tns:Validar_Token" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Validar_Token_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Validar_TokenResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Encriptar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Encriptar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Encriptar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:EncriptarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_ActualizarClave_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_ActualizarClave" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_ActualizarClave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_ActualizarClaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_PedirClave_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_PedirClave" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_PedirClave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_PedirClaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_OlvidoClave_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_OlvidoClave" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_OlvidoClave_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_OlvidoClaveResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_VerificaCodigo_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_VerificaCodigo" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_VerificaCodigo_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_VerificaCodigoResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_PersonaExterna_Insertar_InputMessage">
+    <wsdl:part name="parameters" element="tns:PersonaExterna_Insertar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_PersonaExterna_Insertar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PersonaExterna_InsertarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_PersonaExterna_Validar_InputMessage">
+    <wsdl:part name="parameters" element="tns:PersonaExterna_Validar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_PersonaExterna_Validar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:PersonaExterna_ValidarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Laser_Importar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Laser_Importar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Laser_Importar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Laser_ImportarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Laser_Exportar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Laser_Exportar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Laser_Exportar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Laser_ExportarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Perfil_Listar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Perfil_Listar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Perfil_Listar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Perfil_ListarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Perfiles_Listar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Perfiles_Listar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Perfiles_Listar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Perfiles_ListarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Oficinas_Listar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Oficinas_Listar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Usuario_Oficinas_Listar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Usuario_Oficinas_ListarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Login_InputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_Login" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Login_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_LoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Registrar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_Registrar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Registrar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_RegistrarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Validar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_Validar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Validar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_ValidarResponse" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Expirar_InputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_Expirar" />
+  </wsdl:message>
+  <wsdl:message name="ISWLogin_Solicitud_Expirar_OutputMessage">
+    <wsdl:part name="parameters" element="tns:Solicitud_ExpirarResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ISWLogin">
+    <wsdl:operation name="Usuario_ObtenerModulos">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_ObtenerModulos" message="tns:ISWLogin_Usuario_ObtenerModulos_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_ObtenerModulosResponse" message="tns:ISWLogin_Usuario_ObtenerModulos_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Login">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Login" message="tns:ISWLogin_Usuario_Login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_LoginResponse" message="tns:ISWLogin_Usuario_Login_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioLoginAD">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/UsuarioLoginAD" message="tns:ISWLogin_UsuarioLoginAD_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/UsuarioLoginADResponse" message="tns:ISWLogin_UsuarioLoginAD_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioValidarAD">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/UsuarioValidarAD" message="tns:ISWLogin_UsuarioValidarAD_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/UsuarioValidarADResponse" message="tns:ISWLogin_UsuarioValidarAD_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioActiveDirectory_Login1">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login1" message="tns:ISWLogin_UsuarioActiveDirectory_Login1_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login1Response" message="tns:ISWLogin_UsuarioActiveDirectory_Login1_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioActiveDirectory_Login2">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login2" message="tns:ISWLogin_UsuarioActiveDirectory_Login2_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login2Response" message="tns:ISWLogin_UsuarioActiveDirectory_Login2_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Sistema">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Sistema" message="tns:ISWLogin_Usuario_Sistema_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_SistemaResponse" message="tns:ISWLogin_Usuario_Sistema_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Eliminar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Eliminar" message="tns:ISWLogin_Usuario_Eliminar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_EliminarResponse" message="tns:ISWLogin_Usuario_Eliminar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Estado">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Estado" message="tns:ISWLogin_Usuario_Estado_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_EstadoResponse" message="tns:ISWLogin_Usuario_Estado_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Insertar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Insertar" message="tns:ISWLogin_Usuario_Insertar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_InsertarResponse" message="tns:ISWLogin_Usuario_Insertar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Actualizar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Actualizar" message="tns:ISWLogin_Usuario_Actualizar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_ActualizarResponse" message="tns:ISWLogin_Usuario_Actualizar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_ActualizarActivacion">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_ActualizarActivacion" message="tns:ISWLogin_Usuario_ActualizarActivacion_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_ActualizarActivacionResponse" message="tns:ISWLogin_Usuario_ActualizarActivacion_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Id_Usuario">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Obtener_Id_Usuario" message="tns:ISWLogin_Obtener_Id_Usuario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Obtener_Id_UsuarioResponse" message="tns:ISWLogin_Obtener_Id_Usuario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Cod_Usuario">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Obtener_Cod_Usuario" message="tns:ISWLogin_Obtener_Cod_Usuario_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Obtener_Cod_UsuarioResponse" message="tns:ISWLogin_Obtener_Cod_Usuario_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Id_Persona">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Obtener_Id_Persona" message="tns:ISWLogin_Obtener_Id_Persona_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Obtener_Id_PersonaResponse" message="tns:ISWLogin_Obtener_Id_Persona_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Validar_Token">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Validar_Token" message="tns:ISWLogin_Validar_Token_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Validar_TokenResponse" message="tns:ISWLogin_Validar_Token_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Encriptar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Encriptar" message="tns:ISWLogin_Encriptar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/EncriptarResponse" message="tns:ISWLogin_Encriptar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_ActualizarClave">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_ActualizarClave" message="tns:ISWLogin_Usuario_ActualizarClave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_ActualizarClaveResponse" message="tns:ISWLogin_Usuario_ActualizarClave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_PedirClave">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_PedirClave" message="tns:ISWLogin_Usuario_PedirClave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_PedirClaveResponse" message="tns:ISWLogin_Usuario_PedirClave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_OlvidoClave">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_OlvidoClave" message="tns:ISWLogin_Usuario_OlvidoClave_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_OlvidoClaveResponse" message="tns:ISWLogin_Usuario_OlvidoClave_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_VerificaCodigo">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_VerificaCodigo" message="tns:ISWLogin_Usuario_VerificaCodigo_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_VerificaCodigoResponse" message="tns:ISWLogin_Usuario_VerificaCodigo_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PersonaExterna_Insertar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/PersonaExterna_Insertar" message="tns:ISWLogin_PersonaExterna_Insertar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/PersonaExterna_InsertarResponse" message="tns:ISWLogin_PersonaExterna_Insertar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="PersonaExterna_Validar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/PersonaExterna_Validar" message="tns:ISWLogin_PersonaExterna_Validar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/PersonaExterna_ValidarResponse" message="tns:ISWLogin_PersonaExterna_Validar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Laser_Importar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Laser_Importar" message="tns:ISWLogin_Laser_Importar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Laser_ImportarResponse" message="tns:ISWLogin_Laser_Importar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Laser_Exportar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Laser_Exportar" message="tns:ISWLogin_Laser_Exportar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Laser_ExportarResponse" message="tns:ISWLogin_Laser_Exportar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Perfil_Listar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Perfil_Listar" message="tns:ISWLogin_Perfil_Listar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Perfil_ListarResponse" message="tns:ISWLogin_Perfil_Listar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Perfiles_Listar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Perfiles_Listar" message="tns:ISWLogin_Usuario_Perfiles_Listar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Perfiles_ListarResponse" message="tns:ISWLogin_Usuario_Perfiles_Listar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Oficinas_Listar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Oficinas_Listar" message="tns:ISWLogin_Usuario_Oficinas_Listar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Usuario_Oficinas_ListarResponse" message="tns:ISWLogin_Usuario_Oficinas_Listar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Login">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_Login" message="tns:ISWLogin_Solicitud_Login_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_LoginResponse" message="tns:ISWLogin_Solicitud_Login_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Registrar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_Registrar" message="tns:ISWLogin_Solicitud_Registrar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_RegistrarResponse" message="tns:ISWLogin_Solicitud_Registrar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Validar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_Validar" message="tns:ISWLogin_Solicitud_Validar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_ValidarResponse" message="tns:ISWLogin_Solicitud_Validar_OutputMessage" />
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Expirar">
+      <wsdl:input wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_Expirar" message="tns:ISWLogin_Solicitud_Expirar_InputMessage" />
+      <wsdl:output wsaw:Action="http://tempuri.org/ISWLogin/Solicitud_ExpirarResponse" message="tns:ISWLogin_Solicitud_Expirar_OutputMessage" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="BasicHttpBinding_ISWLogin" type="tns:ISWLogin">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Usuario_ObtenerModulos">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_ObtenerModulos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Login">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioLoginAD">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioLoginAD" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioValidarAD">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioValidarAD" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioActiveDirectory_Login1">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login1" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioActiveDirectory_Login2">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Sistema">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Sistema" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Eliminar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Eliminar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Estado">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Estado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Insertar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Insertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Actualizar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Actualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_ActualizarActivacion">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_ActualizarActivacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Id_Usuario">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Obtener_Id_Usuario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Cod_Usuario">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Obtener_Cod_Usuario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Id_Persona">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Obtener_Id_Persona" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Validar_Token">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Validar_Token" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Encriptar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Encriptar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_ActualizarClave">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_ActualizarClave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_PedirClave">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_PedirClave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_OlvidoClave">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_OlvidoClave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_VerificaCodigo">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_VerificaCodigo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersonaExterna_Insertar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/PersonaExterna_Insertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersonaExterna_Validar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/PersonaExterna_Validar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Laser_Importar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Laser_Importar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Laser_Exportar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Laser_Exportar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Perfil_Listar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Perfil_Listar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Perfiles_Listar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Perfiles_Listar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Oficinas_Listar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Oficinas_Listar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Login">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Registrar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Registrar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Validar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Validar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Expirar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Expirar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:binding name="BasicHttpsBinding_ISWLogin" type="tns:ISWLogin">
+    <wsp:PolicyReference URI="#BasicHttpsBinding_ISWLogin_policy" />
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="Usuario_ObtenerModulos">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_ObtenerModulos" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Login">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioLoginAD">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioLoginAD" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioValidarAD">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioValidarAD" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioActiveDirectory_Login1">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login1" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UsuarioActiveDirectory_Login2">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/UsuarioActiveDirectory_Login2" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Sistema">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Sistema" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Eliminar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Eliminar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Estado">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Estado" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Insertar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Insertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Actualizar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Actualizar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_ActualizarActivacion">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_ActualizarActivacion" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Id_Usuario">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Obtener_Id_Usuario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Cod_Usuario">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Obtener_Cod_Usuario" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Obtener_Id_Persona">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Obtener_Id_Persona" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Validar_Token">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Validar_Token" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Encriptar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Encriptar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_ActualizarClave">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_ActualizarClave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_PedirClave">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_PedirClave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_OlvidoClave">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_OlvidoClave" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_VerificaCodigo">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_VerificaCodigo" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersonaExterna_Insertar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/PersonaExterna_Insertar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="PersonaExterna_Validar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/PersonaExterna_Validar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Laser_Importar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Laser_Importar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Laser_Exportar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Laser_Exportar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Perfil_Listar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Perfil_Listar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Perfiles_Listar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Perfiles_Listar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Usuario_Oficinas_Listar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Usuario_Oficinas_Listar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Login">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Login" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Registrar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Registrar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Validar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Validar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="Solicitud_Expirar">
+      <soap:operation soapAction="http://tempuri.org/ISWLogin/Solicitud_Expirar" style="document" />
+      <wsdl:input>
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="Service1">
+    <wsdl:port name="BasicHttpBinding_ISWLogin" binding="tns:BasicHttpBinding_ISWLogin">
+      <soap:address location="http://srvstd.ingemmet.int/WS_Seguridad/SWLogin.svc" />
+    </wsdl:port>
+    <wsdl:port name="BasicHttpsBinding_ISWLogin" binding="tns:BasicHttpsBinding_ISWLogin">
+      <soap:address location="https://srvstd.ingemmet.gob.pe/WS_Seguridad/SWLogin.svc" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

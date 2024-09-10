@@ -1,0 +1,79 @@
+﻿<Window x:Class="Automapic_pro.modulos.caratula"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Automapic_pro.modulos"
+      mc:Ignorable="d" 
+      d:DesignHeight="270" d:DesignWidth="260"
+      Title="" Height="380" Width="320" Loaded="Window_Loaded">
+
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="ControlStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+            <!--Put all previous resources in the App.xaml here-->
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <LinearGradientBrush.GradientStops>
+                    <GradientStop Offset="0.25" Color="#006DA0" />
+                    <GradientStop Offset="1.5" Color="White" />
+                </LinearGradientBrush.GradientStops>
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="35"/>
+        </Grid.RowDefinitions>
+        <RichTextBox x:Name="rtbx_warning"  
+                     IsReadOnly="True" Margin="10,10,10,10"
+                     IsManipulationEnabled="False" 
+                     Focusable="False" MouseEnter="RichTBX_MouseEnter" 
+                     AcceptsReturn="False" Cursor="Arrow" CaretBrush="Black">
+            <FlowDocument Name="FlowDoc">
+                <FlowDocument.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                        <LinearGradientBrush.GradientStops>
+                            <GradientStop Offset="0.2" Color="#006DA0" />
+                            <GradientStop Offset="1" Color="#81B7D0" />
+                        </LinearGradientBrush.GradientStops>
+                    </LinearGradientBrush>
+                </FlowDocument.Background>
+                <Paragraph 
+                    Foreground="White" TextAlignment="Justify" Padding="3,7,3,0">
+                    <Bold>GEOCATMIN Pro</Bold> es un Sistema de Información
+                    Geografico que utiliza la base de datos del geocatmin, servicios de mapas
+                    del INGEMMET y capas de otras fuentes de información.
+                </Paragraph>
+                <!--<Section >-->
+                    <Paragraph Foreground="White">
+                        <Bold>Importante:</Bold>   
+                    </Paragraph>
+                <List MarkerStyle="Decimal" Foreground="White">
+                    <ListItem>
+                        <Paragraph>La información de fuentes externas es 
+                            referencial y de consulta.</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>Algunas entidades actualizan sus propios mapas,
+                            dependiendo de su disponibilidad y acceso a internet.</Paragraph>
+                    </ListItem>
+                    <ListItem>
+                        <Paragraph>La información que no se puede descargar solo
+                            puede ser visualizado como servicio de mapa o imagen dinámica del Geocatmin.</Paragraph>
+                    </ListItem>
+                </List>
+                <!--</Section>-->
+                   
+            </FlowDocument>
+        </RichTextBox>
+        <Button Grid.Row="1" x:Name="btn_caratulaOk"
+                Content="Aceptar" Cursor="Hand" Style="{StaticResource ButtonStyle}"
+                Width="90" Height="25" Click="btn_caratulaOk_Click"/>
+    </Grid>
+</Window>

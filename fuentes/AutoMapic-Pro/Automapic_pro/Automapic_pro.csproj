@@ -1,0 +1,251 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RuntimeIdentifier>win10-x64</RuntimeIdentifier>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <NoWarn>CA1416</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Images\add.png" />
+    <None Remove="Images\add_map.png" />
+    <None Remove="Images\automapicpro_destroy_nobg_640.png" />
+    <None Remove="Images\AutomapicPro_hackbold.jpeg" />
+    <None Remove="Images\AutomapicPro_monserrat.jpeg" />
+    <None Remove="Images\automapicpro_righteous_nobg_640.png" />
+    <None Remove="Images\bdgeocientifica\add.png" />
+    <None Remove="Images\bdgeocientifica\ayuda.png" />
+    <None Remove="Images\bdgeocientifica\clean.png" />
+    <None Remove="Images\bdgeocientifica\delete.png" />
+    <None Remove="Images\bdgeocientifica\export_data.png" />
+    <None Remove="Images\bdgeocientifica\search_bd.png" />
+    <None Remove="Images\bdgeocientifica\search_list.png" />
+    <None Remove="Images\bdgeocientifica\search_list1.png" />
+    <None Remove="Images\candado16.png" />
+    <None Remove="Images\exit.png" />
+    <None Remove="Images\geology.png" />
+    <None Remove="Images\icons_settings3.png" />
+    <None Remove="Images\icon_handbook.png" />
+    <None Remove="Images\layer_off.png" />
+    <None Remove="Images\layer_on.png" />
+    <None Remove="Images\loader_bg.gif" />
+    <None Remove="Images\loader_nobg.gif" />
+    <None Remove="Images\logo_ingemmet.jpeg" />
+    <None Remove="Images\logo_ingemmet.png" />
+    <None Remove="Images\logo_ingemmet_daml.png" />
+    <None Remove="Images\mg_legend.png" />
+    <None Remove="Images\mg_profile.png" />
+    <None Remove="Images\mg_search.png" />
+    <None Remove="Images\mg_searchLayer.png" />
+    <None Remove="Images\mg_topology.png" />
+    <None Remove="Images\select_casilla.png" />
+    <None Remove="Images\select_columna.png" />
+    <None Remove="Images\select_fila.png" />
+    <None Remove="Images\share_map.png" />
+    <None Remove="Images\usuario16.png" />
+    <None Remove="Images\visible16_blue.png" />
+    <None Remove="Images\visible16_white.png" />
+    <None Remove="Images\warningblue32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config.daml" />    
+    <Content Include="Images\AddInDesktop16.png" />
+    <Content Include="Images\AddInDesktop32.png" />
+    <Content Include="DarkImages\AddInDesktop16.png" />
+    <Content Include="DarkImages\AddInDesktop32.png" />
+    <Content Include="Images\logo_ingemmet_daml.png" />
+    <Resource Include="Images\add_map.png" />
+    <Resource Include="Images\bdgeocientifica\add.png" />
+    <Resource Include="Images\bdgeocientifica\ayuda.png" />
+    <Resource Include="Images\bdgeocientifica\clean.png" />
+    <Resource Include="Images\bdgeocientifica\delete.png" />
+    <Resource Include="Images\bdgeocientifica\export_data.png" />
+    <Resource Include="Images\bdgeocientifica\search_bd.png" />
+    <Resource Include="Images\bdgeocientifica\search_list1.png" />
+    <Resource Include="Images\layer_off.png" />
+    <Resource Include="Images\layer_on.png" />
+    <Resource Include="Images\mg_legend.png" />
+    <Resource Include="Images\mg_profile.png" />
+    <Resource Include="Images\mg_search.png" />
+    <Resource Include="Images\mg_searchLayer.png" />
+    <Resource Include="Images\mg_topology.png" />
+    <Resource Include="Images\AutomapicPro_hackbold.jpeg" />
+    <Resource Include="Images\exit.png" />
+    <Resource Include="Images\icons_settings3.png" />
+    <Resource Include="Images\icon_handbook.png" />
+    <Resource Include="Images\loader_bg.gif" />
+    <Resource Include="Images\automapicpro_destroy_nobg_640.png" />
+    <Resource Include="Images\AutomapicPro_monserrat.jpeg" />
+    <Resource Include="Images\automapicpro_righteous_nobg_640.png" />
+    <Resource Include="Images\candado16.png" />
+    <Resource Include="Images\geology.png" />
+    <Resource Include="Images\logo_ingemmet.jpeg" />
+    <Resource Include="Images\logo_ingemmet.png" />
+    <Resource Include="Images\select_casilla.png" />
+    <Resource Include="Images\select_columna.png" />
+    <Resource Include="Images\select_fila.png" />
+    <Resource Include="Images\share_map.png" />
+    <Resource Include="Images\usuario16.png" />
+    <Resource Include="Images\visible16_blue.png" />
+    <Resource Include="Images\visible16_white.png" />
+    <Resource Include="Images\warningblue32.png" />    
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\launchSettings.json" />
+    <None Include="Module1.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ArcGIS.Desktop.Framework">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Core">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Core.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Core">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Core\ArcGIS.Desktop.Core.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Mapping">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Catalog">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Catalog\ArcGIS.Desktop.Catalog.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Editing">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Extensions">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\DesktopExtensions\ArcGIS.Desktop.Extensions.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.GeoProcessing">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\GeoProcessing\ArcGIS.Desktop.GeoProcessing.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Layouts">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Layout\ArcGIS.Desktop.Layouts.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Shared.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Shared.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Ribbon.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Ribbon.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.DataGrid.Contrib.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.DataGrid.Contrib.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Resources">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Resources.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.ItemIndex">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ESRI.ArcGIS.ItemIndex.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="scripts\" />
+    <Folder Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Win.Design" Version="22.2.11" />
+    <PackageReference Include="devexpress.wpf.core" Version="22.2.11" />
+    <PackageReference Include="devexpress.wpf.grid.core" Version="22.2.11" />
+    <PackageReference Include="devexpress.wpf.layoutcontrol" Version="22.2.11" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="Oracle.ManagedDataAccess.Core" Version="3.21.100" />
+    <PackageReference Include="System.ServiceModel.Duplex" Version="4.10.*" />
+    <PackageReference Include="System.ServiceModel.Federation" Version="4.10.*" />
+    <PackageReference Include="System.ServiceModel.Http" Version="4.10.*" />
+    <PackageReference Include="System.ServiceModel.NetTcp" Version="4.10.*" />
+    <PackageReference Include="System.ServiceModel.Security" Version="4.10.*" />
+    <PackageReference Include="XamlAnimatedGif" Version="2.1.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="scripts\automapic.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\AutomapicExt_addin.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\bdgeocat.sde">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\bdgeocat_bdtecnica.sde">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\bdgeocat_huawei.sde">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\credentials.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\DC_S01_obtener_arbol_capas.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\DC_S02_agregar_capa.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\DC_S03_remover_capa.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\layers\GPO_DG_HOJAS_50K.lyrx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\messages_aut.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\MG_S00_agregar_cuadriculas.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\MG_S01_obtener_codigos.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\packages_aut.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\require\cx_Oracle-8.3.0-cp39-cp39-win32.whl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\require\reportlab-4.0.0-py3-none-any.whl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\require\shapely-2.0.0-cp39-cp39-win32.whl">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\settings_aut.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\T00_datos_campo.atbx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="scripts\T01_mapa_geologico_50k.atbx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+   <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
+</Project>

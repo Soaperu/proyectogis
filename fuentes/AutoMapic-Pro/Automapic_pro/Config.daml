@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArcGIS defaultAssembly="Automapic_pro.dll" defaultNamespace="Automapic_pro" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+	<AddInInfo id="{8ad5c09c-6f98-409c-b0df-a7f100839640}" version="1.0" desktopVersion="3.1.41833">
+		<Name>Automapic_pro</Name>
+		<Description>Automapic_pro description</Description>
+		<Image>Images\AddinDesktop32.png</Image>
+		<Author>JulioCruz;JorgeYupanqui</Author>
+		<Company>Ingemmet</Company>
+		<Date>05/06/2023 15:38:20</Date>
+		<Subject>Framework</Subject>
+		<!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+	</AddInInfo>
+	<modules>
+		<insertModule id="Automapic_prototipo_Module" className="Module1" autoLoad="false" caption="Module1">
+			<!-- uncomment to have the control hosted on a separate tab-->
+			<tabs>
+				<tab id="Automapic_prototipo_Tab1" caption="INGEMMET">
+					<group refID="Automapic_Beta" />
+				</tab>
+			</tabs>
+			<groups>
+				<!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+				<group id="Automapic_Beta" caption="Automapic Pro" appearsOnAddInTab="false">
+					<!-- host controls within groups -->
+					<button refID="Automapic_prototipo_dockpane_main_ShowButton" size="large" />
+				</group>
+			</groups>
+			<controls>
+				<!-- add your controls here -->
+				<button id="Automapic_prototipo_dockpane_main_ShowButton" caption="    "
+						className="dockpane_main_ShowButton"
+						loadOnClick="true"
+						smallImage="Images/GenericButtonPurple16.png"
+					largeImage="Images/logo_ingemmet_daml.png">
+					<tooltip heading="Add-In">
+						Automapic Pro - INGEMMET<disabledText />
+					</tooltip>
+				</button>
+			</controls>
+			<dockPanes>
+				<dockPane id="Automapic_prototipo_dockpane_main" caption="Automapic Pro" className="dockpane_mainViewModel" dock="group" dockWith="esri_core_projectDockPane">
+					<content className="dockpane_mainView" />
+				</dockPane>
+			</dockPanes>
+		</insertModule>
+	</modules>
+</ArcGIS>
