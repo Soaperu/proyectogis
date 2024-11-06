@@ -9,6 +9,11 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Config.daml" />
+    <None Remove="Images\Login\candado16.png" />
+    <None Remove="Images\Login\usuario16.png" />
+    <None Remove="Images\Login\visible16_blue.png" />
+    <None Remove="Images\Login\visible16_white.png" />
+    <None Remove="Images\Login\warningblue32.png" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.daml" />    
@@ -96,6 +101,16 @@
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="View\Modulos\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Login\candado16.png" />
+    <Resource Include="Images\Login\usuario16.png" />
+    <Resource Include="Images\Login\visible16_blue.png" />
+    <Resource Include="Images\Login\visible16_white.png" />
+    <Resource Include="Images\Login\warningblue32.png" />
   </ItemGroup>
    <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>
