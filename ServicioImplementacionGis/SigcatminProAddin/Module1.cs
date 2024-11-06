@@ -44,5 +44,40 @@ namespace SigcatminProAddin
 
         #endregion Overrides
 
+        
+
+    }
+
+    public class StatesUtil
+    {
+        #region Toggle State
+        /// <summary>
+        /// Activate or Deactivate the specified state. State is identified via
+        /// its name. Listen for state changes via the DAML <b>condition</b> attribute
+        /// </summary>
+        /// <param name="stateID"></param>
+        public static void ToggleState(string stateID)
+        {
+            if (FrameworkApplication.State.Contains(stateID))
+            {
+                FrameworkApplication.State.Deactivate(stateID);
+            }
+            else
+            {
+                FrameworkApplication.State.Activate(stateID);
+            }
+        }
+
+        public static void ActivateState(string stateID)
+        {
+            FrameworkApplication.State.Activate(stateID);
+        }
+
+        public static void DeactivateState(string stateID)
+        {
+            FrameworkApplication.State.Deactivate(stateID);
+        }
+
+        #endregion Toggle State
     }
 }

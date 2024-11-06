@@ -9,28 +9,21 @@ using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.KnowledgeGraph;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
-using SigcatminProAddin.View.Login;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SigcatminProAddin
+namespace SigcatminProAddin.View.Botones
 {
-    internal class LoginButton : Button
+    internal class GenerarPlanosMasivosBtn : Button
     {
-        LoginWindow _loginWindow;
         protected override void OnClick()
         {
-            if (_loginWindow == null)
-            {
-                _loginWindow = new LoginWindow();
-            }
-            _loginWindow.Show();
         }
-
     }
 }

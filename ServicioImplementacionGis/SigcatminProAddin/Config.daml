@@ -14,7 +14,7 @@
     <insertModule id="SigcatminProAddin_Module" className="Module1" autoLoad="false" caption="Module1">
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
-        <tab id="SigcatminProAddin_Tab1" caption="New Tab">
+        <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN">
           <group refID="SigcatminProAddin_Group1" />
         </tab>
       </tabs>
@@ -23,15 +23,37 @@
               an empty group-->
         <group id="SigcatminProAddin_Group1" caption="Group 1" appearsOnAddInTab="false">
           <!-- host controls within groups -->
-          <button refID="SigcatminProAddin_LoginButton" size="large" />
+          <button refID="SigcatminProAddin_View_Botones_LoginButton" size="large" />
+          <subgroup refID="SigcatminProAddin_Subgroup1"/>
         </group>
       </groups>
+      <subgroups>
+        <subgroup id="SigcatminProAddin_Subgroup1" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <button refID="SigcatminProAddin_View_Botones_LogoutButton" size="middle" />
+          <button refID="SigcatminProAddin_View_Botones_GraficarExcelBtn" size="middle" />
+          <button refID="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" size="middle" />
+        </subgroup>
+      </subgroups>
       <controls>
         <!-- add your controls here -->
-        <button id="SigcatminProAddin_LoginButton" caption="LoginButton" className="LoginButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+        <button id="SigcatminProAddin_View_Botones_LoginButton" caption="LoginButton" className="SigcatminProAddin.View.Botones.LoginButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddin_View_Botones_LogoutButton" condition="Logged_condition" caption="LogoutButton" className="SigcatminProAddin.View.Botones.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddin_View_Botones_GraficarExcelBtn" caption="GraficarExcelBtn" className="SigcatminProAddin.View.Botones.GraficarExcelBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" condition="Logged_condition" caption="GenerarPlanosMasivosBtn" className="SigcatminProAddin.View.Botones.GenerarPlanosMasivosBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </button>
       </controls>
     </insertModule>
   </modules>
+  <conditions>
+    <insertCondition id="Logged_condition" caption="Example state">
+      <state id="isLoggedIn"></state>
+    </insertCondition>
+  </conditions>
 </ArcGIS>

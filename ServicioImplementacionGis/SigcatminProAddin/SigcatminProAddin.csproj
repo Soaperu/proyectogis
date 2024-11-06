@@ -106,6 +106,9 @@
     <Folder Include="View\Modulos\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\CommonUtilities\CommonUtilities.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Images\Login\candado16.png" />
     <Resource Include="Images\Login\usuario16.png" />
     <Resource Include="Images\Login\visible16_blue.png" />

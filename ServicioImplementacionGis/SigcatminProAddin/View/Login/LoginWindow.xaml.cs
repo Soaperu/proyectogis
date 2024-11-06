@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CommonUtilities.LoginUtil;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using SigcatminProAddin.View.Constants;
 
 namespace SigcatminProAddin.View.Login
 {
@@ -31,7 +33,11 @@ namespace SigcatminProAddin.View.Login
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
+            string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, tbxPasswordView.Text, 5);
+            SessionManager.SaveSession(encryptedCredentials);
             MessageBox.Show("ok");
+            StatesUtil.ActivateState(UIState.IsLogged);
+
         }
 
         private void tbxUser_TextChanged(object sender, TextChangedEventArgs e)

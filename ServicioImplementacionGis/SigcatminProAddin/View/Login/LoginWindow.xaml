@@ -40,7 +40,7 @@
                     Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="Arial"
                        />
         </Grid>
-        <Label x:Name="lblIniSesion" Content="Iniciar sesion" Grid.Row="1"
+        <Label x:Name="lblIniSesion" Content="Iniciar sesión" Grid.Row="1"
         Grid.Column="1"  VerticalAlignment="Center" 
         Margin="8,0,0,0" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FF403D3D"/>
         
