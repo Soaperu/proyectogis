@@ -10,21 +10,30 @@
     <!-- Note subject can be one or more of these topics:
                     Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
   </AddInInfo>
+  <categories>
+    <!--Step 1-->
+    <!--Create a new category to hold new commands in a a Gallery-->
+    <insertCategory id="InformeTecnicoTools"></insertCategory>
+  </categories>
   <modules>
     <insertModule id="SigcatminProAddin_Module" className="Module1" autoLoad="false" caption="Module1">
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
-        <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN">
+        <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN" keytip="t0">
           <group refID="SigcatminProAddin_Group1" />
+          <group refID="SigcatminProAddin_Group2" />
         </tab>
       </tabs>
       <groups>
         <!-- comment this out if you have no controls on the Addin tab to avoid
               an empty group-->
-        <group id="SigcatminProAddin_Group1" caption="Group 1" appearsOnAddInTab="false">
+        <group id="SigcatminProAddin_Group1" caption="Sigcatmin" appearsOnAddInTab="false" keytip="gr1">
           <!-- host controls within groups -->
           <button refID="SigcatminProAddin_View_Botones_LoginButton" size="large" />
-          <subgroup refID="SigcatminProAddin_Subgroup1"/>
+          <subgroup refID="SigcatminProAddin_Subgroup1" />
+        </group>
+        <group id="SigcatminProAddin_Group2" caption="Informes Técnicos" appearsOnAddInTab="false" keytip="gr2">
+          <gallery refID="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" inline="true" size="large" />
         </group>
       </groups>
       <subgroups>
@@ -35,25 +44,54 @@
         </subgroup>
       </subgroups>
       <controls>
-        <!-- add your controls here -->
-        <button id="SigcatminProAddin_View_Botones_LoginButton" caption="LoginButton" className="SigcatminProAddin.View.Botones.LoginButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
-          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        <!-- Controles Principales -->
+        <button id="SigcatminProAddin_View_Botones_LoginButton" caption="Iniciar Sesión" className="SigcatminProAddin.View.Botones.LoginButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="a1">
+          <tooltip heading="Tooltip Heading">Iniciar Sesión<disabledText /></tooltip>
         </button>
-        <button id="SigcatminProAddin_View_Botones_LogoutButton" condition="Logged_condition" caption="LogoutButton" className="SigcatminProAddin.View.Botones.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
-          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Botones_LogoutButton" condition="Logged_condition" caption="Cerrar Sesión" className="SigcatminProAddin.View.Botones.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a2">
+          <tooltip heading="Tooltip Heading">Cerrar Sesión<disabledText /></tooltip>
         </button>
-        <button id="SigcatminProAddin_View_Botones_GraficarExcelBtn" caption="GraficarExcelBtn" className="SigcatminProAddin.View.Botones.GraficarExcelBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
-          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Botones_GraficarExcelBtn" caption="Graficar Excel" className="SigcatminProAddin.View.Botones.GraficarExcelBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a3">
+          <tooltip heading="Tooltip Heading">Graficar Excel<disabledText /></tooltip>
         </button>
-        <button id="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" condition="Logged_condition" caption="GenerarPlanosMasivosBtn" className="SigcatminProAddin.View.Botones.GenerarPlanosMasivosBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
-          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" condition="Logged_condition" caption="Planos Masivos" className="SigcatminProAddin.View.Botones.GenerarPlanosMasivosBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a4">
+          <tooltip heading="Tooltip Heading">Generar Planos Masivos<disabledText /></tooltip>
+        </button>
+        <!--Controles Informe Técnico-->
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado" caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i1">
+          <tooltip heading="Tooltip Heading">Validar resultado<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_AreaSuperpuesta" caption="Superpuesta" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.AreaSuperpuesta" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i2">
+          <tooltip heading="Tooltip Heading">Área superpuesta<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_SuperposicionAreaRestringida" caption="Superposición A.R." categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.SuperposicionAreaRestringida" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i3">
+          <tooltip heading="Tooltip Heading">Superposición área restringida<disabledText /></tooltip>
+          <content version="1.0" group="Group B" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GuardarInformeFA" caption="Guardar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GuardarInformeFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i4">
+          <tooltip heading="Tooltip Heading">Guardar informe F.A.<disabledText /></tooltip>
+          <content version="1.0" group="Group B" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GenerarHistoricoFA" caption="Generar Histórico" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GenerarHistoricoFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i5">
+          <tooltip heading="Tooltip Heading">Generar histórico F.A.<disabledText /></tooltip>
+          <content version="1.0" group="Group B" />
         </button>
       </controls>
+      <galleries>
+        <gallery id="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" condition="Logged_condition" showGroup="true" caption="InformeTecnicoGallery" className="SigcatminProAddin.View.Toolbars.InformeTecnico.InformeTecnicoGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/InformeTecnico/InformeTecnicoGalleryTemplate.xaml" templateID="LargeGalleryItemTemplate" resizable="true" largeImage="GenericButtonOrange32" keytip="g1">
+          <tooltip heading="Tooltip Heading">Informe Técnico ToolBar<disabledText /></tooltip>
+        </gallery>
+      </galleries>
     </insertModule>
   </modules>
   <conditions>
     <insertCondition id="Logged_condition" caption="Example state">
       <state id="isLoggedIn"></state>
+    </insertCondition>
+    <insertCondition id="InformeTecnico_condition" caption="Informe técnico Condition">
+      <state id="isDMgraficado"></state>
     </insertCondition>
   </conditions>
 </ArcGIS>
