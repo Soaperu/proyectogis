@@ -13,6 +13,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SigcatminProAddin.View.Constants;
+using SigcatminProAddin.View.Contenedor;
 
 namespace SigcatminProAddin.View.Login
 {
@@ -21,6 +22,7 @@ namespace SigcatminProAddin.View.Login
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private MainContainer _mainContainer;
         public LoginWindow()
         {
             InitializeComponent();
@@ -35,9 +37,11 @@ namespace SigcatminProAddin.View.Login
         {
             string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, tbxPasswordView.Text, 5);
             SessionManager.SaveSession(encryptedCredentials);
-            MessageBox.Show("ok");
+            //MessageBox.Show("ok");
+            _mainContainer = new MainContainer();
+            _mainContainer.Show();
             StatesUtil.ActivateState(UIState.IsLogged);
-
+            this.Close();
         }
 
         private void tbxUser_TextChanged(object sender, TextChangedEventArgs e)
@@ -105,6 +109,16 @@ namespace SigcatminProAddin.View.Login
             System.Windows.Media.Color customColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#a2defa");
             btnViewPassword.Background = new SolidColorBrush(customColor);
             btnViewPassword.Background = new SolidColorBrush(customColor);
+        }
+
+        private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // El botón izquierdo del ratón esté presionado
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                // Permite el arrastre de la ventana
+                this.DragMove();
+            }
         }
     }
 }

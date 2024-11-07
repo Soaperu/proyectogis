@@ -9,6 +9,8 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Config.daml" />
+    <None Remove="Images\EvaluacionDM\usuario32.png" />
+    <None Remove="Images\EvaluacionDM\usuario32_gris.png" />
     <None Remove="Images\Login\candado16.png" />
     <None Remove="Images\Login\usuario16.png" />
     <None Remove="Images\Login\visible16_blue.png" />
@@ -103,12 +105,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="View\Modulos\" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\CommonUtilities\CommonUtilities.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\EvaluacionDM\usuario32.png" />
     <Resource Include="Images\Login\candado16.png" />
     <Resource Include="Images\Login\usuario16.png" />
     <Resource Include="Images\Login\visible16_blue.png" />
