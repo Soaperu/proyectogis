@@ -26,7 +26,8 @@
             <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="350"/>
         </Grid.ColumnDefinitions>
-        <Grid Background="#006DA0" Height="80" VerticalAlignment="Top" Grid.ColumnSpan="2">
+        <Grid Background="#006DA0" Height="80" VerticalAlignment="Top"
+              Grid.ColumnSpan="2" x:Name="gridHeader" MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="180"/>
@@ -41,8 +42,9 @@
                        />
         </Grid>
         <Label x:Name="lblIniSesion" Content="Iniciar sesión" Grid.Row="1"
-        Grid.Column="1"  VerticalAlignment="Center" 
-        Margin="8,0,0,0" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Foreground="#FF403D3D"/>
+               Grid.Column="1"  VerticalAlignment="Center" 
+               Margin="8,0,0,0" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"
+               Foreground="#FF565353"/>
         
         <Grid Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0">
             <Grid.RowDefinitions>
