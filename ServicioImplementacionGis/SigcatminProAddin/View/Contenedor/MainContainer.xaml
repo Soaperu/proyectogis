@@ -6,13 +6,12 @@
         xmlns:local="clr-namespace:SigcatminProAddin.View.Contenedor"
         mc:Ignorable="d"
         xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-        Title="MainContainer" Height="532" Width="719" WindowStyle="None">
+        Title="MainContainer" Height="532" Width="719" WindowStyle="None" ResizeMode="NoResize">
     <Grid x:Name="gridMainContainer">
         <Grid.RowDefinitions>
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="40"/>
-            <RowDefinition Height="5"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="5"/>
@@ -20,7 +19,8 @@
             <ColumnDefinition Width="5"/>
         </Grid.ColumnDefinitions>
         <Grid Background="#006DA0" Height="60" VerticalAlignment="Center"
-              Grid.Column="0" Grid.ColumnSpan="3" x:Name="gridHeader" MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
+              Grid.Column="0" Grid.ColumnSpan="3" x:Name="gridHeader"
+              MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="180"/>
@@ -33,7 +33,8 @@
                         Foreground="White" FontSize="16" Grid.Column="1" 
                         Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="Arial"/>
         </Grid>
-        <Frame x:Name="frameContainer" Grid.Column="1" Grid.Row="1"
+        <Frame x:Name="frameContainer" Grid.Column="1" Grid.Row="1" VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch"
                NavigationUIVisibility="Hidden" Navigating="frameContainer_Navigating">
         </Frame>
     </Grid>

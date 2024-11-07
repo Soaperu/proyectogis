@@ -9,6 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Config.daml" />
+    <None Remove="Images\EvaluacionDM\mapa100.png" />
     <None Remove="Images\EvaluacionDM\usuario32.png" />
     <None Remove="Images\EvaluacionDM\usuario32_gris.png" />
     <None Remove="Images\Login\candado16.png" />
@@ -26,6 +27,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\launchSettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">
@@ -108,6 +112,7 @@
     <ProjectReference Include="..\CommonUtilities\CommonUtilities.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\EvaluacionDM\mapa100.png" />
     <Resource Include="Images\EvaluacionDM\usuario32.png" />
     <Resource Include="Images\Login\candado16.png" />
     <Resource Include="Images\Login\usuario16.png" />

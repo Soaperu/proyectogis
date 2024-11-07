@@ -23,6 +23,25 @@ namespace SigcatminProAddin.View.Modulos
         public EvaluacionDM()
         {
             InitializeComponent();
+            AddCheckBoxesToListBox();
+        }
+
+        private void AddCheckBoxesToListBox()
+        {
+            // Lista de elementos para agregar al ListBox
+            string[] items = { "Capa 1", "Capa 2", "Capa 3", "Capa 4" };
+
+            // Agrega cada elemento como un CheckBox al ListBox
+            foreach (var item in items)
+            {
+                CheckBox checkBox = new CheckBox
+                {
+                    Content = item,
+                    Margin = new Thickness(5),
+                    Style = (Style)FindResource("Esri_CheckboxToggleSwitch")
+                };
+                listLayers.Items.Add(checkBox);
+            }
         }
     }
 }
