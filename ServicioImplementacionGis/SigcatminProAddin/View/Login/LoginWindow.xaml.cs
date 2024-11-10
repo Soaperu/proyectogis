@@ -14,6 +14,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using SigcatminProAddin.View.Constants;
 using SigcatminProAddin.View.Contenedor;
+using static DatabaseConnector.DatabaseConnection;
+using DatabaseConnector;
 
 namespace SigcatminProAddin.View.Login
 {
@@ -22,6 +24,8 @@ namespace SigcatminProAddin.View.Login
     /// </summary>
     public partial class LoginWindow : Window
     {
+        private DatabaseConnection dbconn;
+        public DatabaseHandler dataBaseHandler;
         private MainContainer _mainContainer;
         public LoginWindow()
         {
@@ -35,13 +39,59 @@ namespace SigcatminProAddin.View.Login
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, tbxPasswordView.Text, 5);
-            SessionManager.SaveSession(encryptedCredentials);
-            //MessageBox.Show("ok");
-            _mainContainer = new MainContainer();
-            _mainContainer.Show();
-            StatesUtil.ActivateState(UIState.IsLogged);
-            this.Close();
+            string username = tbxUser.Text;
+            string password = pwdPassword.Password;
+            // Verificar si el usuario ha ingresado datos válidos
+            if (string.IsNullOrEmpty(username) && string.IsNullOrEmpty(password))
+            {
+                //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string message = "Por favor ingrese el usuario y la contraseña.";
+                showTemporaryMessage(message,Colors.Red);
+                return;
+            }
+            else if (string.IsNullOrEmpty(username))
+            {
+                //MessageBox.Show("Por favor ingrese el usuario.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string message = "Por favor ingrese el usuario.";
+                showTemporaryMessage(message, Colors.Red);
+                return;
+            }
+            else if (string.IsNullOrEmpty(password))
+            {
+                //MessageBox.Show("Por favor ingrese la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string message = "Por favor ingrese la constraseña.";
+                showTemporaryMessage(message, Colors.Red);
+                return;
+            }
+            dbconn = new DatabaseConnection(username, password);
+            string connectionString = dbconn.OracleConnectionString(); // O dbConnection.GetGisConnectionString()
+            // Verifica la conexcion
+            if (dbconn.TestConnection(connectionString))
+            {
+                showTemporaryMessage("Conexión exitosa", Colors.Blue);
+                // Después del inicio de sesión exitoso
+                AppConfig.userName = username;
+                AppConfig.password = password;
+                //MessageBox.Show("Conexión exitosa", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Procede con la lógica de la
+                dataBaseHandler = new DatabaseHandler();
+                string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, pwdPassword.Password, 5);
+                SessionManager.SaveSession(encryptedCredentials);
+                var result = dataBaseHandler.VerifyUser(username, password);
+                _mainContainer = new MainContainer();
+                _mainContainer.Show();
+                StatesUtil.ActivateState(UIState.IsLogged);
+                Task.Delay(1500);
+                this.Close();
+            }
+            else
+            {
+                //MessageBox.Show("Error en la conexión", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                // Maneja el fallo de autenticación
+                string message = "Error en la conexión.";
+                showTemporaryMessage(message, Colors.Red);
+            }
+            
         }
 
         private void tbxUser_TextChanged(object sender, TextChangedEventArgs e)
@@ -53,16 +103,15 @@ namespace SigcatminProAddin.View.Login
         {
 
         }
-
         private void pwdPassword_KeyDown(object sender, KeyEventArgs e)
         {
             if ((Keyboard.GetKeyStates(Key.CapsLock) & KeyStates.Toggled) == KeyStates.Toggled)
             {
-                mayusculas.IsOpen = true;
+                ttipMayusculas.IsOpen = true;
             }
             else
             {
-                mayusculas.IsOpen = false;
+                ttipMayusculas.IsOpen = false;
             }
             if (e.Key == Key.Enter)
             {
@@ -85,7 +134,7 @@ namespace SigcatminProAddin.View.Login
             pwdPassword.Visibility = Visibility.Collapsed;
             System.Windows.Media.Color customColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#006DA0");
             btnViewPassword.Background = new SolidColorBrush(customColor);
-            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_white.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri(@"Images/Login/visible16_white.png", UriKind.Relative));
         }
 
         private void btnViewPassword_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -93,7 +142,7 @@ namespace SigcatminProAddin.View.Login
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
             btnViewPassword.Background = new SolidColorBrush(Colors.White);
-            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_blue.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri(@"Images/Login/visible16_blue.png", UriKind.Relative));
         }
 
         private void btnViewPassword_MouseLeave(object sender, MouseEventArgs e)
@@ -101,7 +150,7 @@ namespace SigcatminProAddin.View.Login
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
             btnViewPassword.Background = new SolidColorBrush(Colors.White);
-            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_blue.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri(@"Images/Login/visible16_blue.png", UriKind.Relative));
         }
 
         private void btnViewPassword_MouseEnter(object sender, MouseEventArgs e)
@@ -120,5 +169,16 @@ namespace SigcatminProAddin.View.Login
                 this.DragMove();
             }
         }
-    }
+
+        private void pwdPassword_GotFocus(object sender, RoutedEventArgs e)
+        {
+            ttipMayusculas.IsOpen = (Keyboard.GetKeyStates(Key.CapsLock) & KeyStates.Down) == KeyStates.Down;
+        }
+        private void showTemporaryMessage(string message, Color color)
+        {
+            lblLoginError.Content = message;
+            lblLoginError.Foreground = new SolidColorBrush(color);
+            lblLoginError.Visibility = Visibility.Visible;
+        }
+    } 
 }

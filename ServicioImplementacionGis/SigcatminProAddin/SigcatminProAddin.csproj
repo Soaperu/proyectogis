@@ -110,6 +110,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\CommonUtilities\CommonUtilities.csproj" />
+    <ProjectReference Include="..\DatabaseConnector\DatabaseConnector.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\EvaluacionDM\mapa100.png" />
