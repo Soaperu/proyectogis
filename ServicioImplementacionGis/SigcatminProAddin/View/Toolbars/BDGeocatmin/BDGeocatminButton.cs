@@ -37,7 +37,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     internal class PlanoCarta : BDGeocatminButton { }
     internal class DibujarPoligono : BDGeocatminButton { }
     internal class DmGoogleEarth : BDGeocatminButton { }
-    internal class BorrasTemas : BDGeocatminButton { }
+    internal class BorrarTemas : BDGeocatminButton { }
     internal class VerCapas : BDGeocatminButton { }
     internal class GenerarNumeroResolucionDm : BDGeocatminButton { }
     internal class RotularVertices : BDGeocatminButton { }

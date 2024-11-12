@@ -5,7 +5,7 @@
     <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
     </ResourceDictionary.MergedDictionaries>
-    <DataTemplate x:Key="BDGeocatminGalleryItemTemplate">
+    <DataTemplate x:Key="ModuloUEAsGalleryItemTemplate">
         <Grid x:Name="grid" SnapsToDevicePixels="True" Width="82" Height="68" UseLayoutRounding="True"  
               ribbon:ScreenTipService.ScreenTipHeader="{Binding PlugInWrapper.TooltipHeading}"
               ribbon:ScreenTipService.ScreenTipDescription="{Binding PlugInWrapper.Tooltip}">
@@ -16,9 +16,9 @@
                 </Grid.RowDefinitions>
 
                 <Image x:Name="Image" Margin="3,0,3,2" Width="32" 
-                       Height="32" HorizontalAlignment="Center" 
-                       VerticalAlignment="Bottom" Stretch="None" 
-                       Source="{Binding Icon32}" SnapsToDevicePixels="True">
+               Height="32" HorizontalAlignment="Center" 
+               VerticalAlignment="Bottom" Stretch="None" 
+               Source="{Binding Icon32}" SnapsToDevicePixels="True">
                     <Image.Resources>
                         <Style TargetType="{x:Type Image}">
                             <Setter Property="Opacity" Value="1.0"/>
@@ -32,8 +32,8 @@
                 </Image>
 
                 <TextBlock Grid.Row="1" Text="{Binding Path=PlugInWrapper.Caption}"
-                   MaxWidth="76" Margin="3,0,3,0"
-                   HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap">
+           MaxWidth="76" Margin="3,0,3,0"
+           HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap">
                 </TextBlock>
             </Grid>
         </Grid>
