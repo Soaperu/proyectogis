@@ -19,9 +19,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace SigcatminProAddin.View.Toolbars.ModuloUEAs
+namespace SigcatminProAddin.View.Toolbars.Evaluacion
 {
-    internal class ModuloUEAsGallery : Gallery
+    internal class EvaluacionGallery : Gallery
     {
         private bool _isInitialized;
 
@@ -30,11 +30,11 @@ namespace SigcatminProAddin.View.Toolbars.ModuloUEAs
         //    Initialize();
         //}
 
-        public ModuloUEAsGallery() 
+        public EvaluacionGallery()
         {
             Initialize();
             this.AlwaysFireOnClick = true;
-        }
+        }    
 
         private void Initialize()
         {
@@ -42,7 +42,12 @@ namespace SigcatminProAddin.View.Toolbars.ModuloUEAs
                 return;
             _isInitialized = true;
             //Add 6 items to the gallery
-            foreach (var component in Categories.GetComponentElements("ModuloUEAsTools"))
+            //for (int i = 0; i < 6; i++)
+            //{
+            //    string name = string.Format("Item {0}", i);
+            //    Add(new GalleryItem(name, this.LargeImage != null ? ((ImageSource)this.LargeImage).Clone() : null, name));
+            //}
+            foreach (var component in Categories.GetComponentElements("EvaluacionTools"))
             {
                 try
                 {
@@ -69,6 +74,9 @@ namespace SigcatminProAddin.View.Toolbars.ModuloUEAs
 
         protected override void OnClick(object item)
         {
+            //TODO - insert your code to manipulate the clicked gallery item here
+            //System.Diagnostics.Debug.WriteLine("Remove this line after adding your custom behavior.");
+            //base.OnClick(item);
             var customItem = item as CustomGalleryItem;
             customItem.Execute();
         }
