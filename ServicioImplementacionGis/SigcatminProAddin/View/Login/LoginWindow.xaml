@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:SigcatminProAddin"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="LoginWindow" Height="320" Width="550" ResizeMode="NoResize" WindowStyle="None">
+        Title="LoginWindow" Height="320" Width="550" ResizeMode="NoResize" WindowStyle="None" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -80,7 +80,7 @@
                      TextAlignment="Center"
                      VerticalContentAlignment="Center"
                      BorderBrush="White"
-                     Cursor="IBeam" TextChanged="tbxUser_TextChanged"/>
+                     Cursor="IBeam" TextChanged="tbxUser_TextChanged" KeyDown="tbxUser_KeyDown"/>
             
             <!--TextChanged="passwordView_TextChanged"/>-->
             <TextBlock Grid.Column="1" Grid.Row="0"
@@ -90,36 +90,7 @@
                     Text="Usuario"
                     IsHitTestVisible="False" 
                     Foreground="#FFA09B9B" />
-            <PasswordBox Grid.Column="1" Grid.Row="2"
-              BorderBrush="White"
-              Cursor="IBeam" Height="25" 
-              VerticalContentAlignment="Center"
-              HorizontalContentAlignment="Center"
-              x:Name="pwdPassword"
-              HorizontalAlignment="Stretch" KeyDown="pwdPassword_KeyDown" 
-                         PasswordChanged="pwdPassword_PasswordChanged" GotFocus="pwdPassword_GotFocus">
-                <PasswordBox.ToolTip >
-                    <ToolTip x:Name="ttipMayusculas"
-                        IsOpen="False" Background="White">
-                        <StackPanel Orientation="Horizontal" Background="White">
-                            <Image Source="/SigcatminProAddin;component/Images/Login/warningblue32.png" 
-                                Width="25" Margin="3,3,5,3"/>
-                            <TextBlock FontWeight="Bold" 
-                                FontSize="12" 
-                                Margin="3,3,3,3"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                >!Cuidado! Bloq Mayus Activado</TextBlock>
-                            <!--<TextBlock>
-                 Podria generar un error al ingresar su password
-                 <LineBreak/>
-                 Presione Bloq Mayus para desactivarlo
-                 </TextBlock>-->
-                        </StackPanel>
-                    </ToolTip>
-
-                </PasswordBox.ToolTip>
-            </PasswordBox>
+            
             <TextBox x:Name="tbxPasswordView"
                      Grid.Column="1" Grid.Row="2"
                      Cursor="" Height="25"
@@ -129,28 +100,57 @@
                      HorizontalAlignment="Stretch"
                      IsHitTestVisible="False" 
                      BorderBrush="White" TextChanged="tbxPasswordView_TextChanged"/>
+            
+            <PasswordBox Grid.Column="1" Grid.Row="2"
+                      BorderBrush="White"
+                      Cursor="IBeam" Height="25" 
+                      VerticalContentAlignment="Center"
+                      HorizontalContentAlignment="Center"
+                      x:Name="pwdPassword"
+                      HorizontalAlignment="Stretch" KeyDown="pwdPassword_KeyDown" 
+                                 PasswordChanged="pwdPassword_PasswordChanged" GotFocus="pwdPassword_GotFocus">
+                                    <PasswordBox.ToolTip >
+                                    <ToolTip x:Name="ttipMayusculas"
+                                IsOpen="False" Background="White">
+                                        <StackPanel Orientation="Horizontal" Background="White">
+                                            <Image Source="/SigcatminProAddin;component/Images/Login/warningblue32.png" 
+                                        Width="25" Margin="3,3,5,3"/>
+                                            <TextBlock FontWeight="Bold" 
+                                        FontSize="12" 
+                                        Margin="3,3,3,3"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        >!Cuidado! Bloq Mayus Activado</TextBlock>
+                                            <!--<TextBlock>
+                         Podria generar un error al ingresar su password
+                         <LineBreak/>
+                         Presione Bloq Mayus para desactivarlo
+                         </TextBlock>-->
+                                        </StackPanel>
+                                    </ToolTip>      
+                </PasswordBox.ToolTip>
+            </PasswordBox>
             <TextBlock Grid.Column="1" Grid.Row="2"
-                        x:Name="waterMarkPass" 
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Contraseña"
-                        IsHitTestVisible="False" 
-                        Foreground="#FFA09B9B" />
-
+            x:Name="waterMarkPass" 
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Text="Contraseña"
+            IsHitTestVisible="False" 
+            Foreground="#FFA09B9B" />
+            
             <TextBlock x:Name="btnViewPassword"
-                        Grid.Column="2" Grid.Row="2"                
-                        HorizontalAlignment="Right"
-                        Background="White"
-                        Margin="0,0,3,4" VerticalAlignment="Bottom"
-                        Width="20" Height="20" 
-                        MouseLeftButtonDown="btnViewPassword_MouseLeftButtonDown" 
-                        MouseLeftButtonUp="btnViewPassword_MouseLeftButtonUp" 
-                        MouseLeave="btnViewPassword_MouseLeave" 
-                        MouseEnter="btnViewPassword_MouseEnter">
-                 <Image x:Name="ImgViewpassword"
-                        Source="/SigcatminProAddin;component/Images/Login/visible16_blue.png"/>
+            Grid.Column="2" Grid.Row="2"                
+            HorizontalAlignment="Right"
+            Background="White"
+            Margin="0,0,3,4" VerticalAlignment="Bottom"
+            Width="20" Height="20" 
+            MouseLeftButtonDown="btnViewPassword_MouseLeftButtonDown" 
+            MouseLeftButtonUp="btnViewPassword_MouseLeftButtonUp" 
+            MouseLeave="btnViewPassword_MouseLeave" 
+            MouseEnter="btnViewPassword_MouseEnter">
+            <Image x:Name="ImgViewpassword"
+                    Source="/SigcatminProAddin;component/Images/Login/visible16_blue.png"/>
             </TextBlock>
-       
         </Grid>
         <Grid Grid.Row="3" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,0,0">
             <Grid.RowDefinitions>

@@ -78,6 +78,7 @@ namespace SigcatminProAddin.View.Login
                 string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, pwdPassword.Password, 5);
                 SessionManager.SaveSession(encryptedCredentials);
                 var result = dataBaseHandler.VerifyUser(username, password);
+                //var result2 = dataBaseHandler.GetUserRole("2", "ROL_CONSULTA_CM");
                 _mainContainer = new MainContainer();
                 _mainContainer.Show();
                 StatesUtil.ActivateState(UIState.IsLogged);
@@ -134,7 +135,7 @@ namespace SigcatminProAddin.View.Login
             pwdPassword.Visibility = Visibility.Collapsed;
             System.Windows.Media.Color customColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#006DA0");
             btnViewPassword.Background = new SolidColorBrush(customColor);
-            ImgViewpassword.Source = new BitmapImage(new Uri(@"Images/Login/visible16_white.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_white.png", UriKind.Relative));
         }
 
         private void btnViewPassword_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -142,7 +143,7 @@ namespace SigcatminProAddin.View.Login
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
             btnViewPassword.Background = new SolidColorBrush(Colors.White);
-            ImgViewpassword.Source = new BitmapImage(new Uri(@"Images/Login/visible16_blue.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_blue.png", UriKind.RelativeOrAbsolute));
         }
 
         private void btnViewPassword_MouseLeave(object sender, MouseEventArgs e)
@@ -150,7 +151,7 @@ namespace SigcatminProAddin.View.Login
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
             btnViewPassword.Background = new SolidColorBrush(Colors.White);
-            ImgViewpassword.Source = new BitmapImage(new Uri(@"Images/Login/visible16_blue.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_blue.png", UriKind.Relative));
         }
 
         private void btnViewPassword_MouseEnter(object sender, MouseEventArgs e)
@@ -176,9 +177,26 @@ namespace SigcatminProAddin.View.Login
         }
         private void showTemporaryMessage(string message, Color color)
         {
+            // Muestra mensajes de errores en el login
             lblLoginError.Content = message;
             lblLoginError.Foreground = new SolidColorBrush(color);
             lblLoginError.Visibility = Visibility.Visible;
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            // Al abrir el login podra escribir directamente el usuario
+            tbxUser.Focus();
+        }
+
+        private void tbxUser_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Si se presiona TAB, mueve el enfoque al PasswordBox
+            if (e.Key == Key.Tab)
+            {
+                e.Handled = true; // Evita el comportamiento predeterminado de TAB
+                pwdPassword.Focus();
+            }
         }
     } 
 }

@@ -14,6 +14,7 @@
     <!--Step 1-->
     <!--Create a new category to hold new commands in a a Gallery-->
     <insertCategory id="InformeTecnicoTools"></insertCategory>
+    <insertCategory id="BDGeocatminTools"></insertCategory>
   </categories>
   <modules>
     <insertModule id="SigcatminProAddin_Module" className="Module1" autoLoad="false" caption="Module1">
@@ -22,6 +23,7 @@
         <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN" keytip="t0">
           <group refID="SigcatminProAddin_Group1" />
           <group refID="SigcatminProAddin_Group2" />
+		  <group refID="SigcatminProAddin_Group3" />
         </tab>
       </tabs>
       <groups>
@@ -31,9 +33,14 @@
           <!-- host controls within groups -->
           <button refID="SigcatminProAddin_View_Botones_LoginButton" size="large" />
           <subgroup refID="SigcatminProAddin_Subgroup1" />
+          <!--<button refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminButton" size="large" />
+          <gallery refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" inline="false" size="large" />-->
         </group>
         <group id="SigcatminProAddin_Group2" caption="Informes Técnicos" appearsOnAddInTab="false" keytip="gr2">
           <gallery refID="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" inline="true" size="large" />
+        </group>
+	    <group id="SigcatminProAddin_Group3" caption="BDGeocatmin" appearsOnAddInTab="false" keytip="gr3">
+          <gallery refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" inline="true" size="large" />
         </group>
       </groups>
       <subgroups>
@@ -78,10 +85,33 @@
           <tooltip heading="Tooltip Heading">Generar histórico F.A.<disabledText /></tooltip>
           <content version="1.0" group="Group B" />
         </button>
+        <!--Controles BDGeocatmin-->
+        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminButton" caption="BDGeocatminButton" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.BDGeocatminButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>-->
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ReporteDerechosMineros" caption="Reporte de Derechos Mineros" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ReporteDerechosMineros" loadOnClick="true" keytip="BDG-1" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Tooltip Heading">Reporte de Derechos Mineros<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadas" caption="Listar Coordenadas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadas" loadOnClick="true" keytip="BDG-2" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Tooltip Heading">Listar Coordenadas<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDm" caption="Consulta Dm" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDm" loadOnClick="true" keytip="BDG-3" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Tooltip Heading">Consulta DM<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegion" caption="Calcula Porcentaje Region" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegion" loadOnClick="true" keytip="BDG-4" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Tooltip Heading">Calcula Porcentaje Región<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
       </controls>
       <galleries>
         <gallery id="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" condition="Logged_condition" showGroup="true" caption="InformeTecnicoGallery" className="SigcatminProAddin.View.Toolbars.InformeTecnico.InformeTecnicoGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/InformeTecnico/InformeTecnicoGalleryTemplate.xaml" templateID="LargeGalleryItemTemplate" resizable="true" largeImage="GenericButtonOrange32" keytip="g1">
           <tooltip heading="Tooltip Heading">Informe Técnico ToolBar<disabledText /></tooltip>
+        </gallery>
+        <gallery id="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" condition="Logged_condition" showGroup="true" caption="BDGeocatminGallery" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.BDGeocatminGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/BDGeocatmin/BDGeocatminGalleryTemplate.xaml" templateID="BDGeocatminGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g2">
+          <tooltip heading="Tooltip Heading">BDGeocatmin ToolBar<disabledText /></tooltip>
         </gallery>
       </galleries>
     </insertModule>
