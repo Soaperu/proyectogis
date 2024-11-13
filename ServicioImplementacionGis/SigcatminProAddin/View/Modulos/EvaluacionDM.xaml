@@ -7,13 +7,29 @@
       mc:Ignorable="d"       
       xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
       xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-      d:DesignHeight="427" d:DesignWidth="709"
-      Title="EvaluacionDM">
+      d:DesignHeight="460" d:DesignWidth="680"
+      Title="EvaluacionDM"
+      FontFamily="Roboto">
     <Page.Resources>
+
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
+            <Style TargetType="Button" x:Key="RoundedButtonStyle">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="1" 
+                                CornerRadius="4">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
     </Page.Resources>
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -25,6 +41,9 @@
             <RowDefinition Height="140"/>
             <RowDefinition Height="25"/>
             <RowDefinition Height="140"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="25"/>
         </Grid.RowDefinitions>
         <Grid Margin="0,0,0,0" VerticalAlignment="Center"
               Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch">
@@ -33,55 +52,54 @@
                 <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Evaluación | Evaluación D.M." Grid.Row="0" Grid.Column="0"
-                   FontSize="18" FontWeight="Bold" Margin="0,0,0,0"
-                   VerticalAlignment="Center" Foreground="#006DA0"/>
+                   FontSize="16" FontWeight="Bold" Margin="0,0,0,0"
+                   VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center"
                         Grid.Column="1" HorizontalAlignment="Right">
-                <TextBlock Text="Administrador01" VerticalAlignment="Center"
-                           FontSize="14" Margin="0,0,10,0" x:Name="currentUser">
+                <TextBlock Text="Administrador01" VerticalAlignment="Center" HorizontalAlignment="Right"
+                           FontSize="10" Margin="0,0,10,0" x:Name="currentUser">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="#FF696969"/>
                     </TextBlock.Foreground>
                 </TextBlock>
                 <Image Source="/SigcatminProAddin;component/Images/EvaluacionDM/usuario32.png"
-                       Width="25" Height="25" VerticalAlignment="Center"/>
+                       Width="16" Height="16" VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
-        <Label Grid.Row="1" Content="Filtros de Busqueda" Foreground="#FF696969" 
-               FontWeight="Bold"/>
-        <Label Grid.Row="3" Content="Resultados de Busqueda" Foreground="#FF696969"
-               FontWeight="Bold"/>
+        <Label Grid.Row="1" Content="Filtros de Búsqueda" Foreground="#FF696969" 
+               FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Left" Width="680"/>
+        <Label Grid.Row="3" Content="Resultados de Búsqueda" Foreground="#FF696969"
+               FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
         <!-- Panel de Filtros de Búsqueda -->
         <Grid Margin="0,0,0,0" VerticalAlignment="Center"
-              Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch">
+              Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="220"/>
-                <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="220"/>
-                <ColumnDefinition Width="69"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="255"/>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="255"/>
+                <ColumnDefinition Width="70"/>
             </Grid.ColumnDefinitions>
-            
-            <TextBlock Text="Consultar" VerticalAlignment="Center" FontSize="14" Margin="0,0,10,0"
-                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="Consultar" FontSize="10" Margin="0,0,0,5" FontWeight="Medium" HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
                       x:Name="cbxTypeConsult"
-                      Foreground="{DynamicResource Esri_TextMenuBrush}" Height="25"/>
-            <TextBlock Text="Dato" VerticalAlignment="Center" FontSize="14" Margin="0,0,20,0"
-                       Grid.Column="2" HorizontalAlignment="Right"/>
-            <TextBox Height="25" Margin="0,0,0,0" VerticalAlignment="Center"
-                     Grid.Column="3" Width="200" VerticalContentAlignment="Center"
+                      Foreground="{DynamicResource Esri_TextMenuBrush}" Height="20"/>
+            <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="25,0,0,5"
+                       Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
+            <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
+                     Grid.Column="3" Width="255" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                      x:Name="tbxValue"/>
-            <Button Content="Buscar" Width="80" Height="25" Background="#006DA0" BorderBrush="White"
-                    Foreground="White" Grid.Column="4" HorizontalAlignment="Center"
-                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Center"
-                    VerticalContentAlignment="Center" x:Name="btnSearch"/>
+            <Button Content="Buscar" Width="60" Height="25" Background="#006DA0" BorderBrush="White"
+                    Foreground="White" Grid.Column="4" HorizontalAlignment="Right"
+                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                    VerticalContentAlignment="Center" x:Name="btnSearch" />
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridResult">
                 <dxg:GridControl.View>
@@ -95,7 +113,7 @@
             <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
                   Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -103,37 +121,37 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="Radio (km)" FontSize="14" Margin="0,0,0,0"
-                           VerticalAlignment="Center"/>
+                <TextBlock Text="Radio (km)" FontSize="10" Margin="0,0,0,0"
+                           VerticalAlignment="Center" FontWeight="Medium"/>
                 <TextBox Grid.Column="1" Width="100" Height="25" VerticalAlignment="Center"
                           x:Name="tbxRadio" VerticalContentAlignment="Center"/>
-                <TextBlock Grid.Row="1" Text="Zona" FontSize="14" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
-                          VerticalAlignment="Center"  x:Name="cbxZona"/>
-                <TextBlock Grid.Row="2" Text="Sistema" FontSize="14" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                          VerticalAlignment="Center"  x:Name="cbxZona" />
+                <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="cbxSistema"/>
+                          VerticalAlignment="Center" x:Name="cbxSistema" />
             </Grid>
         </Grid>
 
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="530"/>
+                <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Detalle de Busqueda" Foreground="#FF696969"
-               FontWeight="Bold"/>
+            <Label Grid.Column="0" Content="Detalle de Búsqueda" Foreground="#FF696969"
+               FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
             <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969"
-                   FontWeight="Bold"/>
+                   FontWeight="Bold" VerticalAlignment="Bottom" FontSize="10"/>
         </Grid>
 
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="6" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="350"/>
                 <ColumnDefinition Width="170"/>
-                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridDetails" Grid.Column="0">
                 <dxg:GridControl.View>
@@ -161,7 +179,7 @@
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
             </Grid>-->
-            <ListBox Grid.Column="2" x:Name="listLayers" Margin="5,0,0,0">
+            <ListBox Grid.Column="2" x:Name="listLayers" Margin="10,0,-10,0" >
                 <ListBox.Template>
                     <ControlTemplate TargetType="ListBox">
                         <Border Background="{TemplateBinding Background}" 
@@ -188,14 +206,56 @@
                 </Border>
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             VerticalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" >
-                    <Label Content="Area (ha)" Margin="0,0,0,0" VerticalAlignment="Center"
-                           Width="80"/>
-                    <TextBox Text="100" Width="80" Height="25" VerticalAlignment="Center"
+                    <Label Content="Área (ha)" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Right"
+                           Width="80" FontSize="10" FontWeight="Medium"/>
+                    <TextBox Text="100" Width="80" Height="20" VerticalAlignment="Center"
                              VerticalContentAlignment="Center" x:Name="textArea"
-                             HorizontalContentAlignment="Center"/>
+                             HorizontalContentAlignment="Center" Background="#DDDDDD" BorderBrush="#FF696969" BorderThickness="0.5"/>
                 </StackPanel>
             </Grid>
         </Grid>
-        
+        <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
+      Grid.Column="0" Grid.Row="9" HorizontalAlignment="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="230"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="40"/>
+                <ColumnDefinition Width="70"/>
+
+
+            </Grid.ColumnDefinitions>
+            <Button Content="Salir" Width="50" Height="25" Background="White" BorderBrush="#006DA0"
+                Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Right"
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                    HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center" x:Name="btnSalir" FontSize="10" FontWeight="Medium" />
+
+            <Button Content="Otra Consulta" Width="90" Margin="10,0,0,0" Height="25" Background="#006DA0" BorderBrush="White"
+                Foreground="White" Grid.Column="1" HorizontalAlignment="Right"
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                    HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center" x:Name="btnOtraConsulta" FontSize="10" FontWeight="Medium"/>
+
+            <Button Content="Reporte" Width="60" Margin="10,0,0,0" Height="25" Background="#006DA0" BorderBrush="White"
+                Foreground="White" Grid.Column="2" HorizontalAlignment="Right"
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                    HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center" x:Name="btnReporte" FontSize="10" FontWeight="Medium" />
+
+            <Label Grid.Column="4" Content="Graficar DM Estado Y" Foreground="#FF696969" 
+                   HorizontalContentAlignment="Center"
+           FontWeight="Regular" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom"/>
+            
+            <Button Content="Graficar" Width="60" Margin="10,0,0,0" Height="25" Background="#006DA0" BorderBrush="White"
+                Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                    HorizontalContentAlignment="Center"
+                VerticalContentAlignment="Center" x:Name="btnGraficar" FontSize="10" FontWeight="bold" />
+
+        </Grid>
+
     </Grid>
 </Page>

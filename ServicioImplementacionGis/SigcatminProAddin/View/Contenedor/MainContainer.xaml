@@ -6,36 +6,39 @@
         xmlns:local="clr-namespace:SigcatminProAddin.View.Contenedor"
         mc:Ignorable="d"
         xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-        Title="MainContainer" Height="532" Width="719" WindowStyle="None" ResizeMode="NoResize">
+        Title="MainContainer" Height="532" Width="720" WindowStyle="None" ResizeMode="NoResize" Background="#F3F3F3">
     <Grid x:Name="gridMainContainer">
         <Grid.RowDefinitions>
-            <RowDefinition Height="60"/>
+            <RowDefinition Height="50"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="40"/>
+            <RowDefinition Height="20"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="5"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="5"/>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="680"/>
+            <ColumnDefinition Width="20"/>
         </Grid.ColumnDefinitions>
         <Grid Background="#006DA0" Height="60" VerticalAlignment="Center"
-              Grid.Column="0" Grid.ColumnSpan="3" x:Name="gridHeader"
+              Grid.Column="0" Grid.ColumnSpan="4" x:Name="gridHeader"
               MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="20"/>
+
             </Grid.ColumnDefinitions>
-            <TextBlock Text="SIGCATMIN" Foreground="White" FontSize="28" 
+            <TextBlock Text="SIGCATMIN" Foreground="White" FontSize="24" 
                         FontWeight="Bold" Margin="0,0,0,0" VerticalAlignment="Center"
-                        HorizontalAlignment="Center"/>
+                        HorizontalAlignment="Center" FontFamily="Roboto" Grid.Column="1"/>
             <TextBlock Text="Sistema de Graficación de Catastro Minero" TextWrapping="Wrap"
-                        Foreground="White" FontSize="16" Grid.Column="1" 
-                        Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="Arial"/>
+                        Foreground="White" FontSize="9" Grid.Column="2" 
+                        Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="Roboto"/>
         </Grid>
         <Frame x:Name="frameContainer" Grid.Column="1" Grid.Row="1" VerticalAlignment="Stretch"
                HorizontalAlignment="Stretch"
-               NavigationUIVisibility="Hidden" Navigating="frameContainer_Navigating">
+               NavigationUIVisibility="Hidden" Navigating="frameContainer_Navigating" Width="680">
         </Frame>
     </Grid>
 </Window>

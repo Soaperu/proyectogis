@@ -82,7 +82,7 @@ namespace SigcatminProAddin.View.Login
                 _mainContainer = new MainContainer();
                 _mainContainer.Show();
                 StatesUtil.ActivateState(UIState.IsLogged);
-                Task.Delay(1500);
+                //Task.Delay(1500);
                 this.Close();
             }
             else

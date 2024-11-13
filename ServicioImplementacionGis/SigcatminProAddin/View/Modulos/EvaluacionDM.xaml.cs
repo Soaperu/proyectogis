@@ -43,5 +43,10 @@ namespace SigcatminProAddin.View.Modulos
                 listLayers.Items.Add(checkBox);
             }
         }
+
+        private void cbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }
