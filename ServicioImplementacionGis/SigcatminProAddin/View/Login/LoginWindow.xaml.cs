@@ -82,7 +82,7 @@ namespace SigcatminProAddin.View.Login
                 _mainContainer = new MainContainer();
                 _mainContainer.Show();
                 StatesUtil.ActivateState(UIState.IsLogged);
-                //Task.Delay(1500);
+                Task.Delay(1500);
                 this.Close();
             }
             else
@@ -135,7 +135,7 @@ namespace SigcatminProAddin.View.Login
             pwdPassword.Visibility = Visibility.Collapsed;
             System.Windows.Media.Color customColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#006DA0");
             btnViewPassword.Background = new SolidColorBrush(customColor);
-            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_white.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri("/SigcatminProAddin;component/Images/Login/visible16_white.png", UriKind.Relative));
         }
 
         private void btnViewPassword_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -143,7 +143,8 @@ namespace SigcatminProAddin.View.Login
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
             btnViewPassword.Background = new SolidColorBrush(Colors.White);
-            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_blue.png", UriKind.RelativeOrAbsolute));
+            ImgViewpassword.Source = new BitmapImage(new Uri("/SigcatminProAddin;component/Images/Login/visible16_blue.png", UriKind.Relative));
+            pwdPassword.Focus();
         }
 
         private void btnViewPassword_MouseLeave(object sender, MouseEventArgs e)
@@ -151,14 +152,14 @@ namespace SigcatminProAddin.View.Login
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
             btnViewPassword.Background = new SolidColorBrush(Colors.White);
-            ImgViewpassword.Source = new BitmapImage(new Uri("Images/Login/visible16_blue.png", UriKind.Relative));
+            ImgViewpassword.Source = new BitmapImage(new Uri("/SigcatminProAddin;component/Images/Login/visible16_blue.png", UriKind.Relative));
         }
 
         private void btnViewPassword_MouseEnter(object sender, MouseEventArgs e)
         {
             System.Windows.Media.Color customColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#a2defa");
             btnViewPassword.Background = new SolidColorBrush(customColor);
-            btnViewPassword.Background = new SolidColorBrush(customColor);
+            //btnViewPassword.Background = new SolidColorBrush(customColor);
         }
 
         private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

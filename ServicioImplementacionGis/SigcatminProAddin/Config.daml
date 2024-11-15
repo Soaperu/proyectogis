@@ -25,13 +25,13 @@
         <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN" keytip="t0">
           <group refID="SigcatminProAddin_Group1" />
           <!--Tool Informes Tecnicos-->
-			<group refID="SigcatminProAddin_Group2" />
+          <group refID="SigcatminProAddin_Group2" />
           <!--Tool BDGeocatmin-->
           <group refID="SigcatminProAddin_Group3" />
           <!--Tool Modulo UEAs-->
           <group refID="SigcatminProAddin_Group4" />
           <!--Tool Evaluacion-->
-		  <group refID="SigcatminProAddin_Group5" />
+          <group refID="SigcatminProAddin_Group5" />
         </tab>
       </tabs>
       <groups>
@@ -41,6 +41,7 @@
           <!-- host controls within groups -->
           <button refID="SigcatminProAddin_View_Botones_LoginButton" size="large" />
           <subgroup refID="SigcatminProAddin_Subgroup1" />
+		  <subgroup refID="SigcatminProAddin_Subgroup2" />
           <!--<button refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminButton" size="large" />
           <gallery refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" inline="false" size="large" />-->
           <!--<button refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsButton" size="large" />
@@ -48,6 +49,7 @@
           <gallery refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsGallery" inline="false" size="large" />-->
           <!--<button refID="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionButton" size="large" />
           <gallery refID="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" inline="false" size="large" />-->
+          <!--<comboBox refID="SigcatminProAddin_View_Modulos_SelectionModulos" />-->
         </group>
         <group id="SigcatminProAddin_Group2" caption="Informes Técnicos" appearsOnAddInTab="false" keytip="gr2">
           <gallery refID="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" inline="true" size="large" />
@@ -58,7 +60,7 @@
         <group id="SigcatminProAddin_Group4" caption="Modulo UEAs" appearsOnAddInTab="false" keytip="gr4">
           <gallery refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsGallery" inline="true" size="large" />
         </group>
-	  <group id="SigcatminProAddin_Group5" caption="Evaluacion" appearsOnAddInTab="false" keytip="gr5">
+        <group id="SigcatminProAddin_Group5" caption="Evaluacion" appearsOnAddInTab="false" keytip="gr5">
           <gallery refID="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" inline="true" size="large" />
         </group>
       </groups>
@@ -68,6 +70,11 @@
           <button refID="SigcatminProAddin_View_Botones_GraficarExcelBtn" size="middle" />
           <button refID="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" size="middle" />
         </subgroup>
+		  <subgroup id="SigcatminProAddin_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+			  <comboBox refID="SigcatminProAddin_View_Modulos_SelectionModulos" />
+		      <comboBox refID="SigcatminProAddin_View_Modulos_Module" />		      
+		      <button refID="SigcatminProAddin_View_Modulos_ConfirmationModule" size="large"/>
+		  </subgroup>
       </subgroups>
       <controls>
         <!-- Controles Principales -->
@@ -326,6 +333,16 @@
           <tooltip heading="Tooltip Heading">Consulta Area Disponible<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
+		  <!--Controles Selector de Modulos-->
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectionModulos" caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectionModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+          <tooltip heading="Tipo">Seleccine el tipo de Modulo<disabledText /></tooltip>
+        </comboBox>
+	    <comboBox id="SigcatminProAddin_View_Modulos_Module" caption="Modulos" className="SigcatminProAddin.View.Modulos.Module" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+          <tooltip heading="Modulos">Seleccione el Modulo<disabledText /></tooltip>
+        </comboBox>
+	    <button id="SigcatminProAddin_View_Modulos_ConfirmationModule" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
+			<tooltip heading="Confirmar">Confirmar Modulo<disabledText /></tooltip>
+		</button>
       </controls>
       <galleries>
         <gallery id="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" condition="Logged_condition" showGroup="true" caption="InformeTecnicoGallery" className="SigcatminProAddin.View.Toolbars.InformeTecnico.InformeTecnicoGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/InformeTecnico/InformeTecnicoGalleryTemplate.xaml" templateID="LargeGalleryItemTemplate" resizable="true" largeImage="GenericButtonOrange32" keytip="g1">

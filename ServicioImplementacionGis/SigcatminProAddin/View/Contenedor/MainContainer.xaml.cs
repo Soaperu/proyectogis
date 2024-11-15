@@ -46,5 +46,10 @@ namespace SigcatminProAddin.View.Contenedor
                 this.DragMove();
             }
         }
+
+        private void btnCloseContainer_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
+        }
     }
 }

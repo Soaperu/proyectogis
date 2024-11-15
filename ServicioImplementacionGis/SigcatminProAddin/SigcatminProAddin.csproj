@@ -13,6 +13,10 @@
     <None Remove="Images\EvaluacionDM\usuario32.png" />
     <None Remove="Images\EvaluacionDM\usuario32_gris.png" />
     <None Remove="Images\Login\candado16.png" />
+    <None Remove="Images\Login\close16.png" />
+    <None Remove="Images\Login\closeOrange16.png" />
+    <None Remove="Images\Login\logoINGEMMET.png" />
+    <None Remove="Images\Login\logoINGEMMET_white.png" />
     <None Remove="Images\Login\usuario16.png" />
     <None Remove="Images\Login\visible16_blue.png" />
     <None Remove="Images\Login\visible16_white.png" />
@@ -116,6 +120,10 @@
     <Resource Include="Images\EvaluacionDM\mapa100.png" />
     <Resource Include="Images\EvaluacionDM\usuario32.png" />
     <Resource Include="Images\Login\candado16.png" />
+    <Resource Include="Images\Login\close16.png" />
+    <Resource Include="Images\Login\closeOrange16.png" />
+    <Resource Include="Images\Login\logoINGEMMET.png" />
+    <Resource Include="Images\Login\logoINGEMMET_white.png" />
     <Resource Include="Images\Login\usuario16.png" />
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />

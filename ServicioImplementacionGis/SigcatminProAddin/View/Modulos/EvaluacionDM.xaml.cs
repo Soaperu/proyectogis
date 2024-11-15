@@ -37,7 +37,7 @@ namespace SigcatminProAddin.View.Modulos
                 CheckBox checkBox = new CheckBox
                 {
                     Content = item,
-                    Margin = new Thickness(5),
+                    Margin = new Thickness(3),
                     Style = (Style)FindResource("Esri_CheckboxToggleSwitch")
                 };
                 listLayers.Items.Add(checkBox);
@@ -47,6 +47,16 @@ namespace SigcatminProAddin.View.Modulos
         private void cbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
 
+        }
+
+        private void btnSalir_Click(object sender, RoutedEventArgs e)
+        {
+            // Obtener la ventana contenedora y cerrarla
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                parentWindow.Close();
+            }
         }
     }
 }
