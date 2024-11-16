@@ -37,7 +37,7 @@ namespace SigcatminProAddin.View.Login
             this.Close();
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             string username = tbxUser.Text;
             string password = pwdPassword.Password;
@@ -78,11 +78,11 @@ namespace SigcatminProAddin.View.Login
                 string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, pwdPassword.Password, 5);
                 SessionManager.SaveSession(encryptedCredentials);
                 var result = dataBaseHandler.VerifyUser(username, password);
-                //var result2 = dataBaseHandler.GetUserRole("2", "ROL_CONSULTA_CM");
+                var result2 = dataBaseHandler.GetUserRole("2", "ROL_CONSULTA_CM");
                 _mainContainer = new MainContainer();
                 _mainContainer.Show();
                 StatesUtil.ActivateState(UIState.IsLogged);
-                Task.Delay(1500);
+                await Task.Delay(1500);
                 this.Close();
             }
             else

@@ -10,7 +10,7 @@ namespace DatabaseConnector
 {
     public class DatabaseConnection
     {
-        public readonly string _dbconnectionBdgeocat = "Data Source = (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.102.0.67)(PORT = 1521)) (CONNECT_DATA = (SERVICE_NAME = ORACLE)));User Id={0};Password={1};";
+        public readonly string _dbconnectionBdgeocat = "Data Source = (DESCRIPTION = (ADDRESS = (PROTOCOL = TCP)(HOST = 10.102.0.66)(PORT = 1521)) (CONNECT_DATA = (SERVICE_NAME = BDGEOCAT)));User Id={0};Password={1};";
         public readonly string _dbconnectionOracle = "Data Source = (DESCRIPTION=(FAILOVER=ON)(LOAD_BALANCE=OFF)(ADDRESS_LIST = (ADDRESS = (PROTOCOL=TCP)(HOST=10.102.0.67) (PORT=1521))(ADDRESS = (PROTOCOL=TCP)(HOST=10.102.0.206)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ORACLE9I)));User Id={0};Password={1};";
 
         public readonly string _username;

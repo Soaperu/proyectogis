@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DatabaseConnector
 {
@@ -17,9 +19,34 @@ namespace DatabaseConnector
             _dbConnection = new DatabaseConnection(AppConfig.userName, AppConfig.password);
         }
 
+        public string GetConnectionStringByPackage(string procedureName)
+        {
+            // Regex para encontrar el paquete completo que empieza con "PACK_" hasta el siguiente "."
+            var match = Regex.Match(procedureName, @"PACK_[A-Z_]+");
+
+            if (!match.Success)
+            {
+                throw new ArgumentException($"No se encontró ningún paquete válido en el nombre del procedimiento: {procedureName}");
+            }
+
+            var packageName = match.Value; // Extrae el nombre del paquete completo
+
+            // Busca la base de datos asociada al paquete
+            var dbType = DatabasePackageMapper.GetDatabaseByPackage(packageName);
+
+            return dbType switch
+            {
+                "ORACLE" => _dbConnection.OracleConnectionString(),
+                "BDGEOCAT" => _dbConnection.GisConnectionString(),
+                _ => throw new ArgumentException($"No se encontró ninguna asignación de base de datos para el paquete: {packageName}")
+            };
+        }
+
+        //Metodos gestores de las consultas SQL
         public DataTable ExecuteDataTable(string storedProcedure, OracleParameter[] parameters)
         {
-            using (var connection = new OracleConnection(_dbConnection.OracleConnectionString()))
+            var connectionString = GetConnectionStringByPackage(storedProcedure);
+            using (var connection = new OracleConnection(connectionString))//_dbConnection.OracleConnectionString()))
             using (var command = new OracleCommand(storedProcedure, connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -48,7 +75,8 @@ namespace DatabaseConnector
         }
         public string ExecuteStoredProcedureWithReturnValue(string storedProcedure, OracleParameter[] parameters)
         {
-            using (var connection = new OracleConnection(_dbConnection.OracleConnectionString()))
+            var connectionString = GetConnectionStringByPackage(storedProcedure);
+            using (var connection = new OracleConnection(connectionString))//(_dbConnection.OracleConnectionString()))
             using (var command = new OracleCommand(storedProcedure, connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -85,7 +113,8 @@ namespace DatabaseConnector
         }
         public string ExecuteScalar(string storedProcedure, OracleParameter[] parameters)
         {
-            using (var connection = new OracleConnection(_dbConnection.OracleConnectionString()))
+            var connectionString = GetConnectionStringByPackage(storedProcedure);
+            using (var connection = new OracleConnection(connectionString))//_dbConnection.OracleConnectionString()))
             using (var command = new OracleCommand(storedProcedure, connection))
             {
                 OracleTransaction? transaction = null;
@@ -127,54 +156,24 @@ namespace DatabaseConnector
             }
         }
 
-
-
-        // Metodos que consumen los paquetes SQL
+        // Metodos que consumen los Paquetes SQL
         public DataTable VerifyUser(string username, string password) // Verifica_usuario
         {
             // Nombre del procedimiento almacenado (este nombre es un ejemplo y debería ajustarse)
-            string procedureName = DatabaseProcedures.Procedure_VerificaUsuario;
-
-            using (var connection = new OracleConnection(_dbConnection.OracleConnectionString()))
-            using (var command = new OracleCommand(procedureName, connection))
+            string storedProcedure = DatabaseProcedures.Procedure_VerificaUsuario;
+            var parameters = new OracleParameter[]
             {
-                command.CommandType = CommandType.StoredProcedure;
-
-                // Definir los parámetros para el procedimiento almacenado
-                command.Parameters.Add("V_USUARIO", OracleDbType.Varchar2, 50).Value = username.ToUpper();
-                //command.Parameters.Add("v_password", OracleDbType.Varchar2, 50).Value = password;
-
-                // Parámetro de salida (ejemplo para obtener un valor booleano de verificación)
-                var resultParam = command.Parameters.Add("VO_CURSOR", OracleDbType.RefCursor);
-                resultParam.Direction = ParameterDirection.Output;
-
-                var dataTable = new DataTable();
-                try
-                {
-                    connection.Open();
-                    using (var reader = command.ExecuteReader())
-                    {
-                        dataTable.Load(reader);
-                    }
-
-                    // Obtener el resultado de la verificación
-                    //int result = Convert.ToInt32(resultParam.Value);
-                    //return result == 1; // Suponiendo que 1 significa verificado
-                }
-                catch (Exception ex)
-                {
-                    // Manejo de errores
-                    throw new InvalidOperationException("Error al verificar el usuario.", ex);
-                }
-                return dataTable;
-            }
+                new OracleParameter("V_USUARIO", OracleDbType.Varchar2, 50) { Value = username },
+                //new OracleParameter("V_NOMBRE", OracleDbType.Varchar2, 50) { Value = password },
+            };
+            return ExecuteDataTable(storedProcedure, parameters);
         }
 
         public DataTable GetDataDM(string code) // F_Item_Data_DM
         {
             const string procedureName = DatabaseProcedures.Procedure_ListaRegistroCatastroMinero;
-
-            using (var connection = new OracleConnection(_dbConnection.GisConnectionString()))
+            var connectionString = GetConnectionStringByPackage(procedureName);
+            using (var connection = new OracleConnection(connectionString))//_dbConnection.GisConnectionString()))
             using (var command = new OracleCommand(procedureName, connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -211,8 +210,8 @@ namespace DatabaseConnector
         public DataTable GetTableCounter(string tableName, string code) // FT_CONTADOR_IT
         {
             string procedureName = DatabaseProcedures.Procedure_ContadorIT;
-
-            using (var connection = new OracleConnection(_dbConnection.GisConnectionString()))
+            var connectionString = GetConnectionStringByPackage(procedureName);
+            using (var connection = new OracleConnection(connectionString))
             using (var command = new OracleCommand(procedureName, connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -244,8 +243,8 @@ namespace DatabaseConnector
         {
             // Nombre del procedimiento almacenado
             string procedureName = DatabaseProcedures.Procedure_VerificaEstadoIT;
-
-            using (var connection = new OracleConnection(_dbConnection.GisConnectionString()))
+            var connectionString = GetConnectionStringByPackage(procedureName);
+            using (var connection = new OracleConnection(connectionString))
             using (var command = new OracleCommand(procedureName, connection))
             {
                 command.CommandType = CommandType.StoredProcedure;
