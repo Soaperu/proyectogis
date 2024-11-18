@@ -16,6 +16,7 @@ using SigcatminProAddin.View.Constants;
 using SigcatminProAddin.View.Contenedor;
 using static DatabaseConnector.DatabaseConnection;
 using DatabaseConnector;
+using System.Data;
 
 namespace SigcatminProAddin.View.Login
 {
@@ -78,7 +79,9 @@ namespace SigcatminProAddin.View.Login
                 string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, pwdPassword.Password, 5);
                 SessionManager.SaveSession(encryptedCredentials);
                 var result = dataBaseHandler.VerifyUser(username, password);
-                var result2 = dataBaseHandler.GetUserRole("2", "ROL_CONSULTA_CM");
+                DataRow firstRow = result.Rows[0];
+                CommonUtilities.GloblalVariables.currentUser = firstRow["USERNAME"].ToString();
+                //var result2 = dataBaseHandler.GetUserRole("2", "ROL_CONSULTA_CM");
                 _mainContainer = new MainContainer();
                 _mainContainer.Show();
                 StatesUtil.ActivateState(UIState.IsLogged);

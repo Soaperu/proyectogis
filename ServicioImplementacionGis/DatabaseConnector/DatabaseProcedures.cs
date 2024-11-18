@@ -55,7 +55,7 @@ namespace DatabaseConnector
         public const string Procedure_CaracteristicasEvaluacionGIS = "PACK_DBA_SG_D_EVALGIS.P_SG_D_CARAC_EVALGIS";
         public const string Procedure_ConsultaAreaNetas = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_AREASNETAS";
         //public const string Procedure_ = ;
-        //public const string Procedure_ = ;
+        public const string Procedure_CuentaRegistros = "PACK_DBA_SG_D_EVALGIS.SP_CUENTA_REGISTRO";
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;
