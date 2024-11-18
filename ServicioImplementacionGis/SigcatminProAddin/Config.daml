@@ -19,7 +19,7 @@
     <insertCategory id="EvaluacionTools"></insertCategory>
   </categories>
   <modules>
-    <insertModule id="SigcatminProAddin_Module" className="Module1" autoLoad="false" caption="Module1">
+    <insertModule id="SigcatminProAddin_Module" className="Module1" autoLoad="true" caption="Module1">
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
         <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN" keytip="t0">
@@ -334,13 +334,13 @@
           <content version="1.0" group="Otros" />
         </button>
 		  <!--Controles Selector de Modulos-->
-        <comboBox id="SigcatminProAddin_View_Modulos_SelectionModulos" caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectionModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectionModulos"  condition="Logged_condition"  caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectorCategorias" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
           <tooltip heading="Tipo">Seleccine el tipo de Modulo<disabledText /></tooltip>
         </comboBox>
-	    <comboBox id="SigcatminProAddin_View_Modulos_Module" caption="Modulos" className="SigcatminProAddin.View.Modulos.Module" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+	    <comboBox id="SigcatminProAddin_View_Modulos_Module"  condition="Logged_condition"  caption="Modulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
           <tooltip heading="Modulos">Seleccione el Modulo<disabledText /></tooltip>
         </comboBox>
-	    <button id="SigcatminProAddin_View_Modulos_ConfirmationModule" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
+	    <button id="SigcatminProAddin_View_Modulos_ConfirmationModule"  condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
 			<tooltip heading="Confirmar">Confirmar Modulo<disabledText /></tooltip>
 		</button>
       </controls>

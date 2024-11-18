@@ -79,10 +79,11 @@ namespace SigcatminProAddin.View.Login
                 SessionManager.SaveSession(encryptedCredentials);
                 var result = dataBaseHandler.VerifyUser(username, password);
                 //var result2 = dataBaseHandler.GetUserRole("2", "ROL_CONSULTA_CM");
-                _mainContainer = new MainContainer();
-                _mainContainer.Show();
+                //_mainContainer = new MainContainer();
+                //_mainContainer.Show();
+                //StatesUtil.ActivateState(UIState.IsLogged);
+                //Task.Delay(1500);
                 StatesUtil.ActivateState(UIState.IsLogged);
-                Task.Delay(1500);
                 this.Close();
             }
             else

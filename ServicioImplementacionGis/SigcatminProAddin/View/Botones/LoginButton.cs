@@ -30,8 +30,8 @@ namespace SigcatminProAddin.View.Botones
         {
             if (IsActiveSession())
             {
-                System.Windows.MessageBox.Show("Bienvenido");
-                StatesUtil.ActivateState(UIState.IsLogged);
+                //System.Windows.MessageBox.Show("Bienvenido", "Inicio de sesión", MessageBoxButton.OK, MessageBoxImage.Information);
+                //StatesUtil.ActivateState(UIState.IsLogged);
                 return;
             }
 
@@ -48,23 +48,32 @@ namespace SigcatminProAddin.View.Botones
             }
         }
 
+        // Método de instancia para validar la sesión activa
         private bool IsActiveSession()
+        {
+            return IsActiveSessionStatic();
+        }
+
+        // Método estático para validar la sesión activa desde otros contextos
+        public static bool IsActiveSessionStatic()
         {
             bool activeSession = false;
             string encryptedData = SessionManager.LoadSession();
-            if (encryptedData != null)
+
+            if (!string.IsNullOrEmpty(encryptedData))
             {
-                // Desencriptar las credenciales
                 var (username, password, expiration) = CredentialManager.DecryptCredentials(encryptedData);
 
                 if (DateTime.Now < expiration)
                 {
                     activeSession = true;
-                    // Aquí deberías pedir las credenciales al usuario nuevamente y generar un nuevo token
+                    // Aquí puedes agregar lógica para renovar credenciales si es necesario
+                    //System.Windows.MessageBox.Show("Bienvenido", "Inicio de sesión", MessageBoxButton.OK, MessageBoxImage.Information);
+                    StatesUtil.ActivateState(UIState.IsLogged);
                 }
             }
-            return activeSession;
 
+            return activeSession;
         }
 
     }
