@@ -88,7 +88,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridResult">
+            <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridResult" CustomUnboundColumnData="dataGridResult_CustomUnboundColumnData">
                 <dxg:GridControl.View>
                     <dxg:TableView  x:Name="dataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
@@ -171,7 +171,7 @@
                 </Grid.RowDefinitions>
                 <!--<Image Margin="5,0,5,0"/>-->
                 <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
-CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
+                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
                     <Canvas x:Name="PolygonCanvas" Background="White" />
                 </Border>
 
@@ -185,7 +185,7 @@ CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
                     <Label Content="Área (ha)" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center"
                            Width="80" FontSize="10" FontWeight="Medium"/>
                     <TextBox Text="100" Width="80" Height="18" VerticalAlignment="Center"
-                             VerticalContentAlignment="Center" x:Name="textArea"
+                             VerticalContentAlignment="Center" x:Name="tbxArea"
                              HorizontalContentAlignment="Center" Background="#DDDDDD" BorderBrush="#FF696969" BorderThickness="0.5"/>
                 </StackPanel>
             </Grid>

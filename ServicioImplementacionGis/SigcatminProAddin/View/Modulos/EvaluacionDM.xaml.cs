@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using CommonUtilities;
 using DatabaseConnector;
+using DevExpress.Data;
 using DevExpress.Internal.WinApi.Windows.UI.Notifications;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraExport.Helpers;
@@ -38,6 +39,7 @@ namespace SigcatminProAddin.View.Modulos
             ConfiguredataGridResultColumns();
             ConfiguredataGridDetailsColumns();
             dataBaseHandler = new DatabaseHandler();
+            cbxTypeConsult.SelectedIndex = 0;
         }
 
         private void AddCheckBoxesToListBox()
@@ -63,10 +65,10 @@ namespace SigcatminProAddin.View.Modulos
             currentUser.Text = GloblalVariables.ToTitleCase(GloblalVariables.currentUser);
         }
 
-        private void cbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
+        //private void cbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //{
 
-        }
+        //}
 
         private void btnSalir_Click(object sender, RoutedEventArgs e)
         {
@@ -101,8 +103,8 @@ namespace SigcatminProAddin.View.Modulos
             double maxY = coordinates.Max(p => p.Y);
 
             // Calcular las proporciones de escalado
-            double scaleX = canvasWidth*0.8 / (maxX - minX);
-            double scaleY = canvasHeight*0.8 / (maxY - minY);
+            double scaleX = canvasWidth * 0.8 / (maxX - minX);
+            double scaleY = canvasHeight * 0.8 / (maxY - minY);
             double scale = Math.Min(scaleX, scaleY); // Mantener proporción
 
             // Calcular los márgenes para centrar el polígono
@@ -148,7 +150,7 @@ namespace SigcatminProAddin.View.Modulos
                 var vertex = coordinates[i];
                 var label = new TextBlock
                 {
-                    Text = $"{i+1}",
+                    Text = $"{i + 1}",
                     FontSize = 10,
                     Foreground = Brushes.Black,
                     Background = Brushes.Transparent
@@ -169,7 +171,7 @@ namespace SigcatminProAddin.View.Modulos
                 return;
             }
             var utmCoordinates = new PointCollection();
-            
+
             foreach (DataRow row in dmrRecords.Rows)
             {
                 try
@@ -197,31 +199,46 @@ namespace SigcatminProAddin.View.Modulos
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            
+            if (string.IsNullOrEmpty(tbxValue.Text))
+            {
+                //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string message = "Por favor ingrese un valor para iniciar la busqueda.";
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                 "Nivel de coincidencia muy alto",
+                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             try
             {
                 string value = (string)cbxTypeConsult.SelectedValue.ToString();
                 var countRecords = dataBaseHandler.CountRecords(value, tbxValue.Text);
-                if (int.Parse(countRecords) >= 150)
+                int records = int.Parse(countRecords);
+                if (records == 0)
                 {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Sea Ud. más específico en la consulta, hay {countRecords} Registro(s)",
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"No Existe ningún Registro con esta consulta: {tbxValue.Text}",
+                                                                        "Sin coincidencias",
+                                                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                else if (records >= 150)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Sea Ud. más específico en la consulta, hay {countRecords} Registro(s)",
                                                                         "Nivel de coincidencia muy alto",
                                                                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
                 var dmrRecords = dataBaseHandler.GetUniqueDM(tbxValue.Text, (int)cbxTypeConsult.SelectedValue);
-                //DataRow firstRow1 = countRecords.Rows[0];
-                //DataRow firstRow2 = dmrRecords.Rows[0];
+                calculatedIndex(dataGridResult, records, "INDEX");
                 dataGridResult.ItemsSource = dmrRecords.DefaultView;
             }
             catch (Exception ex)
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Se produjo un error inesperado: "+ ex.Message,
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Se produjo un error inesperado: " + ex.Message,
                                                                             "Error",
                                                                             MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
-            
+
         }
 
         private void cbxTypeConsult_Loaded(object sender, RoutedEventArgs e)
@@ -288,14 +305,15 @@ namespace SigcatminProAddin.View.Modulos
             {
                 FieldName = "ESTE",
                 Header = "Este",
-                Width = 120
+                Width = new GridColumnWidth(1, GridColumnUnitType.Star)
+
             };
 
             GridColumn norteColumn = new GridColumn
             {
                 FieldName = "NORTE",
                 Header = "Norte",
-                Width = 120
+                Width = new GridColumnWidth(1, GridColumnUnitType.Star)
             };
 
             // Agregar columnas al GridControl
@@ -311,18 +329,30 @@ namespace SigcatminProAddin.View.Modulos
 
             // Limpiar columnas existentes
             dataGridResult.Columns.Clear();
-            
+
             if (tableView != null)
             {
                 tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
             }
 
             // Crear y configurar columnas
+
+            // Columna de índice (número de fila)
+            GridColumn indexColumn = new GridColumn
+            {
+                Header = "N°", // Encabezado
+                FieldName = "INDEX",
+                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
+                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
+                VisibleIndex = 0, // Mostrar como la primera columna
+                Width = 25
+            };
+           
             GridColumn codigoColumn = new GridColumn
             {
                 FieldName = "CODIGO", // Nombre del campo en el DataTable
                 Header = "Codigo",    // Encabezado visible
-                Width = 120            // Ancho de la columna
+                Width = 100            // Ancho de la columna
             };
 
             GridColumn nombreColumn = new GridColumn
@@ -336,7 +366,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 FieldName = "PE_VIGCAT",
                 Header = "PE_VIGCAT",
-                Width = 100
+                Width = 70
             };
 
             GridColumn zonaColumn = new GridColumn
@@ -349,7 +379,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 FieldName = "TIPO",
                 Header = "Tipo",
-                Width = 100
+                Width = 60
             };
             GridColumn estadoColumn = new GridColumn
             {
@@ -361,22 +391,23 @@ namespace SigcatminProAddin.View.Modulos
             {
                 FieldName = "NATURALEZA",
                 Header = "Naturaleza",
-                Width = 100
+                Width = 80
             };
             GridColumn cartaColumn = new GridColumn
             {
                 FieldName = "CARTA",
                 Header = "Carta",
-                Width = 100
+                Width = 80
             };
             GridColumn hectareaColumn = new GridColumn
             {
                 FieldName = "HECTAREA",
                 Header = "Hectarea",
-                Width = 100
+                Width = 80
             };
 
             // Agregar columnas al GridControl
+            dataGridResult.Columns.Add(indexColumn);
             dataGridResult.Columns.Add(codigoColumn);
             dataGridResult.Columns.Add(nombreColumn);
             dataGridResult.Columns.Add(pe_vigcatColumn);
@@ -386,6 +417,15 @@ namespace SigcatminProAddin.View.Modulos
             dataGridResult.Columns.Add(naturalezaColumn);
             dataGridResult.Columns.Add(cartaColumn);
             dataGridResult.Columns.Add(hectareaColumn);
+            // Manejar el evento para calcular valores de la columna no vinculada
+            //dataGridResult.CustomUnboundColumnData += (sender, e) =>
+            //{
+            //    if (e.Column.UnboundType == DevExpress.Data.UnboundColumnType.Integer && e.IsGetData)
+            //    {
+            //        // Asignar el índice de la fila
+            //        e.Value = e.ListSourceRowIndex + 1; // Los índices son base 0, así que sumamos 1
+            //    }
+            //};
         }
 
         public DataTable FilterColumns(DataTable originalTable, params string[] columnNames)
@@ -420,22 +460,21 @@ namespace SigcatminProAddin.View.Modulos
             return filteredTable;
         }
 
-        private DataTable ObtenerCoordenadas(string codigovalue, int datum)
+        private DataTable ObtenerCoordenadas(string codigoValue, int datum)
         {
             DataTable filteredTable;
             string[] requiredColumns = { "CD_NUMVER", "CD_COREST_E", "CD_CORNOR_E" };
-            var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigovalue);
+            var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
 
             if (datum == 2)
-            {            
-                requiredColumns = new string[]{ "CD_NUMVER", "CD_COREST", "CD_CORNOR"};
+            {
+                requiredColumns = new string[] { "CD_NUMVER", "CD_COREST", "CD_CORNOR" };
             }
             filteredTable = FilterColumns(dmrRecords, requiredColumns);
             // Renombrar las columnas
             filteredTable.Columns["CD_NUMVER"].ColumnName = "VERTICE";
             filteredTable.Columns[requiredColumns[1]].ColumnName = "ESTE";
             filteredTable.Columns[requiredColumns[2]].ColumnName = "NORTE";
-
 
             return filteredTable;
         }
@@ -455,8 +494,10 @@ namespace SigcatminProAddin.View.Modulos
                     string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
 
                     // Mostrar el valor obtenido
-                    System.Windows.MessageBox.Show($"Valor de CODIGO: {codigoValue}", "Información de la Fila");
-
+                    //System.Windows.MessageBox.Show($"Valor de CODIGO: {codigoValue}", "Información de la Fila");
+                    string areaValue = dataGridResult.GetCellValue(focusedRowHandle, "HECTAREA")?.ToString();
+                    tbxArea.Text = areaValue;
+                    tbxArea.IsReadOnly = true;
                     // Llamar a funciones adicionales con el valor seleccionado
                     var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
                     dataGridDetails.ItemsSource = dmrRecords.DefaultView;
@@ -464,11 +505,31 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 else
                 {
-                    System.Windows.MessageBox.Show("No hay ninguna fila seleccionada.", "Error");
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No hay ninguna fila seleccionada.", "Error",
+                                                                        MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
             }
         }
 
-        
+        private void dataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
+        {
+            // Verificar si la columna es la columna de índice
+            if (e.Column.UnboundType == DevExpress.Data.UnboundColumnType.Integer && e.IsGetData)
+            {
+                // Asignar el índice de la fila
+                e.Value = e.ListSourceRowIndex + 1; // Los índices son base 0, así que sumamos 1
+            }
+        }
+
+        private void calculatedIndex(GridControl table, int records,string columnName)
+        {
+            int newRowHandle = DataControlBase.NewItemRowHandle;
+
+            // Agregar registros de ejemplo con índice
+            for (int i = 1; i <= records; i++)
+            {
+                table.SetCellValue(newRowHandle, columnName, i);
+            }
+        }
     }
 }
