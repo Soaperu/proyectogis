@@ -7,19 +7,12 @@ using ArcGIS.Desktop.Editing;
 using ArcGIS.Desktop.Extensions;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Desktop.Framework.Dialogs;
-using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Desktop.Layouts;
-using ArcGIS.Desktop.Mapping;
+
 using CommonUtilities.LoginUtil;
+using DatabaseConnector;
 using SigcatminProAddin.View.Constants;
 using SigcatminProAddin.View.Login;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 
 namespace SigcatminProAddin.View.Botones
 {
@@ -68,6 +61,8 @@ namespace SigcatminProAddin.View.Botones
                 {
                     activeSession = true;
                     // Aquí puedes agregar lógica para renovar credenciales si es necesario
+                    AppConfig.userName = username;
+                    AppConfig.password = password;
                     //System.Windows.MessageBox.Show("Bienvenido", "Inicio de sesión", MessageBoxButton.OK, MessageBoxImage.Information);
                     StatesUtil.ActivateState(UIState.IsLogged);
                 }
