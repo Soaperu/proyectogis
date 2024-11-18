@@ -23,12 +23,14 @@ namespace SigcatminProAddin.View.Contenedor
     {
         EvaluacionDM _EvaluacionDM;
         private MainViewModel _mainViewModel;
+        private Dictionary<string, Page> _loadedModules;
         public MainContainer()
         {
             InitializeComponent();
             _mainViewModel = new MainViewModel(frameContainer);
-            //_EvaluacionDM = new EvaluacionDM();
-            //frameContainer.Navigate(_EvaluacionDM);
+            _loadedModules = new Dictionary<string, Page>();
+            _EvaluacionDM = new EvaluacionDM();
+            frameContainer.Navigate(_EvaluacionDM);
         }
 
         private void frameContainer_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)
@@ -37,6 +39,19 @@ namespace SigcatminProAddin.View.Contenedor
             {
                 e.Cancel = true;
             }
+        }
+
+        // Método para cargar módulos en el frameContainer
+        public void LoadModule(string moduleName, Page modulePage)
+        {
+            if (!_loadedModules.ContainsKey(moduleName))
+            {
+                // Si el módulo no está cargado, agregarlo al diccionario
+                _loadedModules[moduleName] = modulePage;
+            }
+
+            // Navegar al módulo en el FrameContainer
+            frameContainer.Navigate(_loadedModules[moduleName]);
         }
 
         private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

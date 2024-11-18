@@ -77,10 +77,10 @@
                      Grid.Column="3" Width="230" VerticalContentAlignment="Center" HorizontalAlignment="Center"
                      x:Name="tbxValue" Padding="0,2,0,2"/>
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
-                    Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
+                    Foreground="White" Grid.Column="4" HorizontalAlignment="Left" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
-                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                    VerticalContentAlignment="Center" x:Name="btnSearch" Padding="0,0,0,0" />
+                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Top" 
+                    VerticalContentAlignment="Center" x:Name="btnSearch" Padding="0,0,0,0" Margin="30,8,0,0" Click="btnSearch_Click" />
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
@@ -145,28 +145,10 @@
                 <dxg:GridControl.View>
                     <dxg:TableView ShowAutoFilterRow="False"
                            AllowColumnFiltering="False"
-                           ShowGroupPanel="False" />        
+                           ShowGroupPanel="False" />
                 </dxg:GridControl.View>
             </dxg:GridControl>
-            <!--<Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
-                  Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="115"/>
-                    <RowDefinition Height="25"/>
-                </Grid.RowDefinitions>
-            </Grid>-->
-            <!--<Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
-                  Grid.Column="2" Grid.Row="0" HorizontalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="70"/>
-                    <ColumnDefinition Width="100"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                    <RowDefinition Height="30"/>
-                </Grid.RowDefinitions>
-            </Grid>-->
+
             <ListBox Grid.Column="2" x:Name="listLayers" Margin="10,0,-10,0" >
                 <ListBox.Template>
                     <ControlTemplate TargetType="ListBox">
@@ -184,19 +166,25 @@
             <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
                   Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="110"/>
-                    <RowDefinition Height="30"/>
+                    <RowDefinition Height="120"/>
+                    <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <!--<Image Margin="5,0,5,0"/>-->
                 <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
-                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
-                    <Image Source="/SigcatminProAddin;component/Images/EvaluacionDM/mapa100.png" Stretch="Uniform"/>
+CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
+                    <Canvas x:Name="PolygonCanvas" Background="White" />
                 </Border>
+
+                <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
+                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
+                    <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/Images/EvaluacionDM/mapa100.png" Stretch="Uniform"/>
+                </Border>
+
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
                             VerticalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" >
                     <Label Content="Área (ha)" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center"
                            Width="80" FontSize="10" FontWeight="Medium"/>
-                    <TextBox Text="100" Width="80" Height="20" VerticalAlignment="Center"
+                    <TextBox Text="100" Width="80" Height="18" VerticalAlignment="Center"
                              VerticalContentAlignment="Center" x:Name="textArea"
                              HorizontalContentAlignment="Center" Background="#DDDDDD" BorderBrush="#FF696969" BorderThickness="0.5"/>
                 </StackPanel>
@@ -204,15 +192,15 @@
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="8">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="200"/>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="20"/>
-                        <ColumnDefinition Width="90"/>  
-                    </Grid.ColumnDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="70"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="90"/>
+            </Grid.ColumnDefinitions>
             <Button Content="Salir" Width="50" Height="20" Background="White" BorderBrush="#006DA0"
                 Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 

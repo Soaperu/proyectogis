@@ -75,7 +75,7 @@ namespace SigcatminProAddin.View.Login
                 //MessageBox.Show("Conexión exitosa", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 // Procede con la lógica de la
                 dataBaseHandler = new DatabaseHandler();
-                string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, pwdPassword.Password, 5);
+                string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, pwdPassword.Password, 25);
                 SessionManager.SaveSession(encryptedCredentials);
                 var result = dataBaseHandler.VerifyUser(username, password);
                 //var result2 = dataBaseHandler.GetUserRole("2", "ROL_CONSULTA_CM");

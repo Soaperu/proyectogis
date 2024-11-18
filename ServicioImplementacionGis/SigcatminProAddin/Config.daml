@@ -71,8 +71,8 @@
           <button refID="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" size="middle" />
         </subgroup>
 		  <subgroup id="SigcatminProAddin_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
-			  <comboBox refID="SigcatminProAddin_View_Modulos_SelectionModulos" />
-		      <comboBox refID="SigcatminProAddin_View_Modulos_Module" />		      
+			  <comboBox refID="SigcatminProAddin_View_Modulos_SelectorCategorias" />
+		      <comboBox refID="SigcatminProAddin_View_Modulos_SelectorModulos" />		      
 		      <button refID="SigcatminProAddin_View_Modulos_ConfirmationModule" size="large"/>
 		  </subgroup>
       </subgroups>
@@ -334,10 +334,10 @@
           <content version="1.0" group="Otros" />
         </button>
 		  <!--Controles Selector de Modulos-->
-        <comboBox id="SigcatminProAddin_View_Modulos_SelectionModulos"  condition="Logged_condition"  caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectorCategorias" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
-          <tooltip heading="Tipo">Seleccine el tipo de Modulo<disabledText /></tooltip>
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectorCategorias"  condition="Logged_condition"  caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectorCategorias" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+          <tooltip heading="Tipo">Seleccione el tipo de Modulo<disabledText /></tooltip>
         </comboBox>
-	    <comboBox id="SigcatminProAddin_View_Modulos_Module"  condition="Logged_condition"  caption="Modulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+	    <comboBox id="SigcatminProAddin_View_Modulos_SelectorModulos"  condition="Logged_condition"  caption="Modulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
           <tooltip heading="Modulos">Seleccione el Modulo<disabledText /></tooltip>
         </comboBox>
 	    <button id="SigcatminProAddin_View_Modulos_ConfirmationModule"  condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">

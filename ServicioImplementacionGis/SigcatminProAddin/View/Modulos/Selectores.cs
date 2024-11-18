@@ -28,7 +28,8 @@ namespace SigcatminProAddin.View.Modulos
     /// </summary>
     internal class SelectorCategorias : ComboBox
     {
-        public SelectorModulos ModulosComboBox = new SelectorModulos();
+        public SelectorModulos ModulosComboBox { get; set; }
+
         private bool _isInitialized;
 
         /// <summary>
@@ -41,7 +42,6 @@ namespace SigcatminProAddin.View.Modulos
 
         public SelectorCategorias(SelectorModulos modulosComboBox = null)
         {
-            ModulosComboBox = modulosComboBox; // Asignar la referencia al ComboBox de módulos (opcional)
             UpdateCombo();
         }
 
@@ -71,15 +71,12 @@ namespace SigcatminProAddin.View.Modulos
 
             base.OnSelectionChange(item);
 
-            if (item != null && !string.IsNullOrEmpty(item.Text) && ModulosComboBox != null)
+            if (item != null && !string.IsNullOrEmpty(item.Text) )
             {
+                //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Categoría seleccionada: {item.Text}");
                 // Actualiza el ComboBox de módulos
-                ModulosComboBox.UpdateModules(item.Text);
+                //ModulosComboBox.UpdateModules(item.Text);
             }
-        }
-        public void SelectionChanged(string text)
-        {
-
         }
 
     }
@@ -91,6 +88,9 @@ namespace SigcatminProAddin.View.Modulos
             Clear();
         }
 
+        /// <summary>
+        /// Updates the combo box with all the items.
+        /// </summary>
         public void UpdateModules(string categoria)
         {
             Clear();
@@ -101,7 +101,20 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     Add(new ComboBoxItem(modulo.Nombre) );
                 }
-                SelectedItem = ItemCollection.FirstOrDefault();
+                // Notifica a la UI el cambio
+                if (ItemCollection.Count > 0)
+                {
+                    SelectedItem = ItemCollection[0]; // Seleccionar el primer elemento
+                }
+                else
+                {
+                    SelectedItem = null; // Si no hay elementos, limpia la selección
+                }
+            }
+            else
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"No se encontraron módulos para la categoría: {categoria}");
+                SelectedItem = null; // Limpia la selección
             }
         }
     }
@@ -109,7 +122,7 @@ namespace SigcatminProAddin.View.Modulos
     internal class ConfirmationModule : Button
     {
         public SelectorModulos ModulosComboBox { get; set; }
-        public System.Windows.Controls.Frame Contenedor { get; set; }
+        public MainContainer Contenedor { get; set; } // Referencia al MainContainer
 
         protected override void OnClick()
         {
@@ -126,8 +139,29 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     // Cargar la página asociada al módulo en el contenedor
                     var page = PageManager.GetOrCreatePage(moduloSeleccionado.Pagina);
-                    Contenedor.Navigate(page);
+                    Contenedor.LoadModule(moduloSeleccionado.Nombre, page);
                 }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                        "No se encontró el módulo seleccionado.",
+                        "Error",
+                        System.Windows.MessageBoxButton.OK,
+                        System.Windows.MessageBoxImage.Warning
+                    );
+                }
+            }
+            else
+            {
+                //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                //    "Seleccione un módulo antes de continuar.",
+                //    "Advertencia",
+                //    System.Windows.MessageBoxButton.OK,
+                //    System.Windows.MessageBoxImage.Warning
+                //);
+                Contenedor = new MainContainer();
+                Contenedor.Show();
+                //_mainContainer.Show();
             }
         }
     }
