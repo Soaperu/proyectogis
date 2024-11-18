@@ -90,9 +90,9 @@
             </Grid.ColumnDefinitions>
             <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridResult">
                 <dxg:GridControl.View>
-                    <dxg:TableView ShowAutoFilterRow="False"
+                    <dxg:TableView  x:Name="dataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
-                       ShowGroupPanel="False" />
+                       ShowGroupPanel="False" FocusedRowChanged="dataGridResultTableView_FocusedRowChanged" />
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
@@ -117,7 +117,7 @@
                           VerticalAlignment="Center"  x:Name="cbxZona" />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="cbxSistema" />
+                          VerticalAlignment="Center" x:Name="cbxSistema" Loaded="cbxSistema_Loaded" />
             </Grid>
         </Grid>
 
@@ -143,7 +143,7 @@
             </Grid.ColumnDefinitions>
             <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridDetails" Grid.Column="0">
                 <dxg:GridControl.View>
-                    <dxg:TableView ShowAutoFilterRow="False"
+                    <dxg:TableView x:Name="dataGridDetailsTableView" ShowAutoFilterRow="False"
                            AllowColumnFiltering="False"
                            ShowGroupPanel="False" />
                 </dxg:GridControl.View>

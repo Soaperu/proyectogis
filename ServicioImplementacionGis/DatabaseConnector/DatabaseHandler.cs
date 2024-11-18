@@ -816,6 +816,17 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetDMDataWGS84(string code) // F_Obtiene_Datos_DM_84
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";
+            var parameters = new OracleParameter[]
+            {
+        new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
 
 
     }

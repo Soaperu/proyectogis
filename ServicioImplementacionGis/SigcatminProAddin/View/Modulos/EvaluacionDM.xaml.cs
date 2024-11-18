@@ -19,6 +19,7 @@ using CommonUtilities;
 using DatabaseConnector;
 using DevExpress.Internal.WinApi.Windows.UI.Notifications;
 using DevExpress.Xpf.Grid;
+using DevExpress.XtraExport.Helpers;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -34,7 +35,8 @@ namespace SigcatminProAddin.View.Modulos
             InitializeComponent();
             AddCheckBoxesToListBox();
             CurrentUser();
-            ConfigureGridColumns();
+            ConfiguredataGridResultColumns();
+            ConfiguredataGridDetailsColumns();
             dataBaseHandler = new DatabaseHandler();
         }
 
@@ -146,7 +148,7 @@ namespace SigcatminProAddin.View.Modulos
                 var vertex = coordinates[i];
                 var label = new TextBlock
                 {
-                    Text = $"{i}",
+                    Text = $"{i+1}",
                     FontSize = 10,
                     Foreground = Brushes.Black,
                     Background = Brushes.Transparent
@@ -158,29 +160,44 @@ namespace SigcatminProAddin.View.Modulos
                 PolygonCanvas.Children.Add(label);
             }
         }
-        private void test_Graficar_Coordenadas()
+        private void GraficarCoordenadas(DataTable dmrRecords)
         {
-            var utmCoordinates = new PointCollection
+            // Verificar que el DataTable no sea nulo y tenga datos
+            if (dmrRecords == null || dmrRecords.Rows.Count == 0)
             {
-                new Point(123000, 4560000),
-                new Point(123500, 4560000),
-                new Point(123500, 4560500),
-                new Point(123000, 4560500)
-            };
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No hay datos para graficar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            var utmCoordinates = new PointCollection();
+            
+            foreach (DataRow row in dmrRecords.Rows)
+            {
+                try
+                {
+                    // Extraer los valores de las columnas NORTE y ESTE
+                    double este = Convert.ToDouble(row["ESTE"]);
+                    double norte = Convert.ToDouble(row["NORTE"]);
+
+                    // Agregar el punto a la colección
+                    utmCoordinates.Add(new Point(este, norte));
+                }
+                catch (Exception ex)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Error al procesar las coordenadas: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+            }
             double canvasWidth = PolygonCanvas.ActualWidth;
             double canvasHeight = PolygonCanvas.ActualHeight;
 
             var scaledCoordinates = ScaleAndCenterCoordinates(utmCoordinates, canvasWidth, canvasHeight);
-
+            ImagenPoligono.Visibility = Visibility.Collapsed;
             DrawPolygon(scaledCoordinates);
         }
 
         private void btnSearch_Click(object sender, RoutedEventArgs e)
         {
-            test_Graficar_Coordenadas();
-            ImagenPoligono.Visibility = Visibility.Collapsed;
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
-        {
+            
             try
             {
                 string value = (string)cbxTypeConsult.SelectedValue.ToString();
@@ -211,13 +228,32 @@ namespace SigcatminProAddin.View.Modulos
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
-            cbp.Add(new ComboBoxPairs("Por Codigo", 1));
+            cbp.Add(new ComboBoxPairs("Por Código", 1));
             cbp.Add(new ComboBoxPairs("Por Nombre", 2));
 
             // Asignar la lista al ComboBox
             cbxTypeConsult.DisplayMemberPath = "_Key";
             cbxTypeConsult.SelectedValuePath = "_Value";
             cbxTypeConsult.ItemsSource = cbp;
+
+            // Seleccionar la primera opción por defecto
+            cbxTypeConsult.SelectedIndex = 0;
+        }
+
+        private void cbxSistema_Loaded(object sender, RoutedEventArgs e)
+        {
+            List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
+
+            cbp.Add(new ComboBoxPairs("WGS 84", 1));
+            cbp.Add(new ComboBoxPairs("PSAD 56", 2));
+
+            // Asignar la lista al ComboBox
+            cbxSistema.DisplayMemberPath = "_Key";
+            cbxSistema.SelectedValuePath = "_Value";
+            cbxSistema.ItemsSource = cbp;
+
+            // Seleccionar la primera opción por defecto
+            cbxSistema.SelectedIndex = 0;
         }
 
         public class ComboBoxPairs
@@ -232,7 +268,43 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-        private void ConfigureGridColumns()
+        private void ConfiguredataGridDetailsColumns()
+        {
+            var tableView = dataGridDetails.View as TableView;
+            dataGridDetails.Columns.Clear();
+            if (tableView != null)
+            {
+                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
+            }
+
+            GridColumn verticeColumn = new GridColumn
+            {
+                FieldName = "VERTICE",
+                Header = "Vértice",
+                Width = 40
+            };
+
+            GridColumn esteColumn = new GridColumn
+            {
+                FieldName = "ESTE",
+                Header = "Este",
+                Width = 120
+            };
+
+            GridColumn norteColumn = new GridColumn
+            {
+                FieldName = "NORTE",
+                Header = "Norte",
+                Width = 120
+            };
+
+            // Agregar columnas al GridControl
+            dataGridDetails.Columns.Add(verticeColumn);
+            dataGridDetails.Columns.Add(esteColumn);
+            dataGridDetails.Columns.Add(norteColumn);
+
+        }
+        private void ConfiguredataGridResultColumns()
         {
             // Obtener la vista principal del GridControl
             var tableView = dataGridResult.View as TableView;
@@ -315,5 +387,88 @@ namespace SigcatminProAddin.View.Modulos
             dataGridResult.Columns.Add(cartaColumn);
             dataGridResult.Columns.Add(hectareaColumn);
         }
+
+        public DataTable FilterColumns(DataTable originalTable, params string[] columnNames)
+        {
+            // Crear un nuevo DataTable para las columnas seleccionadas
+            DataTable filteredTable = new DataTable();
+
+            // Agregar las columnas seleccionadas al nuevo DataTable
+            foreach (string columnName in columnNames)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    filteredTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+                else
+                {
+                    throw new ArgumentException($"La columna '{columnName}' no existe en el DataTable original.");
+                }
+            }
+
+            // Copiar filas con los valores de las columnas seleccionadas
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = filteredTable.NewRow();
+                foreach (string columnName in columnNames)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+                filteredTable.Rows.Add(newRow);
+            }
+
+            return filteredTable;
+        }
+
+        private DataTable ObtenerCoordenadas(string codigovalue, int datum)
+        {
+            DataTable filteredTable;
+            string[] requiredColumns = { "CD_NUMVER", "CD_COREST_E", "CD_CORNOR_E" };
+            var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigovalue);
+
+            if (datum == 2)
+            {            
+                requiredColumns = new string[]{ "CD_NUMVER", "CD_COREST", "CD_CORNOR"};
+            }
+            filteredTable = FilterColumns(dmrRecords, requiredColumns);
+            // Renombrar las columnas
+            filteredTable.Columns["CD_NUMVER"].ColumnName = "VERTICE";
+            filteredTable.Columns[requiredColumns[1]].ColumnName = "ESTE";
+            filteredTable.Columns[requiredColumns[2]].ColumnName = "NORTE";
+
+
+            return filteredTable;
+        }
+
+        private void dataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
+        {
+            var tableView = sender as TableView;
+            int currentDatum = (int)cbxSistema.SelectedValue;
+            if (tableView != null)
+            {
+                // Obtener el índice de la fila seleccionada
+                int focusedRowHandle = tableView.FocusedRowHandle;
+
+                if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
+                {
+                    // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
+                    string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+
+                    // Mostrar el valor obtenido
+                    System.Windows.MessageBox.Show($"Valor de CODIGO: {codigoValue}", "Información de la Fila");
+
+                    // Llamar a funciones adicionales con el valor seleccionado
+                    var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
+                    dataGridDetails.ItemsSource = dmrRecords.DefaultView;
+                    GraficarCoordenadas(dmrRecords);
+                }
+                else
+                {
+                    System.Windows.MessageBox.Show("No hay ninguna fila seleccionada.", "Error");
+                }
+            }
+        }
+
+        
     }
 }
