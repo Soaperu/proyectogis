@@ -16,6 +16,7 @@ using SigcatminProAddin.View.Constants;
 using SigcatminProAddin.View.Contenedor;
 using static DatabaseConnector.DatabaseConnection;
 using DatabaseConnector;
+using System.Data;
 
 namespace SigcatminProAddin.View.Login
 {

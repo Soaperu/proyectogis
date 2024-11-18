@@ -70,7 +70,7 @@
                        HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
                       x:Name="cbxTypeConsult" Width="250"
-                      Foreground="{DynamicResource Esri_TextMenuBrush}" Height="20" Padding="0,3,0,3"/>
+                       Height="20" Padding="0,3,0,3" Loaded="cbxTypeConsult_Loaded"/>
             <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10"
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
             <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
@@ -79,8 +79,8 @@
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Left" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
-                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Top" 
-                    VerticalContentAlignment="Center" x:Name="btnSearch" Padding="0,0,0,0" Margin="30,8,0,0" Click="btnSearch_Click" />
+                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                    VerticalContentAlignment="Center" x:Name="btnSearch" Padding="0,0,0,0" Click="btnSearch_Click" />
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">

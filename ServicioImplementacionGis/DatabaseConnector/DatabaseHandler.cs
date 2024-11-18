@@ -107,7 +107,7 @@ namespace DatabaseConnector
                 catch (Exception ex)
                 {
                     // Maneje excepciones generales
-                    throw new ApplicationException("Error executing the stored procedure", ex);
+                    throw new ApplicationException("Error al ejecutar el procedimiento almacenado.", ex);
                 }
             }
         }
@@ -768,5 +768,55 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
+
+        //*----------------------*
+
+
+
+
+        ///Metodos aun no migrados
+
+
+
+
+        //*----------------------*
+
+        public string CountRecords(string type, string search) // FT_Cuenta_Registro
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_CuentaRegistros;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2, 13) { Value = search }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+        //*----------------------*
+
+
+
+
+        ///Metodos aun no migrados
+
+
+
+
+        //*----------------------*
+
+        public DataTable GetUniqueDM(string code, int type) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DM_UNIQUE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+
+
     }
 }
