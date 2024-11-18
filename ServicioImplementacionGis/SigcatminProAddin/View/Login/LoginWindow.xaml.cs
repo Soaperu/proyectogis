@@ -37,7 +37,7 @@ namespace SigcatminProAddin.View.Login
             this.Close();
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
             string username = tbxUser.Text;
             string password = pwdPassword.Password;
