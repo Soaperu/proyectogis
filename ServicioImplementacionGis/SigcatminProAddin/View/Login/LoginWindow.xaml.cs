@@ -83,8 +83,8 @@ namespace SigcatminProAddin.View.Login
                 DataRow firstRow = infoUser.Rows[0];
                 GloblalVariables.currentUser = firstRow["USERNAME"].ToString();
 
-                _mainContainer = new MainContainer();
-                _mainContainer.Show();
+                //_mainContainer = new MainContainer();
+                //_mainContainer.Show();
                 //
                 //Task.Delay(1500);
                 StatesUtil.ActivateState(UIState.IsLogged);

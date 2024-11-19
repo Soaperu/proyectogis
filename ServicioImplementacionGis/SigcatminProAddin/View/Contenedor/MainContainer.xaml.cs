@@ -21,16 +21,28 @@ namespace SigcatminProAddin.View.Contenedor
     /// </summary>
     public partial class MainContainer : Window
     {
-        EvaluacionDM _EvaluacionDM;
+        //EvaluacionDM _EvaluacionDM;
         private MainViewModel _mainViewModel;
         private Dictionary<string, Page> _loadedModules;
+        private static MainContainer _instance;
         public MainContainer()
         {
             InitializeComponent();
             _mainViewModel = new MainViewModel(frameContainer);
             _loadedModules = new Dictionary<string, Page>();
-            _EvaluacionDM = new EvaluacionDM();
-            frameContainer.Navigate(_EvaluacionDM);
+            //_EvaluacionDM = new EvaluacionDM();
+            //frameContainer.Navigate(_EvaluacionDM);
+        }
+        public static MainContainer Instance
+        {
+            get
+            {
+                if (_instance == null || !_instance.IsVisible)
+                {
+                    _instance = new MainContainer();
+                }
+                return _instance;
+            }
         }
 
         private void frameContainer_Navigating(object sender, System.Windows.Navigation.NavigatingCancelEventArgs e)

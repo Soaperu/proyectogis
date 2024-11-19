@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 //using System.Windows.Controls;
 
 namespace SigcatminProAddin.View.Modulos
@@ -40,8 +41,9 @@ namespace SigcatminProAddin.View.Modulos
             UpdateCombo();
         }
 
-        public SelectorCategorias(SelectorModulos modulosComboBox = null)
+        public SelectorCategorias(SelectorModulos modulosComboBox)
         {
+            ModulosComboBox = modulosComboBox;
             UpdateCombo();
         }
 
@@ -51,15 +53,17 @@ namespace SigcatminProAddin.View.Modulos
 
         private void UpdateCombo()
         {
+            if (_isInitialized)
+                return;
             Clear();
             // TODO – customize this method to populate the combobox with your desired items  
             foreach (var categoria in ModuleConfiguration.CategoriasModulos)
             {
                 Add(new ComboBoxItem(categoria.Categoria));
             }
-            SelectedItem = ItemCollection.FirstOrDefault();
+            //SelectedItem = ItemCollection.FirstOrDefault();
             Enabled = true;
-
+            _isInitialized = true;
         }
 
         /// <summary>
@@ -75,17 +79,22 @@ namespace SigcatminProAddin.View.Modulos
             {
                 //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Categoría seleccionada: {item.Text}");
                 // Actualiza el ComboBox de módulos
-                //ModulosComboBox.UpdateModules(item.Text);
+                //ModulosComboBox?.UpdateModules(item.Text);
+                //SelectorModulos();
+                // Notifica al servicio que la categoría ha cambiado
+                ModuleSelectionService.CategoryChanged(item.Text);
             }
         }
 
     }
     internal class SelectorModulos : ComboBox
     {
+        private bool _isInitialized;
         public SelectorModulos()
         {
             // Inicialmente vacío, será actualizado según la categoría seleccionada.
             Clear();
+            ModuleSelectionService.OnCategorySelected += UpdateModules;
         }
 
         /// <summary>
@@ -95,74 +104,128 @@ namespace SigcatminProAddin.View.Modulos
         {
             Clear();
             var modulos = ModuleConfiguration.CategoriasModulos.FirstOrDefault(c => c.Categoria == categoria)?.Modulos;
-            if (modulos != null)
+            if (modulos != null && modulos.Any())
             {
                 foreach (var modulo in modulos)
                 {
                     Add(new ComboBoxItem(modulo.Nombre) );
                 }
                 // Notifica a la UI el cambio
-                if (ItemCollection.Count > 0)
-                {
-                    SelectedItem = ItemCollection[0]; // Seleccionar el primer elemento
-                }
-                else
-                {
-                    SelectedItem = null; // Si no hay elementos, limpia la selección
-                }
+                //if (ItemCollection.Count > 0)
+                //{
+                //    SelectedItem = ItemCollection[0]; // Seleccionar el primer elemento
+                //}
+                //else
+                //{
+                //    SelectedItem = null; // Si no hay elementos, limpia la selección
+                //}
+                //SelectedItem = ItemCollection.FirstOrDefault();
             }
             else
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"No se encontraron módulos para la categoría: {categoria}");
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"No se encontraron módulos para la categoría: {categoria}",
+                                                                  "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
                 SelectedItem = null; // Limpia la selección
             }
+            // Reiniciar la selección del módulo en el servicio
+            ModuleSelectionService.SelectedModule = null;
+        }
+        protected override void OnSelectionChange(ComboBoxItem item)
+        {
+            base.OnSelectionChange(item);
+
+            if (item != null && !string.IsNullOrEmpty(item.Text))
+            {
+                // Actualizar el módulo seleccionado en el servicio
+                ModuleSelectionService.SelectedModule = item.Text;
+            }
+            else
+            {
+                ModuleSelectionService.SelectedModule = null;
+            }
+        }
+        protected override void OnUpdate()
+        {
+            // Habilita o deshabilita el ComboBox dependiendo de si hay elementos
+            Enabled = ItemCollection.Any();
         }
     }
 
     internal class ConfirmationModule : Button
     {
         public SelectorModulos ModulosComboBox { get; set; }
-        public MainContainer Contenedor { get; set; } // Referencia al MainContainer
+        //public MainContainer Contenedor { get; set; } // Referencia al MainContainer
 
         protected override void OnClick()
         {
             base.OnClick();
-
-            if (ModulosComboBox?.SelectedItem is ComboBoxItem selectedItem && !string.IsNullOrEmpty(selectedItem.Text))
+            try
             {
-                // Buscar el módulo seleccionado en la configuración
-                var moduloSeleccionado = ModuleConfiguration.CategoriasModulos
-                    .SelectMany(c => c.Modulos)
-                    .FirstOrDefault(m => m.Nombre == selectedItem.Text);
+                // Obtener la instancia del SelectorModulos
+                //var modulosComboBox = FrameworkApplication.GetPlugInWrapper("SigcatminProAddin_View_Modulos_SelectorModulos") as SelectorModulos;
+                var selectedModuleName = ModuleSelectionService.SelectedModule;
 
-                if (moduloSeleccionado != null && Contenedor != null)
+                if (!string.IsNullOrEmpty(selectedModuleName))
                 {
-                    // Cargar la página asociada al módulo en el contenedor
-                    var page = PageManager.GetOrCreatePage(moduloSeleccionado.Pagina);
-                    Contenedor.LoadModule(moduloSeleccionado.Nombre, page);
+                    // Buscar el módulo seleccionado en la configuración
+                    var moduloSeleccionado = ModuleConfiguration.CategoriasModulos
+                        .SelectMany(c => c.Modulos)
+                        .FirstOrDefault(m => m.Nombre == selectedModuleName);
+
+                    if (moduloSeleccionado != null)
+                    {
+                        // Cargar la página asociada al módulo en el contenedor
+                        var page = PageManager.GetOrCreatePage(moduloSeleccionado.Pagina);
+                        var contenedor = MainContainer.Instance;
+                        contenedor.LoadModule(moduloSeleccionado.Nombre, page);
+                        if (!contenedor.IsVisible)
+                        {
+                            contenedor.Show();
+                        }
+                    }
+                    else
+                    {
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                            "No se encontró el módulo seleccionado.",
+                            "Error",
+                            System.Windows.MessageBoxButton.OK,
+                            System.Windows.MessageBoxImage.Warning
+                        );
+                    }
                 }
                 else
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                        "No se encontró el módulo seleccionado.",
-                        "Error",
+                        "Seleccione un módulo antes de continuar.",
+                        "Advertencia",
                         System.Windows.MessageBoxButton.OK,
                         System.Windows.MessageBoxImage.Warning
                     );
+                    //Contenedor = new MainContainer();
+                    //Contenedor.Show();
+                    //_mainContainer.Show();
                 }
             }
-            else
+            catch (Exception ex)
             {
-                //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
-                //    "Seleccione un módulo antes de continuar.",
-                //    "Advertencia",
-                //    System.Windows.MessageBoxButton.OK,
-                //    System.Windows.MessageBoxImage.Warning
-                //);
-                Contenedor = new MainContainer();
-                Contenedor.Show();
-                //_mainContainer.Show();
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    $"Ocurrió un error al intentar cargar el módulo: {ex.Message}",
+                    "Error",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
             }
         }
+    }
+    public static class ModuleSelectionService
+    {
+        public static event Action<string> OnCategorySelected;
+
+        public static void CategoryChanged(string categoria)
+        {
+            OnCategorySelected?.Invoke(categoria);
+        }
+        // Propiedad para almacenar el módulo seleccionado
+        public static string SelectedModule { get; set; }
     }
 }
