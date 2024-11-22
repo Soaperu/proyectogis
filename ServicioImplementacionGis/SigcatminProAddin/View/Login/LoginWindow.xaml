@@ -6,7 +6,7 @@
         xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
         xmlns:local="clr-namespace:SigcatminProAddin"
         mc:Ignorable="d"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterScreen" Background="#F3F3F3"
         Title="LoginWindow" Height="320" Width="550" ResizeMode="NoResize" WindowStyle="None" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
@@ -82,8 +82,8 @@
                      Height="25" 
                      TextAlignment="Center"
                      VerticalContentAlignment="Center"
-                     BorderBrush="White" BorderThickness="0"
-                     Cursor="IBeam" TextChanged="tbxUser_TextChanged" KeyDown="tbxUser_KeyDown">
+                     BorderBrush="White" BorderThickness="0" Background="#F3F3F3"
+                     Cursor="IBeam" TextChanged="tbxUser_TextChanged" KeyDown="tbxUser_KeyDown" SelectionBrush="#FFF3F3F3">
             </TextBox>
 
             <!--TextChanged="passwordView_TextChanged"/>-->
@@ -102,11 +102,11 @@
                      Text="" BorderThickness="0"
                      HorizontalContentAlignment="Center"
                      HorizontalAlignment="Stretch"
-                     IsHitTestVisible="False" 
+                     IsHitTestVisible="False" Background="#F3F3F3"
                      BorderBrush="White" TextChanged="tbxPasswordView_TextChanged"/>
 
             <PasswordBox Grid.Column="1" Grid.Row="2"
-                      BorderBrush="White"
+                      BorderBrush="White" Background="#F3F3F3"
                       Cursor="IBeam" Height="25" 
                       VerticalContentAlignment="Center"
                       HorizontalContentAlignment="Center"

@@ -14,13 +14,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using ArcGIS.Core.Events;
+using ArcGIS.Desktop.Internal.KnowledgeGraph.FFP;
+using ArcGIS.Desktop.Mapping;
+using ArcGIS.Desktop.Mapping.Events;
 using CommonUtilities;
+using CommonUtilities.ArcgisProUtils;
 using DatabaseConnector;
 using DevExpress.Data;
 using DevExpress.Internal.WinApi.Windows.UI.Notifications;
+using DevExpress.Xpf.Core.Native;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraExport.Helpers;
+using FlowDirection = System.Windows.FlowDirection;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -31,6 +39,7 @@ namespace SigcatminProAddin.View.Modulos
     {
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
+        bool sele_denu;
         public EvaluacionDM()
         {
             InitializeComponent();
@@ -45,17 +54,50 @@ namespace SigcatminProAddin.View.Modulos
         private void AddCheckBoxesToListBox()
         {
             // Lista de elementos para agregar al ListBox
-            string[] items = { "Capa 1", "Capa 2", "Capa 3", "Capa 4" };
+            //string[] items = { "Capa 1", "Capa 2", "Capa 3", "Capa 4" };
 
+            //// Agrega cada elemento como un CheckBox al ListBox
+            //foreach (var item in items)
+            //{
+            //    System.Windows.Controls.CheckBox checkBox = new System.Windows.Controls.CheckBox
+            //    {
+            //        Content = item,
+            //        Margin = new Thickness(3),
+            //        Style = (Style)FindResource("Esri_CheckboxToggleSwitch")
+            //    };
+            //    listLayers.Items.Add(checkBox);
+            //}
+            string[] items = {
+                                "Caram",
+                                "Catastro Forestal",
+                                "Predio Rural",
+                                "Limite Departamental",
+                                "Limite Provincial",
+                                "Limite Distrital",
+                                "Centros Poblados",
+                                "Red Hidrografica",
+                                "Red Vial"
+                            };  
+            
             // Agrega cada elemento como un CheckBox al ListBox
-            foreach (var item in items)
+            for (int i = 0; i < items.Length; i++)
             {
-                System.Windows.Controls.CheckBox checkBox = new System.Windows.Controls.CheckBox
+                var checkBox = new System.Windows.Controls.CheckBox
                 {
-                    Content = item,
-                    Margin = new Thickness(3),
-                    Style = (Style)FindResource("Esri_CheckboxToggleSwitch")
+                    Content = items[i],
+                    Margin = new Thickness(2),
+                    Style = (Style)FindResource("Esri_CheckboxToggleSwitch"),
+
+                    FlowDirection = FlowDirection.RightToLeft,
+                    IsThreeState = true // Permite el estado Indeterminado
                 };
+
+                // Establece el estado Indeterminado para los dos primeros elementos
+                if (i == 0 || i == 1)
+                {
+                    checkBox.IsChecked = true; // Estado Indeterminado
+                }
+
                 listLayers.Items.Add(checkBox);
             }
         }
@@ -227,6 +269,7 @@ namespace SigcatminProAddin.View.Modulos
                                                                         MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
+                lblCountRecords.Content = $"Resultados de Búsqueda: {countRecords.ToString()}";
                 var dmrRecords = dataBaseHandler.GetUniqueDM(tbxValue.Text, (int)cbxTypeConsult.SelectedValue);
                 calculatedIndex(dataGridResult, records, "INDEX");
                 dataGridResult.ItemsSource = dmrRecords.DefaultView;
@@ -283,11 +326,24 @@ namespace SigcatminProAddin.View.Modulos
                 _Key = _key;
                 _Value = _value;
             }
+
+        }
+        public class ComboBoxPairsString
+        {
+            public string _Key { get; set; }
+            public string _Value { get; set; }
+
+            public ComboBoxPairsString(string _key, string _value)
+            {
+                _Key = _key;
+                _Value = _value;
+            }
+
         }
 
         private void ConfiguredataGridDetailsColumns()
         {
-            var tableView = dataGridDetails.View as TableView;
+            var tableView = dataGridDetails.View as DevExpress.Xpf.Grid.TableView;
             dataGridDetails.Columns.Clear();
             if (tableView != null)
             {
@@ -325,7 +381,7 @@ namespace SigcatminProAddin.View.Modulos
         private void ConfiguredataGridResultColumns()
         {
             // Obtener la vista principal del GridControl
-            var tableView = dataGridResult.View as TableView;
+            var tableView = dataGridResult.View as DevExpress.Xpf.Grid.TableView;
 
             // Limpiar columnas existentes
             dataGridResult.Columns.Clear();
@@ -345,7 +401,7 @@ namespace SigcatminProAddin.View.Modulos
                 UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
                 AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
                 VisibleIndex = 0, // Mostrar como la primera columna
-                Width = 25
+                Width = 30
             };
            
             GridColumn codigoColumn = new GridColumn
@@ -365,7 +421,7 @@ namespace SigcatminProAddin.View.Modulos
             GridColumn pe_vigcatColumn = new GridColumn
             {
                 FieldName = "PE_VIGCAT",
-                Header = "PE_VIGCAT",
+                Header = "Estado Graf",
                 Width = 70
             };
 
@@ -481,7 +537,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void dataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
-            var tableView = sender as TableView;
+            var tableView = sender as DevExpress.Xpf.Grid.TableView;
             int currentDatum = (int)cbxSistema.SelectedValue;
             if (tableView != null)
             {
@@ -530,6 +586,86 @@ namespace SigcatminProAddin.View.Modulos
             {
                 table.SetCellValue(newRowHandle, columnName, i);
             }
+        }
+
+        private void cbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            tbxValue.Clear();
+        }
+
+        private async void btnGraficar_Click(object sender, RoutedEventArgs e)
+        {
+            if (chkGraficarDmY.IsChecked == true)
+            {
+                sele_denu = true;
+            }
+            else
+            {
+                sele_denu = false;
+            }
+            List<string> listMaps = new List<string> { "Catastro Minero", "Demarcación Politica", "Carta IGN"};
+            await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapsAsync(listMaps);
+            int focusedRowHandle= dataGridResult.GetSelectedRowHandles()[0];
+            string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+            string stateGraphic = dataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
+            string zoneDm = dataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
+            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+            var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
+            // Obtener el mapa activo
+            //Map map = MapView.Active.Map;
+            // Cargar las capas necesarias
+            // Crear el cargador de Feature Classes
+            //var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+            //await featureClassLoader.LoadFeatureClassAsync("GPO_CMI_CATASTRO_MINERO_WGS_17", true);
+
+        }
+
+        private void cbxZona_Loaded(object sender, RoutedEventArgs e)
+        {
+            List<ComboBoxPairsString> cbp = new List<ComboBoxPairsString>();
+
+            cbp.Add(new ComboBoxPairsString("17", "17"));
+            cbp.Add(new ComboBoxPairsString("18", "18"));
+            cbp.Add(new ComboBoxPairsString("19", "19"));
+
+            // Asignar la lista al ComboBox
+            cbxSistema.DisplayMemberPath = "_Key";
+            cbxSistema.SelectedValuePath = "_Value";
+            cbxSistema.ItemsSource = cbp;
+
+            // Seleccionar la primera opción por defecto
+            //cbxSistema.SelectedIndex = 0;
+        }
+        private SubscriptionToken _eventToken = null;
+        public void AddLayersToMapViewActive()
+        {
+            if (MapView.Active == null)
+            {
+                // Suscribirse al evento DrawCompleteEvent
+                _eventToken = DrawCompleteEvent.Subscribe(OnDrawComplete);
+            }
+            else
+            {
+                // MapView.Active está disponible, llamar directamente al método
+                //_ = AddLayersBase(lyrBase, lyrCartaIGN);
+                //EnableRadioButtonsStartingWithRbtn();
+            }
+        }
+        private void OnDrawComplete(MapViewEventArgs args)
+        {
+            // Desuscribirse del evento
+            if (_eventToken != null)
+            {
+                DrawCompleteEvent.Unsubscribe(_eventToken);
+                _eventToken = null;
+            }
+            // Llamar al método para agregar capas una vez que MapView.Active está disponible
+            //_ = AddLayersBase(lyrBase, lyrCartaIGN);
+            //EnableRadioButtonsStartingWithRbtn();
         }
     }
 }

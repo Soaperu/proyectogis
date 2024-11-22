@@ -54,7 +54,8 @@
         <Label Grid.Row="1" Content="Filtros de Búsqueda" Foreground="#FF696969" Padding="0,0,0,3"
                FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
         <Label Grid.Row="3" Content="Resultados de Búsqueda" Foreground="#FF696969"
-               FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" Padding="0,0,0,3"/>
+               FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" 
+               HorizontalAlignment="Stretch" Padding="0,0,0,3" x:Name="lblCountRecords"/>
         <!-- Panel de Filtros de Búsqueda -->
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch">
@@ -70,7 +71,7 @@
                        HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
                       x:Name="cbxTypeConsult" Width="250"
-                       Height="20" Padding="0,3,0,3" Loaded="cbxTypeConsult_Loaded"/>
+                       Height="20" Padding="0,3,0,3" Loaded="cbxTypeConsult_Loaded" SelectionChanged="cbxTypeConsult_SelectionChanged"/>
             <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10"
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
             <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
@@ -114,7 +115,7 @@
                           x:Name="tbxRadio" VerticalContentAlignment="Center"/>
                 <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
-                          VerticalAlignment="Center"  x:Name="cbxZona" />
+                          VerticalAlignment="Center"  x:Name="cbxZona" Loaded="cbxZona_Loaded" />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
                           VerticalAlignment="Center" x:Name="cbxSistema" Loaded="cbxSistema_Loaded" />
@@ -230,7 +231,7 @@
                 Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="btnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0" />
+                VerticalContentAlignment="Center" x:Name="btnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="btnGraficar_Click" />
         </Grid>
 
     </Grid>
