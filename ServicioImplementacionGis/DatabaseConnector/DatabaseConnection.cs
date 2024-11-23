@@ -4,7 +4,11 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Oracle.ManagedDataAccess.Client;
+using ArcGIS.Core.Data;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+//using ArcGIS.Desktop.Framework.Dialogs;
 
 namespace DatabaseConnector
 {
@@ -50,10 +54,48 @@ namespace DatabaseConnector
             }
         }
     }
+
+    public class SdeConnectionGIS
+    {
+        public async Task<Geodatabase> ConnectToOracleGeodatabaseAsync(string instance, string user, string password, string version = "sde.DEFAULT")
+        {
+            Geodatabase geodatabase = null;
+
+            try
+            {
+                await QueuedTask.Run(() =>
+                {
+                    // Configurar las propiedades de conexión
+                    var connectionProperties = new DatabaseConnectionProperties(EnterpriseDatabaseType.Oracle)
+                    {
+                        AuthenticationMode = AuthenticationMode.DBMS,
+                        Instance = instance,
+                        User = user,
+                        Password = password,
+                        Version = version
+                    };
+
+                    // Crear la conexión a la geodatabase
+                    geodatabase = new Geodatabase(connectionProperties);
+                });
+            }
+            catch (Exception ex)
+            {
+                // Manejo de la excepción
+                System.Diagnostics.Debug.WriteLine($"Error al conectar a la geodatabase: {ex.Message}"); ;
+                throw; // Re-l.anzar la excepción para manejarla en niveles superiores si es necesario
+            }
+
+            return geodatabase;
+        }
+    }
+
     public static class AppConfig
     {
         public static string userName = "";
         public static string password = "";
         public static string fullUserName = "";
+        public static string serviceNameGis = "BDGEOCAT";
+        public static string serviceNameOra = "ORACLE9I";
     }
 }

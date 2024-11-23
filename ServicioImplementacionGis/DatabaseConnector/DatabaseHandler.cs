@@ -768,18 +768,147 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
+        public string EvaluateGISAreas(string action, string cgCode, string format, string evalCode, string area, string ieCode, string hectares, string type, string user) // FT_SG_D_AREAS_EVALGIS
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SG_D_AREAS_EVALGIS1";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_ACCION", OracleDbType.Varchar2, 3) { Value = action },
+                new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = cgCode },
+                new OracleParameter("V_EG_FORMAT", OracleDbType.Varchar2, 2) { Value = format },
+                new OracleParameter("V_CG_CODEVA", OracleDbType.Varchar2, 13) { Value = evalCode },
+                new OracleParameter("V_AG_AREA", OracleDbType.Varchar2, 13) { Value = area },
+                new OracleParameter("V_IE_CODIGO", OracleDbType.Varchar2, 13) { Value = ieCode },
+                new OracleParameter("V_AG_HECTAR", OracleDbType.Varchar2, 20) { Value = hectares },
+                new OracleParameter("V_EG_TIPO", OracleDbType.Varchar2, 13) { Value = type },
+                new OracleParameter("V_USLOGUSE", OracleDbType.Varchar2, 32) { Value = user }
+            };
 
-        //*----------------------*
+            return ExecuteScalar(storedProcedure, parameters);
+        }
 
+        public string EvaluationGISCoordinates1(string action, string cgCode, string format, string evalCode, string area, string vertex, string ieCode, string east, string north, string user, string value) // FT_SG_D_COORD_EVALGIS1
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SG_D_COORD_EVALGIS_mod";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_ACCION", OracleDbType.Varchar2, 3) { Value = action },
+                new OracleParameter("V_CGCODIGO", OracleDbType.Varchar2, 13) { Value = cgCode },
+                new OracleParameter("V_EG_FORMAT", OracleDbType.Varchar2, 2) { Value = format },
+                new OracleParameter("V_CG_CODEVA", OracleDbType.Varchar2, 15) { Value = evalCode },
+                new OracleParameter("V_AG_AREA", OracleDbType.Varchar2, 13) { Value = area },
+                new OracleParameter("V_NU_ORDEN", OracleDbType.Varchar2, 10) { Value = vertex },
+                new OracleParameter("V_IE_CODIGO", OracleDbType.Varchar2, 10) { Value = ieCode },
+                new OracleParameter("V_CV_ESTE", OracleDbType.Clob, 4000000) { Value = east },
+                new OracleParameter("V_CV_NORTE", OracleDbType.Clob, 4000000) { Value = north },
+                new OracleParameter("V_USLOGUSE", OracleDbType.Varchar2, 32) { Value = user },
+                new OracleParameter("V_AG_HECTAR", OracleDbType.Clob, 4000000) { Value = value }
+            };
 
+            return ExecuteScalar(storedProcedure, parameters);
+        }
 
+        public string EvaluationGISCoordinates(string action, string cgCode, string format, string evalCode, string area, string numVertex, string ieCode, string east, string north, string hectares, string user) // FT_SG_D_COORD_EVALGIS
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SG_D_COORD_EVALGIS_mod";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_ACCION", OracleDbType.Varchar2, 3) { Value = action },
+                new OracleParameter("V_CGCODIGO", OracleDbType.Varchar2, 13) { Value = cgCode },
+                new OracleParameter("V_EG_FORMAT", OracleDbType.Varchar2, 2) { Value = format },
+                new OracleParameter("V_CG_CODEVA", OracleDbType.Varchar2, 15) { Value = evalCode },
+                new OracleParameter("V_AG_AREA", OracleDbType.Varchar2, 10) { Value = area },
+                new OracleParameter("V_CV_NUMVER", OracleDbType.Varchar2, 10) { Value = numVertex },
+                new OracleParameter("V_IE_CODIGO", OracleDbType.Varchar2, 10) { Value = ieCode },
+                new OracleParameter("V_CV_ESTE", OracleDbType.Clob, 4000000) { Value = east },
+                new OracleParameter("V_CV_NORTE", OracleDbType.Clob, 4000000) { Value = north },
+                new OracleParameter("V_USLOGUSE", OracleDbType.Varchar2, 32) { Value = user },
+                new OracleParameter("V_AG_HECTAR", OracleDbType.Varchar2, 10) { Value = hectares }
+            };
 
-        ///Metodos aun no migrados
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+        public DataTable GetSimulationGroupReport(string type, string identity) // FT_REPO_PETSIM_LD
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_REPO_GRUPO_DM_SIMUL_LD";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("TIPO", OracleDbType.Varchar2, 4) { Value = type },
+                new OracleParameter("IDENTI", OracleDbType.Varchar2, 20) { Value = identity }
+            };
 
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
+        public DataTable GetSimulationGroups() // P_SEL_DMXHAGRSIMUL
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DMXHAGRSIMUL";
+            var parameters = new OracleParameter[] { };
 
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public string RegisterGIS(string type, string option) // FT_Registro
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_REGISTRA_GCM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 6) { Value = type },
+                new OracleParameter("v_AG_OPCION", OracleDbType.Varchar2, 500) { Value = option }
+            };
 
-        //*----------------------*
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+        public string VerifySimulation(string simulationDate) // FT_VERIFICA_SIMU
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_VERIFICA_SIMU";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_FECHA", OracleDbType.Varchar2, 10) { Value = simulationDate }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+        public string UpdateSimulationGroupDate(string simulationDate) // FT_UPD_DMXGRSIMUL
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_UPD_SG_D_DMXGRSIMUL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_FECHA", OracleDbType.Varchar2, 10) { Value = simulationDate }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+        public DataTable SelectByZone(string ubigeo) // FT_Selecciona_x_Zona
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_UBIGEO_ZONA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_UBIGEO", OracleDbType.Varchar2, 6) { Value = ubigeo }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable GetUserMenu(string profile, string user) // F_Obtiene_Menu_Usuario_1
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_MENU_DM_2";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_USUARIO", OracleDbType.Varchar2, 32) { Value = user },
+                new OracleParameter("V_PERFIL", OracleDbType.Varchar2, 3) { Value = profile }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable GetUserProfile(string user) // F_Obtiene_Perfil_Usuario
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_PERFIL_DM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_USUARIO", OracleDbType.Varchar2, 32) { Value = user }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
         public string CountRecords(string type, string search) // FT_Cuenta_Registro
         {
@@ -792,6 +921,58 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
+        public string ManageObservationCartaDM(string code, string format, string evalCode, string indicator, string userFor, string description, string logUser, string option) // FT_Man_Observacion_CartaDM_desa
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTA_IGN";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
+                new OracleParameter("V_CG_FORMAT", OracleDbType.Varchar2, 13) { Value = format },
+                new OracleParameter("V_CG_CODEVA", OracleDbType.Varchar2, 13) { Value = evalCode },
+                new OracleParameter("V_ET_INDICA", OracleDbType.Varchar2, 1000) { Value = indicator },
+                new OracleParameter("V_ET_USUFOR", OracleDbType.Varchar2, 8) { Value = userFor },
+                new OracleParameter("V_DESCRI", OracleDbType.Varchar2, 1000) { Value = description },
+                new OracleParameter("V_US_LOGUSE", OracleDbType.Varchar2, 8) { Value = logUser },
+                new OracleParameter("V_OPCION", OracleDbType.Varchar2, 7) { Value = option }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+        public DataTable GetOfficialCarta(string field, string data, string datum) // F_Obtiene_Carta_oficial
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CAMPO", OracleDbType.Varchar2, 12) { Value = field },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 40) { Value = data },
+                new OracleParameter("V_DATUM", OracleDbType.Varchar2, 40) { Value = datum }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable GetDMData(string code) // F_Obtiene_Datos_DM
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable GetObservationDescriptionCarta(string code) // F_Obtiene_Datos_Obs_carta
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_VERIFICA_DESCRI_OBS_CARTA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+
+
         //*----------------------*
 
 
@@ -821,12 +1002,35 @@ namespace DatabaseConnector
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";
             var parameters = new OracleParameter[]
             {
-        new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
             };
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        //*----------------------*
+
+
+
+
+        ///Metodos aun no migrados
+
+
+
+
+        //*----------------------*
+
+
+        public string VerifyDatumDM(string code) // FT_verifica_datumdm
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_verifica_datumdm";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 32) { Value = code }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
 
 
     }

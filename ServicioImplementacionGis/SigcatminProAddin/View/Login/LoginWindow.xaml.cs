@@ -82,8 +82,11 @@ namespace SigcatminProAddin.View.Login
                 dataBaseHandler = new DatabaseHandler();
                 var infoUser = dataBaseHandler.VerifyUser(username, password);
                 DataRow firstRow = infoUser.Rows[0];
-                AppConfig.fullUserName = firstRow["USERNAME"].ToString();
-
+                AppConfig.fullUserName = firstRow["USERNAME"].ToString();                
+                var tableprofileUser = dataBaseHandler.GetUserProfile(username);
+                string profileUser = dataBaseHandler.GetUserProfile(username).Rows[0]["PERFIL"].ToString();
+                int intprofileUser = int.Parse(profileUser);
+                var listModules = dataBaseHandler.GetUserMenu(profileUser,username);
                 //_mainContainer = new MainContainer();
                 //_mainContainer.Show();
                 //
