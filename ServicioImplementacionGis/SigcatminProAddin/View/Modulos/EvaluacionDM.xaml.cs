@@ -31,6 +31,7 @@ using DevExpress.XtraExport.Helpers;
 using SigcatminProAddin.Utils.UIUtils;
 using FlowDirection = System.Windows.FlowDirection;
 using System.Text.RegularExpressions;
+using SigcatminProAddin.Models;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -562,11 +563,51 @@ namespace SigcatminProAddin.View.Modulos
             return filteredTable;
         }
 
+        private ExtentModel ObtenerExtent(string codigoValue, int datum)
+        {
+            // Obtener las coordenadas usando la función ObtenerCoordenadas
+            DataTable coordenadasTable = ObtenerCoordenadas(codigoValue, datum);
+
+            // Asegurarse de que la tabla contiene filas
+            if (coordenadasTable.Rows.Count == 0)
+            {
+                throw new Exception("No se encontraron coordenadas para calcular el extent.");
+            }
+
+            // Inicializar las variables para almacenar los valores extremos
+            int xmin = int.MaxValue;
+            int xmax = int.MinValue;
+            int ymin = int.MaxValue;
+            int ymax = int.MinValue;
+
+            // Iterar sobre las filas para calcular los valores extremos
+            foreach (DataRow row in coordenadasTable.Rows)
+            {
+                int este = Convert.ToInt32(row["ESTE"]);
+                int norte = Convert.ToInt32(row["NORTE"]);
+
+                if (este < xmin) xmin = este;
+                if (este > xmax) xmax = este;
+                if (norte < ymin) ymin = norte;
+                if (norte > ymax) ymax = norte;
+            }
+
+            // Crear el objeto ExtentModel con los valores calculados
+            ExtentModel extent = new ExtentModel
+            {
+                xmin = xmin,
+                xmax = xmax,
+                ymin = ymin,
+                ymax = ymax
+            };
+
+            return extent;
+        }
+
         private void dataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
             //var tableView = sender as TableView;
             var tableView = sender as DevExpress.Xpf.Grid.TableView;
-            int currentDatum = (int)cbxSistema.SelectedValue;
             if (tableView != null && tableView.Grid.VisibleRowCount>0)
             {
                 // Obtener el índice de la fila seleccionada
