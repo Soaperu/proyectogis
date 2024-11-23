@@ -9,6 +9,7 @@ using ArcGIS.Desktop.Mapping;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArcGIS.Desktop.Core;
+using ArcGIS.Desktop.Framework.Contracts;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -47,6 +48,40 @@ namespace CommonUtilities.ArcgisProUtils
                 //maps.Add(map);
             }
             return maps;
+        }
+
+        public static async Task<Map> FindMapByNameAsync(string mapName)
+        {
+            return await QueuedTask.Run(() =>
+            {
+                // Obtiene todos los mapas del proyecto actual
+                var allMaps = Project.Current.GetItems<MapProjectItem>();
+
+                // Busca el mapa con el nombre especificado
+                var mapItem = allMaps.FirstOrDefault(m => m.Name.Equals(mapName, StringComparison.OrdinalIgnoreCase));
+
+                // Si se encuentra, se devuelve como objeto Map
+                return mapItem != null ? mapItem.GetMap() : null;
+            });
+        }
+
+        public static async Task ActivateMapAsync(Map map)
+        {
+            await QueuedTask.Run(() =>
+            {
+                var mapProjItem = Project.Current.GetItems<MapProjectItem>().FirstOrDefault(mpi => mpi.Name == map.Name);
+            if (mapProjItem != null)
+            {
+                // Activa el mapa en la vista
+                //MappingModule.ActiveMapView = MapView.Active;
+                var mapPane = ProApp.Panes.OfType<IMapPane>().FirstOrDefault(mPane => (mPane as Pane).ContentID == mapProjItem.Path);
+                if (mapPane != null)
+                {
+                    var pane = mapPane as Pane;
+                    pane.Activate();
+                }
+            }
+        });
         }
     }
 }

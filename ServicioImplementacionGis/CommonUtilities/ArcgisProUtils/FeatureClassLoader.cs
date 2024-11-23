@@ -55,7 +55,7 @@ namespace CommonUtilities.ArcgisProUtils
                 await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
-                    var featureClassInfo = FeatureClassMappings.FirstOrDefault(f => f.FeatureClassName.Equals(featureClassName, StringComparison.OrdinalIgnoreCase));
+                    var featureClassInfo = FeatureClassMappings?.FirstOrDefault(f => string.Equals(f.FeatureClassName, featureClassName, StringComparison.OrdinalIgnoreCase));
 
                     if (featureClassInfo == null)
                     {

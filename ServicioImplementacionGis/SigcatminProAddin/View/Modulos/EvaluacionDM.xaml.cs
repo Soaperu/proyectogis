@@ -29,6 +29,7 @@ using DevExpress.Xpf.Core.Native;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraExport.Helpers;
 using FlowDirection = System.Windows.FlowDirection;
+using System.Text.RegularExpressions;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -593,37 +594,6 @@ namespace SigcatminProAddin.View.Modulos
             tbxValue.Clear();
         }
 
-        private async void btnGraficar_Click(object sender, RoutedEventArgs e)
-        {
-            if (chkGraficarDmY.IsChecked == true)
-            {
-                sele_denu = true;
-            }
-            else
-            {
-                sele_denu = false;
-            }
-            List<string> listMaps = new List<string> { "Catastro Minero", "Demarcación Politica", "Carta IGN"};
-            await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapsAsync(listMaps);
-            int focusedRowHandle= dataGridResult.GetSelectedRowHandles()[0];
-            string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-            string stateGraphic = dataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
-            string zoneDm = dataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
-            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
-            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
-                                                                                        , AppConfig.userName
-                                                                                        , AppConfig.password);
-            var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
-            // Obtener el mapa activo
-            //Map map = MapView.Active.Map;
-            // Cargar las capas necesarias
-            // Crear el cargador de Feature Classes
-            //var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
-
-            //await featureClassLoader.LoadFeatureClassAsync("GPO_CMI_CATASTRO_MINERO_WGS_17", true);
-
-        }
-
         private void cbxZona_Loaded(object sender, RoutedEventArgs e)
         {
             List<ComboBoxPairsString> cbp = new List<ComboBoxPairsString>();
@@ -640,8 +610,44 @@ namespace SigcatminProAddin.View.Modulos
             // Seleccionar la primera opción por defecto
             //cbxSistema.SelectedIndex = 0;
         }
+
+        private async void btnGraficar_Click(object sender, RoutedEventArgs e)
+        {
+            if (chkGraficarDmY.IsChecked == true)
+            {
+                sele_denu = true;
+            }
+            else
+            {
+                sele_denu = false;
+            }
+            //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
+            await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
+            int focusedRowHandle= dataGridResult.GetSelectedRowHandles()[0];
+            string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+            string stateGraphic = dataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
+            string zoneDm = dataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
+            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+            var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
+            // Obtener el mapa Catastro
+
+            //await LoadLayersToMapViewActive();
+            Map map = await EnsureMapViewIsActiveAsync();
+            // Cargar las capas necesarias
+            // Crear el cargador de Feature Classes
+            //Map map = MapView.Active.Map;
+            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+            await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_17", true);
+            await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_18", true);
+
+        }
+                
         private SubscriptionToken _eventToken = null;
-        public void AddLayersToMapViewActive()
+        public async Task LoadLayersToMapViewActive()
         {
             if (MapView.Active == null)
             {
@@ -653,9 +659,11 @@ namespace SigcatminProAddin.View.Modulos
                 // MapView.Active está disponible, llamar directamente al método
                 //_ = AddLayersBase(lyrBase, lyrCartaIGN);
                 //EnableRadioButtonsStartingWithRbtn();
+                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
             }
         }
-        private void OnDrawComplete(MapViewEventArgs args)
+        private async void OnDrawComplete(MapViewEventArgs args)
         {
             // Desuscribirse del evento
             if (_eventToken != null)
@@ -664,8 +672,62 @@ namespace SigcatminProAddin.View.Modulos
                 _eventToken = null;
             }
             // Llamar al método para agregar capas una vez que MapView.Active está disponible
-            //_ = AddLayersBase(lyrBase, lyrCartaIGN);
-            //EnableRadioButtonsStartingWithRbtn();
+            Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+            await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+
+        }
+
+        private async Task<Map> EnsureMapViewIsActiveAsync()
+        {
+            if (MapView.Active != null)
+            {
+                return MapView.Active.Map;
+            }
+
+            // Esperar hasta que MapView.Active esté disponible
+            TaskCompletionSource<Map> tcs = new TaskCompletionSource<Map>();
+
+            SubscriptionToken eventToken = null;
+            eventToken = DrawCompleteEvent.Subscribe(async args =>
+            {
+                // Desuscribirse del evento
+                // Desuscribirse del evento
+                if (eventToken != null)
+                {
+                    DrawCompleteEvent.Unsubscribe(eventToken);
+                }
+                // Activar el mapa "CATASTRO MINERO"
+                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+
+                // Completar la tarea con el mapa activo
+                tcs.SetResult(MapView.Active?.Map);
+            });
+
+            // Esperar hasta que el evento se complete
+            return await tcs.Task;
+        }
+
+        private static readonly Regex NumberRegex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
+        private void tbxRadio_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // Agregar el nuevo texto al existente en el TextBox
+            string currentText = (sender as System.Windows.Controls.TextBox)?.Text ?? string.Empty;
+            string newText = currentText.Insert(
+                (sender as System.Windows.Controls.TextBox)?.SelectionStart ?? 0, e.Text);
+
+            // Validar si el texto es un número válido
+            e.Handled = !NumberRegex.IsMatch(newText);
+        }
+
+        private void tbxRadio_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            // Permitir teclas específicas (como Backspace, Delete, flechas, etc.)
+            if (e.Key == Key.Back || e.Key == Key.Delete || e.Key == Key.Tab ||
+                e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Enter || e.Key == Key.Escape)
+            {
+                e.Handled = false;
+            }
         }
     }
 }

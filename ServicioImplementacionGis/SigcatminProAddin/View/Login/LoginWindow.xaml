@@ -75,12 +75,12 @@
                     Grid.Row="2"/>
             <TextBox x:Name="tbxUser"
                      Grid.Column="1" 
-                     HorizontalAlignment="Stretch" 
+                     HorizontalAlignment="Stretch"
                      TextWrapping="Wrap"
-                     Text="" 
+                     Text="" Style="{DynamicResource Triggers}"
                      VerticalAlignment="Center"
-                     Height="25" 
-                     TextAlignment="Center"
+                     Height="25"
+                     TextAlignment="Center" 
                      VerticalContentAlignment="Center"
                      BorderBrush="White" BorderThickness="0" Background="#F3F3F3"
                      Cursor="IBeam" TextChanged="tbxUser_TextChanged" KeyDown="tbxUser_KeyDown" SelectionBrush="#FFF3F3F3">
