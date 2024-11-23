@@ -54,5 +54,6 @@ namespace DatabaseConnector
     {
         public static string userName = "";
         public static string password = "";
+        public static string fullUserName = "";
     }
 }

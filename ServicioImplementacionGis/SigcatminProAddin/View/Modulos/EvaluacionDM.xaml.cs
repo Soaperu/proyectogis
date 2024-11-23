@@ -21,6 +21,7 @@ using DevExpress.Data;
 using DevExpress.Internal.WinApi.Windows.UI.Notifications;
 using DevExpress.Xpf.Grid;
 using DevExpress.XtraExport.Helpers;
+using SigcatminProAddin.Utils.UIUtils;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -62,7 +63,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CurrentUser()
         {
-            currentUser.Text = GloblalVariables.ToTitleCase(GloblalVariables.currentUser);
+            currentUser.Text = GloblalVariables.ToTitleCase(AppConfig.fullUserName);
         }
 
         //private void cbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -123,6 +124,17 @@ namespace SigcatminProAddin.View.Modulos
             return scaledCoordinates;
         }
 
+        private void ClearCanvas()
+        {
+            PolygonCanvas.Children.Clear();
+        }
+
+        private void ClearDatagrids()
+        {
+            dataGridResult.ItemsSource= null;
+            dataGridDetails.ItemsSource= null;
+        }
+
 
         /// <summary>
         /// Dibuja un polígono en el Canvas.
@@ -139,8 +151,6 @@ namespace SigcatminProAddin.View.Modulos
                 Points = coordinates
             };
 
-            // Limpiar el Canvas
-            PolygonCanvas.Children.Clear();
             // Agregar el polígono al Canvas
             PolygonCanvas.Children.Add(polygon);
 
@@ -257,6 +267,22 @@ namespace SigcatminProAddin.View.Modulos
             cbxTypeConsult.SelectedIndex = 0;
         }
 
+        private void cbxZona_Loaded(object sender, RoutedEventArgs e)
+        {
+            List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
+
+            cbp.Add(new ComboBoxPairs("17", 17));
+            cbp.Add(new ComboBoxPairs("18", 18));
+            cbp.Add(new ComboBoxPairs("19", 19));
+
+            // Asignar la lista al ComboBox
+            cbxZona.DisplayMemberPath = "_Key";
+            cbxZona.SelectedValuePath = "_Value";
+            cbxZona.ItemsSource = cbp;
+
+            // Seleccionar la opción 18 por defecto
+            cbxZona.SelectedIndex = 1;
+        }
         private void cbxSistema_Loaded(object sender, RoutedEventArgs e)
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
@@ -482,16 +508,19 @@ namespace SigcatminProAddin.View.Modulos
         private void dataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
             var tableView = sender as TableView;
-            int currentDatum = (int)cbxSistema.SelectedValue;
-            if (tableView != null)
+            if (tableView != null && tableView.Grid.VisibleRowCount>0)
             {
                 // Obtener el índice de la fila seleccionada
                 int focusedRowHandle = tableView.FocusedRowHandle;
+                int currentDatum = (int)cbxSistema.SelectedValue;
+
 
                 if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
                 {
                     // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
                     string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+                    int.TryParse(dataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
+                    cbxZona.SelectedValue = zona;
 
                     // Mostrar el valor obtenido
                     //System.Windows.MessageBox.Show($"Valor de CODIGO: {codigoValue}", "Información de la Fila");
@@ -499,15 +528,12 @@ namespace SigcatminProAddin.View.Modulos
                     tbxArea.Text = areaValue;
                     tbxArea.IsReadOnly = true;
                     // Llamar a funciones adicionales con el valor seleccionado
+                    ClearCanvas();
                     var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
                     dataGridDetails.ItemsSource = dmrRecords.DefaultView;
                     GraficarCoordenadas(dmrRecords);
                 }
-                else
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No hay ninguna fila seleccionada.", "Error",
-                                                                        MessageBoxButton.OK, MessageBoxImage.Warning);
-                }
+
             }
         }
 
@@ -531,5 +557,26 @@ namespace SigcatminProAddin.View.Modulos
                 table.SetCellValue(newRowHandle, columnName, i);
             }
         }
+
+        public void ClearControls()
+        {
+            var functions = new PageCommonFunctions();
+            functions.ClearControls(this);
+            ClearCanvas();
+            ClearDatagrids();
+
+
+
+        }
+
+        private void btnOtraConsulta_Click(object sender, RoutedEventArgs e)
+        {
+            ClearControls();
+            cbxSistema.SelectedIndex = 0;
+            cbxTypeConsult.SelectedIndex = 0;
+            cbxZona.SelectedIndex = 1;
+        }
+
+        
     }
 }

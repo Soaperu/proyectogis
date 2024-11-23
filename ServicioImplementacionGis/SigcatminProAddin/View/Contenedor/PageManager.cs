@@ -23,5 +23,10 @@ namespace SigcatminProAddin.View.Contenedor
             }
             return _pages[pageType];
         }
+
+        public static void RemovePages()
+        {
+            _pages.Clear();
+        }
     }
 }

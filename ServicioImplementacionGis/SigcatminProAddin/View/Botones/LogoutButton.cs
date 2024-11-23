@@ -13,7 +13,9 @@ using ArcGIS.Desktop.KnowledgeGraph;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
 using CommonUtilities.LoginUtil;
+using DatabaseConnector;
 using SigcatminProAddin.View.Constants;
+using SigcatminProAddin.View.Contenedor;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,8 +28,14 @@ namespace SigcatminProAddin.View.Botones
     {
         protected override void OnClick()
         {
+            var contenedor = MainContainer.Instance;
+            contenedor.ClearModules();
             SessionManager.EndSession();
             StatesUtil.DeactivateState(UIState.IsLogged);
+
+            AppConfig.userName = "";
+            AppConfig.password = "";
+
         }
     }
 }

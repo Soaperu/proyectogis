@@ -69,13 +69,13 @@
             <TextBlock Text="Consultar" FontSize="10" Margin="0,0,0,10" FontWeight="Medium" 
                        HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
-                      x:Name="cbxTypeConsult" Width="250"
+                      x:Name="cbxTypeConsult" Width="250" FontSize="10"
                        Height="20" Padding="0,3,0,3" Loaded="cbxTypeConsult_Loaded"/>
             <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10"
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
             <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
                      Grid.Column="3" Width="230" VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                     x:Name="tbxValue" Padding="0,2,0,2"/>
+                     x:Name="tbxValue" FontSize="10" Padding="0,2,0,2"/>
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Left" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
@@ -88,7 +88,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridResult" CustomUnboundColumnData="dataGridResult_CustomUnboundColumnData">
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="dataGridResult" CustomUnboundColumnData="dataGridResult_CustomUnboundColumnData">
                 <dxg:GridControl.View>
                     <dxg:TableView  x:Name="dataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
@@ -98,7 +98,7 @@
 
 
             <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
-                  Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
+                  Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="50"/>
                     <ColumnDefinition Width="100"/>
@@ -114,7 +114,7 @@
                           x:Name="tbxRadio" VerticalContentAlignment="Center"/>
                 <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
-                          VerticalAlignment="Center"  x:Name="cbxZona" />
+                          VerticalAlignment="Center"  x:Name="cbxZona" Loaded="cbxZona_Loaded"  />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
                           VerticalAlignment="Center" x:Name="cbxSistema" Loaded="cbxSistema_Loaded" />
@@ -141,7 +141,7 @@
                 <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl Margin="0,0,10,0" x:Name="dataGridDetails" Grid.Column="0">
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="dataGridDetails" Grid.Column="0">
                 <dxg:GridControl.View>
                     <dxg:TableView x:Name="dataGridDetailsTableView" ShowAutoFilterRow="False"
                            AllowColumnFiltering="False"
@@ -209,9 +209,9 @@
 
             <Button Content="Otra Consulta" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
-                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Bottom" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="btnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0"/>
+                VerticalContentAlignment="Center" x:Name="btnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Margin="0,0,0,7" Click="btnOtraConsulta_Click"/>
 
             <Button Content="Reporte" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="2" HorizontalAlignment="Center"

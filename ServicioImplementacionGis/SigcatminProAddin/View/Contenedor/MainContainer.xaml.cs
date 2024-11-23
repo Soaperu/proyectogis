@@ -80,5 +80,13 @@ namespace SigcatminProAddin.View.Contenedor
         {
             this.Close();
         }
+
+        public void ClearModules()
+        {
+            PageManager.RemovePages();
+            _instance.Close();
+            _instance = null;
+
+        }
     }
 }

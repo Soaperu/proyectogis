@@ -76,12 +76,13 @@ namespace SigcatminProAddin.View.Login
                 AppConfig.password = password;
                 //MessageBox.Show("Conexión exitosa", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
                 // Procede con la lógica de la
-                dataBaseHandler = new DatabaseHandler();
                 string encryptedCredentials = CredentialManager.EncryptCredentials(tbxUser.Text, pwdPassword.Password, 25);
                 SessionManager.SaveSession(encryptedCredentials);
+
+                dataBaseHandler = new DatabaseHandler();
                 var infoUser = dataBaseHandler.VerifyUser(username, password);
                 DataRow firstRow = infoUser.Rows[0];
-                GloblalVariables.currentUser = firstRow["USERNAME"].ToString();
+                AppConfig.fullUserName = firstRow["USERNAME"].ToString();
 
                 //_mainContainer = new MainContainer();
                 //_mainContainer.Show();

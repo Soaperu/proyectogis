@@ -13,6 +13,7 @@ using DatabaseConnector;
 using SigcatminProAddin.View.Constants;
 using SigcatminProAddin.View.Login;
 using System;
+using System.Data;
 
 namespace SigcatminProAddin.View.Botones
 {
@@ -63,6 +64,10 @@ namespace SigcatminProAddin.View.Botones
                     // Aquí puedes agregar lógica para renovar credenciales si es necesario
                     AppConfig.userName = username;
                     AppConfig.password = password;
+                    DatabaseHandler _dataBaseHandler = new DatabaseHandler();
+                    var infoUser = _dataBaseHandler.VerifyUser(username, password);
+                    DataRow firstRow = infoUser.Rows[0];                    
+                    AppConfig.fullUserName = firstRow["USERNAME"].ToString();
                     //System.Windows.MessageBox.Show("Bienvenido", "Inicio de sesión", MessageBoxButton.OK, MessageBoxImage.Information);
                     StatesUtil.ActivateState(UIState.IsLogged);
                 }
