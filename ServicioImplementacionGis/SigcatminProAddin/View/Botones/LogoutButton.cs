@@ -14,7 +14,7 @@ using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
 using CommonUtilities.LoginUtil;
 using DatabaseConnector;
-using SigcatminProAddin.View.Constants;
+using SigcatminProAddin.Models.Constants;
 using SigcatminProAddin.View.Contenedor;
 using System;
 using System.Collections.Generic;

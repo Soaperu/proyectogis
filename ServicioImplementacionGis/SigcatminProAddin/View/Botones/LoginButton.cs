@@ -10,7 +10,7 @@ using ArcGIS.Desktop.Framework.Contracts;
 
 using CommonUtilities.LoginUtil;
 using DatabaseConnector;
-using SigcatminProAddin.View.Constants;
+using SigcatminProAddin.Models.Constants;
 using SigcatminProAddin.View.Login;
 using System;
 using System.Data;

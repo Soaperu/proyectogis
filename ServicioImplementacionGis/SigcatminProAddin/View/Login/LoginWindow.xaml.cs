@@ -12,12 +12,12 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using SigcatminProAddin.View.Constants;
 using SigcatminProAddin.View.Contenedor;
 using static DatabaseConnector.DatabaseConnection;
 using DatabaseConnector;
 using System.Data;
 using CommonUtilities;
+using SigcatminProAddin.Models.Constants;
 
 namespace SigcatminProAddin.View.Login
 {

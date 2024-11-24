@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SigcatminProAddin.View.Constants
+namespace SigcatminProAddin.Models.Constants
 {
     public class UIState
     {

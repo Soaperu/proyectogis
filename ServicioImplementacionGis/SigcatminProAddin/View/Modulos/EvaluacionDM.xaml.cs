@@ -2,38 +2,24 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using ArcGIS.Core.Data;
-using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Events;
-using ArcGIS.Desktop.Internal.KnowledgeGraph.FFP;
 using ArcGIS.Desktop.Mapping;
 using ArcGIS.Desktop.Mapping.Events;
 using CommonUtilities;
 using CommonUtilities.ArcgisProUtils;
 using DatabaseConnector;
-using DevExpress.Data;
-using DevExpress.Internal.WinApi.Windows.UI.Notifications;
-using DevExpress.Xpf.Core.Native;
 using DevExpress.Xpf.Grid;
-using DevExpress.XtraExport.Helpers;
 using SigcatminProAddin.Utils.UIUtils;
 using FlowDirection = System.Windows.FlowDirection;
 using System.Text.RegularExpressions;
 using SigcatminProAddin.Models;
-using DevExpress.Data.Linq.Helpers;
-using ArcGIS.Core.Geometry;
+using SigcatminProAddin.Models.Constants;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -59,20 +45,6 @@ namespace SigcatminProAddin.View.Modulos
 
         private void AddCheckBoxesToListBox()
         {
-            // Lista de elementos para agregar al ListBox
-            //string[] items = { "Capa 1", "Capa 2", "Capa 3", "Capa 4" };
-
-            //// Agrega cada elemento como un CheckBox al ListBox
-            //foreach (var item in items)
-            //{
-            //    System.Windows.Controls.CheckBox checkBox = new System.Windows.Controls.CheckBox
-            //    {
-            //        Content = item,
-            //        Margin = new Thickness(3),
-            //        Style = (Style)FindResource("Esri_CheckboxToggleSwitch")
-            //    };
-            //    listLayers.Items.Add(checkBox);
-            //}
             string[] items = {
                                 "Caram",
                                 "Catastro Forestal",
@@ -258,10 +230,8 @@ namespace SigcatminProAddin.View.Modulos
         {
             if (string.IsNullOrEmpty(tbxValue.Text))
             {
-                //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
-                string message = "Por favor ingrese un valor para iniciar la busqueda.";
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Nivel de coincidencia muy alto",
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(MessageConstants.Errors.EmptySearchValue,
+                                                                 MessageConstants.Titles.MissingValue,
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
@@ -272,28 +242,30 @@ namespace SigcatminProAddin.View.Modulos
                 int records = int.Parse(countRecords);
                 if (records == 0)
                 {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"No Existe ningún Registro con esta consulta: {tbxValue.Text}",
-                                                                        "Sin coincidencias",
-                                                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.NoRecordsFound, tbxValue.Text),
+                                                                    MessageConstants.Titles.NoMatches,
+                                                                    MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
                 else if (records >= 150)
                 {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Sea Ud. más específico en la consulta, hay {countRecords} Registro(s)",
-                                                                        "Nivel de coincidencia muy alto",
-                                                                        MessageBoxButton.OK, MessageBoxImage.Warning);
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.TooManyMatches, countRecords),
+                                                                    MessageConstants.Titles.HighMatchLevel,
+                                                                    MessageBoxButton.OK,
+                                                                    MessageBoxImage.Warning);
                     return;
                 }
                 lblCountRecords.Content = $"Resultados de Búsqueda: {countRecords.ToString()}";
                 var dmrRecords = dataBaseHandler.GetUniqueDM(tbxValue.Text, (int)cbxTypeConsult.SelectedValue);
-                calculatedIndex(dataGridResult, records, "INDEX");
+                calculatedIndex(dataGridResult, records, DatagridResultConstants.ColumNames.Index);
                 dataGridResult.ItemsSource = dmrRecords.DefaultView;
             }
             catch (Exception ex)
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Se produjo un error inesperado: " + ex.Message,
-                                                                            "Error",
-                                                                            MessageBoxButton.OK, MessageBoxImage.Error);
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.UnexpectedError, ex.Message),
+                                                                    MessageConstants.Titles.Error,
+                                                                    MessageBoxButton.OK,
+                                                                    MessageBoxImage.Error);
                 return;
             }
 
@@ -383,24 +355,23 @@ namespace SigcatminProAddin.View.Modulos
 
             GridColumn verticeColumn = new GridColumn
             {
-                FieldName = "VERTICE",
-                Header = "Vértice",
-                Width = 40
+                FieldName = DatagridDetailsConstants.ColumnNames.Vertice,
+                Header = DatagridDetailsConstants.Headers.Vertice,
+                Width = DatagridDetailsConstants.Widths.VerticeWidth
             };
 
             GridColumn esteColumn = new GridColumn
             {
-                FieldName = "ESTE",
-                Header = "Este",
-                Width = new GridColumnWidth(1, GridColumnUnitType.Star)
-
+                FieldName = DatagridDetailsConstants.ColumnNames.Este,
+                Header = DatagridDetailsConstants.Headers.Este,
+                Width = new GridColumnWidth(DatagridDetailsConstants.Widths.StarWidthRatio, GridColumnUnitType.Star)
             };
 
             GridColumn norteColumn = new GridColumn
             {
-                FieldName = "NORTE",
-                Header = "Norte",
-                Width = new GridColumnWidth(1, GridColumnUnitType.Star)
+                FieldName = DatagridDetailsConstants.ColumnNames.Norte,
+                Header = DatagridDetailsConstants.Headers.Norte,
+                Width = new GridColumnWidth(DatagridDetailsConstants.Widths.StarWidthRatio, GridColumnUnitType.Star)
             };
 
             // Agregar columnas al GridControl
@@ -427,70 +398,70 @@ namespace SigcatminProAddin.View.Modulos
             // Columna de índice (número de fila)
             GridColumn indexColumn = new GridColumn
             {
-                Header = "N°", // Encabezado
-                FieldName = "INDEX",
+                Header = DatagridResultConstants.Headers.Index, // Encabezado
+                FieldName = DatagridResultConstants.ColumNames.Index,
                 UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
                 AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
                 VisibleIndex = 0, // Mostrar como la primera columna
-                Width = 30
+                Width = DatagridResultConstants.Widths.Index
             };
            
             GridColumn codigoColumn = new GridColumn
             {
-                FieldName = "CODIGO", // Nombre del campo en el DataTable
-                Header = "Codigo",    // Encabezado visible
-                Width = 100            // Ancho de la columna
+                FieldName = DatagridResultConstants.ColumNames.Codigo, // Nombre del campo en el DataTable
+                Header = DatagridResultConstants.Headers.Codigo,    // Encabezado visible
+                Width = DatagridResultConstants.Widths.Codigo            // Ancho de la columna
             };
 
             GridColumn nombreColumn = new GridColumn
             {
-                FieldName = "NOMBRE",
-                Header = "Nombre",
-                Width = 120
+                FieldName = DatagridResultConstants.ColumNames.Nombre,
+                Header = DatagridResultConstants.Headers.Nombre,
+                Width = DatagridResultConstants.Widths.Nombre
             };
 
             GridColumn pe_vigcatColumn = new GridColumn
             {
-                FieldName = "PE_VIGCAT",
-                Header = "Estado Graf",
-                Width = 70
+                FieldName = DatagridResultConstants.ColumNames.PeVigCat,
+                Header = DatagridResultConstants.Headers.PeVigCat,
+                Width = DatagridResultConstants.Widths.PeVigCat
             };
 
             GridColumn zonaColumn = new GridColumn
             {
-                FieldName = "ZONA",
-                Header = "Zona",
-                Width = 50
+                FieldName = DatagridResultConstants.ColumNames.Zona,
+                Header = DatagridResultConstants.Headers.Zona,
+                Width = DatagridResultConstants.Widths.Zona
             };
             GridColumn tipoColumn = new GridColumn
             {
-                FieldName = "TIPO",
-                Header = "Tipo",
-                Width = 60
+                FieldName = DatagridResultConstants.ColumNames.Tipo,
+                Header = DatagridResultConstants.Headers.Tipo,
+                Width = DatagridResultConstants.Widths.Tipo
             };
             GridColumn estadoColumn = new GridColumn
             {
-                FieldName = "ESTADO",
-                Header = "Estado",
-                Width = 100
+                FieldName = DatagridResultConstants.ColumNames.Estado,
+                Header = DatagridResultConstants.Headers.Estado,
+                Width = DatagridResultConstants.Widths.Estado
             };
             GridColumn naturalezaColumn = new GridColumn
             {
-                FieldName = "NATURALEZA",
-                Header = "Naturaleza",
-                Width = 80
+                FieldName = DatagridResultConstants.ColumNames.Naturaleza,
+                Header = DatagridResultConstants.Headers.Naturaleza,
+                Width = DatagridResultConstants.Widths.Naturaleza
             };
             GridColumn cartaColumn = new GridColumn
             {
-                FieldName = "CARTA",
-                Header = "Carta",
-                Width = 80
+                FieldName = DatagridResultConstants.ColumNames.Carta,
+                Header = DatagridResultConstants.Headers.Carta,
+                Width = DatagridResultConstants.Widths.Carta
             };
             GridColumn hectareaColumn = new GridColumn
             {
-                FieldName = "HECTAREA",
-                Header = "Hectarea",
-                Width = 80
+                FieldName = DatagridResultConstants.ColumNames.Hectarea,
+                Header = DatagridResultConstants.Headers.Hectarea,
+                Width = DatagridResultConstants.Widths.Hectarea
             };
 
             // Agregar columnas al GridControl
@@ -504,15 +475,7 @@ namespace SigcatminProAddin.View.Modulos
             dataGridResult.Columns.Add(naturalezaColumn);
             dataGridResult.Columns.Add(cartaColumn);
             dataGridResult.Columns.Add(hectareaColumn);
-            // Manejar el evento para calcular valores de la columna no vinculada
-            //dataGridResult.CustomUnboundColumnData += (sender, e) =>
-            //{
-            //    if (e.Column.UnboundType == DevExpress.Data.UnboundColumnType.Integer && e.IsGetData)
-            //    {
-            //        // Asignar el índice de la fila
-            //        e.Value = e.ListSourceRowIndex + 1; // Los índices son base 0, así que sumamos 1
-            //    }
-            //};
+
         }
 
         public DataTable FilterColumns(DataTable originalTable, params string[] columnNames)
@@ -550,18 +513,25 @@ namespace SigcatminProAddin.View.Modulos
         private DataTable ObtenerCoordenadas(string codigoValue, int datum)
         {
             DataTable filteredTable;
-            string[] requiredColumns = { "CD_NUMVER", "CD_COREST_E", "CD_CORNOR_E" };
+            string[] requiredColumns = { 
+                    DatagridDetailsConstants.RawColumNames.Vertice, 
+                    DatagridDetailsConstants.RawColumNames.CoorEsteE, 
+                    DatagridDetailsConstants.RawColumNames.CoorNorteE };
+
             var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
 
             if (datum == 2)
             {
-                requiredColumns = new string[] { "CD_NUMVER", "CD_COREST", "CD_CORNOR" };
+                requiredColumns = new string[] {
+                    DatagridDetailsConstants.RawColumNames.Vertice,
+                    DatagridDetailsConstants.RawColumNames.CoorEste,
+                    DatagridDetailsConstants.RawColumNames.CoorNorte };
             }
             filteredTable = FilterColumns(dmrRecords, requiredColumns);
             // Renombrar las columnas
-            filteredTable.Columns["CD_NUMVER"].ColumnName = "VERTICE";
-            filteredTable.Columns[requiredColumns[1]].ColumnName = "ESTE";
-            filteredTable.Columns[requiredColumns[2]].ColumnName = "NORTE";
+            filteredTable.Columns[DatagridDetailsConstants.RawColumNames.Vertice].ColumnName = DatagridDetailsConstants.ColumnNames.Vertice;
+            filteredTable.Columns[requiredColumns[1]].ColumnName = DatagridDetailsConstants.ColumnNames.Este;
+            filteredTable.Columns[requiredColumns[2]].ColumnName = DatagridDetailsConstants.ColumnNames.Norte;
 
             return filteredTable;
         }

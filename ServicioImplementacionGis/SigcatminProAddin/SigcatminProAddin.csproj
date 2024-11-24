@@ -21,6 +21,7 @@
     <None Remove="Images\Login\visible16_blue.png" />
     <None Remove="Images\Login\visible16_white.png" />
     <None Remove="Images\Login\warningblue32.png" />
+    <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.daml" />    
@@ -128,6 +129,9 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Constants\FeatureClass\" />
   </ItemGroup>
    <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>
