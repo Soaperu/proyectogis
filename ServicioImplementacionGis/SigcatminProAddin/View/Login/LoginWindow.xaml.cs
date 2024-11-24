@@ -151,7 +151,8 @@ namespace SigcatminProAddin.View.Login
         {
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
-            btnViewPassword.Background = new SolidColorBrush(Colors.White);
+            System.Windows.Media.Color customColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#F3F3F3");
+            btnViewPassword.Background = new SolidColorBrush(customColor);
             ImgViewpassword.Source = new BitmapImage(new Uri("/SigcatminProAddin;component/Images/Login/visible16_blue.png", UriKind.Relative));
             pwdPassword.Focus();
         }
@@ -160,7 +161,8 @@ namespace SigcatminProAddin.View.Login
         {
             tbxPasswordView.Visibility = Visibility.Collapsed;
             pwdPassword.Visibility = Visibility.Visible;
-            btnViewPassword.Background = new SolidColorBrush(Colors.White);
+            System.Windows.Media.Color customColor = (System.Windows.Media.Color)ColorConverter.ConvertFromString("#F3F3F3");
+            btnViewPassword.Background = new SolidColorBrush(customColor);
             ImgViewpassword.Source = new BitmapImage(new Uri("/SigcatminProAddin;component/Images/Login/visible16_blue.png", UriKind.Relative));
         }
 

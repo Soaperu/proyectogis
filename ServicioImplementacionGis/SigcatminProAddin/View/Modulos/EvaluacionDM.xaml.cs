@@ -32,6 +32,8 @@ using SigcatminProAddin.Utils.UIUtils;
 using FlowDirection = System.Windows.FlowDirection;
 using System.Text.RegularExpressions;
 using SigcatminProAddin.Models;
+using DevExpress.Data.Linq.Helpers;
+using ArcGIS.Core.Geometry;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -52,6 +54,7 @@ namespace SigcatminProAddin.View.Modulos
             ConfiguredataGridDetailsColumns();
             dataBaseHandler = new DatabaseHandler();
             cbxTypeConsult.SelectedIndex = 0;
+            tbxRadio.Text = "5";
         }
 
         private void AddCheckBoxesToListBox()
@@ -187,7 +190,7 @@ namespace SigcatminProAddin.View.Modulos
         private void DrawPolygon(PointCollection coordinates)
         {
             // Crear el polígono
-            Polygon polygon = new Polygon
+            System.Windows.Shapes.Polygon polygon = new System.Windows.Shapes.Polygon
             {
                 Stroke = Brushes.Green,
                 Fill = Brushes.LightGreen,
@@ -563,7 +566,7 @@ namespace SigcatminProAddin.View.Modulos
             return filteredTable;
         }
 
-        private ExtentModel ObtenerExtent(string codigoValue, int datum)
+        private ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm=0)
         {
             // Obtener las coordenadas usando la función ObtenerCoordenadas
             DataTable coordenadasTable = ObtenerCoordenadas(codigoValue, datum);
@@ -573,7 +576,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 throw new Exception("No se encontraron coordenadas para calcular el extent.");
             }
-
+            int radioMeters = radioKm*1000;
             // Inicializar las variables para almacenar los valores extremos
             int xmin = int.MaxValue;
             int xmax = int.MinValue;
@@ -595,10 +598,10 @@ namespace SigcatminProAddin.View.Modulos
             // Crear el objeto ExtentModel con los valores calculados
             ExtentModel extent = new ExtentModel
             {
-                xmin = xmin,
-                xmax = xmax,
-                ymin = ymin,
-                ymax = ymax
+                xmin = xmin - radioMeters,
+                xmax = xmax + radioMeters,
+                ymin = ymin - radioMeters,
+                ymax = ymax + radioMeters
             };
 
             return extent;
@@ -685,6 +688,15 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void btnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(tbxValue.Text))
+            {
+                //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string message = "Por favor ingrese un valor de radio";
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                 "Advertancia",
+                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
             if (chkGraficarDmY.IsChecked == true)
             {
                 sele_denu = true;
@@ -693,6 +705,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 sele_denu = false;
             }
+
             //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle= dataGridResult.GetSelectedRowHandles()[0];
@@ -707,17 +720,20 @@ namespace SigcatminProAddin.View.Modulos
             // Obtener el mapa Catastro
 
             //await LoadLayersToMapViewActive();
-            Map map = await EnsureMapViewIsActiveAsync();
-            // Cargar las capas necesarias
-            // Crear el cargador de Feature Classes
-            //Map map = MapView.Active.Map;
+            Map map = await EnsureMapViewIsActiveAsync("CATASTRO MINERO");
+
+            // Crear instancia de FeatureClassLoader y cargar las capas necesarias
             var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
-
-            await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_17", true);
-            await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_18", true);
-
+            await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_"+zoneDm, true);
+            //if ((int)cbxSistema.SelectedValue == 1)
+            //{
+            //    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, true);
+            //}
+            var extentDm = ObtenerExtent(codigoValue, (int)cbxSistema.SelectedValue, int.Parse(tbxRadio.Text));
+            // Llamar al método IntersectFeatureClassAsync desde la instancia
+            string whereClause = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
         }
-                
+
         private SubscriptionToken _eventToken = null;
         public async Task LoadLayersToMapViewActive()
         {
@@ -749,7 +765,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private async Task<Map> EnsureMapViewIsActiveAsync()
+        private async Task<Map> EnsureMapViewIsActiveAsync(string mapName)
         {
             if (MapView.Active != null)
             {
@@ -769,7 +785,7 @@ namespace SigcatminProAddin.View.Modulos
                     DrawCompleteEvent.Unsubscribe(eventToken);
                 }
                 // Activar el mapa "CATASTRO MINERO"
-                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync(mapName);
                 await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
 
                 // Completar la tarea con el mapa activo
@@ -799,6 +815,14 @@ namespace SigcatminProAddin.View.Modulos
                 e.Key == Key.Left || e.Key == Key.Right || e.Key == Key.Enter || e.Key == Key.Escape)
             {
                 e.Handled = false;
+            }
+        }
+
+        private void tbxValue_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Enter)
+            {
+                btnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
             }
         }
     }

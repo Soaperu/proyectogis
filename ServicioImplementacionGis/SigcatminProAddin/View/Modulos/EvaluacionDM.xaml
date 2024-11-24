@@ -76,9 +76,9 @@
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
             <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
                      Grid.Column="3" Width="230" VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                     x:Name="tbxValue" FontSize="10" Padding="0,2,0,2"/>
+                     x:Name="tbxValue" FontSize="10" Padding="0,2,0,2" KeyDown="tbxValue_KeyDown"/>
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
-                    Foreground="White" Grid.Column="4" HorizontalAlignment="Left" FontFamily="Roboto"
+                    Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     VerticalContentAlignment="Center" x:Name="btnSearch" Padding="0,0,0,0" Click="btnSearch_Click" />
@@ -196,8 +196,8 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="70"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="190"/>
                 <ColumnDefinition Width="120"/>
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="90"/>
@@ -210,9 +210,9 @@
 
             <Button Content="Otra Consulta" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
-                Style="{DynamicResource Esri_Button}" VerticalAlignment="Bottom" 
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="btnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Margin="0,0,0,7" Click="btnOtraConsulta_Click"/>
+                VerticalContentAlignment="Center" x:Name="btnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="btnOtraConsulta_Click"/>
 
             <Button Content="Reporte" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="2" HorizontalAlignment="Center"
