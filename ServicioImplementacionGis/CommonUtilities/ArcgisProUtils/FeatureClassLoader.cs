@@ -462,15 +462,7 @@ namespace CommonUtilities.ArcgisProUtils
                     // Manejo de error si la capa no existe
                     return "";
                 }
-                // Crear el envolvente
-                Envelope envelope = EnvelopeBuilder.CreateEnvelope(xMin, yMin, xMax, yMax, pFLayer.GetSpatialReference());
-
-                // Crear el filtro espacial
-                SpatialQueryFilter spatialFilter = new SpatialQueryFilter
-                {
-                    FilterGeometry = envelope,
-                    SpatialRelationship = SpatialRelationship.Intersects
-                };
+                
 
                 // Ajustar la cláusula WHERE si es necesario
                 // ... código adicional ...
@@ -480,6 +472,15 @@ namespace CommonUtilities.ArcgisProUtils
 
                 await QueuedTask.Run(() =>
                 {
+                    // Crear el envolvente
+                    Envelope envelope = EnvelopeBuilder.CreateEnvelope(xMin, yMin, xMax, yMax, pFLayer.GetSpatialReference());
+
+                    // Crear el filtro espacial
+                    SpatialQueryFilter spatialFilter = new SpatialQueryFilter
+                    {
+                        FilterGeometry = envelope,
+                        SpatialRelationship = SpatialRelationship.Intersects
+                    };
                     using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
                     {
                         while (rowCursor.MoveNext())
@@ -550,11 +551,11 @@ namespace CommonUtilities.ArcgisProUtils
     }
     public class FeatureClassInfo
     {
-        public string FeatureClassName { get; set; }
-        public string LayerName { get; set; }
-        public string VariableName { get; set; } // Nombre de la variable donde se almacenará el FeatureLayer
-        public Func<string, string> FeatureClassNameGenerator { get; set; } // Función para generar el nombre dinámicamente
-        public Func<string, string> LayerNameGenerator { get; set; }
+        public string? FeatureClassName { get; set; }
+        public string? LayerName { get; set; }
+        public string? VariableName { get; set; } // Nombre de la variable donde se almacenará el FeatureLayer
+        public Func<string, string>? FeatureClassNameGenerator { get; set; } // Función para generar el nombre dinámicamente
+        public Func<string, string>? LayerNameGenerator { get; set; }
     }
 
     public static class FeatureClassConstants

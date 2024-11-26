@@ -36,11 +36,11 @@ namespace SigcatminProAddin.View.Modulos
             InitializeComponent();
             AddCheckBoxesToListBox();
             CurrentUser();
-            ConfiguredataGridResultColumns();
-            ConfiguredataGridDetailsColumns();
+            ConfigureDataGridResultColumns();
+            ConfigureDataGridDetailsColumns();
             dataBaseHandler = new DatabaseHandler();
-            cbxTypeConsult.SelectedIndex = 0;
-            tbxRadio.Text = "5";
+            CbxTypeConsult.SelectedIndex = 0;
+            TbxRadio.Text = "5";
         }
 
         private void AddCheckBoxesToListBox()
@@ -76,21 +76,21 @@ namespace SigcatminProAddin.View.Modulos
                     checkBox.IsChecked = true; // Estado Indeterminado
                 }
 
-                listLayers.Items.Add(checkBox);
+                LayersListBox.Items.Add(checkBox);
             }
         }
 
         private void CurrentUser()
         {
-            currentUser.Text = GloblalVariables.ToTitleCase(AppConfig.fullUserName);
+            CurrentUserLabel.Text = GloblalVariables.ToTitleCase(AppConfig.fullUserName);
         }
 
-        //private void cbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        //private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
         //{
 
         //}
 
-        private void btnSalir_Click(object sender, RoutedEventArgs e)
+        private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
             // Obtener la ventana contenedora y cerrarla
             Window parentWindow = Window.GetWindow(this);
@@ -150,8 +150,8 @@ namespace SigcatminProAddin.View.Modulos
 
         private void ClearDatagrids()
         {
-            dataGridResult.ItemsSource= null;
-            dataGridDetails.ItemsSource= null;
+            DataGridResult.ItemsSource= null;
+            DataGridDetails.ItemsSource= null;
         }
 
 
@@ -226,9 +226,9 @@ namespace SigcatminProAddin.View.Modulos
             DrawPolygon(scaledCoordinates);
         }
 
-        private void btnSearch_Click(object sender, RoutedEventArgs e)
+        private void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(tbxValue.Text))
+            if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(MessageConstants.Errors.EmptySearchValue,
                                                                  MessageConstants.Titles.MissingValue,
@@ -237,12 +237,12 @@ namespace SigcatminProAddin.View.Modulos
             }
             try
             {
-                string value = (string)cbxTypeConsult.SelectedValue.ToString();
-                var countRecords = dataBaseHandler.CountRecords(value, tbxValue.Text);
+                string value = (string)CbxTypeConsult.SelectedValue.ToString();
+                var countRecords = dataBaseHandler.CountRecords(value, TbxValue.Text);
                 int records = int.Parse(countRecords);
                 if (records == 0)
                 {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.NoRecordsFound, tbxValue.Text),
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.NoRecordsFound, TbxValue.Text),
                                                                     MessageConstants.Titles.NoMatches,
                                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
@@ -255,10 +255,10 @@ namespace SigcatminProAddin.View.Modulos
                                                                     MessageBoxImage.Warning);
                     return;
                 }
-                lblCountRecords.Content = $"Resultados de Búsqueda: {countRecords.ToString()}";
-                var dmrRecords = dataBaseHandler.GetUniqueDM(tbxValue.Text, (int)cbxTypeConsult.SelectedValue);
-                calculatedIndex(dataGridResult, records, DatagridResultConstants.ColumNames.Index);
-                dataGridResult.ItemsSource = dmrRecords.DefaultView;
+                LblCountRecords.Content = $"Resultados de Búsqueda: {countRecords.ToString()}";
+                var dmrRecords = dataBaseHandler.GetUniqueDM(TbxValue.Text, (int)CbxTypeConsult.SelectedValue);
+                calculatedIndex(DataGridResult, records, DatagridResultConstants.ColumNames.Index);
+                DataGridResult.ItemsSource = dmrRecords.DefaultView;
             }
             catch (Exception ex)
             {
@@ -271,7 +271,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private void cbxTypeConsult_Loaded(object sender, RoutedEventArgs e)
+        private void CbxTypeConsult_Loaded(object sender, RoutedEventArgs e)
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
@@ -279,15 +279,15 @@ namespace SigcatminProAddin.View.Modulos
             cbp.Add(new ComboBoxPairs("Por Nombre", 2));
 
             // Asignar la lista al ComboBox
-            cbxTypeConsult.DisplayMemberPath = "_Key";
-            cbxTypeConsult.SelectedValuePath = "_Value";
-            cbxTypeConsult.ItemsSource = cbp;
+            CbxTypeConsult.DisplayMemberPath = "_Key";
+            CbxTypeConsult.SelectedValuePath = "_Value";
+            CbxTypeConsult.ItemsSource = cbp;
 
             // Seleccionar la primera opción por defecto
-            cbxTypeConsult.SelectedIndex = 0;
+            CbxTypeConsult.SelectedIndex = 0;
         }
 
-        private void cbxZona_Loaded(object sender, RoutedEventArgs e)
+        private void CbxZona_Loaded(object sender, RoutedEventArgs e)
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
@@ -296,14 +296,14 @@ namespace SigcatminProAddin.View.Modulos
             cbp.Add(new ComboBoxPairs("19", 19));
 
             // Asignar la lista al ComboBox
-            cbxZona.DisplayMemberPath = "_Key";
-            cbxZona.SelectedValuePath = "_Value";
-            cbxZona.ItemsSource = cbp;
+            CbxZona.DisplayMemberPath = "_Key";
+            CbxZona.SelectedValuePath = "_Value";
+            CbxZona.ItemsSource = cbp;
 
             // Seleccionar la opción 18 por defecto
-            cbxZona.SelectedIndex = 1;
+            CbxZona.SelectedIndex = 1;
         }
-        private void cbxSistema_Loaded(object sender, RoutedEventArgs e)
+        private void CbxSistema_Loaded(object sender, RoutedEventArgs e)
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
@@ -311,12 +311,12 @@ namespace SigcatminProAddin.View.Modulos
             cbp.Add(new ComboBoxPairs("PSAD 56", 2));
 
             // Asignar la lista al ComboBox
-            cbxSistema.DisplayMemberPath = "_Key";
-            cbxSistema.SelectedValuePath = "_Value";
-            cbxSistema.ItemsSource = cbp;
+            CbxSistema.DisplayMemberPath = "_Key";
+            CbxSistema.SelectedValuePath = "_Value";
+            CbxSistema.ItemsSource = cbp;
 
             // Seleccionar la primera opción por defecto
-            cbxSistema.SelectedIndex = 0;
+            CbxSistema.SelectedIndex = 0;
         }
 
         public class ComboBoxPairs
@@ -344,10 +344,10 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private void ConfiguredataGridDetailsColumns()
+        private void ConfigureDataGridDetailsColumns()
         {
-            var tableView = dataGridDetails.View as DevExpress.Xpf.Grid.TableView;
-            dataGridDetails.Columns.Clear();
+            var tableView = DataGridDetails.View as DevExpress.Xpf.Grid.TableView;
+            DataGridDetails.Columns.Clear();
             if (tableView != null)
             {
                 tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
@@ -375,18 +375,18 @@ namespace SigcatminProAddin.View.Modulos
             };
 
             // Agregar columnas al GridControl
-            dataGridDetails.Columns.Add(verticeColumn);
-            dataGridDetails.Columns.Add(esteColumn);
-            dataGridDetails.Columns.Add(norteColumn);
+            DataGridDetails.Columns.Add(verticeColumn);
+            DataGridDetails.Columns.Add(esteColumn);
+            DataGridDetails.Columns.Add(norteColumn);
 
         }
-        private void ConfiguredataGridResultColumns()
+        private void ConfigureDataGridResultColumns()
         {
             // Obtener la vista principal del GridControl
-            var tableView = dataGridResult.View as DevExpress.Xpf.Grid.TableView;
+            var tableView = DataGridResult.View as DevExpress.Xpf.Grid.TableView;
 
             // Limpiar columnas existentes
-            dataGridResult.Columns.Clear();
+            DataGridResult.Columns.Clear();
 
             if (tableView != null)
             {
@@ -465,16 +465,16 @@ namespace SigcatminProAddin.View.Modulos
             };
 
             // Agregar columnas al GridControl
-            dataGridResult.Columns.Add(indexColumn);
-            dataGridResult.Columns.Add(codigoColumn);
-            dataGridResult.Columns.Add(nombreColumn);
-            dataGridResult.Columns.Add(pe_vigcatColumn);
-            dataGridResult.Columns.Add(zonaColumn);
-            dataGridResult.Columns.Add(tipoColumn);
-            dataGridResult.Columns.Add(estadoColumn);
-            dataGridResult.Columns.Add(naturalezaColumn);
-            dataGridResult.Columns.Add(cartaColumn);
-            dataGridResult.Columns.Add(hectareaColumn);
+            DataGridResult.Columns.Add(indexColumn);
+            DataGridResult.Columns.Add(codigoColumn);
+            DataGridResult.Columns.Add(nombreColumn);
+            DataGridResult.Columns.Add(pe_vigcatColumn);
+            DataGridResult.Columns.Add(zonaColumn);
+            DataGridResult.Columns.Add(tipoColumn);
+            DataGridResult.Columns.Add(estadoColumn);
+            DataGridResult.Columns.Add(naturalezaColumn);
+            DataGridResult.Columns.Add(cartaColumn);
+            DataGridResult.Columns.Add(hectareaColumn);
 
         }
 
@@ -577,7 +577,7 @@ namespace SigcatminProAddin.View.Modulos
             return extent;
         }
 
-        private void dataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
+        private void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
             //var tableView = sender as TableView;
             var tableView = sender as DevExpress.Xpf.Grid.TableView;
@@ -585,32 +585,32 @@ namespace SigcatminProAddin.View.Modulos
             {
                 // Obtener el índice de la fila seleccionada
                 int focusedRowHandle = tableView.FocusedRowHandle;
-                int currentDatum = (int)cbxSistema.SelectedValue;
+                int currentDatum = (int)CbxSistema.SelectedValue;
 
 
                 if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
                 {
                     // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
-                    string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-                    int.TryParse(dataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
-                    cbxZona.SelectedValue = zona;
+                    string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+                    int.TryParse(DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
+                    CbxZona.SelectedValue = zona;
 
                     // Mostrar el valor obtenido
                     //System.Windows.MessageBox.Show($"Valor de CODIGO: {codigoValue}", "Información de la Fila");
-                    string areaValue = dataGridResult.GetCellValue(focusedRowHandle, "HECTAREA")?.ToString();
-                    tbxArea.Text = areaValue;
-                    tbxArea.IsReadOnly = true;
+                    string areaValue = DataGridResult.GetCellValue(focusedRowHandle, "HECTAREA")?.ToString();
+                    TbxArea.Text = areaValue;
+                    TbxArea.IsReadOnly = true;
                     // Llamar a funciones adicionales con el valor seleccionado
                     ClearCanvas();
                     var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
-                    dataGridDetails.ItemsSource = dmrRecords.DefaultView;
+                    DataGridDetails.ItemsSource = dmrRecords.DefaultView;
                     GraficarCoordenadas(dmrRecords);
                 }
 
             }
         }
 
-        private void dataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
+        private void DataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
         {
             // Verificar si la columna es la columna de índice
             if (e.Column.UnboundType == DevExpress.Data.UnboundColumnType.Integer && e.IsGetData)
@@ -642,23 +642,23 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private void btnOtraConsulta_Click(object sender, RoutedEventArgs e)
+        private void BtnOtraConsulta_Click(object sender, RoutedEventArgs e)
         {
             ClearControls();
-            cbxSistema.SelectedIndex = 0;
-            cbxTypeConsult.SelectedIndex = 0;
-            cbxZona.SelectedIndex = 1;
+            CbxSistema.SelectedIndex = 0;
+            CbxTypeConsult.SelectedIndex = 0;
+            CbxZona.SelectedIndex = 1;
         }
 
         
-        private void cbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            tbxValue.Clear();
+            TbxValue.Clear();
         }
 
-        private async void btnGraficar_Click(object sender, RoutedEventArgs e)
+        private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(tbxValue.Text))
+            if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
                 string message = "Por favor ingrese un valor de radio";
@@ -667,7 +667,7 @@ namespace SigcatminProAddin.View.Modulos
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
-            if (chkGraficarDmY.IsChecked == true)
+            if (ChkGraficarDmY.IsChecked == true)
             {
                 sele_denu = true;
             }
@@ -678,10 +678,10 @@ namespace SigcatminProAddin.View.Modulos
 
             //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
-            int focusedRowHandle= dataGridResult.GetSelectedRowHandles()[0];
-            string codigoValue = dataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-            string stateGraphic = dataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
-            string zoneDm = dataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
+            int focusedRowHandle= DataGridResult.GetSelectedRowHandles()[0];
+            string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+            string stateGraphic = DataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
+            string zoneDm = DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
             var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
                                                                                         , AppConfig.userName
@@ -695,11 +695,11 @@ namespace SigcatminProAddin.View.Modulos
             // Crear instancia de FeatureClassLoader y cargar las capas necesarias
             var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
             await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_"+zoneDm, true);
-            //if ((int)cbxSistema.SelectedValue == 1)
+            //if ((int)CbxSistema.SelectedValue == 1)
             //{
             //    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, true);
             //}
-            var extentDm = ObtenerExtent(codigoValue, (int)cbxSistema.SelectedValue, int.Parse(tbxRadio.Text));
+            var extentDm = ObtenerExtent(codigoValue, (int)CbxSistema.SelectedValue, int.Parse(TbxRadio.Text));
             // Llamar al método IntersectFeatureClassAsync desde la instancia
             string whereClause = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
         }
@@ -767,7 +767,7 @@ namespace SigcatminProAddin.View.Modulos
         }
 
         private static readonly Regex NumberRegex = new Regex(@"^[0-9]*(?:\.[0-9]*)?$");
-        private void tbxRadio_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        private void TbxRadio_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Agregar el nuevo texto al existente en el TextBox
             string currentText = (sender as System.Windows.Controls.TextBox)?.Text ?? string.Empty;
@@ -778,7 +778,7 @@ namespace SigcatminProAddin.View.Modulos
             e.Handled = !NumberRegex.IsMatch(newText);
         }
 
-        private void tbxRadio_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        private void TbxRadio_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             // Permitir teclas específicas (como Backspace, Delete, flechas, etc.)
             if (e.Key == Key.Back || e.Key == Key.Delete || e.Key == Key.Tab ||
@@ -788,11 +788,16 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-        private void tbxValue_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        /// <summary>
+        /// Permite usar la tecla enter para realizar la búsqueda
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void TbxValue_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
             {
-                btnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+                BtnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
             }
         }
     }
