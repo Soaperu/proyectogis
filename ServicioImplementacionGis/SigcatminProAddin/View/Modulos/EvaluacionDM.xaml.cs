@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -669,13 +670,15 @@ namespace SigcatminProAddin.View.Modulos
             }
             if (ChkGraficarDmY.IsChecked == true)
             {
-                sele_denu = true;
+                GloblalVariables.stateDmY = true;
             }
             else
             {
-                sele_denu = false;
+                GloblalVariables.stateDmY = false;
             }
-
+            int datum = (int)CbxSistema.SelectedValue;
+            int radio = int.Parse(TbxRadio.Text);
+            string outputFolder = Path.Combine(GloblalVariables.pathFileContainerOut, GloblalVariables.fileTemp);
             //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle= DataGridResult.GetSelectedRowHandles()[0];
@@ -687,21 +690,93 @@ namespace SigcatminProAddin.View.Modulos
                                                                                         , AppConfig.userName
                                                                                         , AppConfig.password);
             var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
-            // Obtener el mapa Catastro
+            // Obtener el mapa Catastro//
 
             //await LoadLayersToMapViewActive();
             Map map = await EnsureMapViewIsActiveAsync("CATASTRO MINERO");
 
             // Crear instancia de FeatureClassLoader y cargar las capas necesarias
             var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
-            await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_"+zoneDm, true);
-            //if ((int)CbxSistema.SelectedValue == 1)
-            //{
-            //    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, true);
-            //}
-            var extentDm = ObtenerExtent(codigoValue, (int)CbxSistema.SelectedValue, int.Parse(TbxRadio.Text));
+            
+            //Carga capa Catastro
+            if (datum == 1)
+            {
+                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, false);
+            }
+            else
+            {
+                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, false);
+            }
+
+            //Carga capa Distrito
+            if (datum == 1)
+            {
+                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+            }
+            else
+            {
+                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
+            }
+
+            //Carga capa Zona Urbana
+            if (datum == 1)
+            {
+                await featureClassLoader.LoadFeatureClassAsync( FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
+            }
+            else
+            {
+                await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
+            }
+            string fechaArchi = DateTime.Now.Ticks.ToString();
+            string catastroShpName = "Catastro" + fechaArchi;
+            string catastroShpNamePath = "Catastro" + fechaArchi+".shp";
+            var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
             // Llamar al método IntersectFeatureClassAsync desde la instancia
-            string whereClause = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+            string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+
+            // Encontrando Distritos superpuestos a DM con
+            DataTable intersectDist;
+            if (datum == 1)
+            {
+                intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
+            }
+            else
+            {
+                intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
+            }
+
+            DataTable orderUbigeosDM;
+
+            orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
+            var extentDm = ObtenerExtent(codigoValue, datum);
+            //Carga capa Hojas IGN
+            await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+            string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+
+            // Encontrando Caram superpuestos a DM con
+            DataTable intersectCaram;
+            if (datum == 1)
+            {
+                intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
+            }
+            else
+            {
+                intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
+            }
+
+            DataTable intersectCForestal;
+            if (datum == 1)
+            {
+                intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
+            }
+            else
+            {
+                intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
+            }
+
+            //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
+            CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName,"Catastro");
+
         }
 
         private SubscriptionToken _eventToken = null;
