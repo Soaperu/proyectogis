@@ -777,6 +777,8 @@ namespace SigcatminProAddin.View.Modulos
             //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
             CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName,"Catastro");
 
+            UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+            await uTMGridGenerator.GenerateUTMGridAsync(extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax, "Malla", zoneDm);
         }
 
         private SubscriptionToken _eventToken = null;
