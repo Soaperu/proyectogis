@@ -9,7 +9,14 @@ using ArcGIS.Desktop.Mapping;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ArcGIS.Desktop.Core;
+using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Core.Data;
+using ArcGIS.Core.Geometry;
+using ArcGIS.Core.Internal.CIM;
+using ArcGIS.Core.Internal.Geometry;
+using System.ComponentModel;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -83,5 +90,127 @@ namespace CommonUtilities.ArcgisProUtils
             }
         });
         }
+
+        public static void LabelLayer(FeatureLayer layer, string field, string color = "")
+        {
+            var featureclass = layer.GetFeatureClass();
+            var map = MapView.Active.Map;
+            var gl_param = new GraphicsLayerCreationParams { Name = "Graphics Layer" };
+            var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
+
+            ////Add to the bottom of the TOC
+            //gl_param.MapMemberIndex = -1; //bottom
+            //LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
+
+            GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
+                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+
+            QueuedTask.Run(() =>
+            {              
+
+                // Crear un cursor para iterar sobre las características de la capa
+                using (var rowCursor = layer.Search(null))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        using (Row row = rowCursor.Current)
+                        {
+                            var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry ;
+                            string fieldValue = Convert.ToString(row[field]);
+
+                            if (geometry != null && !string.IsNullOrEmpty(fieldValue))
+                            {
+                                // Convertir la geometría a un punto (en este caso, tomamos el centroide de la geometría)
+                                var point = geometry.Extent.Center;
+
+                                var text_symbol = SymbolFactory.Instance.ConstructTextSymbol
+                                                                            (CIMColor.CreateRGBColor(255,0,0), 8.5, "Arial", "Regular");
+
+                                graphicsLayer.AddElement(point, text_symbol, fieldValue);
+                            }
+                            
+                        }
+                    }
+                }
+
+
+            });
+        }
+
+
+       
+        public static void LoadFeatureClassToMap(string featureClassName, string layerName, bool isVisible)
+        {
+            QueuedTask.Run(() =>
+            {
+                // Obtener el mapa activo
+                var map = MapView.Active.Map;
+                if (map == null)
+                    throw new Exception("No hay un mapa activo.");
+
+                // Conectar a la geodatabase
+                string gdbPath = @"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
+                using (var gdb = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(gdbPath))))
+                {
+                    // Abrir la clase de entidad
+                    var featureClass = gdb.OpenDataset<FeatureClass>(featureClassName);
+
+                    // Crear los parámetros de la capa de entidades
+                    var layerParams = new FeatureLayerCreationParams(featureClass)
+                    {
+                        Name = layerName, // Asignar el nombre
+                    };
+
+                    // Crear la capa de entidad
+                    var featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(layerParams, map);
+                    featureLayer.SetVisibility(isVisible);
+
+                }
+            });
+        }
+
+        // Función para eliminar filas de una clase de entidad en una geodatabase
+        public static void DeleteRowsFromFeatureClass(string featureClassName)
+        {
+            QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Conectar a la geodatabase
+                    string gdbPath = @"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
+                    using (var gdb = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(gdbPath))))
+                    {
+                        // Abrir la clase de entidad
+                        var featureClass = gdb.OpenDataset<FeatureClass>(featureClassName);
+                        if (featureClass == null)
+                            throw new Exception($"No se encontró la clase de entidad: {featureClassName}");
+
+                        // Crear un cursor para eliminar las filas
+                        using (var rowCursor = featureClass.Search(null, false))
+                        {
+                            // Empezamos a eliminar las filas
+                            while (rowCursor.MoveNext())
+                            {
+                                using (var row = rowCursor.Current)
+                                {
+                                    // Eliminar la fila (puedes agregar condiciones aquí si es necesario)
+                                    row.Delete();
+                                }
+                            }
+                        }
+
+                        // Puedes agregar un mensaje de éxito si lo deseas
+                        Console.WriteLine($"Filas eliminadas de la clase de entidad: {featureClassName}");
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Manejo de errores
+                    Console.WriteLine($"Error al eliminar filas: {ex.Message}");
+                }
+            });
+        }
+
+       
     }
 }

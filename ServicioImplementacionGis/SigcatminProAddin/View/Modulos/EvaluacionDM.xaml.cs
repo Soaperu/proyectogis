@@ -701,6 +701,8 @@ namespace SigcatminProAddin.View.Modulos
             //}
             var extentDm = ObtenerExtent(codigoValue, (int)CbxSistema.SelectedValue, int.Parse(TbxRadio.Text));
             // Llamar al método IntersectFeatureClassAsync desde la instancia
+            UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+            await uTMGridGenerator.GenerateUTMGridAsync(extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax, "Malla", zoneDm);
             string whereClause = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
         }
 
