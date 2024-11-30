@@ -424,6 +424,15 @@ namespace CommonUtilities.ArcgisProUtils
                     await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GloblalVariables.fieldTypeString, 20);
                     await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GloblalVariables.fieldTypeString, 20);
                     await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GloblalVariables.fieldTypeDate, 20);
+                    await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GloblalVariables.fieldTypeDate, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GloblalVariables.fieldTypeDate, 256);
+                    await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GloblalVariables.fieldTypeString, 256);
+                    await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GloblalVariables.fieldTypeString, 256);
+                    await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GloblalVariables.fieldTypeString, 80);
+                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GloblalVariables.fieldTypeString, 20);
+                    await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GloblalVariables.fieldTypeString, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GloblalVariables.fieldTypeString, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "CASO", GloblalVariables.fieldTypeString, 40);
                 }
                 // Otros casos a agregar de manera similar
 

@@ -16,6 +16,13 @@ namespace CommonUtilities
         public static string fieldTypeLong = "LONG";
         public static string fieldTypeDouble = "DOUBLE";
         public static string fieldTypeDate = "DATE";
+        // Ruta actual
+        public static string currentPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+
+        public static string toolBoxPathEval = currentPath + @"\SigcatminProAddin\Scripts\CMIN_EVAL.atbx";
+        public static string stylePath = @"C:\bdgeocatmin\Estilos";
+        //Nombre de herramientas del atbx _toolboxPath//
+        public static string toolGetEval = "Script";
 
         public static string ToTitleCase(string input)
         {

@@ -122,18 +122,17 @@ namespace CommonUtilities.ArcgisProUtils
                             {
                                 // Convertir la geometría a un punto (en este caso, tomamos el centroide de la geometría)
                                 var point = geometry.Extent.Center;
-
-                                var text_symbol = SymbolFactory.Instance.ConstructTextSymbol
-                                                                            (CIMColor.CreateRGBColor(255,0,0), 8.5, "Arial", "Regular");
-
-                                graphicsLayer.AddElement(point, text_symbol, fieldValue);
+                                var textGraphic = new CIMTextGraphic();
+                                textGraphic.Symbol = SymbolFactory.Instance.ConstructTextSymbol
+                                                                            (CIMColor.CreateRGBColor(255, 0, 0), 8.5, "Arial", "Regular").MakeSymbolReference();
+                                textGraphic.Shape = geometry;
+                                textGraphic.Text = fieldValue;
+                                graphicsLayer.AddElement(textGraphic,fieldValue);
                             }
                             
                         }
                     }
                 }
-
-
             });
         }
 

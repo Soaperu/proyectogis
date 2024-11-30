@@ -133,5 +133,13 @@
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
   </ItemGroup>
+  <ItemGroup>
+    <None Update="Scripts\CMIN_EVAL.atbx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\evaluarPrioritarios.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
    <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>
