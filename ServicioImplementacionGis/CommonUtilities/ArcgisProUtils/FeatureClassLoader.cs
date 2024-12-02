@@ -533,7 +533,7 @@ namespace CommonUtilities.ArcgisProUtils
                     int selectionCount = pFLayer.SelectionCount;
                     if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut)) 
                     {
-                        await ExportSpatialTemaAsync(loFeature, GloblalVariables.stateDmY, shapeFileOut);
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
                     }
 
                     using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
@@ -695,7 +695,7 @@ namespace CommonUtilities.ArcgisProUtils
                     return tema.GetFeatureClass();
                 });
                 // Definir la ruta de salida y el nombre del archivo
-                string outputFolder = Path.Combine(GloblalVariables.pathFileContainerOut, GloblalVariables.fileTemp);
+                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
                 string outputPath = Path.Combine(outputFolder, outputLayerName + ".shp");
                 // Ejecutar la exportación dentro de un QueuedTask
                 //await QueuedTask.Run(() =>

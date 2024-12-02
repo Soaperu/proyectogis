@@ -784,11 +784,11 @@ namespace SigcatminProAddin.View.Modulos
                 //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                 await UpdateValueAsync(catastroShpName, codigoValue);
-                await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GloblalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
+                await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
                 UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
                 await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
                 var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
-                var response = await GloblalVariables.ExecuteGPAsync(GloblalVariables.toolBoxPathEval, GloblalVariables.toolGetEval, Params);
+                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
             }
             catch (Exception ex) { }
 
