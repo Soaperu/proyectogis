@@ -15,9 +15,11 @@ using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
 using SigcatminProAddin.Models.Constants;
 using SigcatminProAddin.View.Botones;
+using CommonUtilities;
 using SigcatminProAddin.View.Modulos;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +39,6 @@ namespace SigcatminProAddin
 
         protected override bool Initialize()
         {
-            
             if (LoginButton.IsActiveSessionStatic())
             {
                 // Activar el estado si la sesión es válida

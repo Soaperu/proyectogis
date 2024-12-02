@@ -1032,6 +1032,60 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
+        public DataTable ObtenerDatumDm(string code) 
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_DATUM_DM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 32) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerBloqueadoDm(string code) 
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_BLOQUEADO_DM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 32) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerDatosUbigeo(string code) 
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 32) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerDatosGeneralesDM(string code)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_DATOS_GENERALES_DM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 32) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerDatosDM(string code)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 32) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
     }
 }

@@ -3,7 +3,7 @@ using System.Globalization;
 
 namespace CommonUtilities
 {
-    public class GloblalVariables
+    public class GlobalVariables
     {
         public static string currentUser = "";
         public static string pathFileContainerOut = @"C:\bdgeocatmin";
@@ -17,12 +17,14 @@ namespace CommonUtilities
         public static string fieldTypeDouble = "DOUBLE";
         public static string fieldTypeDate = "DATE";
         // Ruta actual
-        public static string currentPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        public static string? currentPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
+        public static string scriptsPath = @"scripts\AutomapicExt_addin.py";
+        public static string pythonExePath = @"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe";
 
-        public static string toolBoxPathEval = currentPath + @"\SigcatminProAddin\Scripts\CMIN_EVAL.atbx";
+        public static string toolBoxPathEval = currentPath + @"\Scripts\CMIN_EVAL.atbx";
         public static string stylePath = @"C:\bdgeocatmin\Estilos";
         //Nombre de herramientas del atbx _toolboxPath//
-        public static string toolGetEval = "Script";
+        public static string toolGetEval = "evalCriterios";
 
         public static string ToTitleCase(string input)
         {

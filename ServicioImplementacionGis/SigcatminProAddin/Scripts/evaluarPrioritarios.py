@@ -1,13 +1,17 @@
 import arcpy
 import json
 
+# path to log %AppData%\Roaming\Esri\ArcGISPro\ArcToolbox\History.
+arcpy.SetLogHistory(True)
+
 arcpy.env.overwriteOutput = True
 
 in_layer = arcpy.GetParameterAsText(0)
 in_codigo = arcpy.GetParameterAsText(1)
+temp_folder = r"c:/bdgeocatmin/temporal"
 
 out_geom= object()
-response = dict()
+response = None
 
 
 
@@ -23,7 +27,7 @@ def act_geom_info(lyrpath, codigo):
         except:
             pass
     
-    campos_dm_consultado = ["shape@", "FEC_DENU", "HOR_DENU", "ESTADO", "V_ESTADO", "IDENTI", "CONCESION", "DATUM", "TIPO_EX" ]
+    campos_dm_consultado = ["shape@", "FEC_DENU", "HOR_DENU", "ESTADO", "D_ESTADO", "IDENTI", "CONCESION", "DATUM", "TIPO_EX" ]
     query = "CODIGOU = '{}'".format(codigo)
     valores = [x for x in arcpy.da.SearchCursor(lyrpath, campos_dm_consultado, query)][0]
     geom_dm = valores[0]
@@ -37,7 +41,7 @@ def act_geom_info(lyrpath, codigo):
     tipo_ex_dm = valores[8]
 
     oid_fieldname = arcpy.Describe(lyrpath).OIDFieldName
-    campos = [oid_fieldname, "CODIGOU", "SHAPE@", "CONTADOR", "PRIORI", "AREAINT", "FEC_DENU", "HOR_DENU", "ESTADO", "V_ESTADO", "CONCESION", "TIPO_EX", "IDENTI", "DE_IDEN", "FEC_LIB", "DATUM", "SITU_EX", "TOTALSINO" ]
+    campos = [oid_fieldname, "CODIGOU", "SHAPE@", "CONTADOR", "PRIORI", "AREAINT", "FEC_DENU", "HOR_DENU", "ESTADO", "D_ESTADO", "CONCESION", "TIPO_EX", "IDENTI", "DE_IDEN", "FEC_LIB", "DATUM", "SITUACION", "TOTALSINO" ]
     query = "CODIGOU <> '{}'".format(codigo)
     query = "1=1"
     with arcpy.da.UpdateCursor(lyrpath, campos, query) as cursor:
@@ -324,18 +328,15 @@ def act_geom_info(lyrpath, codigo):
 
 if __name__ == '__main__':
     try:
-        out_geom = act_geom_info(in_layer, in_codigo)
-        response['state'] = 1
-        response['result'] = in_layer
-        response['message']='success'
+        lyr_path = os.path.join(temp_folder, in_layer)
+        out_geom = act_geom_info(lyr_path, in_codigo)
+        response = in_layer
+        arcpy.AddMessage("Satisfactorio")
     except Exception as e:
-        arcpy.AddMessage("Error: " + str(e))
+        arcpy.AddError("Error: " + str(e))
         out_geom = None
-        response['state'] = 0
-        response['result'] = ''
-        response['message'] = str(e)
     finally:
         response = json.dumps(response)
-        arcpy.SetParameterAsText(3, response)
+        arcpy.SetParameterAsText(2, response)
         
     

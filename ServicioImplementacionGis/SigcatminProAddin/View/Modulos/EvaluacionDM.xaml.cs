@@ -22,6 +22,7 @@ using System.Text.RegularExpressions;
 using SigcatminProAddin.Models;
 using SigcatminProAddin.Models.Constants;
 using ArcGIS.Desktop.Core.Geoprocessing;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -84,7 +85,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CurrentUser()
         {
-            CurrentUserLabel.Text = GloblalVariables.ToTitleCase(AppConfig.fullUserName);
+            CurrentUserLabel.Text = GlobalVariables.ToTitleCase(AppConfig.fullUserName);
         }
 
         //private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -671,15 +672,15 @@ namespace SigcatminProAddin.View.Modulos
             }
             if (ChkGraficarDmY.IsChecked == true)
             {
-                GloblalVariables.stateDmY = true;
+                GlobalVariables.stateDmY = true;
             }
             else
             {
-                GloblalVariables.stateDmY = false;
+                GlobalVariables.stateDmY = false;
             }
             int datum = (int)CbxSistema.SelectedValue;
             int radio = int.Parse(TbxRadio.Text);
-            string outputFolder = Path.Combine(GloblalVariables.pathFileContainerOut, GloblalVariables.fileTemp);
+            string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
             //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
@@ -728,6 +729,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
             }
+
             string fechaArchi = DateTime.Now.Ticks.ToString();
             string catastroShpName = "Catastro" + fechaArchi;
             string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
@@ -737,7 +739,8 @@ namespace SigcatminProAddin.View.Modulos
             var extentDm = ObtenerExtent(codigoValue, datum);
             // Llamar al método IntersectFeatureClassAsync desde la instancia
             string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
-            
+            await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+
             // Encontrando Distritos superpuestos a DM con
             DataTable intersectDist;
             if (datum == 1)
@@ -779,12 +782,13 @@ namespace SigcatminProAddin.View.Modulos
             }
 
             //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
-            CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-            string catastroDm = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDm.xmin, extentDm.ymin, extentDmRadio.xmax, extentDm.ymax, dmShpName);
-            UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-            await uTMGridGenerator.GenerateUTMGridAsync(extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax, "Malla", zoneDm);
-            var Params = Geoprocessing.MakeValueArray(catastroShpName, codigoValue);
-            var response = await GloblalVariables.ExecuteGPAsync(GloblalVariables.toolBoxPathEval, GloblalVariables.toolGetEval, Params);
+            //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+            string catastroDm = await featureClassLoader.IntersectFeatureClassAsync(catastroShpName, extentDm.xmin, extentDm.ymin, extentDmRadio.xmax, extentDm.ymax, dmShpName);
+            await UpdateValueAsync(catastroShpName, codigoValue);
+            
+            var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
+            var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+
 
             // Obtener el mapa Demarcacion Politica//
 
@@ -849,6 +853,8 @@ namespace SigcatminProAddin.View.Modulos
                 await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
             }
             await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map, Path.Combine(outputFolder, dmShpNamePath));
+            UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+            await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
         }
 
         private SubscriptionToken _eventToken = null;
@@ -880,6 +886,188 @@ namespace SigcatminProAddin.View.Modulos
             Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
             await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
 
+        }
+
+        public async Task UpdateValueAsync(string capa, string codigoValue)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener el documento del mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
+
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Preparar la fecha y hora
+                    string fecha = DateTime.Now.ToString("yyyy/MM/dd");
+                    string v_fec_denun = fecha + " 00:00";
+                    string v_hor_denun = DateTime.Now.ToString("HH:mm:ss");
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        int contador = 0;
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            contador++;
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+                                string v_codigo_dm = row["CODIGOU"].ToString();
+
+                                // Llamar al procedimiento para obtener datos de Datum y bloquear estado
+                                DataTable lodtbDatos_dm = dataBaseHandler.ObtenerDatumDm(v_codigo_dm);
+                                if (lodtbDatos_dm.Rows.Count > 0)
+                                {
+                                    row["DATUM"] = lodtbDatos_dm.Rows[0]["ESTADO"].ToString();
+                                }
+
+                                // Llamar a otros procedimientos para obtener situación y estado
+                                DataTable lodtbDatos1 = dataBaseHandler.ObtenerBloqueadoDm(v_codigo_dm);
+                                if (lodtbDatos1.Rows.Count > 0)
+                                {
+                                    row["BLOQUEO"] = "1";
+                                    row["CASO"] = "D.M. - ANAP";
+                                }
+                                else
+                                {
+                                    row["BLOQUEO"] = "0";
+                                }
+
+                                row["CONTADOR"] = contador;
+
+                                DataTable lodtbDatos2 = dataBaseHandler.ObtenerDatosGeneralesDM(v_codigo_dm);
+                                if (lodtbDatos2.Rows.Count > 0)
+                                {
+                                    row["SITUACION"] = lodtbDatos2.Rows[0]["SITUACION"].ToString();
+                                }
+                                else
+                                {
+                                    row["SITUACION"] = "X";
+                                }
+
+                                // Lógica de asignación de leyenda dependiendo del estado
+                                string estado = row["ESTADO"].ToString();
+                                string leyenda = string.Empty;
+                                switch (estado)
+                                {
+                                    case " ":
+                                        leyenda = "G4";  // Denuncios Extinguidos
+                                        break;
+                                    case "P":
+                                        leyenda = "G1";  // Petitorio Tramite
+                                        break;
+                                    case "D":
+                                        leyenda = "G2";  // Denuncio Tramite
+                                        break;
+                                    case "E":
+                                    case "N":
+                                    case "Q":
+                                    case "T":
+                                        leyenda = "G3";  // Denuncios Titulados
+                                        break;
+                                    case "F":
+                                    case "J":
+                                    case "L":
+                                    case "H":
+                                    case "Y":
+                                    case "9":
+                                    case "X":
+                                        leyenda = "G4";  // Denuncios Extinguidos
+                                        break;
+                                    case "C":
+                                        DataTable lodtbDatos3 = dataBaseHandler.ObtenerDatosDM(v_codigo_dm);
+                                        string v_situacion_dm = "";
+                                        string v_estado_dm = "";
+                                        if (lodtbDatos3.Rows.Count > 0)
+                                        {
+                                            v_situacion_dm = lodtbDatos3.Rows[0]["SITUACION"].ToString();
+                                            v_estado_dm = lodtbDatos3.Rows[0]["ESTADO"].ToString();
+                                        }
+                                        if (v_situacion_dm == "V" && v_estado_dm == "T") 
+                                        {
+                                            leyenda = "G3";
+                                        }
+                                        else if(v_situacion_dm =="V" && v_estado_dm == "R")
+                                        {
+                                            leyenda = "G1";
+                                        }
+                                        else
+                                        {
+                                            leyenda = "G4";
+                                        }
+                                        break;
+                                    case "A":
+                                    case "B":
+                                    case "S":
+                                    case "M":
+                                    case "G":
+                                    case "R":
+                                    case "Z":
+                                    case "K":
+                                    case "V":
+
+                                        leyenda = "G5";  // Otros
+                                        break;
+                                    default:
+                                        row["LEYENDA"] = "";
+                                        row["EVAL"] = "EV";
+                                        row["TIPO_EX"] = "PE";
+                                        row["CONCESION"] = "Dm_Simulado";
+                                        row["FEC_DENU"] = v_fec_denun;
+                                        row["HOR_DENU"] = v_hor_denun;
+                                        row["CARTA"] = "CARTA";
+
+                                        break;
+
+                                }
+                                if (row["BLOQUEO"].ToString() == "1")
+                                {
+                                    leyenda = "G7";
+                                }
+
+                                // Actualizar los valores de departamento, provincia y distrito
+                                DataTable lodtbDemarca = dataBaseHandler.ObtenerDatosUbigeo(v_codigo_dm.Substring(0, 6));
+                                if (lodtbDemarca.Rows.Count > 0)
+                                {
+                                    row["DPTO"] = lodtbDemarca.Rows[0]["DPTO"].ToString();
+                                    row["PROV"] = lodtbDemarca.Rows[0]["PROV"].ToString();
+                                    row["DIST"] = lodtbDemarca.Rows[0]["DIST"].ToString();
+                                }
+                                if (codigoValue== row["CODIGOU"].ToString())
+                                {
+                                    leyenda = "G6";
+                                }
+
+                                row["LEYENDA"] = leyenda;
+
+                                row.Store();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+            
         }
 
         private async Task<Map> EnsureMapViewIsActiveAsync(string mapName)

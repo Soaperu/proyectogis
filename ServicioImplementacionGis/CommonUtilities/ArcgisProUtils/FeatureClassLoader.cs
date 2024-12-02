@@ -529,7 +529,7 @@ namespace CommonUtilities.ArcgisProUtils
                     int selectionCount = pFLayer.SelectionCount;
                     if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut)) 
                     {
-                        ExportTemaAsync(loFeature, GloblalVariables.stateDmY, shapeFileOut);
+                        ExportTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
                     }
 
                     using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
@@ -538,29 +538,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             using (Row row = rowCursor.Current)
                             {
-                                //// Procesar cada fila según loFeature
-                                //int fieldIndex = -1;
-                                //string codigo = "";
-
-                                //switch (loFeature)
-                                //{
-                                //    case "Catastro":
-                                //        fieldIndex = row.FindField("OBJECTID");
-                                //        codigo = row[fieldIndex].ToString();
-                                //        lostr_Join_Codigos += $"{codigo},";
-                                //        break;
-                                //    case "Departamento":
-                                //        fieldIndex = row.FindField("NM_DEPA");
-                                //        string nmDepa = row[fieldIndex].ToString();
-                                //        if (nmDepa != "MAR" && nmDepa != "FUERA DEL PERU")
-                                //        {
-                                //            lostr_Join_Codigos += $"'{nmDepa}',";
-                                //        }
-                                //        break;
-                                //    // Agregar otros casos...
-                                //    default:
-                                //        break;
-                                //}
+                               
                                 // Variables para las salidas del método
                                 string lostr_Join_Codigos_marcona;
                                 string valida_urb_shp;
@@ -587,19 +565,7 @@ namespace CommonUtilities.ArcgisProUtils
                 {
                     lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
 
-                    //switch (loFeature)
-                    //{
-                    //    case "Departamento":
-                    //        lostrJoinCodigos = $"NM_DEPA IN ({lostrJoinCodigos})";
-                    //        break;
-                    //    case "Provincia":
-                    //        lostrJoinCodigos = $"OBJECTID IN ({lostrJoinCodigos})";
-                    //        break;
-                    //    // Agregar otros casos...
-                    //    default:
-                    //        lostrJoinCodigos = $"OBJECTID IN ({lostrJoinCodigos})";
-                    //        break;
-                    //}
+                
                     try
                     {
                         string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
@@ -660,7 +626,7 @@ namespace CommonUtilities.ArcgisProUtils
                 }
 
                 // Definir la ruta de salida y el nombre del archivo
-                string outputFolder = Path.Combine(GloblalVariables.pathFileContainerOut,GloblalVariables.fileTemp);
+                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut,GlobalVariables.fileTemp);
                 //string outputFileName = pNombreArchivo;
                 //string outputPath = Path.Combine(outputFolder, outputFileName + ".shp");
 

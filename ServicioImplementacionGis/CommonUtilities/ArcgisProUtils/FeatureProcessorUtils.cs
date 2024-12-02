@@ -372,7 +372,7 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
-        public async static void AgregarCampoTemaTpm(string pShapefile, string caso)
+        public async static Task AgregarCampoTemaTpm(string pShapefile, string caso)
         {
             try
             {
@@ -406,33 +406,33 @@ namespace CommonUtilities.ArcgisProUtils
                     _ = DeleteFieldIfExists(featureLayer, "LEYENDA");
 
                     // Añadir nuevos campos
-                    await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GloblalVariables.fieldTypeString, 1);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GloblalVariables.fieldTypeString, 1);
-                    await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GloblalVariables.fieldTypeString, 13);
-                    await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GloblalVariables.fieldTypeString, 100);
-                    await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GloblalVariables.fieldTypeString, 2);
+                    await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GlobalVariables.fieldTypeString, 1);
+                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 1);
+                    await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GlobalVariables.fieldTypeString, 13);
+                    await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GlobalVariables.fieldTypeString, 100);
+                    await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
                 }
                 else if (caso == "Catastro")
                 {
                     // Comprobamos si los campos existen, y si no, los agregamos.
-                    await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GloblalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GloblalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GloblalVariables.fieldTypeString, 20, 4); // Precision 20, escala 4
-                    await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GloblalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "PROV", GloblalVariables.fieldTypeString, 40);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DIST", GloblalVariables.fieldTypeString, 50);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GloblalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GloblalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GloblalVariables.fieldTypeDate, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GloblalVariables.fieldTypeDate, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GloblalVariables.fieldTypeDate, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GloblalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GloblalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GloblalVariables.fieldTypeString, 80);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GloblalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GloblalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GloblalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CASO", GloblalVariables.fieldTypeString, 40);
+                    await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeString, 20, 4); // Precision 20, escala 4
+                    await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
+                    await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
+                    await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
+                    await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
+                    await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
+                    await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeDate, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeDate, 256);
+                    await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
+                    await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
+                    await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GlobalVariables.fieldTypeString, 80);
+                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 20);
+                    await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GlobalVariables.fieldTypeString, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
                 }
                 // Otros casos a agregar de manera similar
 
