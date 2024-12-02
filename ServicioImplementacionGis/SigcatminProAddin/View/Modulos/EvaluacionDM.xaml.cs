@@ -796,7 +796,8 @@ namespace SigcatminProAddin.View.Modulos
             {
                 await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("DEMARCACION POLITICA");
                 Map mapD = await EnsureMapViewIsActiveAsync("DEMARCACION POLITICA");
-                var featureClassLoader = new FeatureClassLoader(geodatabase, mapD, zoneDm, "99");                
+                var featureClassLoader = new FeatureClassLoader(geodatabase, mapD, zoneDm, "99");
+                await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));
                 //Carga capa Distrito
                 if (datum == 1)
                 {
@@ -827,7 +828,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
 
                 var mapView = MapView.Active as MapView;
-                await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));
+                
                 var fl = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(mapView, dmShpName);
                 CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer(fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(dmShpName, "Catastro");
