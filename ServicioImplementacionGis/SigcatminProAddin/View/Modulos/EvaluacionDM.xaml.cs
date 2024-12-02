@@ -23,6 +23,8 @@ using SigcatminProAddin.Models;
 using SigcatminProAddin.Models.Constants;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Core.CIM;
+using DevExpress.Xpf.Grid.GroupRowLayout;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -692,169 +694,195 @@ namespace SigcatminProAddin.View.Modulos
                                                                                         , AppConfig.userName
                                                                                         , AppConfig.password);
             var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
-            // Obtener el mapa Catastro//
-
-            //await LoadLayersToMapViewActive();
-            Map map = await EnsureMapViewIsActiveAsync("CATASTRO MINERO");
-
-            // Crear instancia de FeatureClassLoader y cargar las capas necesarias
-            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
-
-            //Carga capa Catastro
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, false);
-            }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, false);
-            }
-
-            //Carga capa Distrito
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
-            }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
-            }
-
-            //Carga capa Zona Urbana
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
-            }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
-            }
-
             string fechaArchi = DateTime.Now.Ticks.ToString();
             string catastroShpName = "Catastro" + fechaArchi;
             string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
             string dmShpName = "DM" + fechaArchi;
-            string dmShpNamePath = "DM" + fechaArchi+".shp";
-            var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
-            var extentDm = ObtenerExtent(codigoValue, datum);
-            // Llamar al método IntersectFeatureClassAsync desde la instancia
-            string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
-            await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-
-            // Encontrando Distritos superpuestos a DM con
-            DataTable intersectDist;
-            if (datum == 1)
+            string dmShpNamePath = "DM" + fechaArchi + ".shp";
+            try
             {
-                intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
-            }
-            else
-            {
-                intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
-            }
+                // Obtener el mapa Catastro//
 
-            DataTable orderUbigeosDM;
+                Map map = await EnsureMapViewIsActiveAsync("CATASTRO MINERO");
+                // Crear instancia de FeatureClassLoader y cargar las capas necesarias
+                var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
 
-            orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
-            
-            //Carga capa Hojas IGN
-            await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
-            string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                //Carga capa Catastro
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, false);
+                }
 
-            // Encontrando Caram superpuestos a DM con
-            DataTable intersectCaram;
-            if (datum == 1)
-            {
-                intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
-            }
-            else
-            {
-                intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
-            }
+                //Carga capa Distrito
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
+                }
 
-            DataTable intersectCForestal;
-            if (datum == 1)
-            {
-                intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
-            }
-            else
-            {
-                intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
-            }
+                //Carga capa Zona Urbana
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
+                }
+                
+                var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
+                var extentDm = ObtenerExtent(codigoValue, datum);
+                // Llamar al método IntersectFeatureClassAsync desde la instancia
+                string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+                // Encontrando Distritos superpuestos a DM con
+                DataTable intersectDist;
+                if (datum == 1)
+                {
+                    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
+                }
+                else
+                {
+                    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
+                }
 
-            //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
-            //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-            string catastroDm = await featureClassLoader.IntersectFeatureClassAsync(catastroShpName, extentDm.xmin, extentDm.ymin, extentDmRadio.xmax, extentDm.ymax, dmShpName);
-            await UpdateValueAsync(catastroShpName, codigoValue);
-            
-            var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
-            var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                DataTable orderUbigeosDM;
+
+                orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
+
+                //Carga capa Hojas IGN
+                await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+
+                // Encontrando Caram superpuestos a DM con
+                DataTable intersectCaram;
+                if (datum == 1)
+                {
+                    intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
+                }
+                else
+                {
+                    intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
+                }
+
+                DataTable intersectCForestal;
+                if (datum == 1)
+                {
+                    intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
+                }
+                else
+                {
+                    intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", "DATA_GIS.GPO_CMI_CATASTRO_MINERO_" + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
+                }
+
+                //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
+                await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+                await UpdateValueAsync(catastroShpName, codigoValue);
+                await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GloblalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
+                var response = await GloblalVariables.ExecuteGPAsync(GloblalVariables.toolBoxPathEval, GloblalVariables.toolGetEval, Params);
+            }
+            catch (Exception ex) { }
 
 
             // Obtener el mapa Demarcacion Politica//
+            try
+            {
+                await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("DEMARCACION POLITICA");
+                Map mapD = await EnsureMapViewIsActiveAsync("DEMARCACION POLITICA");
+                var featureClassLoader = new FeatureClassLoader(geodatabase, mapD, zoneDm, "99");
+                await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));
+                //Carga capa Distrito
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
+                }
+                //Carga capa Provincia
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
+                }
 
-            Map mapD = await EnsureMapViewIsActiveAsync("DEMARCACION POLITICA");
-            
-            //Carga capa Distrito
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
-            }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
-            }
-            //Carga capa Provincia
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
-            }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
-            }
-            
-            //Carga capa Departamento
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
-            }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
-            }
-            // Obtener el mapa Catastro//
+                //Carga capa Departamento
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
+                }
 
-            Map mapC = await EnsureMapViewIsActiveAsync("CARTA IGN");
-            //Carga capa Distrito
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+                var mapView = MapView.Active as MapView;
+                
+                var fl = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(mapView, dmShpName);
+                CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer(fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(dmShpName, "Catastro");
+                
             }
-            else
+            catch (Exception ex) { }
+            
+            // Obtener el mapa Carta IGN//
+            try
             {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
-            }
-            //Carga capa Provincia
-            if (datum == 1)
+                await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CARTA IGN");
+                Map mapC = await EnsureMapViewIsActiveAsync("CARTA IGN");
+                var featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
+                var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
+                //Carga capa Distrito
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
+                }
+                //Carga capa Provincia
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
+                }
+                //Carga capa Departamento
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
+                }
+                
+                var mapViewC = MapView.Active as MapView;
+                var flC = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(mapViewC, dmShpName);
+                CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer(flC, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(255, 0, 0, 0), CIMColor.CreateRGBColor(255, 0, 0));
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(dmShpName, "Catastro");
+                await MapView.Active.ZoomToAsync(flC);
+            }            
+            catch (Exception ex) 
             {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
+
             }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
-            }
-            //Carga capa Departamento
-            if (datum == 1)
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
-            }
-            else
-            {
-                await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
-            }
-            await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map, Path.Combine(outputFolder, dmShpNamePath));
-            UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-            await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
         }
 
         private SubscriptionToken _eventToken = null;
@@ -1094,7 +1122,8 @@ namespace SigcatminProAddin.View.Modulos
                 await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
 
                 // Completar la tarea con el mapa activo
-                tcs.SetResult(MapView.Active?.Map);
+                //tcs.SetResult(MapView.Active.Map);
+                tcs.SetResult(map);
             });
 
             // Esperar hasta que el evento se complete

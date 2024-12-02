@@ -14,11 +14,11 @@ namespace CommonUtilities.ArcgisProUtils
 {
     public class FeatureProcessorUtils
     {
-        private static FeatureLayer GetFeatureLayerFromMap(MapView mapView, string shapefileName)
+        public static FeatureLayer GetFeatureLayerFromMap(MapView mapView, string layerName)
         {
             foreach (var layer in mapView.Map.Layers)
             {
-                if (layer is FeatureLayer featureLayer && featureLayer.Name.Equals(shapefileName, StringComparison.OrdinalIgnoreCase))
+                if (layer is FeatureLayer featureLayer && featureLayer.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase))
                 {
                     return featureLayer;
                 }

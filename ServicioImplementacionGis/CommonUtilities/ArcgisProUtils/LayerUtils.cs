@@ -29,12 +29,12 @@ namespace CommonUtilities.ArcgisProUtils
                 {
                     if (!File.Exists(layerPath))
                     {
-                        
+
                         MessageBox.Show($"El archivo {layerPath} no existe.");
                     }
                     Uri uri = new Uri(layerPath);
                     Layer layer = LayerFactory.Instance.CreateLayer(uri, map);
-                    MapView.Active.ZoomToAsync(layer);
+                    //MapView.Active.ZoomTo(layer);
                     return layer;
                 }
                 catch (Exception ex)
@@ -117,5 +117,47 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        // Método para cambiar el nombre de una capa por un nuevo nombre
+        public static async Task ChangeLayerNameAsync(string oldLayerName, string newLayerName)
+        {
+            // Ejecutamos el cambio de nombre dentro de un contexto de cola (para asegurarnos de que se ejecute en el hilo correcto)
+            await QueuedTask.Run(() =>
+            {
+                // Obtener el mapa activo en ArcGIS Pro
+                Map map = MapView.Active.Map;
+
+                // Buscar la capa con el nombre original (oldLayerName)
+                var layer = map.Layers.FirstOrDefault(l => l.Name == oldLayerName);
+
+                // Si se encuentra la capa, cambiar el nombre
+                if (layer != null)
+                {
+                    layer.SetName(newLayerName);
+                }
+                else
+                {
+                    // Si la capa no se encuentra, mostramos un mensaje de error (opcional)
+                    System.Windows.MessageBox.Show($"Capa con nombre '{oldLayerName}' no encontrada.");
+                }
+            });
+        }
+        //public static async Task<FeatureLayer> GetFeatureLayerByName(string layerName)
+        //{
+        //    await QueuedTask.Run(() =>
+        //    {
+        //        // Obtener el mapa activo en ArcGIS Pro
+        //        Map map = MapView.Active.Map;
+
+        //        // Buscar la capa con el nombre original (oldLayerName)
+        //        var layer = map.Layers.FirstOrDefault(l => l.Name == layerName);
+
+        //        // Si se encuentra la capa, cambiar el nombre
+        //        if (layer != null)
+        //        {
+        //            return layer as FeatureLayer;
+        //        }
+
+        //    });
+        //}
     }
 }

@@ -12,7 +12,7 @@ using ArcGIS.Core.Geometry;
 
 namespace CommonUtilities.ArcgisProUtils
 {
-    internal class SymbologyUtils
+    public class SymbologyUtils
     {
         //private static List<string> fields;
 
@@ -54,26 +54,30 @@ namespace CommonUtilities.ArcgisProUtils
                 layer.SetRenderer(renderer);
             });
         }
-        public async void CustomLineDashPolygonLayer(FeatureLayer layer, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2)
+        public static async void CustomLinePolygonLayer(FeatureLayer layer, SimpleLineStyle style, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2 = null)
         {
             await QueuedTask.Run(() =>
             {
                 var trans = 75.0;//semi transparent
                 // Linea de brode negra con grosor 2 y de estilo punteado
-                CIMStroke InLine = SymbolFactory.Instance.ConstructStroke(colorLine1, 1.5, SimpleLineStyle.Dash);
-                CIMStroke OutLine = SymbolFactory.Instance.ConstructStroke(colorLine2, 2.5, SimpleLineStyle.Dash);
+                CIMStroke InLine = SymbolFactory.Instance.ConstructStroke(colorLine1, 1.5, style);
+                
                 var symbol = layer.GetRenderer() as CIMSimpleRenderer;
                 // Crear una nueva simbología con relleno de color transparente
                 var newFillSymbol = SymbolFactory.Instance.ConstructPolygonSymbol(
                     colorFill, SimpleFillStyle.Solid, InLine);
-                newFillSymbol.SymbolLayers = newFillSymbol.SymbolLayers.Concat(new[] { OutLine }).ToArray();
+                if (colorLine2 != null)
+                {
+                    CIMStroke OutLine = SymbolFactory.Instance.ConstructStroke(colorLine2, 2.5, SimpleLineStyle.Dash);
+                    newFillSymbol.SymbolLayers = newFillSymbol.SymbolLayers.Concat(new[] { OutLine }).ToArray();
+                }
                 symbol.Symbol = newFillSymbol.MakeSymbolReference();
                 // Actualiza la simbologia 
                 layer.SetRenderer(symbol);
             });
         }
 
-        public async void CustomLineDashPolygonGraphic(ArcGIS.Core.Geometry.Geometry geomPolygon, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2)
+        public static async void CustomLinePolygonGraphic(ArcGIS.Core.Geometry.Geometry geomPolygon, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2)
         {
             await QueuedTask.Run(() =>
             {
@@ -97,6 +101,5 @@ namespace CommonUtilities.ArcgisProUtils
                 MapView.Active.AddOverlay(cimGraphicElement);
             });
         }
-
     }
 }

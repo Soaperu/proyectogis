@@ -88,12 +88,12 @@ namespace CommonUtilities.ArcgisProUtils
                     using (FeatureClass featureClass = _geodatabase.OpenDataset<FeatureClass>(actualFeatureClassName))
                     {
                         // Obtener el nombre real de la capa (Layer)
-                        string actualLayerName = featureClassInfo.LayerName ?? featureClassInfo.LayerNameGenerator?.Invoke(v_zona_dm);
+                        string actualLayerName = featureClassInfo.LayerName ?? featureClassInfo.LayerNameGenerator?.Invoke(cd_region_sele);
 
                         // Crear el FeatureLayer
                         FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
                         {
-                            Name = featureClassInfo.LayerName,
+                            Name = actualLayerName,//featureClassInfo.LayerName,
                             IsVisible = isVisible
                         };
                         FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, _map);
@@ -236,19 +236,19 @@ namespace CommonUtilities.ArcgisProUtils
             new FeatureClassInfo
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Provincia,
-                LayerNameGenerator = (cd_region_sele) => cd_region_sele != "00" ? "Prov_Colindantes" : "Provincia",
+                LayerNameGenerator = (cd_region_sele) => cd_region_sele == "00" ? "Prov_Colindantes" : "Provincia",
                 VariableName = "pFeatureLayer_prov"
             },
             new FeatureClassInfo
             {
                 FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Provincia_Z + v_zona_dm,
-                LayerNameGenerator = (cd_region_sele) => cd_region_sele != "00" ? "Prov_Colindantes" : "Provincia",
+                LayerNameGenerator = (cd_region_sele) => cd_region_sele == "00" ? "Prov_Colindantes" : "Provincia",
                 VariableName = "pFeatureLayer_prov"
             },
             new FeatureClassInfo
             {
                 FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Provincia_WGS + v_zona_dm,
-                LayerNameGenerator = (cd_region_sele) => cd_region_sele != "00" ? "Prov_Colindantes" : "Provincia",
+                LayerNameGenerator = (cd_region_sele) => cd_region_sele == "00" ? "Prov_Colindantes" : "Provincia",
                 VariableName = "pFeatureLayer_prov"
             },
 
@@ -499,20 +499,24 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
-                // Obtener el FeatureLayer desde el diccionario
+                //// Obtener el FeatureLayer desde el diccionario
                 if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
                 {
                     // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
                     return "";
                 }
-                
                 // Ajustar la cláusula WHERE si es necesario
                 // ... código adicional ...
 
                 // Ejecutar la selección y obtener los resultados
                 string lostrJoinCodigos = "";
 
-                await QueuedTask.Run(() =>
+                await QueuedTask.Run(async() =>
                 {
                     // Crear el envolvente
                     Envelope envelope = EnvelopeBuilder.CreateEnvelope(xMin, yMin, xMax, yMax, pFLayer.GetSpatialReference());
@@ -529,7 +533,7 @@ namespace CommonUtilities.ArcgisProUtils
                     int selectionCount = pFLayer.SelectionCount;
                     if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut)) 
                     {
-                        ExportTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                        await ExportSpatialTemaAsync(loFeature, GloblalVariables.stateDmY, shapeFileOut);
                     }
 
                     using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
@@ -596,7 +600,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <param name="sele_denu"></param>
         /// <param name="outputFileName"></param>
         /// <returns></returns>
-        public async Task ExportTemaAsync(string pNombreArchivo, bool sele_denu, string outputFileName)
+        public async Task ExportSpatialTemaAsync(string pNombreArchivo, bool sele_denu, string outputFileName)
         {
             try
             {
@@ -669,6 +673,45 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
+        public async Task ExportAttributesTemaAsync(string layerName, bool sele_denu, string outputLayerName, string customWhereClause="")
+        {
+            try
+            {
+                // Obtener el FeatureLayer correspondiente
+                if (!featureLayerMap.TryGetValue(layerName, out FeatureLayer tema) || tema == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    tema = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, layerName);
+                }
+                if (tema == null)
+                {
+                    return;
+                }
+
+                // Obtener el FeatureClass del FeatureLayer
+                FeatureClass fclas_tema = await QueuedTask.Run(() =>
+                {
+                    return tema.GetFeatureClass();
+                });
+                // Definir la ruta de salida y el nombre del archivo
+                string outputFolder = Path.Combine(GloblalVariables.pathFileContainerOut, GloblalVariables.fileTemp);
+                string outputPath = Path.Combine(outputFolder, outputLayerName + ".shp");
+                // Ejecutar la exportación dentro de un QueuedTask
+                //await QueuedTask.Run(() =>
+                //{
+                // Exportar el FeatureClass a shapefile
+                //tema.Select(queryFilter, SelectionCombinationMethod.New);
+                var valueArray = Geoprocessing.MakeValueArray(tema.Name, outputFolder, outputLayerName, customWhereClause);
+                //IGPResult gpResult = await Geoprocessing.ExecuteToolAsync("FeatureClassToShapefile_conversion", valueArray, null, null, null, GPExecuteToolFlags.Default);
+                IGPResult gpResult = await Geoprocessing.ExecuteToolAsync("FeatureClassToFeatureClass_conversion", valueArray, null, null, null, GPExecuteToolFlags.Default);
+                //});
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Ha ocurrido un error al exportar la data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
 
     }
     public class FeatureClassInfo
