@@ -970,8 +970,12 @@ namespace SigcatminProAddin.View.Modulos
                                 DataTable lodtbDatos1 = dataBaseHandler.ObtenerBloqueadoDm(v_codigo_dm);
                                 if (lodtbDatos1.Rows.Count > 0)
                                 {
-                                    row["BLOQUEO"] = "1";
-                                    row["CASO"] = "D.M. - ANAP";
+                                    if (lodtbDatos1.Rows[0]["CODIGO"].ToString() == "1")
+                                    {
+                                        row["BLOQUEO"] = "1";
+                                        row["CASO"] = "D.M. - ANAP";
+                                    }
+                                    
                                 }
                                 else
                                 {
