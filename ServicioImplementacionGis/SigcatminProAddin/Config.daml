@@ -41,7 +41,7 @@
           <!-- host controls within groups -->
           <button refID="SigcatminProAddin_View_Botones_LoginButton" size="large" />
           <subgroup refID="SigcatminProAddin_Subgroup1" />
-		  <subgroup refID="SigcatminProAddin_Subgroup2" />
+          <subgroup refID="SigcatminProAddin_Subgroup2" />
           <!--<button refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminButton" size="large" />
           <gallery refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" inline="false" size="large" />-->
           <!--<button refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsButton" size="large" />
@@ -70,11 +70,11 @@
           <button refID="SigcatminProAddin_View_Botones_GraficarExcelBtn" size="middle" />
           <button refID="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" size="middle" />
         </subgroup>
-		  <subgroup id="SigcatminProAddin_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
-			  <comboBox refID="SigcatminProAddin_View_Modulos_SelectorCategorias" />
-		      <comboBox refID="SigcatminProAddin_View_Modulos_SelectorModulos" />		      
-		      <button refID="SigcatminProAddin_View_Modulos_ConfirmationModule" size="large"/>
-		  </subgroup>
+        <subgroup id="SigcatminProAddin_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <comboBox refID="SigcatminProAddin_View_Modulos_SelectorCategorias" />
+          <comboBox refID="SigcatminProAddin_View_Modulos_SelectorModulos" />
+          <button refID="SigcatminProAddin_View_Modulos_ConfirmationModule" size="large" />
+        </subgroup>
       </subgroups>
       <controls>
         <!-- Controles Principales -->
@@ -91,15 +91,15 @@
           <tooltip heading="Tooltip Heading">Generar Planos Masivos<disabledText /></tooltip>
         </button>
         <!--Controles Informe Técnico-->
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado" caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i1">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado"   caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="Images\Contenido32.png" largeImage="Images\Contenido32.png" keytip="i1">
           <tooltip heading="Tooltip Heading">Validar resultado<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_AreaSuperpuesta" caption="Superpuesta" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.AreaSuperpuesta" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i2">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_AreaSuperpuesta" caption="Superpuesta" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.AreaSuperpuesta" loadOnClick="true" smallImage="Images\Contenido32nuevo.png" largeImage="Images\Contenido32nuevo.png" keytip="i2">
           <tooltip heading="Tooltip Heading">Área superpuesta<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_SuperposicionAreaRestringida" caption="Superposición A.R." categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.SuperposicionAreaRestringida" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i3">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_SuperposicionAreaRestringida" caption="Superposición A.R." categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.SuperposicionAreaRestringida" loadOnClick="true" smallImage="pack://application:,,,/SigcatminProAddin;component/Images/Recurso.png" largeImage="pack://application:,,,/SigcatminProAddin;component/Images/Recurso.png" keytip="i3">
           <tooltip heading="Tooltip Heading">Superposición área restringida<disabledText /></tooltip>
           <content version="1.0" group="Group B" />
         </button>
@@ -198,11 +198,18 @@
 				  Rotula Texto Demarcación<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoSimultaneidad" caption="Plano de Simultaneidad" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoSimultaneidad" loadOnClick="true" keytip="BDG-20" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoSimultaneidad" caption="Plano de Simultaneidad" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoSimultaneidad" loadOnClick="true" keytip="BDG-20" smallImage="pack://application:,,,/SigcatminProAddin;component/Images/Contenido.png" largeImage="pack://application:,,,/SigcatminProAddin;component/Images/Contenido.png">
           <tooltip heading="Tooltip Heading">
 				  Plano de Simultaneidad<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
+        <tool keytip="t1" id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="RotularVerticesTool" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" smallImage="GenericButtonRed16" largeImage="GenericButtonRed32" condition="esri_mapping_mapPane">
+          <tooltip heading="Tooltip Heading">
+            Tooltip text<disabledText />
+          </tooltip>
+          <content version="1.0" group="Group A" />
+        </tool>
+        
         <!--Controles Modulo UEAs-->
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegranteUEA" caption="Reporte de Integrante de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegranteUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-1">
           <tooltip heading="Tooltip Heading">Reporte de Integrante de UEA<disabledText /></tooltip>
@@ -333,28 +340,29 @@
           <tooltip heading="Tooltip Heading">Consulta Area Disponible<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
-		  <!--Controles Selector de Modulos-->
-        <comboBox id="SigcatminProAddin_View_Modulos_SelectorCategorias"  condition="Logged_condition"  caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectorCategorias" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+        <!--Controles Selector de Modulos-->
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectorCategorias" condition="Logged_condition" caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectorCategorias" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
           <tooltip heading="Tipo">Seleccione el tipo de Modulo<disabledText /></tooltip>
         </comboBox>
-	    <comboBox id="SigcatminProAddin_View_Modulos_SelectorModulos"  condition="Logged_condition"  caption="Modulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectorModulos" condition="Logged_condition" caption="Modulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
           <tooltip heading="Modulos">Seleccione el Modulo<disabledText /></tooltip>
         </comboBox>
-	    <button id="SigcatminProAddin_View_Modulos_ConfirmationModule"  condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
-			<tooltip heading="Confirmar">Confirmar Modulo<disabledText /></tooltip>
-		</button>
+        <button id="SigcatminProAddin_View_Modulos_ConfirmationModule" condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
+          <tooltip heading="Confirmar">Confirmar Modulo<disabledText /></tooltip>
+        </button>
+        
       </controls>
       <galleries>
         <gallery id="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" condition="Logged_condition" showGroup="true" caption="InformeTecnicoGallery" className="SigcatminProAddin.View.Toolbars.InformeTecnico.InformeTecnicoGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/InformeTecnico/InformeTecnicoGalleryTemplate.xaml" templateID="LargeGalleryItemTemplate" resizable="true" largeImage="GenericButtonOrange32" keytip="g1">
           <tooltip heading="Tooltip Heading">Informe Técnico ToolBar<disabledText /></tooltip>
         </gallery>
-        <gallery id="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" condition="Logged_condition" showGroup="true" caption="BDGeocatminGallery" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.BDGeocatminGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/BDGeocatmin/BDGeocatminGalleryTemplate.xaml" templateID="BDGeocatminGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g2">
+        <gallery id="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" condition="Logged_condition" showGroup="true" caption="BDGeocatminGallery" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.BDGeocatminGallery" itemsInRow="4" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/BDGeocatmin/BDGeocatminGalleryTemplate.xaml" templateID="BDGeocatminGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g2">
           <tooltip heading="Tooltip Heading">BDGeocatmin ToolBar<disabledText /></tooltip>
         </gallery>
         <gallery id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsGallery" condition="Logged_condition" showGroup="true" caption="ModuloUEAsGallery" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ModuloUEAsGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/ModuloUEAs/ModuloUEAsGalleryTemplate.xaml" templateID="ModuloUEAsGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g3">
           <tooltip heading="Tooltip Heading">Modulo UEAs ToolBar<disabledText /></tooltip>
         </gallery>
-        <gallery id="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" condition="Logged_condition" showGroup="true" caption="EvaluacionGallery" className="SigcatminProAddin.View.Toolbars.Evaluacion.EvaluacionGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/Evaluacion/EvaluacionGalleryTemplate.xaml" templateID="EvaluacionGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g4">
+        <gallery id="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" condition="Logged_condition"  showGroup="true" caption="EvaluacionGallery" className="SigcatminProAddin.View.Toolbars.Evaluacion.EvaluacionGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/Evaluacion/EvaluacionGalleryTemplate.xaml" templateID="EvaluacionGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g4">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </gallery>
       </galleries>

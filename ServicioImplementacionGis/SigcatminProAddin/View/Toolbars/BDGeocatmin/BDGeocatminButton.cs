@@ -41,6 +41,25 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     internal class VerCapas : BDGeocatminButton { }
     internal class GenerarNumeroResolucionDm : BDGeocatminButton { }
     internal class RotularVertices : BDGeocatminButton { }
+    internal class RotularVerticesTool: MapTool
+    {
+        public RotularVerticesTool()
+        {
+            IsSketchTool = true;
+            SketchType = SketchGeometryType.Rectangle;
+            SketchOutputMode = SketchOutputMode.Map;
+        }
+
+        protected override Task OnToolActivateAsync(bool active)
+        {
+            return base.OnToolActivateAsync(active);
+        }
+
+        protected override Task<bool> OnSketchCompleteAsync(Geometry geometry)
+        {
+            return base.OnSketchCompleteAsync(geometry);
+        }
+    }
     internal class RetirarVertices : BDGeocatminButton { }
     internal class GenerarDemarcacionMultiple : BDGeocatminButton { }
     internal class RotulaTextoDemarcacion : BDGeocatminButton { }

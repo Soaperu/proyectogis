@@ -9,6 +9,10 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Config.daml" />
+    <None Remove="Images\Contenido.png" />
+    <None Remove="Images\Contenido32.png" />
+    <None Remove="Images\Contenido32nuevo.png" />
+    <None Remove="Images\Contenidonobg.png" />
     <None Remove="Images\EvaluacionDM\mapa100.png" />
     <None Remove="Images\EvaluacionDM\usuario32.png" />
     <None Remove="Images\EvaluacionDM\usuario32_gris.png" />
@@ -21,6 +25,7 @@
     <None Remove="Images\Login\visible16_blue.png" />
     <None Remove="Images\Login\visible16_white.png" />
     <None Remove="Images\Login\warningblue32.png" />
+    <None Remove="Images\Recurso.png" />
     <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
   </ItemGroup>
   <ItemGroup>
@@ -28,7 +33,13 @@
     <Content Include="Images\AddInDesktop16.png" />
     <Content Include="Images\AddInDesktop32.png" />
     <Content Include="DarkImages\AddInDesktop16.png" />
-    <Content Include="DarkImages\AddInDesktop32.png" />    
+    <Content Include="DarkImages\AddInDesktop32.png" />
+    <Content Include="Images\Contenido.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Images\Contenido32.png" />
+    <Content Include="Images\Contenido32nuevo.png" />
+    <Content Include="Images\Contenidonobg.png" />    
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\launchSettings.json" />
@@ -129,6 +140,9 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
+    <Resource Include="Images\Recurso.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
