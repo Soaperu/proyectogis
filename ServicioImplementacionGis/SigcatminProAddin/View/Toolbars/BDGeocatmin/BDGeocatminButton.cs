@@ -32,7 +32,13 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     internal class CalculaPorcentajeRegion : BDGeocatminButton { }
     internal class LimitesRegionales : BDGeocatminButton { }
     internal class PlanoAreasSuperpuestas : BDGeocatminButton { }
-    internal class PlanoEvaluacion : BDGeocatminButton { }
+    internal class PlanoEvaluacion : BDGeocatminButton 
+    {
+        protected override async void OnClick() 
+        {
+            await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(@"U:\\Geocatmin\\Plantillas\\eva1Layuot.pagx");
+        }
+    }
     internal class PlanoDemarcacion : BDGeocatminButton { }
     internal class PlanoCarta : BDGeocatminButton { }
     internal class DibujarPoligono : BDGeocatminButton { }
