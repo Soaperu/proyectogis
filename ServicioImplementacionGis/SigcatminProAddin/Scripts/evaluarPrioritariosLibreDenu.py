@@ -12,14 +12,6 @@ temp_folder = r"c:/bdgeocatmin/temporal"
 
 out_geom= object()
 response = None
-# Anterior o Prioritario
-# _ANTERIOR = "AN"
-_ANTERIOR = 'PR'
-
-_POSTERIOR = 'PO'
-_EXTINGUIDO = 'EX'
-_EVALUADO = 'EV'
-_SIMULTANEO = 'SI'
 
 
 
@@ -27,8 +19,7 @@ def act_geom_info(lyrpath, codigo):
     """
     Actualiza informacion de la capa temporal de cmi, a partir de sus propios datos
     """
-    # campos_agregar = [["CONTADOR", "SHORT", "#"], ["PRIORI", "TEXT", 2], ["AREAINT", "DOUBLE", "#"],["TOTALSINO", "TEXT", 2]]
-    campos_agregar = [["CONTADOR", "SHORT", "#"], ["TOTALSINO", "TEXT", 2]]
+    campos_agregar = [["CONTADOR", "SHORT", "#"], ["PRIORI", "TEXT", 2], ["AREAINT", "DOUBLE", "#"],["TOTALSINO", "TEXT", 2]]
 
     for campo in campos_agregar:
         try:
@@ -50,7 +41,7 @@ def act_geom_info(lyrpath, codigo):
     tipo_ex_dm = valores[8]
 
     oid_fieldname = arcpy.Describe(lyrpath).OIDFieldName
-    campos = [oid_fieldname, "CODIGOU", "SHAPE@", "CONTADOR", "EVAL", "AREA_INT", "FEC_DENU", "HOR_DENU", "ESTADO", "D_ESTADO", "CONCESION", "TIPO_EX", "IDENTI", "DE_IDEN", "FEC_LIB", "DATUM", "SITUACION", "TOTALSINO" ]
+    campos = [oid_fieldname, "CODIGOU", "SHAPE@", "CONTADOR", "PRIORI", "AREAINT", "FEC_DENU", "HOR_DENU", "ESTADO", "D_ESTADO", "CONCESION", "TIPO_EX", "IDENTI", "DE_IDEN", "FEC_LIB", "DATUM", "SITUACION", "TOTALSINO" ]
     query = "CODIGOU <> '{}'".format(codigo)
     query = "1=1"
     with arcpy.da.UpdateCursor(lyrpath, campos, query) as cursor:
@@ -106,56 +97,56 @@ def act_geom_info(lyrpath, codigo):
                         # 1er caso, dm es psad56 y dato iterado es wgs84(mas reciente)
                         if int(datum_dm) < int(datum_x):
                             if situex_x =='V' :
-                                priori = _POSTERIOR 
+                                priori = "PO" 
                             else :
-                                priori = _EXTINGUIDO
+                                priori = "EX"
                             
                         # 2do caso, dm es wgs84 y dato iterado es psad5(mas antiguo)
                         elif int(datum_dm) > int(datum_x):
                             if situex_x =='V' :
-                                priori = _ANTERIOR 
+                                priori = "AN" 
                             else :
-                                priori = _EXTINGUIDO
+                                priori = "EX"
                         
                         # los datums son iguales
                         else:
                             
                             if estado_x == 'D':
                                 if tipo_ex_dm == 'PE':
-                                    priori = _ANTERIOR
+                                    priori = "AN"
                                 elif tipo_ex_dm == 'RD':
-                                    priori = _POSTERIOR
+                                    priori = "PO"
                             
                             elif estado_x == 'F':
                                 if tipo_ex_dm == 'PE':
-                                    priori = _ANTERIOR
+                                    priori = "AN"
                                 elif tipo_ex_dm == 'RD':
                                     if fecdenu_dm < fec_lib_x:
-                                        priori = _ANTERIOR
+                                        priori = "AN"
                                     else:
-                                        priori = _EXTINGUIDO
+                                        priori = "EX"
 
                             elif estado_x == 'X':
                                 if tipo_ex_x in ('PE', 'RD'):
-                                    priori = _EXTINGUIDO
+                                    priori = "EX"
 
                             elif estado_x == 'Y':
                                 if fecdenu_dm < fec_lib_x:
-                                    priori = _ANTERIOR
+                                    priori = "AN"
                                 else:
-                                    priori = _EXTINGUIDO
+                                    priori = "EX"
                             
                             elif estado_x in ('L', 'J', 'H'):
                                 if tipo_ex_dm == 'RD':
                                     if tipo_ex_x == 'PE':
-                                        priori = _EXTINGUIDO 
+                                        priori = "EX" 
                                     else:
-                                        priori = _ANTERIOR
+                                        priori = "AN"
                                 elif tipo_ex_dm == 'PE':
-                                    priori = _ANTERIOR
+                                    priori = "AN"
                             
                             elif estado_x in ('B', 'M', 'G', 'A', 'S', 'R'):
-                                priori = _POSTERIOR
+                                priori = "PO"
                             
                             else:
                                 # Caso 1
@@ -165,55 +156,55 @@ def act_geom_info(lyrpath, codigo):
                                         if tipo_ex_dm == 'PE':
                                             if estado_x in ('K', 'Q', 'C', 'N', 'E', 'T'):
                                                 if tipo_ex_x in ('DN', 'AC', 'PE'):
-                                                    priori = _ANTERIOR
+                                                    priori = "AN"
                                             
                                             if estado_x == 'X':
                                                 if de_iden_x == 'I':
                                                     if tipo_ex_x in ('DN', 'AC'):
-                                                        priori = _ANTERIOR
+                                                        priori = "AN"
                                         
                                         elif tipo_ex_dm == 'RD':
                                             if estado_x in ('T', 'X', 'C'):
                                                 if tipo_ex_x == "RD":
-                                                    priori = _ANTERIOR
+                                                    priori = "AN"
                                     
                                     elif estado_x == 'P':
                                         if fecdenu_dm != '' and fec_denu_x != '':
                                             if fec_denu_x < fecdenu_dm:
-                                                priori = _ANTERIOR
+                                                priori = "AN"
                                             elif fec_denu_x > fecdenu_dm:
-                                                priori = _POSTERIOR
+                                                priori = "PO"
                                             elif fec_denu_x == fecdenu_dm:
                                                 if hor_denu_x < hordenu_dm:
-                                                    priori = _ANTERIOR
+                                                    priori = "AN"
                                                 elif hor_denu_x > hordenu_dm:
-                                                    priori = _POSTERIOR
+                                                    priori = "PO"
                                                 elif hordenu_dm == hor_denu_x:
-                                                    priori = _SIMULTANEO
+                                                    priori = "SI"
                                         else:
                                             if float(vestado_x) < 2:
-                                                priori = _ANTERIOR
+                                                priori = "AN"
                                 
                                 # Caso 2
                                 # Verificando D.M. (Redenuncio) Vs Sistemas de Cuadriculas
                                 if identi_dm == "01-10" and identi_x != "01-10":
                                     if estado_x in ('Q', 'C', 'N', 'E'):
                                         if tipo_ex_x in ('DN', 'AC', 'PE'):
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                                     if estado_x  == 'X':
                                         if de_iden_x == 'I':
                                             if tipo_ex_x in ('DN', 'AC'):
-                                                priori = _ANTERIOR
+                                                priori = "AN"
                                     
                                     if estado_x in ('P', 'T', 'K'):
-                                        priori = _POSTERIOR
+                                        priori = "PO"
                                 
                                 # Caso 3
                                 # Evaluando DM Evaluado Petitorio vs redenuncio
                                 if identi_dm != "01-10" and identi_x == "01-10":
                                     if estado_x in ('P', 'T', 'C', 'X'):
                                         if tipo_ex_x == 'RD':
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                     
                     # Verificando si el D.M. Evaluado es diferente de petitorio
                     # estado_dm !=P
@@ -221,16 +212,16 @@ def act_geom_info(lyrpath, codigo):
                         # 1er caso, dm es psad56 y dato iterado es wgs84(mas reciente)
                         if int(datum_dm) < int(datum_x):
                             if situex_x =='V' :
-                                priori = _POSTERIOR 
+                                priori = "PO" 
                             else :
-                                priori = _EXTINGUIDO
+                                priori = "EX"
                             
                         # 2do caso, dm es wgs84 y dato iterado es psad5(mas antiguo)
                         elif int(datum_dm) > int(datum_x):
                             if situex_x =='V' :
-                                priori = _ANTERIOR 
+                                priori = "AN" 
                             else :
-                                priori = _EXTINGUIDO
+                                priori = "EX"
                         
                         # los datums son iguales
                         else:
@@ -239,76 +230,76 @@ def act_geom_info(lyrpath, codigo):
                                 if fecdenu_dm != '' and fec_denu_x != '':
                                     if fec_denu_x < fecdenu_dm:
                                         if estado_x in ('E', 'N'):
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                                         else:
-                                            priori = _POSTERIOR
+                                            priori = "PO"
                                     
                                     elif fec_denu_x > fecdenu_dm:
-                                        priori = _POSTERIOR
+                                        priori = "PO"
                                     
                                     elif fecdenu_dm == fec_denu_x:
                                         if hor_denu_x < hordenu_dm:
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                                         elif hor_denu_x > hordenu_dm:
-                                            priori = _POSTERIOR
+                                            priori = "PO"
                                         elif hor_denu_x == hordenu_dm:
-                                            priori = _SIMULTANEO
+                                            priori = "SI"
                                 else:
                                     if float(vestado_x) < 2:
-                                        priori = _ANTERIOR
+                                        priori = "AN"
                                     else:
-                                        priori = _POSTERIOR
+                                        priori = "PO"
                             
                             # Caso 2 
                             if identi_dm != '01-10' and identi_x == "01-10":
                                 if fecdenu_dm != '':
                                     if fec_denu_x != '':
                                         if fec_denu_x < fecdenu_dm:
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                                         
                                         elif fec_denu_x > fecdenu_dm:
                                             if estado_dm in ('E', 'N'):
-                                                priori = _POSTERIOR
+                                                priori = "PO"
                                             else:
-                                                priori = _ANTERIOR
+                                                priori = "AN"
                                         
                                         elif fecdenu_dm == fec_denu_x:
                                             if hor_denu_x < hordenu_dm:
-                                                priori = _ANTERIOR
+                                                priori = "AN"
                                             elif hor_denu_x > hordenu_dm:
-                                                priori = _POSTERIOR
+                                                priori = "PO"
                                             elif hor_denu_x == hordenu_dm:
-                                                priori = _SIMULTANEO
+                                                priori = "SI"
                                     else:
                                         if float(vestado_dm) < 2:
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                                         else:
-                                            priori = _POSTERIOR
+                                            priori = "PO"
                                 else:
                                     if float(vestado_dm) < 2:
-                                        priori = _POSTERIOR
+                                        priori = "PO"
                                     else:
-                                        priori = _ANTERIOR
+                                        priori = "AN"
                             
                             # Caso 3 y 4
                             if identi_dm == identi_x:
                                 if fecdenu_dm != '' and fec_denu_x != '':
                                     if fec_denu_x < fecdenu_dm:
-                                        priori = _ANTERIOR
+                                        priori = "AN"
                                     elif fec_denu_x > fecdenu_dm:
-                                        priori = _POSTERIOR
+                                        priori = "PO"
                                     elif fec_denu_x == fecdenu_dm:
                                         if hor_denu_x < hordenu_dm:
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                                         elif hor_denu_x > hordenu_dm:
-                                            priori = _POSTERIOR
+                                            priori = "PO"
                                         elif hor_denu_x == hordenu_dm:
-                                            priori = _SIMULTANEO
+                                            priori = "SI"
                                 else:
                                     if float(vestado_x) < float(vestado_dm):
-                                        priori = _ANTERIOR
+                                        priori = "AN"
                                     elif float(vestado_x) > float(vestado_dm):
-                                        priori = _POSTERIOR
+                                        priori = "PO"
                                     elif float(vestado_x) == float(vestado_dm):
                                         corre1 = codigo[2:8]
                                         if not corre1.isdigit():
@@ -320,16 +311,16 @@ def act_geom_info(lyrpath, codigo):
                                         letra_x = codigo_x[8]
                                         
                                         if (letra_dm == 'X' and letra_x == 'Y') or (letra_dm == 'Z' and letra_x == 'Y') or (letra_dm == 'Z' and letra_x == 'X'):
-                                            priori = _POSTERIOR
+                                            priori = "PO"
                                         elif (letra_dm == 'Y' and letra_x == 'X') or (letra_dm == 'Y' and letra_x == 'Z') or (letra_dm == 'X' and letra_x == 'Z'):
-                                            priori = _ANTERIOR
+                                            priori = "AN"
                                         elif letra_dm == letra_x :
                                             if corre1 < corre2:
-                                                priori = _ANTERIOR
+                                                priori = "AN"
                                             else:
-                                                priori = _POSTERIOR
+                                                priori = "PO"
             if codigo == codigo_x:
-                priori = _EVALUADO
+                priori = "EV"
             i[4] = priori
             i[17] = totalsino            
             cursor.updateRow(i)

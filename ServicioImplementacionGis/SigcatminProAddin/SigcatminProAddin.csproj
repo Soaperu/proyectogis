@@ -151,6 +151,9 @@
     <None Update="Scripts\CMIN_EVAL.atbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\evaluarPrioritariosLibreDenu.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\evaluarPrioritarios.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
