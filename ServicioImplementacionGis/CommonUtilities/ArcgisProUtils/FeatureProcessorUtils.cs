@@ -1,14 +1,19 @@
 ﻿using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.DDL;
+using ArcGIS.Core.Geometry;
+using ArcGIS.Core.Internal.CIM;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using MessageBox = ArcGIS.Desktop.Framework.Dialogs.MessageBox;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -417,14 +422,14 @@ namespace CommonUtilities.ArcgisProUtils
                     // Comprobamos si los campos existen, y si no, los agregamos.
                     await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
                     await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeString, 20, 4); // Precision 20, escala 4
+                    await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeDouble, 20, 4); // Precision 20, escala 4
                     await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 10);
                     await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
                     await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
                     await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
                     await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
                     await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeDate, 10);
+                    await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeString, 10);
                     await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeDate, 256);
                     await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
                     await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
@@ -442,8 +447,255 @@ namespace CommonUtilities.ArcgisProUtils
                 MessageBox.Show($"Error: {ex.Message}");
             }
         }
-    }
 
+         public static void ProcessOverlapAreaDm(
+                                        DataTable tableExistDm,
+                                        out string listCodigoColin,
+                                        out string listCodigoSup,
+                                        out List<string> colectionAreaOverlap)
+         {
+            // Inicializar las salidas
+            listCodigoColin = string.Empty;
+            listCodigoSup = string.Empty;
+            colectionAreaOverlap = new List<string>();
+
+            // Usar StringBuilder para eficiencia en concatenaciones
+            StringBuilder codigoColinBuilder = new StringBuilder();
+            StringBuilder codigoSupBuilder = new StringBuilder();
+
+            // Contadores para gestionar operadores OR
+            int contador_areas = 0;
+            int contador_areas_sup = 0;
+
+            // Verificar si el DataTable tiene filas
+            if (tableExistDm.Rows.Count > 0)
+            {
+                // Recorrer cada fila del DataTable
+                foreach (DataRow row in tableExistDm.Rows)
+                {
+                    // Extraer valores de las columnas, asegurando que no sean null
+                    string codigo_sup = row["CODIGO_SP"] != DBNull.Value ? row["CODIGO_SP"].ToString() : string.Empty;
+                    double area_sup = 0.0;
+
+                    if (row["AREASUP"] != DBNull.Value)
+                    {
+                        // Intentar convertir el valor a double
+                        double.TryParse(row["AREASUP"].ToString(), out area_sup);
+                    }
+
+                    // Construir cláusulas WHERE y colecciones basadas en el valor de AREASUP
+                    if (area_sup == 0.0)
+                    {
+                        // Añadir 'OR' si ya existen condiciones previas
+                        if (contador_areas > 0)
+                        {
+                            codigoColinBuilder.Append(" OR ");
+                        }
+
+                        // Construir la condición para CODIGOU
+                        codigoColinBuilder.Append($"CODIGOU = '{codigo_sup}'");
+                        contador_areas++;
+                    }
+                    else if (area_sup > 0.0)
+                    {
+                        // Agregar a la colección AREA_SUP
+                        colectionAreaOverlap.Add($"{area_sup}-{codigo_sup}");
+
+                        // Añadir 'OR' si ya existen condiciones previas
+                        if (contador_areas_sup > 0)
+                        {
+                            codigoSupBuilder.Append(" OR ");
+                        }
+
+                        // Construir la condición para CODIGOU
+                        codigoSupBuilder.Append($"CODIGOU = '{codigo_sup}'");
+                        contador_areas_sup++;
+                    }
+                }
+
+                // Asignar las cadenas construidas a las salidas
+                listCodigoColin = codigoColinBuilder.ToString();
+                listCodigoSup = codigoSupBuilder.ToString();
+            }
+         }
+
+        public async static Task UpdateRecordsDmAsync(string capa, string listCodigoColin, string listCodigoSup, List<string> colectionAreaOverlap)
+        {
+            try
+            {
+                await QueuedTask.Run(() =>
+                {
+                    // Obtener el mapa activo
+                    Map map = MapView.Active?.Map;
+                    if (map == null)
+                    {
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se encontró un mapa activo.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Buscar la capa por nombre
+                    FeatureLayer pFeatLayer = map.Layers.OfType<FeatureLayer>()
+                        .FirstOrDefault(fl => fl.Name.Equals(capa, StringComparison.OrdinalIgnoreCase));
+
+                    if (pFeatLayer == null)
+                    {
+                        MessageBox.Show($"No se encuentra la capa '{capa}' para generar evaluación DM.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+
+                    FeatureClass pFeatureClass = pFeatLayer.GetFeatureClass();
+
+                    if (pFeatureClass == null)
+                    {
+                        MessageBox.Show($"La capa '{capa}' no tiene una FeatureClass válida.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Definir los índices de los campos
+                    int indexEVAL = pFeatureClass.GetDefinition().FindField("EVAL");
+                    int indexAREA_INT = pFeatureClass.GetDefinition().FindField("AREA_INT");
+                    int indexCODIGOU = pFeatureClass.GetDefinition().FindField("CODIGOU");
+                    int indexESTADO = pFeatureClass.GetDefinition().FindField("ESTADO");
+
+                    if (indexEVAL == -1 || indexAREA_INT == -1 || indexCODIGOU == -1 || indexESTADO == -1)
+                    {
+                        MessageBox.Show("Uno o más campos necesarios no fueron encontrados en la FeatureClass.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Bucle para procesar Superpuesto, Colindantes y Vecinos
+                    for (int j = 1; j <= 3; j++)
+                    {
+                        string seleccionTema = j switch
+                        {
+                            1 => "Superpuesto",
+                            2 => "Colindantes",
+                            3 => "Vecinos",
+                            _ => string.Empty
+                        };
+
+                        if (string.IsNullOrEmpty(seleccionTema))
+                            continue;
+
+                        // Definir la cláusula WHERE basada en el tema
+                        string whereClause = seleccionTema switch
+                        {
+                            "Superpuesto" => listCodigoSup,
+                            "Colindantes" => listCodigoColin,
+                            "Vecinos" => "EVAL = ''",
+                            _ => string.Empty
+                        };
+
+                        if (string.IsNullOrEmpty(whereClause) && seleccionTema != "Vecinos")
+                            continue;
+
+                        using (RowCursor cursor = pFeatureClass.Search(new ArcGIS.Core.Data.QueryFilter { WhereClause = whereClause }, false))
+                        {
+                            while (cursor.MoveNext())
+                            {
+                                using (Row updateCursor = cursor.Current)
+                                {
+                                    if (updateCursor == null)
+                                    {
+                                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se pudo obtener el Registro para actualizar.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                                        continue;
+                                    }
+                                                                   
+                                    switch (seleccionTema)
+                                    {
+                                        case "Superpuesto":
+                                            ActualizarSuperpuesto(updateCursor, indexEVAL, indexAREA_INT, indexCODIGOU, colectionAreaOverlap);
+                                            break;
+
+                                        case "Colindantes":
+                                            ActualizarColindantes(updateCursor, indexEVAL, indexAREA_INT);
+                                            break;
+
+                                        case "Vecinos":
+                                            ActualizarVecinos(updateCursor, indexEVAL, indexAREA_INT, indexCODIGOU);
+                                            break;
+                                    }
+
+                                    updateCursor.Store();
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Ocurrió un error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
+        private static void ActualizarSuperpuesto(Row row, int indexEVAL, int indexAREA_INT, int indexCODIGOU, List<string> colectionAreaOverlap)
+        {
+            List<string> colecciones_rd = new List<string>();
+            // Asumimos que colecciones_AREA_SUP ya está poblado
+            foreach (var item in colectionAreaOverlap)
+            {
+                var parts = item.Split('-');
+                if (parts.Length != 2)
+                    continue;
+
+                if (double.TryParse(parts[0], out double areaSup))
+                {
+                    string codigoBus = parts[1];
+
+                    // Verificar si el CODIGOU coincide
+                    if (row[indexCODIGOU].ToString() == codigoBus)
+                    {
+                        string estadoRd = row["ESTADO"].ToString() ?? string.Empty;
+                        if (estadoRd == "F")
+                        {
+                            colecciones_rd.Add(codigoBus);
+                        }
+
+                        // Actualizar campos
+                        row[indexEVAL]= "IN";
+                        row[indexAREA_INT]= areaSup;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Actualiza las características que son colindantes.
+        /// </summary>
+        /// <param name="feature">La característica a actualizar.</param>
+        /// <param name="indexEVAL">Índice del campo EVAL.</param>
+        /// <param name="indexAREA_INT">Índice del campo AREA_INT.</param>
+        private static void ActualizarColindantes(Row feature, int indexEVAL, int indexAREA_INT)
+        {
+            feature[indexEVAL]= "CO";
+            feature[indexAREA_INT]= 0.0;
+        }
+
+        /// <summary>
+        /// Actualiza las características que son vecinos.
+        /// </summary>
+        /// <param name="feature">La característica a actualizar.</param>
+        /// <param name="indexEVAL">Índice del campo EVAL.</param>
+        /// <param name="indexAREA_INT">Índice del campo AREA_INT.</param>
+        /// <param name="indexCODIGOU">Índice del campo CODIGOU.</param>
+        private static void ActualizarVecinos(Row feature, int indexEVAL, int indexAREA_INT, int indexCODIGOU)
+        {
+            string codigoOU = feature[indexCODIGOU].ToString() ?? string.Empty;
+
+            if (codigoOU == GlobalVariables.CurrentCodeDm)
+            {
+                feature[indexEVAL]= "EV";
+            }
+            else
+            {
+                feature[indexEVAL] = "VE";
+                feature[indexAREA_INT] = 0.0;
+            }
+        }
+
+
+    }
 }
 
 

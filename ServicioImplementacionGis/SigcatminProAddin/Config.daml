@@ -138,12 +138,12 @@
 				  Plano de Areas Superpuestas<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoEvaluacion" caption="Plano de Evaluación" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoEvaluacion" loadOnClick="true" keytip="BDG-7" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoEvaluacion" caption="Plano de Evaluación" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoEvaluacion" loadOnClick="true" keytip="BDG-7" smallImage="Images\Toolbars\BDGeocatmin\plano1.png" largeImage="Images\Toolbars\BDGeocatmin\plano1.png">
           <tooltip heading="Tooltip Heading">
 				  Plano de Evaluación<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoDemarcacion" caption="Plano de Demarcacion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoDemarcacion" loadOnClick="true" keytip="BDG-8" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoDemarcacion" caption="Plano de Demarcacion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoDemarcacion" loadOnClick="true" keytip="BDG-8" smallImage="Images\Toolbars\BDGeocatmin\planoX16.png" largeImage="Images\Toolbars\BDGeocatmin\planoX16.png">
           <tooltip heading="Tooltip Heading">
 				  Plano de Demarcacion<disabledText /></tooltip>
           <content version="1.0" group="Group A" />

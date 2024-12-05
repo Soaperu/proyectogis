@@ -813,6 +813,7 @@ namespace CommonUtilities.ArcgisProUtils
         // Otros
         public const string gstrFC_Paises = "DATA_GIS.GPO_PAI_PAISES";
         public const string gstrFC_LimiteZonas = "DATA_GIS.GPO_LZO_LIMITE_ZONAS";
+        public const string gstrFC_IgnRaster84 = "DATA_GIS.DS_IGN_CARTA_NACIONAL_2016_W84";
 
         // Agregar más constantes según sea necesario
     }
