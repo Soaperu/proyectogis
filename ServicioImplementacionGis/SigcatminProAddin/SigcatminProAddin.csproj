@@ -26,6 +26,10 @@
     <None Remove="Images\Login\visible16_white.png" />
     <None Remove="Images\Login\warningblue32.png" />
     <None Remove="Images\Recurso.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\plano1.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\plano2.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\planoX16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\prueba32.svg" />
     <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
   </ItemGroup>
   <ItemGroup>
@@ -40,6 +44,9 @@
     <Content Include="Images\Contenido32.png" />
     <Content Include="Images\Contenido32nuevo.png" />
     <Content Include="Images\Contenidonobg.png" />    
+    <Content Include="Images\Toolbars\BDGeocatmin\plano1.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\plano2.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\planoX16.png" />    
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\launchSettings.json" />

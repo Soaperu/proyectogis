@@ -141,23 +141,17 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             });
         }
-        //public static async Task<FeatureLayer> GetFeatureLayerByName(string layerName)
-        //{
-        //    await QueuedTask.Run(() =>
-        //    {
-        //        // Obtener el mapa activo en ArcGIS Pro
-        //        Map map = MapView.Active.Map;
-
-        //        // Buscar la capa con el nombre original (oldLayerName)
-        //        var layer = map.Layers.FirstOrDefault(l => l.Name == layerName);
-
-        //        // Si se encuentra la capa, cambiar el nombre
-        //        if (layer != null)
-        //        {
-        //            return layer as FeatureLayer;
-        //        }
-
-        //    });
-        //}
+        public static async Task ChangeLayerNameByFeatureLayerAsync(FeatureLayer fLayer ,string newName)
+        {
+            await QueuedTask.Run(() =>
+            {
+                  // Si se encuentra la capa, cambiar el nombre
+                if (fLayer == null)
+                {
+                    return;
+                }
+                fLayer.SetName(newName);
+            });
+        }
     }
 }
