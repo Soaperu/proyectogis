@@ -12,6 +12,7 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.KnowledgeGraph;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
+using Sigcatmin.pro.Application.UsesCases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,8 +23,12 @@ namespace SigcatminProAddinUI
 {
     internal class Button1 : Button
     {
+
         protected override void OnClick()
         {
+            var loginService = Program.GetService<LoginUseCase>();
+            loginService.Execute();
+        
         }
     }
 }

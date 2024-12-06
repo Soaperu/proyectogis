@@ -2,8 +2,10 @@
 using ArcGIS.Desktop.Framework.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using SigcatminProAddinUI.Helpers;
 using System;
 using System.IO;
+using Sigcatmin.pro.IoC;
 
 namespace SigcatminProAddinUI
 {
@@ -17,17 +19,28 @@ namespace SigcatminProAddinUI
             // Configurar el contenedor de dependencias
             var services = new ServiceCollection();
 
-            IConfiguration configuration = new ConfigurationBuilder()
-                 .SetBasePath(Directory.GetCurrentDirectory())  // Establecer la base para la búsqueda del archivo
-                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)  // Cargar el archivo JSON
-                 .Build();
+            string addInDirectory = PathAssembly.GetExecutingAssembly();
 
-            // Puedes acceder a la configuración desde aquí
-            Console.WriteLine(configuration);
-            var someSetting = configuration["SomeSettingKey"];
-            var con = configuration.GetConnectionString("DefaultConnection");
-            Console.WriteLine($"Valor de la configuración: {someSetting}");
+            // Construir la ruta completa al archivo appsettings.json
+            string filePath = Path.Combine(addInDirectory, "appsettings.json");
+            string filex = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
 
+            if (!File.Exists(filePath))
+            {
+                throw new FileNotFoundException($"No se encontró el archivo de configuración en la ruta: {filePath}");
+            }
+
+            //if (!File.Exists(filePath))
+            //{
+            //    throw new FileNotFoundException($"No se encontró el archivo de configuración en la ruta: {filePath}");
+            //}
+
+            // Usar IConfiguration para cargar el archivo JSON
+            //IConfiguration configuration = new ConfigurationBuilder()
+            //    .SetBasePath(addInDirectory)  // Establece la ruta base
+            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)  // Carga el archivo JSON
+            //    .Build();
+            services.AddIoC(filePath);
             // Registrar tus dependencias
             //services.AddSingleton<IUser, User>();
 
