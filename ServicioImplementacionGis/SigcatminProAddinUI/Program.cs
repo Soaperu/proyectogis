@@ -16,34 +16,19 @@ namespace SigcatminProAddinUI
         //private static IConfiguration _configuration;
         public Program()
         {
-            // Configurar el contenedor de dependencias
             var services = new ServiceCollection();
 
-            string addInDirectory = PathAssembly.GetExecutingAssembly();
-
+            string pathAsembly = PathAssembly.GetExecutingAssembly();
             // Construir la ruta completa al archivo appsettings.json
-            string filePath = Path.Combine(addInDirectory, "appsettings.json");
-            string filex = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData));
+            string pathSettings = Path.Combine(pathAsembly, "appsettings.json");
 
-            if (!File.Exists(filePath))
+            if (!File.Exists(pathSettings))
             {
-                throw new FileNotFoundException($"No se encontró el archivo de configuración en la ruta: {filePath}");
+                throw new FileNotFoundException($"No se encontró el archivo de configuración en la ruta: {pathSettings}");
             }
 
-            //if (!File.Exists(filePath))
-            //{
-            //    throw new FileNotFoundException($"No se encontró el archivo de configuración en la ruta: {filePath}");
-            //}
-
-            // Usar IConfiguration para cargar el archivo JSON
-            //IConfiguration configuration = new ConfigurationBuilder()
-            //    .SetBasePath(addInDirectory)  // Establece la ruta base
-            //    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)  // Carga el archivo JSON
-            //    .Build();
-            services.AddIoC(filePath);
-            // Registrar tus dependencias
+            services.AddIoC(filpathSettingsePath);
             //services.AddSingleton<IUser, User>();
-
             // Construir el proveedor de servicios
             _serviceProvider = services.BuildServiceProvider();
 
