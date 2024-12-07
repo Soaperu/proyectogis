@@ -1,4 +1,5 @@
 ﻿using Oracle.ManagedDataAccess.Client;
+using Sigcatmin.pro.Persistence.Helpers;
 using Sigcatmin.prop.Domain.Interfaces.Repositories;
 using System.Data;
 using System.Data.Common;
@@ -12,7 +13,7 @@ namespace Sigcatmin.pro.Persistence.Configuration
         private readonly string _password;
         public DbManager(string connection, string user, string password)
         {
-            _connectionString = connection;
+            _connectionString = ConnectionHelper.BuildConnectionString(connection, user, password);
             _user = user;
             _password = password;
         }
@@ -37,28 +38,10 @@ namespace Sigcatmin.pro.Persistence.Configuration
 
         public async Task<DbConnection> GetConnectionAsync()
         {
-            var connection = new OracleConnection(BuildConnectionString());
+            var connection = new OracleConnection(_connectionString);
             await connection.OpenAsync();
             return connection;
         }
 
-        public bool TestConnection()
-        {
-            using var connection = new OracleConnection(BuildConnectionString());
-            
-                connection.Open(); // Intenta abrir la conexión
-                if (connection.State == ConnectionState.Open)
-                {
-                    connection.Close(); // Cierra la conexión si se abrió exitosamente
-                    return true; // Conexión exitosa
-                }
-
-            return false;
-        }
-
-        private string BuildConnectionString()
-        {
-            return $"{_connectionString}; User Id{_user}; Password={_password}";
-        }
     }
 }

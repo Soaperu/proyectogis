@@ -8,6 +8,6 @@ namespace Sigcatmin.prop.Domain.Interfaces.Repositories
 {
     public interface IAuthRepository
     {
-        bool Authenticate(string user, string password);
+        ValueTask<bool> Authenticate(string user, string password);
     }
 }

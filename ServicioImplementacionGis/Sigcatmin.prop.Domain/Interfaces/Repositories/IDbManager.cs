@@ -7,6 +7,5 @@ namespace Sigcatmin.prop.Domain.Interfaces.Repositories
     {
         Task<DbConnection> GetConnectionAsync();
         DbCommand CreateCommand(DbConnection connection, string query, CommandType commandType, params DbParameter[] parameters);
-        bool TestConnection();
     }
 }

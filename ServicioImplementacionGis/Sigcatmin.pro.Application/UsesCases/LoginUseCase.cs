@@ -19,17 +19,14 @@ namespace Sigcatmin.pro.Application.UsesCases
             _authService = authService;
             _authRepository = authRepository;
         }
-        public bool Execute(UserDto user)
+        public async ValueTask<bool> Execute(UserDto user)
         {
-            var token = _authRepository.Authenticate(user.UserName, user.Password);
-            if (token == null)
+            bool isValid = await _authRepository.Authenticate(user.UserName, user.Password);
+            if (isValid)
             {
-                return false;
+                _authService.SaveSession(user.UserName, user.Password);
             }
-
-            _authService.SaveSession(user.UserName, user.Password);
-           var xd =  _authService.GetSession();
-            return true;
+            return isValid;
         }
     }
 }

@@ -28,7 +28,7 @@ namespace SigcatminProAddinUI
         protected override void OnClick()
         {
             var loginService = Program.GetService<LoginUseCase>();
-            loginService.Execute( new UserDto() { UserName = "sigcatmin", Password = "sigcatmin" });
+            loginService.Execute( new UserDto() { UserName = "pava2778", Password = "ingemmet" });
         
         }
     }
