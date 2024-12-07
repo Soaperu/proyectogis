@@ -12,6 +12,7 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.KnowledgeGraph;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
+using Sigcatmin.pro.Application.Dtos;
 using Sigcatmin.pro.Application.UsesCases;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,7 @@ namespace SigcatminProAddinUI
         protected override void OnClick()
         {
             var loginService = Program.GetService<LoginUseCase>();
-            loginService.Execute();
+            loginService.Execute( new UserDto() { UserName = "sigcatmin", Password = "sigcatmin" });
         
         }
     }

@@ -29,7 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigcatmin.pro.Persistence",
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigcatmin.pro.Application", "Sigcatmin.pro.Application\Sigcatmin.pro.Application.csproj", "{96A7BE66-AD58-47E5-A38F-601744837A91}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigcatmin.prop.Domain", "Sigcatmin.prop.Domain\Sigcatmin.prop.Domain.csproj", "{6BB7F758-EE22-49D2-BDF0-AEA1AD590AA4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigcatmin.pro.Domain", "Sigcatmin.prop.Domain\Sigcatmin.pro.Domain.csproj", "{6BB7F758-EE22-49D2-BDF0-AEA1AD590AA4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sigcatmin.pro.Common", "Sigcatmin.pro.Common\Sigcatmin.pro.Common.csproj", "{02B42DFA-09DC-431A-87E6-AC5DD01E121B}"
 EndProject

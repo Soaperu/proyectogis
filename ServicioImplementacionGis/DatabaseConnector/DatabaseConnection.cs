@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using Oracle.ManagedDataAccess.Client;
-using ArcGIS.Core.Data;
+﻿using ArcGIS.Core.Data;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using Oracle.ManagedDataAccess.Client;
+using System.Data;
 //using ArcGIS.Desktop.Framework.Dialogs;
 
 namespace DatabaseConnector
