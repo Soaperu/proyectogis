@@ -1,4 +1,5 @@
-﻿using Sigcatmin.prop.Domain.Entities;
+﻿using Sigcatmin.pro.Domain.Dtos;
+using Sigcatmin.prop.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Sigcatmin.prop.Domain.Interfaces.Services
     public interface IAuthService
     {
         void SaveSession(string username, string password);
-        UserSession GetSession();
+        UserSessionDto? GetSession();
         void EndSession();
 
     }

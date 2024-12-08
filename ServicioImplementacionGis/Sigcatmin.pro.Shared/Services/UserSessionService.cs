@@ -1,4 +1,5 @@
 ﻿using CredentialManagement;
+using Sigcatmin.pro.Domain.Dtos;
 using Sigcatmin.pro.Shared.Constants;
 using Sigcatmin.prop.Domain.Entities;
 using Sigcatmin.prop.Domain.Interfaces.Services;
@@ -15,7 +16,7 @@ namespace Sigcatmin.pro.Shared.Services
         //    _appDataPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), ApplicationDataFolder);
         //    _sessionFilePath = Path.Combine(_appDataPath, "session.dat");
         //}
-        public UserSession GetUserSession()
+        public UserSessionDto GetUserSession()
         {
             var credential = new Credential
             {
@@ -25,9 +26,9 @@ namespace Sigcatmin.pro.Shared.Services
             // Cargar las credenciales del Credential Manager
             if (credential.Load())
             {
-                return new UserSession { Password = credential.Password, UserName = credential.Username };
+                return new UserSessionDto { Password = credential.Password, UserName = credential.Username };
             }
-            return null;
+            return new UserSessionDto() ;
         }
     }
 }

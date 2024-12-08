@@ -8,25 +8,37 @@ namespace Sigcatmin.pro.Application.UsesCases
 {
     public class LoginUseCase
     {
-        private readonly JWTSettings jWTSetting;
         private readonly IAuthService _authService;
         private readonly IAuthRepository _authRepository;
-        public LoginUseCase(IOptions<JWTSettings> options, 
+        private readonly ILoggerService _loggerService;
+        public LoginUseCase(
             IAuthService authService,
-            IAuthRepository authRepository)
+            IAuthRepository authRepository,
+            ILoggerService loggerService)
         {
-            jWTSetting = options.Value;
             _authService = authService;
             _authRepository = authRepository;
+            _loggerService = loggerService;
         }
-        public async ValueTask<bool> Execute(UserDto user)
+        public async ValueTask<bool> Execute(LoginRequestDto user)
         {
-            bool isValid = await _authRepository.Authenticate(user.UserName, user.Password);
-            if (isValid)
+            try
             {
-                _authService.SaveSession(user.UserName, user.Password);
+                _loggerService.LogInfo("hola");
+                bool isValid = await _authRepository.Authenticate(user.UserName, user.Password);
+                if (isValid)
+                {
+                    _authService.SaveSession(user.UserName, user.Password);
+                }
+                return isValid;
+
+            } catch (Exception ex)
+            {
+
+                return false;
             }
-            return isValid;
+          
+
         }
     }
 }

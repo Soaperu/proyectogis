@@ -1,5 +1,6 @@
 ﻿using CredentialManagement;
 using Sigcatmin.pro.Application.Dtos;
+using Sigcatmin.pro.Domain.Dtos;
 using Sigcatmin.pro.Shared.Constants;
 using Sigcatmin.prop.Domain.Entities;
 using Sigcatmin.prop.Domain.Interfaces.Services;
@@ -53,7 +54,7 @@ namespace Sigcatmin.pro.Shared.Services
             throw new NotImplementedException();
         }
 
-        public UserSession GetSession()
+        public UserSessionDto? GetSession()
         {
             var credential = new Credential
             {
@@ -63,7 +64,7 @@ namespace Sigcatmin.pro.Shared.Services
             // Cargar las credenciales del Credential Manager
             if (credential.Load())
             {
-                return new UserSession { Password = credential.Password, UserName = credential.Username };
+                return new UserSessionDto(credential.Username, credential.Password);
             }
             return null;
         }

@@ -27,7 +27,7 @@ namespace SigcatminProAddinUI
                 throw new FileNotFoundException($"No se encontró el archivo de configuración en la ruta: {pathSettings}");
             }
 
-            services.AddIoC(filpathSettingsePath);
+            services.AddIoC(pathSettings);
             //services.AddSingleton<IUser, User>();
             // Construir el proveedor de servicios
             _serviceProvider = services.BuildServiceProvider();

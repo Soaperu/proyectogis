@@ -1,4 +1,5 @@
-﻿using Sigcatmin.prop.Domain.Entities;
+﻿using Sigcatmin.pro.Domain.Dtos;
+using Sigcatmin.prop.Domain.Entities;
 using Sigcatmin.prop.Domain.Interfaces.Repositories;
 using Sigcatmin.prop.Domain.Interfaces.Services;
 using System;
@@ -31,8 +32,7 @@ namespace Sigcatmin.pro.Persistence.Configuration
             //var user = _userSession.GetUsername(); // Suponiendo que tienes una sesión de usuario
             //var password = _userSession.GetPassword(); // Igualmente, obteniendo la contraseña de la sesión
 
-            UserSession user = _userSession.GetUserSession();
-
+            UserSessionDto user = _userSession.GetUserSession();
 
             return new DbManager(connectionString, user.UserName, user.Password);
         }

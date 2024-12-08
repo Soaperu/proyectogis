@@ -1,4 +1,5 @@
-﻿using Sigcatmin.prop.Domain.Entities;
+﻿using Sigcatmin.pro.Domain.Dtos;
+using Sigcatmin.prop.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Sigcatmin.prop.Domain.Interfaces.Services
 {
     public interface IUserSessionService
     {
-        UserSession GetUserSession();
+        UserSessionDto GetUserSession();
     }
 }
