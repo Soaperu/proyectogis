@@ -19,6 +19,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonUtilities.ArcgisProUtils;
+using System.Windows;
+using ArcGIS.Core.SystemCore;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -56,13 +59,24 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         public RotularVerticesTool()
         {
             IsSketchTool = true;
-            SketchType = SketchGeometryType.Rectangle;
+            SketchType = SketchGeometryType.Point;
             SketchOutputMode = SketchOutputMode.Map;
         }
 
         protected override Task OnToolActivateAsync(bool active)
         {
             return base.OnToolActivateAsync(active);
+        }
+
+        protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
+        {
+            base.OnToolMouseDown(args);
+            QueuedTask.Run(() =>
+            {
+                var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
+                CommonUtilities.ArcgisProUtils.MapUtils.LabelVertices(mapPoint);
+            });
+                
         }
 
         protected override Task<bool> OnSketchCompleteAsync(Geometry geometry)
