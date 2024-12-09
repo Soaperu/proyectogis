@@ -9,10 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <None Remove="Config.daml" />
-    <None Remove="Images\Contenido.png" />
-    <None Remove="Images\Contenido32.png" />
-    <None Remove="Images\Contenido32nuevo.png" />
-    <None Remove="Images\Contenidonobg.png" />
     <None Remove="Images\EvaluacionDM\mapa100.png" />
     <None Remove="Images\EvaluacionDM\usuario32.png" />
     <None Remove="Images\EvaluacionDM\usuario32_gris.png" />
@@ -25,7 +21,46 @@
     <None Remove="Images\Login\visible16_blue.png" />
     <None Remove="Images\Login\visible16_white.png" />
     <None Remove="Images\Login\warningblue32.png" />
-    <None Remove="Images\Recurso.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\08-plano-demarca-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\08-plano-demarca-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\09-plano-carta-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\09-plano-carta-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\12-borrar-temas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\12-borrar-temas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\13-ver-capas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\13-ver-capas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-32x32.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\plano1.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\plano2.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\planoX16.png" />
@@ -38,15 +73,45 @@
     <Content Include="Images\AddInDesktop32.png" />
     <Content Include="DarkImages\AddInDesktop16.png" />
     <Content Include="DarkImages\AddInDesktop32.png" />
-    <Content Include="Images\Contenido.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Images\Contenido32.png" />
-    <Content Include="Images\Contenido32nuevo.png" />
-    <Content Include="Images\Contenidonobg.png" />    
-    <Content Include="Images\Toolbars\BDGeocatmin\plano1.png" />
-    <Content Include="Images\Toolbars\BDGeocatmin\plano2.png" />
-    <Content Include="Images\Toolbars\BDGeocatmin\planoX16.png" />    
+    <Content Include="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\08-plano-demarca-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\08-plano-demarca-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\09-plano-carta-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\09-plano-carta-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\12-borrar-temas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\12-borrar-temas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\13-ver-capas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\13-ver-capas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-32x32.png" />    
   </ItemGroup>
   <ItemGroup>
     <None Include="Properties\launchSettings.json" />
@@ -147,12 +212,12 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
-    <Resource Include="Images\Recurso.png">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
   </ItemGroup>
   <ItemGroup>
     <None Update="Scripts\CMIN_EVAL.atbx">

@@ -50,6 +50,7 @@ namespace CommonUtilities.ArcgisProUtils
         public FeatureLayer pFeatureLayer_caram { get; private set; }
         public FeatureLayer pFeatureLayer_cuadriculasR { get; private set; }
         public FeatureLayer pFeatureLayer_temp { get; private set; }
+        public FeatureLayer pFeatureLayer_gene { get; private set; }
 
         public FeatureClassLoader(Geodatabase geodatabase, Map map, string zonaDm, string regionSele)
         {
@@ -61,11 +62,11 @@ namespace CommonUtilities.ArcgisProUtils
             featureLayerMap = new Dictionary<string, FeatureLayer>();
         }
 
-        public async Task LoadFeatureClassAsync(string featureClassName, bool isVisible)
+        public async Task<FeatureLayer> LoadFeatureClassAsync(string featureClassName, bool isVisible)
         {
             try
             {
-                await QueuedTask.Run(() =>
+                return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
                     var featureClassInfo = FeatureClassMappings?.FirstOrDefault(f => string.Equals(f.FeatureClassName, featureClassName, StringComparison.OrdinalIgnoreCase)
@@ -94,18 +95,22 @@ namespace CommonUtilities.ArcgisProUtils
                         FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
                         {
                             Name = actualLayerName,//featureClassInfo.LayerName,
-                            IsVisible = isVisible
+                            IsVisible = isVisible,
+                            
+                            
                         };
-                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, _map);
+                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams,_map);
                         //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
                         
                         // Asignar el FeatureLayer a la variable correspondiente si es necesario
                         AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
+                        return featureLayer;
                     }
                 });
             }
             catch (Exception ex)
             {
+                return null;
                 // Manejo de excepciones
                 //MessageBox.Show($"Error al cargar la Feature Class '{featureClassName}': {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
@@ -272,45 +277,36 @@ namespace CommonUtilities.ArcgisProUtils
                 VariableName = "pFeatureLayer_dist"
             },
 
+            // Catastro Minero WGS84
+            new FeatureClassInfo
+            {
+                //FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_17",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_CatastroWGS84 + v_zona_dm,
+                LayerName = "Catastro",
+                VariableName = "pFeatureLayer_cat"
+            },
+            //new FeatureClassInfo
+            //{
+            //    FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_18",
+            //    LayerName = "Catastro",
+            //    VariableName = "pFeatureLayer_cat"
+            //},
+            //new FeatureClassInfo
+            //{
+            //    FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_19",
+            //    LayerName = "Catastro",
+            //    VariableName = "pFeatureLayer_cat"
+            //},
+
             // Catastro Minero PSAD56
             new FeatureClassInfo
             {
-                FeatureClassName = "GPO_CMI_CATASTRO_MINERO_17",
-                LayerName = "Catastro",
-                VariableName = "pFeatureLayer_cat"
-            },
-            new FeatureClassInfo
-            {
-                FeatureClassName = "GPO_CMI_CATASTRO_MINERO_18",
-                LayerName = "Catastro",
-                VariableName = "pFeatureLayer_cat"
-            },
-            new FeatureClassInfo
-            {
-                FeatureClassName = "GPO_CMI_CATASTRO_MINERO_19",
+                //FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_17",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_CatastroPSAD56 + v_zona_dm,
                 LayerName = "Catastro",
                 VariableName = "pFeatureLayer_cat"
             },
 
-            // Catastro Minero WGS84
-            new FeatureClassInfo
-            {
-                FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_17",
-                LayerName = "Catastro",
-                VariableName = "pFeatureLayer_cat"
-            },
-            new FeatureClassInfo
-            {
-                FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_18",
-                LayerName = "Catastro",
-                VariableName = "pFeatureLayer_cat"
-            },
-            new FeatureClassInfo
-            {
-                FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_19",
-                LayerName = "Catastro",
-                VariableName = "pFeatureLayer_cat"
-            },
             // Caram
             new FeatureClassInfo
             {
@@ -404,25 +400,43 @@ namespace CommonUtilities.ArcgisProUtils
             // Ríos
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Rios,
+                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Rios56,
                 LayerName = "Drenaje",
-                VariableName = null
+                VariableName = "pFeatureLayer_gene"
+            },
+            new FeatureClassInfo
+            {
+                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Rios84,
+                LayerName = "Drenaje",
+                VariableName = "pFeatureLayer_gene"
             },
 
             // Carreteras
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Carretera,
+                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Carretera56,
                 LayerName = "Vías",
-                VariableName = null
+                VariableName = "pFeatureLayer_gene"
+            },
+            new FeatureClassInfo
+            {
+                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Carretera84,
+                LayerName = "Vías",
+                VariableName = "pFeatureLayer_gene"
             },
 
             // Centros Poblados
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_CPoblado,
+                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_CPoblado56,
                 LayerName = "Centro Poblado",
-                VariableName = null
+                VariableName = "pFeatureLayer_gene"
+            },
+            new FeatureClassInfo
+            {
+                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_CPoblado84,
+                LayerName = "Centro Poblado",
+                VariableName = "pFeatureLayer_gene"
             },
 
             // Frontera
@@ -441,6 +455,12 @@ namespace CommonUtilities.ArcgisProUtils
             // Concesiones Forestales
             new FeatureClassInfo
             {
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cforestal + v_zona_dm,
+                LayerName = "Catastro Forestal",
+                VariableName = "pFeatureLayer_fores"
+            },
+            new FeatureClassInfo
+            {
                 FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_forestal + v_zona_dm,
                 LayerName = "Catastro Forestal",
                 VariableName = "pFeatureLayer_fores"
@@ -449,42 +469,45 @@ namespace CommonUtilities.ArcgisProUtils
             // Zona Reservada
             new FeatureClassInfo
             {
-                FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_17",
+                //FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_17",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_AReservada84 + v_zona_dm,
                 LayerName = "Zona Reservada",
                 VariableName = "pFeatureLayer_rese"
             },
-            new FeatureClassInfo
-            {
-                FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_18",
-                LayerName = "Zona Reservada",
-                VariableName = "pFeatureLayer_rese"
-            },
-            new FeatureClassInfo
-            {
-                FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_19",
-                LayerName = "Zona Reservada",
-                VariableName = "pFeatureLayer_rese"
-            },
+            //new FeatureClassInfo
+            //{
+            //    FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_18",
+            //    LayerName = "Zona Reservada",
+            //    VariableName = "pFeatureLayer_rese"
+            //},
+            //new FeatureClassInfo
+            //{
+            //    FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_19",
+            //    LayerName = "Zona Reservada",
+            //    VariableName = "pFeatureLayer_rese"
+            //},
 
             // Zona Urbana
             new FeatureClassInfo
             {
-                FeatureClassName = "DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_17",
+                //FeatureClassName = "DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_17",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_ZUrbanaWgs84 + v_zona_dm,
                 LayerName = "Zona Urbana",
                 VariableName = "pFeatureLayer_urba"
             },
             new FeatureClassInfo
             {
-                FeatureClassName = "DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_18",
+                //FeatureClassName = "DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_18",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_ZUrbanaPsad56 + v_zona_dm,
                 LayerName = "Zona Urbana",
                 VariableName = "pFeatureLayer_urba"
             },
-            new FeatureClassInfo
-            {
-                FeatureClassName = "DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_19",
-                LayerName = "Zona Urbana",
-                VariableName = "pFeatureLayer_urba"
-            },
+            //new FeatureClassInfo
+            //{
+            //    FeatureClassName = "DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_19",
+            //    LayerName = "Zona Urbana",
+            //    VariableName = "pFeatureLayer_urba"
+            //},
             // Hojas IGN
             new FeatureClassInfo
             {
@@ -643,7 +666,6 @@ namespace CommonUtilities.ArcgisProUtils
                     {
                         queryFilter.WhereClause = "TP_AREA = 'AREA NATURAL'";
                     }
-                    
                 }
                 else
                 {
@@ -651,7 +673,7 @@ namespace CommonUtilities.ArcgisProUtils
                     {
                         queryFilter.WhereClause = "TP_AREA = 'AREA NATURAL'";
                     }
-                    else
+                    else if (pNombreArchivo == "Catastro")
                     {
                         queryFilter.WhereClause = "ESTADO <> 'Y'";
                     }
@@ -747,6 +769,10 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_Frontera_Z = "DATA_GIS.GLI_FRO_FRONTERA_";
         public const string gstrFC_Frontera_WGS = "DATA_GIS.GLI_FRO_FRONTERA_WGS_";
 
+        // Catastro
+        public const string gstrFC_CatastroPSAD56 = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_";
+        public const string gstrFC_CatastroWGS84 = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_";
+
         // Cuadrículas
         public const string gstrFC_Cuadricula = "DATA_GIS.GPO_CUA_CUADRICULAS";
         public const string gstrFC_Cuadricula_Z = "DATA_GIS.GPO_CUA_CUADRICULAS_";
@@ -756,13 +782,16 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_Caram84 = "DATA_GIS.GPO_CAR_CARAM_WGS_"; // WGS84
 
         // Ríos
-        public const string gstrFC_Rios = "DATA_GIS.GPO_RIO_RIOS";
+        public const string gstrFC_Rios56 = "DATA_GIS.GLI_RIO_RIOS";
+        public const string gstrFC_Rios84 = "DATA_GIS.GLI_RIO_RIOS_18";
 
-        // Carreteras
-        public const string gstrFC_Carretera = "DATA_GIS.GPO_CAR_CARRETERAS";
+        // Red Vial - carreteras
+        public const string gstrFC_Carretera56 = "DATA_GIS.GLI_VIA_VIAS";
+        public const string gstrFC_Carretera84 = "DATA_GIS.GLI_VIA_VIAS_18";
 
         // Centros Poblados
-        public const string gstrFC_CPoblado = "DATA_GIS.GPO_CPO_CENTRO_POBLADO";
+        public const string gstrFC_CPoblado56 = "DATA_GIS.GPT_CPO_CENTRO_POBLADO";
+        public const string gstrFC_CPoblado84 = "DATA_GIS.GPT_CPO_CENTRO_POBLADO_18";
 
         // Hojas Cartográficas
         public const string gstrFC_HCarta56 = "DATA_GIS.GPO_HOJ_HOJAS"; // PSAD56 18S
@@ -775,10 +804,12 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_ZTraslape = "DATA_GIS.GPO_ZTR_ZONA_TRASLAPE";
 
         // Capitales de Distrito
-        public const string gstrFC_CDistrito = "DATA_GIS.GPO_CDI_CAPITAL_DISTRITO";
+        public const string gstrFC_CDistrito56 = "DATA_GIS.GPO_CDI_CAPITAL_DISTRITO";
+        public const string gstrFC_CDistrito84 = "DATA_GIS.GPO_CDI_CAPITAL_DISTRITO_18";
 
         // Área Reservada
         public const string gstrFC_AReservada56 = "DATA_GIS.GPO_ARE_AREA_RESERVADA_G56";
+        public const string gstrFC_AReservada84 = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_";
 
         // Zona Urbana
         public const string gstrFC_ZUrbanaG56 = "DATA_GIS.GPO_ZUR_ZONA_URBANA_G56"; //GEOPSAD56
@@ -803,8 +834,8 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_BOLETIN_G56 = "DATA_GIS.GPO_BOLETIN_G56";
 
         // Forestal
-        public const string gstrFC_Cforestal = "DATA_GIS.GPO_CFO_CONCESION_FORESTAL_";
-        public const string gstrFC_forestal = "DATA_GIS.GPO_SERFOR_CONCESIONES_W";
+        public const string gstrFC_Cforestal = "DATA_GIS.GPO_CFO_CATASTRO_FORESTAL_W";
+        public const string gstrFC_forestal = "DATA_GIS.GPO_SERFOR_CONCESIONES_P";
 
         // Usuario SDE
         public const string glo_User1_SDE = "DESA_GIS";

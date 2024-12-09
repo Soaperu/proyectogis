@@ -9,7 +9,8 @@ namespace CommonUtilities
         public static string pathFileContainerOut = @"C:\bdgeocatmin";
         public static string fileTemp = "Temporal";
         public static bool stateDmY = true;
-        public static string mapNameCastrato = "CATASTRO";
+        public static string idExport = ""; 
+        public static string mapNameCastrato = "CATASTRO MINERO";
         public static string mapNameDemarcacionPo = "DEMARCACION POLITICA";
         public static string mapNameCartaIgn = "CARTA IGN";
         public static string fieldTypeString = "STRING";
@@ -20,12 +21,20 @@ namespace CommonUtilities
         public static string? currentPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         public static string scriptsPath = @"scripts\AutomapicExt_addin.py";
         public static string pythonExePath = @"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe";
-
+        // Rutas del Sistemas
         public static string toolBoxPathEval = currentPath + @"\Scripts\CMIN_EVAL.atbx";
         public static string stylePath = @"C:\bdgeocatmin\Estilos";
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";
         public static string CurrentCodeDm { get; set; }
+
+        public static string CurrentDep { get; set; }
+        public static string CurrentProv { get; set; }
+        public static string CurrentDist { get; set; }
+        public static string CurrentShpName { get; set; }
+        //Contenedor de Planitllas 
+        public static string ContaninerTemplates = @"U:\\Geocatmin\\Plantillas";
+        public static string planeEval = "Plantilla_evd_84.pagx";
 
         public static string ToTitleCase(string input)
         {

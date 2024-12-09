@@ -11,9 +11,11 @@ using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
+using CommonUtilities;
 using SigcatminProAddin.View.Toolbars.InformeTecnico;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,7 +38,9 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick() 
         {
-            await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(@"U:\\Geocatmin\\Plantillas\\eva1Layuot.pagx");
+            string pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval);
+            string nameLayer = GlobalVariables.CurrentShpName;
+            await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer);
         }
     }
     internal class PlanoDemarcacion : BDGeocatminButton { }

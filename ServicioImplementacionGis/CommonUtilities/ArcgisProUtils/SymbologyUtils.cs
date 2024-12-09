@@ -742,6 +742,39 @@ namespace CommonUtilities.ArcgisProUtils
                         LineColor = GetRGBColor(76, 230, 0),
                         LineWidth = 1
                     }
+                },
+                {
+                    "Capitales Distritales",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.Null, // Asumiendo que el estilo es Hollow según VB.NET
+                        FillColor = GetRGBColor(0, 197, 255),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(0, 197, 255),
+                        LineWidth = 1
+                    }
+                },
+                {
+                    "Red Hidrografica",
+                    new SymbolConfiguration
+                    {
+                        //FillStyle = SimpleFillStyle.Null, // Asumiendo que el estilo es Hollow según VB.NET
+                        //FillColor = GetRGBColor(0, 197, 255),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(0, 122, 255),
+                        LineWidth = 1
+                    }
+                },
+                {
+                    "Red Vial",
+                    new SymbolConfiguration
+                    {
+                        //FillStyle = SimpleFillStyle.Null, // Asumiendo que el estilo es Hollow según VB.NET
+                        //FillColor = GetRGBColor(0, 197, 255),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(255, 0, 0),
+                        LineWidth = 1
+                    }
                 }
                 // Agrega más configuraciones según sea necesario...
 

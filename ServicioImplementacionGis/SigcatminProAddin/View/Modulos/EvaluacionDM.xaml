@@ -7,7 +7,7 @@
       mc:Ignorable="d"       
       xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
       xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-      d:DesignHeight="460" d:DesignWidth="680"
+      d:DesignHeight="470" d:DesignWidth="680"
       Title="EvaluacionDM"
       FontFamily="Roboto">
     <Page.Resources>
@@ -26,7 +26,7 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="140"/>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="140"/>
+            <RowDefinition Height="150"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
@@ -167,7 +167,7 @@
             <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
                   Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="120"/>
+                    <RowDefinition Height="130"/>
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <!--<Image Margin="5,0,5,0"/>-->

@@ -604,15 +604,15 @@ namespace CommonUtilities.ArcgisProUtils
                                     switch (seleccionTema)
                                     {
                                         case "Superpuesto":
-                                            ActualizarSuperpuesto(updateCursor, indexEVAL, indexAREA_INT, indexCODIGOU, colectionAreaOverlap);
+                                            UpdateOverlays(updateCursor, indexEVAL, indexAREA_INT, indexCODIGOU, colectionAreaOverlap);
                                             break;
 
                                         case "Colindantes":
-                                            ActualizarColindantes(updateCursor, indexEVAL, indexAREA_INT);
+                                            UpdateNeighboring(updateCursor, indexEVAL, indexAREA_INT);
                                             break;
 
                                         case "Vecinos":
-                                            ActualizarVecinos(updateCursor, indexEVAL, indexAREA_INT, indexCODIGOU);
+                                            UpdateNeighbors(updateCursor, indexEVAL, indexAREA_INT, indexCODIGOU);
                                             break;
                                     }
 
@@ -629,7 +629,7 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
-        private static void ActualizarSuperpuesto(Row row, int indexEVAL, int indexAREA_INT, int indexCODIGOU, List<string> colectionAreaOverlap)
+        private static void UpdateOverlays(Row row, int indexEVAL, int indexAREA_INT, int indexCODIGOU, List<string> colectionAreaOverlap)
         {
             List<string> colecciones_rd = new List<string>();
             // Asumimos que colecciones_AREA_SUP ya está poblado
@@ -666,7 +666,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <param name="feature">La característica a actualizar.</param>
         /// <param name="indexEVAL">Índice del campo EVAL.</param>
         /// <param name="indexAREA_INT">Índice del campo AREA_INT.</param>
-        private static void ActualizarColindantes(Row feature, int indexEVAL, int indexAREA_INT)
+        private static void UpdateNeighboring(Row feature, int indexEVAL, int indexAREA_INT)
         {
             feature[indexEVAL]= "CO";
             feature[indexAREA_INT]= 0.0;
@@ -679,7 +679,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <param name="indexEVAL">Índice del campo EVAL.</param>
         /// <param name="indexAREA_INT">Índice del campo AREA_INT.</param>
         /// <param name="indexCODIGOU">Índice del campo CODIGOU.</param>
-        private static void ActualizarVecinos(Row feature, int indexEVAL, int indexAREA_INT, int indexCODIGOU)
+        private static void UpdateNeighbors(Row feature, int indexEVAL, int indexAREA_INT, int indexCODIGOU)
         {
             string codigoOU = feature[indexCODIGOU].ToString() ?? string.Empty;
 

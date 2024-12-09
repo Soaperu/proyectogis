@@ -1,7 +1,10 @@
-﻿using ArcGIS.Core.Data.UtilityNetwork.Trace;
+﻿using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Internal.Core.CommonControls;
 using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
@@ -9,12 +12,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using static System.Net.Mime.MediaTypeNames;
 using MessageBox = ArcGIS.Desktop.Framework.Dialogs.MessageBox;
+
 
 namespace CommonUtilities.ArcgisProUtils
 {
     public static class LayerUtils
     {
+        private static FeatureLayer currentFeatureLayer;
+
         /// <summary>
         /// Agrega una capa al mapa especificado.
         /// </summary>
@@ -117,6 +125,45 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static async void SelectSetAndZoomAsync(FeatureLayer layer, string whereClause="")
+        {
+            await QueuedTask.Run(() =>
+            {
+                MapView.Active?.Map.SetSelection(null);
+                var qry = new QueryFilter() { WhereClause = whereClause };
+                layer.Select(qry);
+                MapView.Active?.ZoomTo(layer, true, new TimeSpan(0, 0, 2));
+            });
+        }
+
+        public static async void SelectSetAndZoomByNameAsync(string layerName, string whereClause = "")
+        {
+            // Obtener el mapa activo
+            var map = MapView.Active?.Map;
+            if (map == null)
+                return;
+
+            // Buscar la capa por nombre en el mapa
+            var layer = map.Layers.FirstOrDefault(l => l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)) as FeatureLayer;
+            if (layer == null)
+                return; // Si no se encuentra la capa, salimos del método
+
+            await QueuedTask.Run(() =>
+            {
+                // Limpiar cualquier selección previa en el mapa
+                map.SetSelection(null);
+
+                // Crear el filtro de consulta según el whereClause proporcionado
+                var qry = new QueryFilter { WhereClause = whereClause };
+
+                // Seleccionar las entidades que cumplan con la condición
+                layer.Select(qry);
+
+                // Hacer zoom a la capa seleccionada
+                MapView.Active?.ZoomTo(layer, true, new TimeSpan(0, 0, 2));
+            });
+        }
+
         // Método para cambiar el nombre de una capa por un nuevo nombre
         public static async Task ChangeLayerNameAsync(string oldLayerName, string newLayerName)
         {
@@ -152,6 +199,140 @@ namespace CommonUtilities.ArcgisProUtils
                 }
                 fLayer.SetName(newName);
             });
+        }
+
+        public async static Task AddLayerCheckedListBox(string selectCheckedLayer, string zone, FeatureClassLoader function, int datum, ExtentModel extent)
+        {
+            try
+            {
+                string layer = selectCheckedLayer;
+                switch (selectCheckedLayer)
+                {
+                    case "Zona Reservada":
+
+                        await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_AReservada84, false);
+                        //await function.ExportSpatialTemaAsync(layer, GlobalVariables.stateDmY, "zonaRese");
+                        break;
+                    case "Caram":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram84 + zone, false);
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram56 + zone, false);
+                        }
+                        await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, "Caram"+ GlobalVariables.idExport);
+                        break;
+                    case "Catastro Forestal":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Cforestal+zone, false);
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56+zone, false);
+                        }
+                        await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, "CForestal" + GlobalVariables.idExport);
+                        break;
+                    case "Limite Departamental":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_WGS + zone, false);
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_Z + zone, false);
+                        }
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_depa);
+                        break;
+                    case "Limite Provincial":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Provincia_WGS + zone, false);
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Provincia_Z + zone, false);
+                        }
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_prov);
+                        break;
+                    case "Limite Distrital":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zone, false);
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zone, false);
+                        }
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_dist);
+                        break;
+
+                    case "Capitales Distritales":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CDistrito84, false);
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CDistrito56, false);
+                        }
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_capdist);
+                        break;
+
+                    //        case "Predio Rural":
+                    //            cls_Catastro.PT_CargarFeatureClass_SDE(gstrFC_prediorural, m_Application, "1", false);
+                    //            cls_Catastro.Color_Poligono_Simple(m_Application, "Predio Rural");
+                    //            break;
+
+                    case "Red Hidrografica":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Rios84, false);
+                            
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Rios56, false);
+                        }
+                        //cls_Catastro.DefinitionExpression(lo_Filtro_Dpto_mod, m_Application, "Drenaje");
+                        //cls_Catastro.UniqueSymbols(m_Application, "Drenaje");
+                        break;
+
+                    case "Red Vial":
+                        if (datum == 1)
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Carretera84, false);
+
+                        }
+                        else
+                        {
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Carretera56, false);
+                        }
+                        break;
+
+                    case "Centros Poblados":
+                        
+                        if (datum == 1)
+                        {
+                            currentFeatureLayer = await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CPoblado84, false);
+                        }
+                        else
+                        {
+                            currentFeatureLayer = await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CPoblado56, false);
+                        }
+                        break;
+                        
+                    default:
+                        // Si hay algún item seleccionado que no coincide con ninguno de los case
+                        break;
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
     }
 }
