@@ -1,7 +1,9 @@
-﻿using ArcGIS.Desktop.Framework;
+﻿using ActiproSoftware.Windows.Controls.Ribbon.Controls;
+using ArcGIS.Desktop.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -35,7 +37,9 @@ namespace SigcatminProAddin.View.Toolbars
             if (PlugInWrapper.IsRelevant)
             {
                 ((ICommand)PlugInWrapper).Execute(null);
+                Keyboard.ClearFocus();
             }
         }
+        
     }
 }

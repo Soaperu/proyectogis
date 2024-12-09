@@ -96,7 +96,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             var featureclass = layer.GetFeatureClass();
             var map = MapView.Active.Map;
-            var gl_param = new GraphicsLayerCreationParams { Name = "Graphics Layer" };
+            var gl_param = new GraphicsLayerCreationParams { Name = "Grilla Layer" };
             var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
 
             ////Add to the bottom of the TOC
@@ -135,6 +135,65 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 }
             });
+            graphicsLayer.ClearSelection();
+        }
+
+        public static void LabelVertices(MapPoint clickedPoint)
+        {
+            //var featureclass = layer.GetFeatureClass();
+            var map = MapView.Active.Map;
+            var selectedLayers = MapView.Active.GetSelectedLayers();
+            var layer = selectedLayers.OfType<FeatureLayer>().FirstOrDefault();
+            var gl_param = new GraphicsLayerCreationParams { Name = "Vertices" };
+            var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
+
+            GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
+                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+
+            QueuedTask.Run(() =>
+            {
+                if (layer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
+                    return;
+                }
+                if (clickedPoint == null) return;
+
+
+                // Crear un cursor para iterar sobre las características de la capa
+                using (var rowCursor = layer.Search(null))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        using (Row row = rowCursor.Current)
+                        {
+                            var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                            var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                            //string fieldValue = Convert.ToString(row[field]);
+
+                            if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
+                            {
+                                int contador = 1;
+                                    for(int i = 0; i < polygon.PointCount - 1; i++)
+                                    {
+                                    var vertex = polygon.Points[i];
+                                    var textGraphic = new CIMTextGraphic();
+                                    textGraphic.Symbol = SymbolFactory.Instance.ConstructTextSymbol
+                                                                                (CIMColor.CreateRGBColor(255, 0, 0), 9, "Arial", "Regular").MakeSymbolReference();
+                                    textGraphic.Shape = vertex;
+                                    textGraphic.Text = contador.ToString();
+                                    graphicsLayer.AddElement(textGraphic, contador.ToString());
+                                    contador += 1;
+                                }
+                                
+                            }
+
+                        }
+                    }
+                }
+            });
+            graphicsLayer.ClearSelection();
+
         }
 
 
