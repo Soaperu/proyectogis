@@ -10,6 +10,7 @@ using ArcGIS.Core.Data;
 using System;
 using System.Threading.Tasks;
 using ArcGIS.Core.Internal.Geometry;
+using System.Windows.Documents;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -40,7 +41,15 @@ namespace CommonUtilities.ArcgisProUtils
                     MapPointBuilder.CreateMapPoint(x, limits.yMin),
                     MapPointBuilder.CreateMapPoint(x, limits.yMax)
                 });
-                    if (contador_v>0) { clase_v = "1"; }
+                    //if (contador_v>0) { clase_v = "1"; }
+                    if (limits.xMin < x && x < limits.xMax)
+                    {
+                        clase_v = "1";
+                    }
+                    else
+                    {
+                        clase_v = "2";
+                    }
 
                     AddFeatureToLayer(gridLayer, verticalLine, clase_v);
 
@@ -64,7 +73,15 @@ namespace CommonUtilities.ArcgisProUtils
                     MapPointBuilder.CreateMapPoint(limits.xMin, y),
                     MapPointBuilder.CreateMapPoint(limits.xMax, y)
                 });
-                    if (contador_h>0) { clase_h = "1"; }
+                    //if (contador_h>0) { clase_h = "1"; }
+                    if (limits.yMin < y && y < limits.yMax)
+                    {
+                        clase_h = "1";
+                    }
+                    else
+                    {
+                        clase_h = "2";
+                    }
 
                     AddFeatureToLayer(gridLayer, horizontalLine, clase_h);
 
@@ -79,6 +96,9 @@ namespace CommonUtilities.ArcgisProUtils
                     contador_h += 1;
                 }
                 MapUtils.LabelLayer(pointLayer, "VALOR");
+                List<string> listado = new List<string>();
+                listado.Add($"{layerName}p_{zone}");
+                CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);
             });
         }
 

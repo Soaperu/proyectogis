@@ -68,7 +68,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// </summary>
         /// <param name="mapName">El nombre del mapa en el que se eliminarán las capas.</param>
         /// <param name="layersToRemove">Lista opcional de nombres de capas a eliminar. Si está vacía, se eliminarán todas las capas.</param>
-        public static async Task RemoveLayersFromMapAsync(string mapName, List<string> layersToRemove = null)
+        public static async Task RemoveLayersFromActiveMapAsync(List<string> layersToRemove = null)
         {
             if (layersToRemove == null)
             {
@@ -77,21 +77,8 @@ namespace CommonUtilities.ArcgisProUtils
 
             await QueuedTask.Run(() =>
             {
-                // Buscar el mapa por nombre
-                var mapProjItems = Project.Current.GetItems<MapProjectItem>();
-                List<Map> maps = new List<Map>();
-                foreach (var item in mapProjItems)
-                {
-                    maps.Add(item.GetMap());
-                }
-                Map targetMap = maps.FirstOrDefault(m => m.Name.Equals(mapName, StringComparison.OrdinalIgnoreCase));
+                var targetMap = MapView.Active.Map;
 
-                if (targetMap == null)
-                {
-                    throw new InvalidOperationException($"El mapa con nombre '{mapName}' no se encontró.");
-                }
-
-                // Obtener todas las capas del mapa
                 var layers = targetMap.GetLayersAsFlattenedList();
 
                 if (layersToRemove.Count == 0)
