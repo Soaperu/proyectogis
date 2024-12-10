@@ -25,17 +25,17 @@ namespace CommonUtilities.ArcgisProUtils
         {
             _config = config;
         }
-        public static async Task AddLayoutPath(string layoutFilePath, string nameLayer)
+        public static async Task<LayoutProjectItem> AddLayoutPath(string layoutFilePath, string nameLayer)
         {
             // Verificar si el archivo existe
             if (!File.Exists(layoutFilePath))
             {
                 MessageBox.Show($"No se encontró el archivo de layout: {layoutFilePath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                return null;
             }
 
             // Ejecutar la tarea en el hilo principal de CIM
-            await QueuedTask.Run(async () =>
+            return await QueuedTask.Run(async () =>
             {
                 try
                 {
@@ -67,15 +67,18 @@ namespace CommonUtilities.ArcgisProUtils
                             Envelope layerExtent = fcDef.GetExtent();
                             mfrm.SetCamera(layerExtent);
                         }
+                        return layoutItem;
                     }
                     else
                     {
                         // Manejar el caso en que la capa no es una LayoutProjectItem
                         MessageBox.Show("No se pudo agregar el layout. Asegúrate de que el archivo es un .pagx válido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return null;
                     }
                 }
                 catch (Exception ex)
                 {
+                    return null;
                     // Manejar cualquier excepción que ocurra durante el proceso
                     MessageBox.Show($"Ocurrió un error al agregar el layout: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }

@@ -313,8 +313,8 @@ namespace SigcatminProAddin.View.Modulos
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
-            cbp.Add(new ComboBoxPairs("WGS 84", 1));
-            cbp.Add(new ComboBoxPairs("PSAD 56", 2));
+            cbp.Add(new ComboBoxPairs("WGS-84", 1));
+            cbp.Add(new ComboBoxPairs("PSAD-56", 2));
 
             // Asignar la lista al ComboBox
             CbxSistema.DisplayMemberPath = "_Key";
@@ -678,6 +678,7 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.stateDmY = false;
             }
             int datum = (int)CbxSistema.SelectedValue;
+            string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
             //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
@@ -788,6 +789,9 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
                 }
+                //DataTable distBorder;
+                var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
+                GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
                 CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
                 //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
@@ -817,7 +821,10 @@ namespace SigcatminProAddin.View.Modulos
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName);
-
+                List<string> layers = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
+                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layers);
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+                GlobalVariables.CurrentShpName = "Catastro";
             }
             catch (Exception ex) { }
 
