@@ -106,7 +106,7 @@ namespace CommonUtilities.ArcgisProUtils
             // Basado en la lógica original, ajusta el espaciado según la longitud de v_campo1, etc.
             // Por simplicidad, se presenta una versión simplificada:
             string cadenatexto3 = v_campo3.PadRight(13); // Asegurar ancho para el codigo
-            string cadenatexto2 = v_campo2.PadRight(25, ' ');
+            string cadenatexto2 = v_campo2.PadRight(30, ' ');
 
             string cadenatexto4 = (v_campo8.Length == 2) ? v_campo8 + "  " : v_campo8 + "   ";
 
@@ -153,7 +153,7 @@ namespace CommonUtilities.ArcgisProUtils
             ("Carta: " + v_carta_dm, 9.2, 17.8, colorBlue, fontSizeRedBlue),
             ("Fecha: " + fecha, 14.8, 17.8, colorBlue, fontSizeRedBlue),
             ("CÓDIGO DEL DM: " + v_codigo, 18.2, 17.3, colorMagenta, fontSizeMagenta),
-            ("NOMBRE DEL DM: " + "EjemploNombre", 18.2, 16.7, colorMagenta, fontSizeMagenta),
+            ("NOMBRE DEL DM: " + "XXXXXXXX", 18.2, 16.7, colorMagenta, fontSizeMagenta),
             ("HECTÁREA: " + Math.Round(v_area_eval,4) + " Ha.", 18.2, 16.1, colorMagenta, fontSizeMagenta),
                 // Agregar aquí el resto de textos con sus posiciones,
                 // tomando como referencia lo que hacía el código original.
