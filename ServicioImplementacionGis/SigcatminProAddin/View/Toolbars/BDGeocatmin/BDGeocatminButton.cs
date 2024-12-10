@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using CommonUtilities.ArcgisProUtils;
 using System.Windows;
 using ArcGIS.Core.SystemCore;
+using ArcGIS.Desktop.Core.Geoprocessing;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -49,7 +50,14 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     internal class PlanoDemarcacion : BDGeocatminButton { }
     internal class PlanoCarta : BDGeocatminButton { }
     internal class DibujarPoligono : BDGeocatminButton { }
-    internal class DmGoogleEarth : BDGeocatminButton { }
+    internal class DmGoogleEarth : BDGeocatminButton
+    {
+        protected override async void OnClick()
+        {
+            var Params = Geoprocessing.MakeValueArray("Catastro");
+            var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetKMLodDM, Params);
+        }
+    }
     internal class BorrarTemas : BDGeocatminButton { }
     internal class VerCapas : BDGeocatminButton { }
     internal class GenerarNumeroResolucionDm : BDGeocatminButton { }

@@ -1,5 +1,6 @@
 import arcpy
 import json
+import os
 
 # path to log %AppData%\Roaming\Esri\ArcGISPro\ArcToolbox\History.
 arcpy.SetLogHistory(True)

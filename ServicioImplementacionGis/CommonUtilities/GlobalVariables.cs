@@ -26,6 +26,7 @@ namespace CommonUtilities
         public static string stylePath = @"C:\bdgeocatmin\Estilos";
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";
+        public static string toolGetKMLodDM = "exportarDmKmz";
         public static string CurrentCodeDm { get; set; }
 
         public static string CurrentDep { get; set; }
