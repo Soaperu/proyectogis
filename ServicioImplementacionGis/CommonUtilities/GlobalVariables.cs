@@ -1,4 +1,5 @@
 ﻿using ArcGIS.Desktop.Core.Geoprocessing;
+using System.Data;
 using System.Globalization;
 
 namespace CommonUtilities
@@ -35,6 +36,9 @@ namespace CommonUtilities
         //Contenedor de Planitllas 
         public static string ContaninerTemplates = @"U:\\Geocatmin\\Plantillas";
         public static string planeEval = "Plantilla_evd_84.pagx";
+
+        // Tablas Generales
+        public static double DistBorder { get; set; }
 
         public static string ToTitleCase(string input)
         {

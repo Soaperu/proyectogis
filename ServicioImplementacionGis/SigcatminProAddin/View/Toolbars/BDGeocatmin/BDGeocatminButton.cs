@@ -41,9 +41,15 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick() 
         {
+            double x;
+            double y;
             string pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval);
             string nameLayer = GlobalVariables.CurrentShpName;
-            await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer);
+            var layoutItem =await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer);
+            ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+            (x, y) =await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
+            y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion",layoutItem, y);
+            await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
         }
     }
     internal class PlanoDemarcacion : BDGeocatminButton { }

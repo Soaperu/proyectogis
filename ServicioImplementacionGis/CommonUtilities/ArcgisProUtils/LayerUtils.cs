@@ -139,13 +139,14 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 // Limpiar cualquier selección previa en el mapa
                 map.SetSelection(null);
+                if (whereClause != "")
+                {
+                    // Crear el filtro de consulta según el whereClause proporcionado
+                    var qry = new QueryFilter { WhereClause = whereClause };
 
-                // Crear el filtro de consulta según el whereClause proporcionado
-                var qry = new QueryFilter { WhereClause = whereClause };
-
-                // Seleccionar las entidades que cumplan con la condición
-                layer.Select(qry);
-
+                    // Seleccionar las entidades que cumplan con la condición
+                    layer.Select(qry);
+                }
                 // Hacer zoom a la capa seleccionada
                 MapView.Active?.ZoomTo(layer, true, new TimeSpan(0, 0, 2));
             });

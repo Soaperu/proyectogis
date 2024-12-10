@@ -66,6 +66,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -107,6 +108,7 @@ namespace CommonUtilities.ArcgisProUtils
                         return featureLayer;
                     }
                 });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
             }
             catch (Exception ex)
             {
