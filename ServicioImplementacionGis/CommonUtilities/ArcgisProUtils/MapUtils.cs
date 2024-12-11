@@ -92,19 +92,24 @@ namespace CommonUtilities.ArcgisProUtils
         });
         }
 
-        public static void LabelLayer(FeatureLayer layer, string field, string color = "")
+        public static void LabelLayer(FeatureLayer layer, string field, string graphicLayerName, string color = "")
         {
             var featureclass = layer.GetFeatureClass();
             var map = MapView.Active.Map;
-            var gl_param = new GraphicsLayerCreationParams { Name = "Grilla Layer" };
-            var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
-
-            ////Add to the bottom of the TOC
-            //gl_param.MapMemberIndex = -1; //bottom
-            //LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
 
             GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
-                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault(g => g.Name == graphicLayerName);
+
+            if (graphicsLayer != null)
+            {
+                // Eliminar el graphic existente
+                QueuedTask.Run(() => map.RemoveLayer(graphicsLayer));
+            }
+
+            var glParams = new GraphicsLayerCreationParams { Name = graphicLayerName };
+            LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(glParams, map);
+            graphicsLayer = map.GetLayersAsFlattenedList()
+                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault(g => g.Name == graphicLayerName);
 
             QueuedTask.Run(() =>
             {              
@@ -136,6 +141,64 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             });
             graphicsLayer.ClearSelection();
+        }
+
+        public static void LabelLayerbyName(string layername, string field, string graphicLayerName, string color = "#000000")
+        {
+            
+            var map = MapView.Active.Map;
+
+            GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
+                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault(g => g.Name == graphicLayerName);
+
+            if (graphicsLayer != null)
+            {
+                // Eliminar el graphic existente
+                QueuedTask.Run(() => map.RemoveLayer(graphicsLayer));
+            }
+
+            
+
+            QueuedTask.Run(() =>
+            {
+                var glParams = new GraphicsLayerCreationParams { Name = graphicLayerName };
+                LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(glParams, map);
+                graphicsLayer = map.GetLayersAsFlattenedList()
+                    .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault(g => g.Name == graphicLayerName);
+                FeatureLayer layer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, layername);
+                var featureclass = layer.GetFeatureClass();
+
+                // Crear un cursor para iterar sobre las características de la capa
+                using (var rowCursor = layer.Search(null))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        using (Row row = rowCursor.Current)
+                        {
+                            var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                            string fieldValue = Convert.ToString(row[field]);
+
+                            if (geometry != null && !string.IsNullOrEmpty(fieldValue))
+                            {
+                                // Convertir la geometría a un punto (en este caso, tomamos el centroide de la geometría)
+                                var point = geometry.Extent.Center;
+                                var textGraphic = new CIMTextGraphic();
+                                CIMColor rgbColor = ColorUtils.HexToCimColorRGB(color);
+                                var textSymbol = SymbolFactory.Instance.ConstructTextSymbol
+                                                                            (rgbColor, 8.5, "Arial", "Regular");
+                                textGraphic.Placement = Anchor.CenterPoint;
+                                textGraphic.Shape = point;
+                                textGraphic.Text = fieldValue;
+                                textGraphic.Symbol = textSymbol.MakeSymbolReference();
+                                graphicsLayer.AddElement(textGraphic, fieldValue);
+                            }
+
+                        }
+                    }
+                }
+                graphicsLayer.ClearSelection();
+
+            });
         }
 
         public static void LabelVertices(MapPoint clickedPoint)

@@ -825,6 +825,7 @@ namespace SigcatminProAddin.View.Modulos
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layers);
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
                 GlobalVariables.CurrentShpName = "Catastro";
+                MapUtils.LabelLayerbyName("Catastro", "CONTADOR", "Anotaciones");
             }
             catch (Exception ex) { }
 

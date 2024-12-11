@@ -95,7 +95,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                     contador_h += 1;
                 }
-                MapUtils.LabelLayer(pointLayer, "VALOR");
+                MapUtils.LabelLayer(pointLayer, "VALOR","Graphics Layer");
                 List<string> listado = new List<string>();
                 listado.Add($"{layerName}p_{zone}");
                 CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);

@@ -27,6 +27,7 @@ namespace CommonUtilities.ArcgisProUtils
         private Dictionary<string, FeatureLayer> featureLayerMap;
 
         // Variables para almacenar los FeatureLayers específicos
+        public FeatureLayer pFeatureLayer_dm { get; private set; }
         public FeatureLayer pFeatureLayer_depa { get; private set; }
         public FeatureLayer pFeatureLayer_prov { get; private set; }
         public FeatureLayer pFeatureLayer_dist { get; private set; }
@@ -96,8 +97,7 @@ namespace CommonUtilities.ArcgisProUtils
                         FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
                         {
                             Name = actualLayerName,//featureClassInfo.LayerName,
-                            IsVisible = isVisible,
-                            
+                            IsVisible = isVisible,                            
                             
                         };
                         FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams,_map);
@@ -125,6 +125,10 @@ namespace CommonUtilities.ArcgisProUtils
             string loFeature = null;
             switch (variableName)
             {
+                case "pFeatureLayer_dm":
+                    pFeatureLayer_dm = featureLayer;
+                    loFeature = "Catastro";
+                    break;
                 case "pFeatureLayer_depa":
                     pFeatureLayer_depa = featureLayer;
                     loFeature = "Departamento";
