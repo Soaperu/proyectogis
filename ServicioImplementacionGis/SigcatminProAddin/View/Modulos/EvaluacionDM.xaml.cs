@@ -265,6 +265,7 @@ namespace SigcatminProAddin.View.Modulos
                 var dmrRecords = dataBaseHandler.GetUniqueDM(TbxValue.Text, (int)CbxTypeConsult.SelectedValue);
                 calculatedIndex(DataGridResult, records, DatagridResultConstants.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
+                BtnGraficar.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -274,6 +275,8 @@ namespace SigcatminProAddin.View.Modulos
                                                                     MessageBoxImage.Error);
                 return;
             }
+
+            
 
         }
 
@@ -650,6 +653,7 @@ namespace SigcatminProAddin.View.Modulos
             CbxSistema.SelectedIndex = 0;
             CbxTypeConsult.SelectedIndex = 0;
             CbxZona.SelectedIndex = 1;
+            BtnGraficar.IsEnabled = false;
         }
 
         
@@ -800,8 +804,6 @@ namespace SigcatminProAddin.View.Modulos
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
                 await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, @"C:\bdgeocatmin\Estilos\CATASTRO.stylx", "LEYENDA", codigoValue);
-                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-                await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
                 var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
                 try
@@ -825,7 +827,9 @@ namespace SigcatminProAddin.View.Modulos
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layers);
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
                 GlobalVariables.CurrentShpName = "Catastro";
-                MapUtils.LabelLayerbyName("Catastro", "CONTADOR", "Anotaciones");
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "Anotaciones");
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
             }
             catch (Exception ex) { }
 
@@ -848,6 +852,7 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
                 }
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
+                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e","Bold");
                 //Carga capa Provincia
                 if (datum == 1)
                 {
@@ -858,6 +863,7 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
                 }
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
+                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
                 //Carga capa Departamento
                 if (datum == 1)
                 {
@@ -868,6 +874,7 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
                 }
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
+                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12,"#000000", "Bold");
                 //var mapView = MapView.Active as MapView;
                 CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");

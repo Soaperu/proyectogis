@@ -178,11 +178,17 @@
 				  Generar Numero de Resolucion de DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVertices" caption="Rotular Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVertices" loadOnClick="true" keytip="BDG-15" smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="RotularVerticesTool" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Tooltip Heading">
+            Tooltip text<disabledText />
+          </tooltip>
+          <content version="1.0" group="Group A" />
+        </tool>
+        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVertices" caption="Rotular Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVertices" loadOnClick="true" keytip="BDG-15" smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png">
           <tooltip heading="Tooltip Heading">
 				  Rotular Vertices<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
-        </button>
+        </button>-->
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RetirarVertices" caption="Retirar Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RetirarVertices" loadOnClick="true" keytip="BDG-16" smallImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png">
           <tooltip heading="Tooltip Heading">
 				  Retirar Vertices<disabledText /></tooltip>
@@ -203,12 +209,7 @@
 				  Plano de Simultaneidad<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <tool keytip="t1" id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="RotularVerticesTool" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" smallImage="Images\Toolbars\BDGeocatmin\" largeImage="Images\Toolbars\BDGeocatmin\" condition="esri_mapping_mapPane">
-          <tooltip heading="Tooltip Heading">
-            Tooltip text<disabledText />
-          </tooltip>
-          <content version="1.0" group="Group A" />
-        </tool>
+        
         
         <!--Controles Modulo UEAs-->
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegranteUEA" caption="Reporte de Integrante de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegranteUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-1">

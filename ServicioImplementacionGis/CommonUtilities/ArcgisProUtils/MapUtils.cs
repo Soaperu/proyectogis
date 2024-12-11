@@ -92,7 +92,7 @@ namespace CommonUtilities.ArcgisProUtils
         });
         }
 
-        public static void LabelLayer(FeatureLayer layer, string field, string graphicLayerName, string color = "")
+        public static void AnnotateLayer(FeatureLayer layer, string field, string graphicLayerName, string color = "")
         {
             var featureclass = layer.GetFeatureClass();
             var map = MapView.Active.Map;
@@ -143,7 +143,7 @@ namespace CommonUtilities.ArcgisProUtils
             graphicsLayer.ClearSelection();
         }
 
-        public static void LabelLayerbyName(string layername, string field, string graphicLayerName, string color = "#000000")
+        public static void AnnotateLayerbyName(string layername, string field, string graphicLayerName, string color = "#000000")
         {
             
             var map = MapView.Active.Map;

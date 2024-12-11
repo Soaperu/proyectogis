@@ -67,7 +67,6 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     internal class BorrarTemas : BDGeocatminButton { }
     internal class VerCapas : BDGeocatminButton { }
     internal class GenerarNumeroResolucionDm : BDGeocatminButton { }
-    internal class RotularVertices : BDGeocatminButton { }
     internal class RotularVerticesTool: MapTool
     {
         public RotularVerticesTool()

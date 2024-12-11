@@ -227,7 +227,7 @@
                       Grid.Column="4"  VerticalAlignment="Center" IsChecked="True"
                       Margin="0,0,0,0" FontFamily="Roboto" FontSize="10"
                       Style="{DynamicResource Esri_CheckboxToggleSwitch}"/>
-            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
+            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" IsEnabled="False"
                 Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
