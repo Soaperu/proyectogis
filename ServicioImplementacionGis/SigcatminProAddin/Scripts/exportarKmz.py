@@ -274,14 +274,13 @@ def generar_poligonos(kml, layer):
     kml.write(' </Folder>\n')
 
 
-def genera_kml_google(layer, output_folder, nombre_capa, zona):
+def genera_kml_google(layer, output_folder, nombre_capa):
     """
     Genera un archivo KML con datos de un FeatureLayer, replicando la funcionalidad de VB.NET.
     
     :param layer: FeatureLayer de ArcGIS Pro.
     :param output_folder: Carpeta de salida para el archivo KML.
     :param nombre_capa: Nombre de la capa a procesar.
-    :param zona: Zona UTM para la proyección.
     """
     # Ruta del archivo de salida
     # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -313,11 +312,11 @@ if __name__ == '__main__':
     try:
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         map_view = aprx.activeMap
-        layerPrefix = arcpy.GetParameterAsText(0)
+        exactLayerName = arcpy.GetParameterAsText(0)
 
-        layer = map_view.listLayers(f'{layerPrefix}*')[0]  # Reemplaza "NombreDeTuCapa"
+        layer = map_view.listLayers(f'{exactLayerName}')[0]  # Reemplaza "NombreDeTuCapa"
 
-        genera_kml_google(layer, r"D:\temp", layer.name, 18)
+        genera_kml_google(layer, r"C:\bdgeocatmin\Temporal", layer.name)
         arcpy.AddMessage("Satisfactorio")
     except Exception as e:
         arcpy.AddError("Error: " + str(e))
