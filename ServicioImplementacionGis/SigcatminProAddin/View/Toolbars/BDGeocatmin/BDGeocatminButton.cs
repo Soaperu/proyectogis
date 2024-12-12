@@ -132,6 +132,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             IsSketchTool = true;
             SketchType = SketchGeometryType.Point;
             SketchOutputMode = SketchOutputMode.Map;
+
         }
 
         protected override Task OnToolActivateAsync(bool active)
@@ -145,7 +146,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             QueuedTask.Run(() =>
             {
                 var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
-                CommonUtilities.ArcgisProUtils.MapUtils.LabelVertices(mapPoint);
+                CommonUtilities.ArcgisProUtils.MapUtils.AnnotateVertices(mapPoint);
             });
                 
         }
@@ -155,7 +156,23 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             return base.OnSketchCompleteAsync(geometry);
         }
     }
-    internal class RetirarVertices : BDGeocatminButton { }
+    internal class RetirarVertices : BDGeocatminButton 
+    {
+        protected override async void OnClick()
+        {
+            await ArcGIS.Desktop.Framework.FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+            var response = System.Windows.MessageBox.Show("¿Desea Retirar los vértice?","caption", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel);
+            if(response == MessageBoxResult.OK)
+            {
+                //await ArcGIS.Desktop.Framework.FrameworkApplication.SetCurrentToolAsync(null);
+                string graphicLayerName = "Vertices";
+                CommonUtilities.ArcgisProUtils.MapUtils.DeleteGraphicLayerByName(graphicLayerName);
+            }
+            
+            
+            
+        }
+    }
     internal class GenerarDemarcacionMultiple : BDGeocatminButton { }
     internal class RotulaTextoDemarcacion : BDGeocatminButton { }
     internal class PlanoSimultaneidad : BDGeocatminButton { }

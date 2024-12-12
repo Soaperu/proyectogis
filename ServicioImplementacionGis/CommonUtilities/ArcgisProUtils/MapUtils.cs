@@ -201,7 +201,22 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        public static void LabelVertices(MapPoint clickedPoint)
+        public static void DeleteGraphicLayerByName(string graphicLayerName)
+        {
+            var map = MapView.Active.Map;
+
+            GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
+                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault(g => g.Name == graphicLayerName);
+
+            if (graphicsLayer != null)
+            {
+                // Eliminar el graphic existente
+                QueuedTask.Run(() => map.RemoveLayer(graphicsLayer));
+            }
+
+        }
+
+        public static void AnnotateVertices(MapPoint clickedPoint)
         {
             //var featureclass = layer.GetFeatureClass();
             var map = MapView.Active.Map;
