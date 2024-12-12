@@ -34,8 +34,10 @@ namespace CommonUtilities.ArcgisProUtils
                 //Set the label definition back to the layer.
                 featurelayer.SetDefinition(lyrDefn);
                 featurelayer.SetLabelVisibility(true);
-                MapView.Active.Redraw(true);
+                featurelayer.SetVisibility(true);
             });
+            //MapView.Active.Redraw(true);
+
         }
     }
 }
