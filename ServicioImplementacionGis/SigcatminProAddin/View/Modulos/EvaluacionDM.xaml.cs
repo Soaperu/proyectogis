@@ -603,10 +603,11 @@ namespace SigcatminProAddin.View.Modulos
                     string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
                     int.TryParse(DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
                     CbxZona.SelectedValue = zona;
-
+                    GlobalVariables.CurrentNameDm = DataGridResult.GetCellValue(focusedRowHandle, "NOMBRE")?.ToString();
                     // Mostrar el valor obtenido
-                    //System.Windows.MessageBox.Show($"Valor de CODIGO: {codigoValue}", "Información de la Fila");
+
                     string areaValue = DataGridResult.GetCellValue(focusedRowHandle, "HECTAREA")?.ToString();
+                    GlobalVariables.CurrentAreaDm = areaValue;
                     TbxArea.Text = areaValue;
                     TbxArea.IsReadOnly = true;
                     // Llamar a funciones adicionales con el valor seleccionado
@@ -692,6 +693,7 @@ namespace SigcatminProAddin.View.Modulos
             GlobalVariables.CurrentCodeDm= codigoValue;
             string stateGraphic = DataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
             string zoneDm = DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
+            GlobalVariables.CurrentZoneDm= zoneDm;
             var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
                                                                                         , AppConfig.userName
@@ -708,7 +710,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 // Obtener el mapa Catastro//
 
-                Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCastrato); // "CATASTRO MINERO"
+                Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
                 // Crear instancia de FeatureClassLoader y cargar las capas necesarias
                 var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
 
@@ -756,7 +758,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
                 }
-
+                CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
                 DataTable orderUbigeosDM;
                 orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
 
@@ -774,6 +776,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
                 }
+                CommonUtilities.DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
 
                 DataTable intersectCForestal;
                 if (datum == 1)
@@ -784,6 +787,8 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
                 }
+                CommonUtilities.DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
+
                 DataTable intersectDm;
                 if (datum == 1)
                 {
@@ -796,7 +801,7 @@ namespace SigcatminProAddin.View.Modulos
                 //DataTable distBorder;
                 var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
                 GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
-                CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
+                //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
                 //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                 await UpdateValueAsync(catastroShpName, codigoValue);

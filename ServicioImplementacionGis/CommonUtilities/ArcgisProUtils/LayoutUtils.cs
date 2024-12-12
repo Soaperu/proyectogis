@@ -19,13 +19,13 @@ namespace CommonUtilities.ArcgisProUtils
 {
     public class LayoutUtils
     {
-        private const string V = "Plantilla_evd_84";
+        //private const string V = "Plantilla_evd_84";
         private readonly LayoutConfiguration _config;
         public LayoutUtils(LayoutConfiguration config)
         {
             _config = config;
         }
-        public static async Task<LayoutProjectItem> AddLayoutPath(string layoutFilePath, string nameLayer)
+        public static async Task<LayoutProjectItem> AddLayoutPath(string layoutFilePath, string nameLayer, string mapName, string layoutName)
         {
             // Verificar si el archivo existe
             if (!File.Exists(layoutFilePath))
@@ -35,14 +35,18 @@ namespace CommonUtilities.ArcgisProUtils
             }
 
             // Ejecutar la tarea en el hilo principal de CIM
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             return await QueuedTask.Run(async () =>
             {
                 try
                 {
+                    // Obtener la lista actual de mapas antes de agregar el layout
+                    var mapsBefore = Project.Current.GetItems<MapProjectItem>().Select(m => m.Name).ToList();
+
                     var addItem = ItemFactory.Instance.Create(layoutFilePath, ItemFactory.ItemType.PathItem) as IProjectItem;
                     // Agregar el layout al proyecto actual
                     Project.Current.AddItem(addItem);
-                    LayoutProjectItem layoutItem = Project.Current.GetItems<LayoutProjectItem>().FirstOrDefault(l => l.Name == V);
+                    LayoutProjectItem layoutItem = Project.Current.GetItems<LayoutProjectItem>().FirstOrDefault(l => l.Name == layoutName);
                     // Verificar si la capa fue agregada correctamente
                     //LayoutProjectItem layout = layoutProjectItem as LayoutProjectItem;
                     Layout layout = layoutItem.GetLayout();
@@ -53,9 +57,9 @@ namespace CommonUtilities.ArcgisProUtils
 
                         // Mostrar un mensaje de éxito
                         //MessageBox.Show($"Layout '{layout.Name}' agregado y abierto exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                        layout.SetName(GlobalVariables.mapNameCastrato);
-                        MapFrame mfrm = layout.FindElement( GlobalVariables.mapNameCastrato +" Map Frame") as MapFrame;
-                        Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCastrato);
+                        layout.SetName(mapName);
+                        MapFrame mfrm = layout.FindElement( mapName +" Map Frame") as MapFrame;
+                        Map mapCatastro = await MapUtils.FindMapByNameAsync(mapName);
                         mfrm.SetMap(mapCatastro);
                         var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == nameLayer);
                         var fLayer = (FeatureLayer)zoomNameLayer;
@@ -67,6 +71,24 @@ namespace CommonUtilities.ArcgisProUtils
                             Envelope layerExtent = fcDef.GetExtent();
                             mfrm.SetCamera(layerExtent);
                         }
+                        // Obtener la lista de mapas después de agregar el layout
+                        var mapsAfter = Project.Current.GetItems<MapProjectItem>().Select(m => m.Name).ToList();
+
+                        // Identificar el mapa nuevo que se ha agregado
+                        var newMaps = mapsAfter.Except(mapsBefore).ToList();
+                        foreach (var newMapName in newMaps)
+                        {
+                            // Evitar eliminar el mapa que deseas mantener
+                            if (!string.Equals(newMapName, mapName, StringComparison.OrdinalIgnoreCase))
+                            {
+                                var mapToRemove = Project.Current.GetItems<MapProjectItem>().FirstOrDefault(m => m.Name == newMapName);
+                                if (mapToRemove != null)
+                                {
+                                    Project.Current.RemoveItem(mapToRemove);
+                                }
+                            }
+                        }
+
                         return layoutItem;
                     }
                     else
@@ -83,6 +105,7 @@ namespace CommonUtilities.ArcgisProUtils
                     MessageBox.Show($"Ocurrió un error al agregar el layout: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async Task ActivateLayoutAsync(Layout layout)
@@ -531,10 +554,7 @@ namespace CommonUtilities.ArcgisProUtils
 
             return rutaPlantilla;
         }
-        
-
-
-
+       
 
     }
     public class LayoutConfiguration

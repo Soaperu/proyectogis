@@ -177,6 +177,206 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static string ProcessDataRowsFields(string loFeature, DataRow row, string casoConsulta, out string lostrJoinCodigosMarcona, out string validaUrbShp, out string lostrJoinCodigosArea)
+        {
+            lostrJoinCodigosMarcona = string.Empty;
+            validaUrbShp = string.Empty;
+            lostrJoinCodigosArea = string.Empty;
+            string lostrJoinCodigos = string.Empty;
+
+            string fieldIndex;
+            string codigo;
+
+            switch (loFeature)
+            {
+                case "Catastro":
+                    fieldIndex = "OBJECTID";
+                    codigo = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"{codigo},";
+                    break;
+
+                case "Departamento":
+                    fieldIndex = "NM_DEPA";
+                    string nmDepa = row[fieldIndex].ToString();
+                    if (nmDepa != "MAR" && nmDepa != "FUERA DEL PERU")
+                    {
+                        lostrJoinCodigos += $"'{nmDepa}',";
+                    }
+                    break;
+
+                case "Provincia":
+                case "Prov_Colindantes":
+                    fieldIndex = "NM_PROV";
+                    string cdProv = row[fieldIndex].ToString();
+                    if (cdProv != "9901" && cdProv != "9903")
+                    {
+                        lostrJoinCodigos += $"'{cdProv}',";
+                    }
+                    break;
+
+                case "Distrito":
+                    fieldIndex = "NM_DIST";
+                    codigo = row[fieldIndex].ToString();
+                    if (casoConsulta == "CARTA IGN" || casoConsulta == "DEMARCACION POLITICA")
+                    {
+                        lostrJoinCodigos += $"'{codigo}',";
+                    }
+                    else
+                    {
+                        //fieldIndex = "NM_DIST";
+                        string cdDist = row[fieldIndex].ToString();
+                        if (cdDist != "990101" && cdDist != "990301")
+                        {
+                            lostrJoinCodigos += $"'{codigo}',";
+                        }
+                    }
+                    break;
+
+                case "Zona Urbana":
+                    fieldIndex = "NOMBRE";
+                    string nombreZona = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{nombreZona}',";
+                    lostrJoinCodigosMarcona = nombreZona;
+                    if (lostrJoinCodigosMarcona == "SAN JUAN DE MARCONA")
+                    {
+                        validaUrbShp = "1";
+                    }
+                    break;
+
+                case "Zona Reservada":
+                    fieldIndex = "NM_RESE";
+                    string nmRese = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{nmRese}',";
+                    break;
+
+                case "Caram":
+                    fieldIndex = "NM_AREA";
+                    string nmArea = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{nmArea}',";
+                    break;
+
+                case "Cuadrangulo":
+                    fieldIndex = "CD_HOJA";
+                    string cdHoja = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{cdHoja}',";
+                    break;
+
+                case "Limite Frontera":
+                    fieldIndex = "CODIGO";
+                    codigo = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{codigo}',";
+                    break;
+
+                case "Catastro Forestal":
+                    fieldIndex = "CD_CONCE";
+                    codigo = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{codigo}',";
+                    break;
+
+                case "Zona Traslape":
+                    codigo = row[2].ToString();
+                    lostrJoinCodigos += $"'{codigo}',";
+                    break;
+
+                case "Limite de Zona":
+                    fieldIndex = "ZONA";
+                    string zona = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{zona}',";
+                    break;
+
+                case "Capitales Distritales":
+                    fieldIndex = "DISTRITO";
+                    string distrito = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{distrito}',";
+                    break;
+
+                case "Red_Hidrografica":
+                    fieldIndex = "CD_DEPA";
+                    string cdDepa = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{cdDepa}',";
+                    break;
+
+                case "Certificacion Ambiental":
+                    fieldIndex = "ID_RECURSO";
+                    string idRecurso = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{idRecurso}',";
+                    break;
+
+                case "DM_Uso_Minero":
+                    fieldIndex = "ID_AREA_USOMINERO";
+                    string idAreaUsoMinero = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{idAreaUsoMinero}',";
+                    break;
+
+                case "DM_Actividad_Minera":
+                    fieldIndex = "CODIGO";
+                    codigo = row[fieldIndex].ToString();
+                    lostrJoinCodigos += $"'{codigo}',";
+                    fieldIndex = "ANOPRO";
+                    string anoPro = row[fieldIndex].ToString();
+                    lostrJoinCodigosArea = anoPro;
+                    break;
+
+                default:
+                    codigo = row[1].ToString();
+                    lostrJoinCodigos += $"'{codigo}',";
+                    break;
+            }
+
+            return lostrJoinCodigos;
+        }
+        public static string GenerateJoinCondition(string loFeature, string lostrJoinCodigos)
+        {
+            // Validar que lostr_Join_Codigos no sea nulo ni vacío
+            if (string.IsNullOrEmpty(lostrJoinCodigos))
+            {
+                throw new ArgumentException("El parámetro 'lostr_Join_Codigos' no puede ser nulo o vacío.");
+            }
+
+            // Remover la última coma de la cadena
+            lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
+
+            // Procesar según el valor de loFeature
+            switch (loFeature)
+            {
+                case "Departamento":
+                    return $"NM_DEPA IN ({lostrJoinCodigos})";
+
+                case "Provincia":
+                case "Distrito":
+                    return $"OBJECTID IN ({lostrJoinCodigos})";
+
+                case "Zona Urbana":
+                    return $"NOMBRE IN ({lostrJoinCodigos})";
+
+                case "Zona Reservada":
+                    return $"NM_RESE IN ({lostrJoinCodigos})";
+
+                case "Caram":
+                    return $"NM_AREA IN ({lostrJoinCodigos})";
+
+                case "Catastro Forestal":
+                    return $"CD_CONCE IN ({lostrJoinCodigos})";
+
+                case "Zona Traslape":
+                    return $"DESCRIP IN ({lostrJoinCodigos})";
+
+                case "Capitales Distritales":
+                    return $"DISTRITO IN ({lostrJoinCodigos})";
+
+                case "Certificacion Ambiental":
+                    return $"ID_RECURSO IN ({lostrJoinCodigos})";
+
+                case "DM_Uso_Minero":
+                case "DM_Actividad_Minera":
+                case "Prov_Colindantes":
+                    return $"CODIGO IN ({lostrJoinCodigos})";
+
+                default:
+                    return $"OBJECTID IN ({lostrJoinCodigos})";
+            }
+        }
+
         public static string ProcessFeatureFields(string loFeature, Row row, string casoConsulta, out string lostrJoinCodigosMarcona, out string validaUrbShp, out string lostrJoinCodigosArea)
         {
             lostrJoinCodigosMarcona = string.Empty;
@@ -324,57 +524,6 @@ namespace CommonUtilities.ArcgisProUtils
             }
 
             return lostrJoinCodigos;
-        }
-        public static string GenerateJoinCondition(string loFeature, string lostrJoinCodigos)
-        {
-            // Validar que lostr_Join_Codigos no sea nulo ni vacío
-            if (string.IsNullOrEmpty(lostrJoinCodigos))
-            {
-                throw new ArgumentException("El parámetro 'lostr_Join_Codigos' no puede ser nulo o vacío.");
-            }
-
-            // Remover la última coma de la cadena
-            lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
-
-            // Procesar según el valor de loFeature
-            switch (loFeature)
-            {
-                case "Departamento":
-                    return $"NM_DEPA IN ({lostrJoinCodigos})";
-
-                case "Provincia":
-                case "Distrito":
-                    return $"OBJECTID IN ({lostrJoinCodigos})";
-
-                case "Zona Urbana":
-                    return $"NOMBRE IN ({lostrJoinCodigos})";
-
-                case "Zona Reservada":
-                    return $"NM_RESE IN ({lostrJoinCodigos})";
-
-                case "Caram":
-                    return $"NM_AREA IN ({lostrJoinCodigos})";
-
-                case "Catastro Forestal":
-                    return $"CD_CONCE IN ({lostrJoinCodigos})";
-
-                case "Zona Traslape":
-                    return $"DESCRIP IN ({lostrJoinCodigos})";
-
-                case "Capitales Distritales":
-                    return $"DISTRITO IN ({lostrJoinCodigos})";
-
-                case "Certificacion Ambiental":
-                    return $"ID_RECURSO IN ({lostrJoinCodigos})";
-
-                case "DM_Uso_Minero":
-                case "DM_Actividad_Minera":
-                case "Prov_Colindantes":
-                    return $"CODIGO IN ({lostrJoinCodigos})";
-
-                default:
-                    return $"OBJECTID IN ({lostrJoinCodigos})";
-            }
         }
 
         public async static Task AgregarCampoTemaTpm(string pShapefile, string caso)

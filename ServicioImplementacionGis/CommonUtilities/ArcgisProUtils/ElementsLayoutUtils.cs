@@ -22,7 +22,8 @@ namespace CommonUtilities.ArcgisProUtils
         // Variables de ejemplo (estas deberían ser proporcionadas externamente)
         private string v_carta_dm = GlobalVariables.CurrentCodeDm;
         private string v_codigo = GlobalVariables.CurrentCodeDm;
-        private double v_area_eval = 123.4567;
+        private string v_area_eval = GlobalVariables.CurrentAreaDm;
+        private string v_nombre_dm = GlobalVariables.CurrentNameDm;
         private string fecha = DateTime.Now.ToString("dd/MM/yyyy");
         private string v_tipo_exp = "";
         private int? Cuenta_rd = null;
@@ -147,14 +148,15 @@ namespace CommonUtilities.ArcgisProUtils
             CIMColor colorRed = ColorFromRGB(230, 0, 0);
             int fontSizeRedBlue = 7;
             CIMColor colorBlue = ColorFromRGB(71, 61, 255);
+            CIMColor colorBlack = ColorFromRGB(0, 0, 0);
 
             var textList = new List<(string Texto, double X, double Y, CIMColor color, int fontSize)>()
             {
             ("Carta: " + v_carta_dm, 9.2, 17.8, colorBlue, fontSizeRedBlue),
             ("Fecha: " + fecha, 14.8, 17.8, colorBlue, fontSizeRedBlue),
             ("CÓDIGO DEL DM: " + v_codigo, 18.2, 17.3, colorMagenta, fontSizeMagenta),
-            ("NOMBRE DEL DM: " + "XXXXXXXX", 18.2, 16.7, colorMagenta, fontSizeMagenta),
-            ("HECTÁREA: " + Math.Round(v_area_eval,4) + " Ha.", 18.2, 16.1, colorMagenta, fontSizeMagenta),
+            ("NOMBRE DEL DM: " + v_nombre_dm, 18.2, 16.7, colorMagenta, fontSizeMagenta),
+            ("HECTÁREA: " + Math.Round(double.Parse(v_area_eval),4) + " Ha.", 18.2, 16.1, colorMagenta, fontSizeMagenta),
                 // Agregar aquí el resto de textos con sus posiciones,
                 // tomando como referencia lo que hacía el código original.
                 // Por ejemplo:
@@ -183,7 +185,7 @@ namespace CommonUtilities.ArcgisProUtils
             else
             {
                 //textList.Add(("Petitorio sin RD - coords fijas", 18.2, posY));
-                posY -= 0.4;
+                //posY -= 0.4;
             }
 
             // contatexto=8: DERECHOS POSTERIORES/RESPETAR
@@ -222,89 +224,90 @@ namespace CommonUtilities.ArcgisProUtils
             // contatexto=11: CATASTRO NO MINERO
             textList.Add(("CATASTRO NO MINERO", 18.2, posY, colorRed, fontSizeRedBlue));
             posY -= 0.4;
+            string listaCaramur = GlobalVariables.listaCaramur;
+            string listaCaramre = GlobalVariables.listaCaramre;
+            string listaCforestal = GlobalVariables.listaCforestal;
+            // contatexto=12: Zonas Urbanas
+            string zonasUrbanasText;
+            if (string.IsNullOrEmpty(GlobalVariables.listaCaramur))
+            {
+                zonasUrbanasText = "Zonas Urbanas : No se encuentra superpuesto a un Área urbana";
+            }
+            else
+            {
+                if (GlobalVariables.listaCaramur.Length > 65)
+                {
+                    string posi_x = listaCaramur.Substring(0, 65);
+                    string posi_x1 = listaCaramur.Substring(65);
+                    zonasUrbanasText = "Zonas Urbanas : " + posi_x + "\n" + posi_x1;
+                }
+                else
+                {
+                    zonasUrbanasText = "Zonas Urbanas : " + listaCaramur;
+                }
+            }
+            textList.Add((zonasUrbanasText, 18.2, posY, colorBlack, 6));
+            posY -= 0.4;
 
-            //// contatexto=12: Zonas Urbanas
-            //string zonasUrbanasText;
-            //if (string.IsNullOrEmpty(lista_caramur))
-            //{
-            //    zonasUrbanasText = "Zonas Urbanas : No se encuentra superpuesto a un Área urbana";
-            //}
-            //else
-            //{
-            //    if (lista_caramur.Length > 65)
-            //    {
-            //        string posi_x = lista_caramur.Substring(0, 65);
-            //        string posi_x1 = lista_caramur.Substring(65);
-            //        zonasUrbanasText = "Zonas Urbanas : " + posi_x + "\n" + posi_x1;
-            //    }
-            //    else
-            //    {
-            //        zonasUrbanasText = "Zonas Urbanas : " + lista_caramur;
-            //    }
-            //}
-            //textList.Add((zonasUrbanasText, 18.2, posY));
-            //posY -= 0.4;
+            // contatexto=13: Zonas Reservadas
+            string zonasReservadasText;
+            if (string.IsNullOrEmpty(listaCaramre))
+            {
+                zonasReservadasText = "Zonas Reservadas : No se encuentra superpuesto a un Área de Reserva";
+            }
+            else
+            {
+                if (listaCaramre.Length > 65)
+                {
+                    string posi_x = listaCaramre.Substring(0, 65);
+                    string posi_x1 = listaCaramre.Substring(65);
+                    zonasReservadasText = "Zonas Reservadas : " + posi_x + "\n" + posi_x1;
+                }
+                else
+                {
+                    zonasReservadasText = "Zonas Reservadas : " + listaCaramre;
+                }
+            }
+            textList.Add((zonasReservadasText, 18.2, posY, colorBlack, 6));
+            posY -= 0.4;
 
-            //// contatexto=13: Zonas Reservadas
-            //string zonasReservadasText;
-            //if (string.IsNullOrEmpty(lista_caramre))
-            //{
-            //    zonasReservadasText = "Zonas Reservadas : No se encuentra superpuesto a un Área de Reserva";
-            //}
-            //else
-            //{
-            //    if (lista_caramre.Length > 65)
-            //    {
-            //        string posi_x = lista_caramre.Substring(0, 65);
-            //        string posi_x1 = lista_caramre.Substring(65);
-            //        zonasReservadasText = "Zonas Reservadas : " + posi_x + "\n" + posi_x1;
-            //    }
-            //    else
-            //    {
-            //        zonasReservadasText = "Zonas Reservadas : " + lista_caramre;
-            //    }
-            //}
-            //textList.Add((zonasReservadasText, 18.2, posY));
-            //posY -= 0.4;
-
-            //// contatexto=14: Cobertura temática SERFOR
-            //string serforText;
-            //if (string.IsNullOrEmpty(lista_forestal))
-            //{
-            //    serforText = "Cobertura temática SERFOR : NO PRESENTA COBERTURAS TEMÁTICAS";
-            //}
-            //else
-            //{
-            //    if (lista_forestal.Length > 65)
-            //    {
-            //        string posi_x = lista_forestal.Substring(0, 65);
-            //        string posi_x1 = lista_forestal.Substring(65);
-            //        serforText = "Cobertura temática SERFOR : " + posi_x + "\n" + posi_x1;
-            //    }
-            //    else
-            //    {
-            //        serforText = "Cobertura temática SERFOR : " + lista_forestal.ToLowerInvariant();
-            //    }
-            //}
-            //textList.Add((serforText, 18.2, posY));
-            //posY -= 0.4;
+            // contatexto=14: Cobertura temática SERFOR
+            string serforText;
+            if (string.IsNullOrEmpty(listaCforestal))
+            {
+                serforText = "Cobertura temática SERFOR : NO PRESENTA COBERTURAS TEMÁTICAS";
+            }
+            else
+            {
+                if (listaCforestal.Length > 65)
+                {
+                    string posi_x = listaCforestal.Substring(0, 65);
+                    string posi_x1 = listaCforestal.Substring(65);
+                    serforText = "Cobertura temática SERFOR : " + posi_x + "\n" + posi_x1;
+                }
+                else
+                {
+                    serforText = "Cobertura temática SERFOR : " + listaCforestal.ToLowerInvariant();
+                }
+            }
+            textList.Add((serforText, 18.2, posY, colorBlack, 6));
+            posY -= 0.4;
 
             // contatexto=15: Límites fronterizos
             var distanciaFront = GlobalVariables.DistBorder;
             string limitesFronText = "Límites fronterizos (Fuente IGN): Distancia de la línea de frontera de " + distanciaFront + " (Km.)";
-            textList.Add((limitesFronText, 18.2, posY, ColorFromRGB(0,0,0), 6));
+            textList.Add((limitesFronText, 18.2, posY, colorBlack, 6));
             posY -= 0.4;
 
             // contatexto=16: LISTADO DE DERECHOS MINEROS
-            string listadoDMText = "                                LISTADO DE DERECHOS MINEROS";
-            textList.Add((listadoDMText, 18.2, posY, ColorFromRGB(0, 0, 0), 6));
+            string listadoDMText = "                                      LISTADO DE DERECHOS MINEROS";
+            textList.Add((listadoDMText, 18.2, posY, colorBlack, 6));
             posY -= 0.4;
 
             // contatexto=17: Encabezado de columnas
             string encabezadoDM = "Nº      NOMBRE                                    CÓDIGO              TE    TP   INCOR  SUST";
             textList.Add((encabezadoDM, 18.2, posY, colorBlue, fontSizeRedBlue));
             posY -= 0.4;
-
             return textList.ToArray();
         }
 
@@ -331,7 +334,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                 // Criterios a procesar
                 var criterios = new string[] {"PR", "AR", "PO", "SI", "EX"};
-                int contador = 0;
+                //int contador = 0;
                 foreach (var criterio in criterios)
                 {
                     
@@ -340,7 +343,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                     if (resultados.Count > 0)
                     {
-                        contador += 1;
+                        //contador += 1;
                         // Procesar resultados, colocar textos
                         foreach (var res in resultados)
                         {
@@ -389,8 +392,8 @@ namespace CommonUtilities.ArcgisProUtils
                 //if (catastroLayer == null)
                 //    throw new Exception("No se encontró la capa 'catastro' en el mapa.");
                 //Layout layout = _layout;
-                MapFrame mfrm = _layout.FindElement(GlobalVariables.mapNameCastrato + " Map Frame") as MapFrame;
-                Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCastrato);
+                MapFrame mfrm = _layout.FindElement(GlobalVariables.mapNameCatastro + " Map Frame") as MapFrame;
+                Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro);
                 
                 var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == GlobalVariables.CurrentShpName);
                 var catastroLayer = (FeatureLayer)zoomNameLayer;
@@ -456,30 +459,13 @@ namespace CommonUtilities.ArcgisProUtils
 
         public async Task GeneralistaDmPlanoEvaAsync(double posi_y1_list)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(async() =>
             {
                 //// Obtener el layout
-                //LayoutProjectItem layoutItem = Project.Current.GetItems<LayoutProjectItem>().FirstOrDefault(l => l.Name.Equals(layoutName, StringComparison.OrdinalIgnoreCase));
-                //if (layoutItem == null)
-                //    throw new Exception($"No se encontró el layout {layoutName}");
-
-                //Layout layout = layoutItem.GetLayout();
-                //if (layout == null)
-                //    throw new Exception("No se pudo obtener el layout.");
-
-                //// Obtener la capa "Catastro"
-                //Map map = MapView.Active.Map;
-                //if (map == null)
-                //    throw new Exception("No hay un mapa activo.");
-
-                //FeatureLayer catastroLayer = map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name.Equals("Catastro", StringComparison.OrdinalIgnoreCase));
-                //if (catastroLayer == null)
-                //{
-                //    // En ArcGIS Pro no hay MsgBox, se puede usar ArcGIS.Desktop.Framework.Dialogs.MessageBox o solo excepciones.
-                //    throw new Exception("No se encuentra la capa 'Catastro' en el mapa para generar listado en plano.");
-                //}
-                MapFrame mfrm = _layout.FindElement(GlobalVariables.mapNameCastrato + " Map Frame") as MapFrame;
-                Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCastrato);
+                
+                MapFrame mfrm = _layout.FindElement(GlobalVariables.mapNameCatastro + " Map Frame") as MapFrame;
+                Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro);
 
                 var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == GlobalVariables.CurrentShpName);
                 var catastroLayer = (FeatureLayer)zoomNameLayer;
@@ -502,8 +488,8 @@ namespace CommonUtilities.ArcgisProUtils
                 // Crear un Search sin filtro (Nothing,False en VB era sin filtro)
                 QueryFilter qf = new QueryFilter();
                 // Crear el símbolo de texto
-                CIMTextSymbol textSymbol = CrearSimboloTexto(ColorFromRGB(0, 0, 0), 6.0, "Courier New");
-                List<(string texto, double x, double y)> texts = new List<(string, double, double)>();
+                
+                List<(string texto, double x, double y, CIMTextSymbol symbol)> texts = new List<(string, double, double, CIMTextSymbol)>();
 
                 double posi_y1 = posi_y1_list - 0.3;
                 double posi_y = posi_y1_list - 0.3;
@@ -515,6 +501,7 @@ namespace CommonUtilities.ArcgisProUtils
                     int conta1 = 0;
                     while (cursor.MoveNext())
                     {
+                        CIMTextSymbol textSymbol = CrearSimboloTexto(ColorFromRGB(0, 0, 0), 6.0, "Courier New");
                         using (Feature feature = (Feature)cursor.Current)
                         {
                             conta1++;
@@ -551,7 +538,7 @@ namespace CommonUtilities.ArcgisProUtils
                             double x = 18.2;
                             double y = posi_y;
 
-                            texts.Add((cadenatexto, x, y));
+                            texts.Add((cadenatexto, x, y, textSymbol));
 
                             // Actualizar posi_y
                             posi_y1 -= 0.3;
@@ -561,9 +548,9 @@ namespace CommonUtilities.ArcgisProUtils
                 }
 
                 // Crear los elementos de texto en el layout
-                foreach (var (texto, x, y) in texts)
+                foreach (var (texto, x, y, textoSymbol) in texts)
                 {
-                    CrearTextElement(texto, x, y, textSymbol);
+                    CrearTextElement(texto, x, y, textoSymbol);
                     //var coord = new ArcGIS.Core.Geometry.Coordinate2D(x, y);
                     //ElementFactory.Instance.CrearTextElement(layout, textSymbol, coord, texto);
                 }
@@ -572,6 +559,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // El código original no mostraba lodtbReporte en este método, pero se podría agregar.
 
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
 

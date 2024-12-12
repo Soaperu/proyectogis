@@ -44,17 +44,75 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         {
             double x;
             double y;
-            string pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval);
+            string planeEval;
+            string pathLayout;
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            {
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval);
+                planeEval = GlobalVariables.planeEval.Split('.')[0];
+            }
+            else 
+            {
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval56);
+                planeEval = GlobalVariables.planeEval56.Split('.')[0];
+            }
+            string mapName = GlobalVariables.mapNameCatastro;
             string nameLayer = GlobalVariables.CurrentShpName;
-            var layoutItem =await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer);
+            var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
             ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
             (x, y) =await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
             y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion",layoutItem, y);
             await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
         }
     }
-    internal class PlanoDemarcacion : BDGeocatminButton { }
-    internal class PlanoCarta : BDGeocatminButton { }
+    internal class PlanoDemarcacion : BDGeocatminButton 
+    {
+        protected override async void OnClick()
+        {
+            double x;
+            double y;
+            string planeDemarca;
+            string pathLayout;
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            {
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeDemarca84);
+                planeDemarca = GlobalVariables.planeDemarca84.Split('.')[0];
+            }
+            else
+            {
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeDemarca56);
+                planeDemarca = GlobalVariables.planeDemarca56.Split('.')[0];
+            }
+            string mapName = GlobalVariables.mapNameDemarcacionPo;
+            string nameLayer = GlobalVariables.CurrentShpName;
+            var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca);
+            DemarcaElementsLayoutUtils demarcaElementsLayoutUtils = new DemarcaElementsLayoutUtils();
+            await demarcaElementsLayoutUtils.AddDemarcaTextAsync("", GlobalVariables.CurrentDistDm, "", "", GlobalVariables.CurrentProvDm, "", GlobalVariables.CurrentDepDm, layoutItem);
+        }
+    }
+    internal class PlanoCarta : BDGeocatminButton 
+    {
+        protected override async void OnClick()
+        {
+            double x;
+            double y;
+            string planeCarta;
+            string pathLayout;
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            {
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeCarta84);
+                planeCarta = GlobalVariables.planeCarta84.Split('.')[0];
+            }
+            else
+            {
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeCarta56);
+                planeCarta = GlobalVariables.planeCarta56.Split('.')[0];
+            }
+            string mapName = GlobalVariables.mapNameCartaIgn;
+            string nameLayer = GlobalVariables.CurrentShpName;
+            var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
+        }
+    }
     internal class DibujarPoligono : BDGeocatminButton { }
     internal class DmGoogleEarth : BDGeocatminButton
     {
