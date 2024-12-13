@@ -112,6 +112,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             string mapName = GlobalVariables.mapNameCartaIgn;
             string nameLayer = GlobalVariables.CurrentShpName;
             var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
+            CartaIgnElementsLayoutUtils cartaIgnElementsLayoutUtils = new CartaIgnElementsLayoutUtils();
+            string listDist = GlobalVariables.CurrentDistDm;
+            string listProv = GlobalVariables.CurrentProvDm;
+            string listDep = GlobalVariables.CurrentDepDm;
+            string listHojas = StringProcessorUtils.FormatStringCartaIgnForTitle(GlobalVariables.CurrentPagesDm);
+            await cartaIgnElementsLayoutUtils.AddCartaIgnTextAsync(layoutItem, listHojas, "", listDist, "", listProv, "", listDep, "", "");
         }
     }
     internal class DibujarPoligono : BDGeocatminButton { }

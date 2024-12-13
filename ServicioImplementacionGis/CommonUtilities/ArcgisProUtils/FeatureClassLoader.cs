@@ -590,19 +590,20 @@ namespace CommonUtilities.ArcgisProUtils
                         }
                     }
                 });
-
+                if (loFeature == "Carta IGN")
+                {
+                    GlobalVariables.CurrentPagesDm = lostrJoinCodigos;
+                }
                 // Construir la cláusula WHERE final
                 // ... código para construir la cláusula WHERE ...
-                // Construir la cláusula WHERE final
                 if (!string.IsNullOrEmpty(lostrJoinCodigos))
                 {
                     lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
-
                 
                     try
                     {
                         string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
-                        Console.WriteLine(joinCondition);
+                        //Console.WriteLine(joinCondition);
                         lostrJoinCodigos = joinCondition;
                     }
                     catch (Exception ex)
@@ -851,6 +852,8 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_Paises = "DATA_GIS.GPO_PAI_PAISES";
         public const string gstrFC_LimiteZonas = "DATA_GIS.GPO_LZO_LIMITE_ZONAS";
         public const string gstrFC_IgnRaster84 = "DATA_GIS.DS_IGN_CARTA_NACIONAL_2016_W84";
+        public const string gstrRT_IngMosaic56 = "DATA_GIS.MD_IGN_CARTA_56";
+        public const string gstrRT_IngMosaic84 = "DATA_GIS.MD_IGN_CARTA_84";
 
         // Agregar más constantes según sea necesario
     }

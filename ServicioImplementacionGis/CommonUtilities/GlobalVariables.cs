@@ -41,6 +41,7 @@ namespace CommonUtilities
         public static string CurrentDistDm { get; set; }
         public static string CurrentShpName { get; set; }
         public static string CurrentZoneDm {  get; set; }
+        public static string CurrentPagesDm { get; set; } // hojas Carta IGN
         // Intersecciones con DM
         public static string listaCaramur {  get; set; }
         public static string listaCaramre { get; set; }
