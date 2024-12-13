@@ -23,6 +23,7 @@ using CommonUtilities.ArcgisProUtils;
 using System.Windows;
 using ArcGIS.Core.SystemCore;
 using ArcGIS.Desktop.Core.Geoprocessing;
+using DevExpress.Drawing.Internal.Fonts;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -174,6 +175,16 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         }
     }
     internal class GenerarDemarcacionMultiple : BDGeocatminButton { }
-    internal class RotulaTextoDemarcacion : BDGeocatminButton { }
+    internal class RotulaTextoDemarcacion : BDGeocatminButton 
+    {
+        protected override async void OnClick()
+        {
+            await ArcGIS.Desktop.Framework.FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+            MapUtils.AnnotateLayerbyName("Departamento", "NM_DEPA", "Anotación Departamento", "#895a44", "Tahoma", 25, "Bold");
+            MapUtils.AnnotateLayerbyName("Provincia", "NM_PROV", "Anotación Provincia", "#007800", "Tahoma", 15, "Bold");
+            MapUtils.AnnotateLayerbyName("Distrito", "NM_DIST", "Antoación Distrito", "#0000ff", "Tahoma", 8, "Bold");
+        }
+           
+    }
     internal class PlanoSimultaneidad : BDGeocatminButton { }
 }

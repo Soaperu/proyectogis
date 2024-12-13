@@ -143,7 +143,8 @@ namespace CommonUtilities.ArcgisProUtils
             graphicsLayer.ClearSelection();
         }
 
-        public static void AnnotateLayerbyName(string layername, string field, string graphicLayerName, string color = "#000000")
+        public static void AnnotateLayerbyName(string layername, string field, string graphicLayerName, string color = "#000000",
+            string fontFamily ="Arial", double fontSize=8.5, string fontWeight="Regular")
         {
             
             var map = MapView.Active.Map;
@@ -156,8 +157,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // Eliminar el graphic existente
                 QueuedTask.Run(() => map.RemoveLayer(graphicsLayer));
             }
-
-            
+                       
 
             QueuedTask.Run(() =>
             {
@@ -185,7 +185,7 @@ namespace CommonUtilities.ArcgisProUtils
                                 var textGraphic = new CIMTextGraphic();
                                 CIMColor rgbColor = ColorUtils.HexToCimColorRGB(color);
                                 var textSymbol = SymbolFactory.Instance.ConstructTextSymbol
-                                                                            (rgbColor, 8.5, "Arial", "Regular");
+                                                                            (rgbColor, fontSize, fontFamily, fontWeight);
                                 textGraphic.Placement = Anchor.CenterPoint;
                                 textGraphic.Shape = point;
                                 textGraphic.Text = fieldValue;

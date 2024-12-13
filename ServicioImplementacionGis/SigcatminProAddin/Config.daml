@@ -113,7 +113,7 @@
         </button>
         <!--Controles BDGeocatmin-->
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ReporteDerechosMineros" caption="Reporte de Derechos Mineros" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ReporteDerechosMineros" loadOnClick="true" keytip="BDG-1" smallImage="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-32x32.png">
-          <tooltip heading="Tooltip Heading">Reporte de Derechos Mineros<disabledText /></tooltip>
+          <tooltip heading="Tooltip Heading">Reporte DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadas" caption="Listar Coordenadas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadas" loadOnClick="true" keytip="BDG-2" smallImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png">
@@ -125,7 +125,7 @@
           <content version="1.0" group="Group A" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegion" caption="Calcula Porcentaje Region" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegion" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png">
-          <tooltip heading="Tooltip Heading">Calcula Porcentaje Región<disabledText /></tooltip>
+          <tooltip heading="Tooltip Heading">Porcentaje Región<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_LimitesRegionales" caption="Limites Regionales" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.LimitesRegionales" loadOnClick="true" keytip="BDG-5" smallImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png">
@@ -135,7 +135,7 @@
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoAreasSuperpuestas" caption="Plano de Areas Superpuestas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoAreasSuperpuestas" loadOnClick="true" keytip="BDG-6" smallImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png">
           <tooltip heading="Tooltip Heading">
-				  Plano de Areas Superpuestas<disabledText /></tooltip>
+				  Plano de Áreas Superpuestas<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoEvaluacion" caption="Plano de Evaluación" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoEvaluacion" loadOnClick="true" keytip="BDG-7" smallImage="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-32x32.png">
@@ -155,7 +155,7 @@
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_DibujarPoligono" caption="Dibujar Poligono" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.DibujarPoligono" loadOnClick="true" keytip="BDG-10" smallImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png">
           <tooltip heading="Tooltip Heading">
-				  DibujarPoligono<disabledText /></tooltip>
+				  Dibujar Polígono<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_DmGoogleEarth" caption="DM en GoogleEarth" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.DmGoogleEarth" loadOnClick="true" keytip="BDG-11" smallImage="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-32x32.png">
@@ -175,12 +175,12 @@
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_GenerarNumeroResolucionDm" caption="Generar Numero de Resolucion de DM" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.GenerarNumeroResolucionDm" loadOnClick="true" keytip="BDG-14" smallImage="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-32x32.png">
           <tooltip heading="Tooltip Heading">
-				  Generar Numero de Resolucion de DM<disabledText /></tooltip>
+				  Número de Resolución de DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="RotularVerticesTool" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="RotularVertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
           <tooltip heading="Tooltip Heading">
-            Tooltip text<disabledText />
+            Rotular Vértices<disabledText />
           </tooltip>
           <content version="1.0" group="Group A" />
         </tool>
@@ -191,12 +191,12 @@
         </button>-->
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RetirarVertices" caption="Retirar Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RetirarVertices" loadOnClick="true" keytip="BDG-16" smallImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png">
           <tooltip heading="Tooltip Heading">
-				  Retirar Vertices<disabledText /></tooltip>
+				  Retirar Vértices<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_GenerarDemarcacionMultiple" caption="Generar Demarcación Multiple" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.GenerarDemarcacionMultiple" loadOnClick="true" keytip="BDG-17" smallImage="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png">
           <tooltip heading="Tooltip Heading">
-				  Generar Demarcación Multiple<disabledText /></tooltip>
+				  Demarcación Múltiple<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotulaTextoDemarcacion" caption="Rotula Texto de Demarcación" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotulaTextoDemarcacion" loadOnClick="true" keytip="BDG-18" smallImage="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png">
@@ -226,12 +226,12 @@
         </button>
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmCirculo" caption="Reporte DM Circulo" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmCirculo" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-4">
           <tooltip heading="Tooltip Heading">
-				  Reporte DM Circulo<disabledText /></tooltip>
+				  Reporte DM Círculo<disabledText /></tooltip>
           <content version="1.0" group="Reportes" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_GraficasDmsSegunRadio" caption="Graficas DM Segun Radio Circunferencia" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.GraficasDmsSegunRadio" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-5">
           <tooltip heading="Tooltip Heading">
-				  Graficas DM Segun Radio Circunferencia<disabledText /></tooltip>
+				  Graficar DM Según Radio Circunferencia<disabledText /></tooltip>
           <content version="1.0" group="Graficas" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegrantesUEA" caption="Plano Integrantes de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegrantesUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-6">
@@ -251,7 +251,7 @@
         </button>
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoAnalisisUEA" caption="Plano de Analisis de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoAnalisisUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-9">
           <tooltip heading="Tooltip Heading">
-				  Plano de Analisis de UEA<disabledText /></tooltip>
+				  Plano de Análisis de UEA<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegradoUEA" caption="Plano Integrado de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegradoUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-10">
