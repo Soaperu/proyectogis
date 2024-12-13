@@ -8,6 +8,8 @@
     <NoWarn>CA1416</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Images\Common\mapa100.png" />
+    <None Remove="Images\Common\usuario32.png" />
     <None Remove="Images\Login\candado16.png" />
     <None Remove="Images\Login\close16.png" />
     <None Remove="Images\Login\closeOrange16.png" />
@@ -33,6 +35,7 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="9.0.0" />
     <PackageReference Include="Microsoft.Extensions.FileProviders.Physical" Version="9.0.0" />
     <PackageReference Include="System.Text.Json" Version="9.0.0" />
+	  <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Sigcatmin.pro.Application\Sigcatmin.pro.Application.csproj" />
@@ -109,6 +112,15 @@
       <CopyLocal>False</CopyLocal>
       <Private>False</Private>
     </Reference>
+    <!--<Reference Include="DevExpress.Xpf.Grid.v23.1">
+      <HintPath>C:\Program Files\DevExpress 23.1\Components\Offline Packages\devexpress.wpf.grid.core\23.1.12\lib\net6.0-windows\DevExpress.Xpf.Grid.v23.1.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v23.1.Core">
+      <HintPath>C:\Program Files\DevExpress 23.1\Components\Offline Packages\devexpress.wpf.grid.core\23.1.12\lib\net6.0-windows\DevExpress.Xpf.Grid.v23.1.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="DevExpress.Xpf.Grid.v23.1.Extensions">
+      <HintPath>C:\Program Files\DevExpress 23.1\Components\Offline Packages\devexpress.wpf.grid.core\23.1.12\lib\net6.0-windows\DevExpress.Xpf.Grid.v23.1.Extensions.dll</HintPath>
+    </Reference>-->
     <Reference Include="ESRI.ArcGIS.ItemIndex">
       <HintPath>C:\Program Files\ArcGIS\Pro\bin\ESRI.ArcGIS.ItemIndex.dll</HintPath>
       <CopyLocal>False</CopyLocal>
@@ -124,6 +136,8 @@
     <Folder Include="Views\WPF\ViewModel\" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="Images\Common\mapa100.png" />
+    <Resource Include="Images\Common\usuario32.png" />
     <Resource Include="Images\Login\candado16.png" />
     <Resource Include="Images\Login\close16.png" />
     <Resource Include="Images\Login\closeOrange16.png" />

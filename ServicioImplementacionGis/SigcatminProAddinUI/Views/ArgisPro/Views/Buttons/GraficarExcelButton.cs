@@ -12,6 +12,8 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.KnowledgeGraph;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
+using SigcatminProAddinUI.Views.WPF.Views.Layout;
+using SigcatminProAddinUI.Views.WPF.Views.Modulos;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +26,9 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.Buttons
     {
         protected override void OnClick()
         {
+            MainView mainView = new MainView();
+            mainView.frameContainer.Navigate(new CartaNacionalView());
+            mainView.Show();  
         }
     }
 }
