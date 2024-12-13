@@ -64,18 +64,16 @@ namespace CommonUtilities.ArcgisProUtils
 
                 dataConnection.DatasetType = esriDatasetType.esriDTMosaicDataset;
                 dataConnection.Dataset = mosaicDatasetName;
-
+                string codeHojaTitle =CommonUtilities.StringProcessorUtils.FormatStringCartaIgnForTitle(codeHoja);
                 // Crear la capa a partir del Mosaic Dataset
-                // Crear los parámetros de creación de la capa con el whereClause
-                DefinitionQuery query = new DefinitionQuery { WhereClause = $"NAME='{codeHoja}'.ecw" };
                 MosaicLayerCreationParams layerCreationParams = new MosaicLayerCreationParams(dataConnection)
                 {
-                    Name = $"Hoja_{codeHoja}", // Nombre descriptivo para la capa
+                    Name = $"Carta IGN Hoja_{codeHojaTitle}", // Nombre descriptivo para la capa
                     // = query // Aplicar el filtro WHERE
                 };
                 //var rasterLayer = LayerFactory.Instance.CreateLayer<MosaicLayer>(new LayerCreationParams(dataConnection), map);
                 var rasterLayer = LayerFactory.Instance.CreateLayer<MosaicLayer>(layerCreationParams, map);
-                //rasterLayer.SetDefinitionQuery($"NAME='{codeHoja}'.ecw");    
+                rasterLayer.SetDefinitionQuery($"NAME IN ({codeHoja})");
                 // Opcionalmente, puedes personalizar la capa después de agregarla
             });
 #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma

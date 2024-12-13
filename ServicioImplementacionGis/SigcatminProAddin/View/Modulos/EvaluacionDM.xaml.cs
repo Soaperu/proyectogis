@@ -765,7 +765,7 @@ namespace SigcatminProAddin.View.Modulos
                 //Carga capa Hojas IGN
                 await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
-
+                //GlobalVariables.CurrentPagesDm = listHojas;
                 // Encontrando Caram superpuestos a DM con
                 DataTable intersectCaram;
                 if (datum == 1)
@@ -891,7 +891,7 @@ namespace SigcatminProAddin.View.Modulos
             try
             {
                 await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
-                Map mapC = await EnsureMapViewIsActiveAsync("CARTA IGN");
+                Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCartaIgn);
                 var featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
                 var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
                 //Carga capa Distrito
@@ -931,8 +931,17 @@ namespace SigcatminProAddin.View.Modulos
 
                 CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl1, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(255, 0, 0, 0), CIMColor.CreateRGBColor(255, 0, 0));
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl1,"Catastro");
-                string mosaicLayer = FeatureClassConstants.gstrFC_IgnRaster84;
-                await CommonUtilities.ArcgisProUtils.RasterUtils.AddRasterCartaIGNLayerAsync(mosaicLayer,geodatabase, mapC, "11j");
+                string mosaicLayer;
+                if (datum == 1)
+                {
+                    mosaicLayer = FeatureClassConstants.gstrRT_IngMosaic84;
+                }
+                else
+                {
+                    mosaicLayer = FeatureClassConstants.gstrRT_IngMosaic56;
+                }
+                string queryListCartaIGN= CommonUtilities.StringProcessorUtils.FormatStringCartaIgnForSql(GlobalVariables.CurrentPagesDm);
+                await CommonUtilities.ArcgisProUtils.RasterUtils.AddRasterCartaIGNLayerAsync(mosaicLayer,geodatabase, mapC, queryListCartaIGN);
                 //await MapView.Active.ZoomToAsync(fl1);
             }            
             catch (Exception ex) 

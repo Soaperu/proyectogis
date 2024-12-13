@@ -200,7 +200,7 @@ namespace CommonUtilities.ArcgisProUtils
                     string nmDepa = row[fieldIndex].ToString();
                     if (nmDepa != "MAR" && nmDepa != "FUERA DEL PERU")
                     {
-                        lostrJoinCodigos += $"'{nmDepa}',";
+                        lostrJoinCodigos += $"{nmDepa},";
                     }
                     break;
 
@@ -210,7 +210,7 @@ namespace CommonUtilities.ArcgisProUtils
                     string cdProv = row[fieldIndex].ToString();
                     if (cdProv != "9901" && cdProv != "9903")
                     {
-                        lostrJoinCodigos += $"'{cdProv}',";
+                        lostrJoinCodigos += $"{cdProv},";
                     }
                     break;
 
@@ -219,7 +219,7 @@ namespace CommonUtilities.ArcgisProUtils
                     codigo = row[fieldIndex].ToString();
                     if (casoConsulta == "CARTA IGN" || casoConsulta == "DEMARCACION POLITICA")
                     {
-                        lostrJoinCodigos += $"'{codigo}',";
+                        lostrJoinCodigos += $"{codigo} ,";
                     }
                     else
                     {
@@ -227,7 +227,7 @@ namespace CommonUtilities.ArcgisProUtils
                         string cdDist = row[fieldIndex].ToString();
                         if (cdDist != "990101" && cdDist != "990301")
                         {
-                            lostrJoinCodigos += $"'{codigo}',";
+                            lostrJoinCodigos += $"{codigo},";
                         }
                     }
                     break;
@@ -235,7 +235,7 @@ namespace CommonUtilities.ArcgisProUtils
                 case "Zona Urbana":
                     fieldIndex = "NOMBRE";
                     string nombreZona = row[fieldIndex].ToString();
-                    lostrJoinCodigos += $"'{nombreZona}',";
+                    lostrJoinCodigos += $"{nombreZona} ,";
                     lostrJoinCodigosMarcona = nombreZona;
                     if (lostrJoinCodigosMarcona == "SAN JUAN DE MARCONA")
                     {
@@ -246,13 +246,13 @@ namespace CommonUtilities.ArcgisProUtils
                 case "Zona Reservada":
                     fieldIndex = "NM_RESE";
                     string nmRese = row[fieldIndex].ToString();
-                    lostrJoinCodigos += $"'{nmRese}',";
+                    lostrJoinCodigos += $"{nmRese},";
                     break;
 
                 case "Caram":
                     fieldIndex = "NM_AREA";
                     string nmArea = row[fieldIndex].ToString();
-                    lostrJoinCodigos += $"'{nmArea}',";
+                    lostrJoinCodigos += $"{nmArea},";
                     break;
 
                 case "Cuadrangulo":
@@ -270,24 +270,24 @@ namespace CommonUtilities.ArcgisProUtils
                 case "Catastro Forestal":
                     fieldIndex = "CD_CONCE";
                     codigo = row[fieldIndex].ToString();
-                    lostrJoinCodigos += $"'{codigo}',";
+                    lostrJoinCodigos += $"{codigo},";
                     break;
 
                 case "Zona Traslape":
                     codigo = row[2].ToString();
-                    lostrJoinCodigos += $"'{codigo}',";
+                    lostrJoinCodigos += $"{codigo},";
                     break;
 
                 case "Limite de Zona":
                     fieldIndex = "ZONA";
                     string zona = row[fieldIndex].ToString();
-                    lostrJoinCodigos += $"'{zona}',";
+                    lostrJoinCodigos += $"{zona},";
                     break;
 
                 case "Capitales Distritales":
                     fieldIndex = "DISTRITO";
                     string distrito = row[fieldIndex].ToString();
-                    lostrJoinCodigos += $"'{distrito}',";
+                    lostrJoinCodigos += $"{distrito},";
                     break;
 
                 case "Red_Hidrografica":
@@ -319,7 +319,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                 default:
                     codigo = row[1].ToString();
-                    lostrJoinCodigos += $"'{codigo}',";
+                    lostrJoinCodigos += $"{codigo},";
                     break;
             }
 
@@ -357,6 +357,9 @@ namespace CommonUtilities.ArcgisProUtils
 
                 case "Catastro Forestal":
                     return $"CD_CONCE IN ({lostrJoinCodigos})";
+                
+                case "Carta IGN":
+                    return $"CD_HOJA IN ({lostrJoinCodigos})";
 
                 case "Zona Traslape":
                     return $"DESCRIP IN ({lostrJoinCodigos})";
@@ -455,7 +458,7 @@ namespace CommonUtilities.ArcgisProUtils
                     lostrJoinCodigos += $"'{nmArea}',";
                     break;
 
-                case "Cuadrangulo":
+                case "Carta IGN":
                     fieldIndex = row.FindField("CD_HOJA");
                     string cdHoja = row[fieldIndex].ToString();
                     lostrJoinCodigos += $"'{cdHoja}',";

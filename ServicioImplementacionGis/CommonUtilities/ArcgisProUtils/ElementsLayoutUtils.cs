@@ -69,7 +69,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <summary>
         /// Crea un elemento de texto en el layout.
         /// </summary>
-        private void CrearTextElement(string texto, double x, double y, CIMTextSymbol textSymbol)
+        public void CrearTextElement(string texto, double x, double y, CIMTextSymbol textSymbol)
         {
             // Crear el punto de ubicación
             Coordinate2D coord = new Coordinate2D(x, y);
@@ -84,7 +84,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <summary>
         /// Crea un símbolo de texto sencillo.
         /// </summary>
-        private CIMTextSymbol CrearSimboloTexto(CIMColor color, double tamañoFuente, string fuente, string estilo = "Regular")
+        public CIMTextSymbol CrearSimboloTexto(CIMColor color, double tamañoFuente, string fuente, string estilo = "Regular")
         {
             return SymbolFactory.Instance.ConstructTextSymbol(color, tamañoFuente, fuente, estilo);
         }
