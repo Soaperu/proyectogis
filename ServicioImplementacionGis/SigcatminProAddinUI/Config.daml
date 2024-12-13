@@ -14,24 +14,52 @@
     <insertModule id="SigcatminProAddinUI_Module" className="Program" autoLoad="false" caption="Program">
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
-        <tab id="SigcatminProAddinUI_Tab1" caption="Sigcatmin3">
+        <tab id="SigcatminProAddinUI_Tab1" caption="Sigcatmin3" keytip="t0">
           <group refID="SigcatminProAddinUI_Group1" />
         </tab>
       </tabs>
       <groups>
         <!-- comment this out if you have no controls on the Addin tab to avoid
               an empty group-->
-        <group id="SigcatminProAddinUI_Group1" caption="Group 1" appearsOnAddInTab="true">
+        <group id="SigcatminProAddinUI_Group1" caption="Sigcatmin" appearsOnAddInTab="true" keytip="gr1">
           <!-- host controls within groups -->
-          <button refID="SigcatminProAddinUI_Button1" size="large" />
-          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" size="large" />
+			<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" size="large" />
+			<subgroup refID="SigcatminProAddinUI_Subgroup1" />
+			<!--<subgroup refID="SigcatminProAddin_Subgroup2" />-->
+
+         
         </group>
       </groups>
+		<subgroups>
+			<subgroup id="SigcatminProAddinUI_Subgroup1" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+				<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" size="middle" />
+				<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GraficarExcelButton" size="middle" />
+				<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GenerarPlanoMasivoButton" size="middle" />
+			</subgroup>
+			<!--<subgroup id="SigcatminProAddin_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+				<comboBox refID="SigcatminProAddin_View_Modulos_SelectorCategorias" />
+				<comboBox refID="SigcatminProAddin_View_Modulos_SelectorModulos" />
+				<button refID="SigcatminProAddin_View_Modulos_ConfirmationModule" size="large"/>
+			</subgroup>-->
+		</subgroups>
       <controls>
         <!-- add your controls here -->
-        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" caption="Iniciar Session" className="SigcatminProAddinUI.Views.ArgisPro.Views.LoginButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32">
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" caption="Iniciar Session" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LoginButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a1">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </button>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" condition="Logged_condition" caption="Cerrar Sesión" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a2">
+          <tooltip heading="Tooltip Heading">
+				  Cerrar Sesión<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GraficarExcelButton" caption="Graficar Excel" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.GraficarExcelButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a3">
+          <tooltip heading="Tooltip Heading">
+				  Graficar Excel<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GenerarPlanoMasivoButton" condition="Logged_condition" caption="Planos Masivos" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.GenerarPlanoMasivoButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a4">
+          <tooltip heading="Tooltip Heading">
+				  Generar Planos Masivos<disabledText /></tooltip>
+        </button>
+        
       </controls>
     </insertModule>
   </modules>

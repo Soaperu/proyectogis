@@ -1,7 +1,7 @@
 ﻿using ArcGIS.Desktop.Framework.Contracts;
 using SigcatminProAddinUI.Views.WPF.Views.Login;
 
-namespace SigcatminProAddinUI.Views.ArgisPro.Views
+namespace SigcatminProAddinUI.Views.ArgisPro.Views.Buttons
 {
     internal class LoginButton : Button
     {

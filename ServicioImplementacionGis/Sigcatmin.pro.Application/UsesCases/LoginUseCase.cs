@@ -34,11 +34,9 @@ namespace Sigcatmin.pro.Application.UsesCases
 
             } catch (Exception ex)
             {
-
+                _loggerService.LogError("", ex);
                 return false;
             }
-          
-
         }
     }
 }

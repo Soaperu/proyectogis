@@ -1,4 +1,5 @@
 ﻿using Sigcatmin.pro.Application.Dtos;
+using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Application.UsesCases;
 using System;
 using System.Collections.Generic;
@@ -23,10 +24,12 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Login
     public partial class LoginView : Window
     {
         private readonly LoginUseCase _loginUseCase;
+        private readonly ILoggerService _loggerService;
         public LoginView()
         {
             InitializeComponent();
             _loginUseCase = Program.GetService<LoginUseCase>();
+            _loggerService = Program.GetService<ILoggerService>();
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
@@ -35,9 +38,16 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Login
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            string username = tbxUser.Text;
-            string password = pwdPassword.Password;
-
+      
+            try
+            {
+                string username = tbxUser.Text;
+                string password = pwdPassword.Password;
+            }
+            catch (Exception ex)
+            {
+                _loggerService.LogError("",ex);
+            }
             //var loginService = Program.GetService<LoginUseCase>();
             _loginUseCase.Execute(new LoginRequestDto() { UserName = "pava2778", Password = "ingemmet" });
         }

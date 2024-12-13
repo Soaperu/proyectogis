@@ -29,8 +29,8 @@ namespace Sigcatmin.pro.Persistence.Configuration
             }
 
             // Obtener las credenciales del archivo .dat o desde la sesión
-            //var user = _userSession.GetUsername(); // Suponiendo que tienes una sesión de usuario
-            //var password = _userSession.GetPassword(); // Igualmente, obteniendo la contraseña de la sesión
+            //var user = _userSession.GetUsername();
+            //var password = _userSession.GetPassword();
 
             UserSessionDto user = _userSession.GetUserSession();
 
