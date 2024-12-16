@@ -154,7 +154,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         private FeatureLayer? GetOrCreatePointLayer(string layerName, string zone)
         {
-            MapUtils.LoadFeatureClassToMap($"{layerName}_{zone}", $"{layerName}_{zone}", true);
+            MapUtils.LoadFeatureClassToMap($"{layerName}_{zone}", $"{layerName}_{zone}", true, -1);
             MapUtils.DeleteRowsFromFeatureClass($"{layerName}_{zone}");
 
             var map = MapView.Active.Map;

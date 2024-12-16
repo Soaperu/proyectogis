@@ -173,7 +173,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                         var norte = Math.Round(double.Parse(records.Rows[i]["CD_CORNOR"].ToString()),3);
                         var esteFormateado = string.Format("{0:### ###.#0}", este);
                         var norteFormateado = string.Format("{0:# ### ###.#0}", norte);
-                        texto += new string(' ', 5) + i.ToString().PadLeft(3, '0');
+                        texto += new string(' ', 5) + (i+1).ToString().PadLeft(3, '0');
                         texto += new string(' ', 5) + esteFormateado;
                         texto += new string(' ', 5) + norteFormateado + "\n";
 
@@ -185,6 +185,11 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 }
             }
 
+        }
+
+        private void btnCerrar_Click(object sender, RoutedEventArgs e)
+        {
+            this.Close();
         }
     }
 }

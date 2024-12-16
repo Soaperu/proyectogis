@@ -43,7 +43,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <Button x:Name="btnCopiarContenido" Grid.Column="0" Click="btnCopiarContenido_Click">Copiar</Button>
-            <Button x:Name="btnCerrar" Grid.Column="1">Cerrar</Button>
+            <Button x:Name="btnCerrar" Grid.Column="1" Click="btnCerrar_Click">Cerrar</Button>
         </Grid>
 
 

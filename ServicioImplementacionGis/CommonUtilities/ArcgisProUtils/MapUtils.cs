@@ -329,7 +329,7 @@ namespace CommonUtilities.ArcgisProUtils
 
 
        
-        public static void LoadFeatureClassToMap(string featureClassName, string layerName, bool isVisible)
+        public static void LoadFeatureClassToMap(string featureClassName, string layerName, bool isVisible, int mapIndex=0)
         {
             QueuedTask.Run(() =>
             {
@@ -349,6 +349,7 @@ namespace CommonUtilities.ArcgisProUtils
                     var layerParams = new FeatureLayerCreationParams(featureClass)
                     {
                         Name = layerName, // Asignar el nombre
+                        MapMemberIndex= mapIndex
                     };
 
                     // Crear la capa de entidad
