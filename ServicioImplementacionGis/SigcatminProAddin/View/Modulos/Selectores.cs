@@ -110,16 +110,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     Add(new ComboBoxItem(modulo.Nombre) );
                 }
-                // Notifica a la UI el cambio
-                //if (ItemCollection.Count > 0)
-                //{
-                //    SelectedItem = ItemCollection[0]; // Seleccionar el primer elemento
-                //}
-                //else
-                //{
-                //    SelectedItem = null; // Si no hay elementos, limpia la selección
-                //}
-                //SelectedItem = ItemCollection.FirstOrDefault();
+
             }
             else
             {

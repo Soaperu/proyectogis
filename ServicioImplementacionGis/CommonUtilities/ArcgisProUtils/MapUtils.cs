@@ -18,6 +18,7 @@ using ArcGIS.Core.Internal.Geometry;
 using System.ComponentModel;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using System.Data;
+using CommonUtilities.ArcgisProUtils.Models;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -213,6 +214,58 @@ namespace CommonUtilities.ArcgisProUtils
                 // Eliminar el graphic existente
                 QueuedTask.Run(() => map.RemoveLayer(graphicsLayer));
             }
+
+        }
+
+        
+        public static async Task<List<ListarCoordenadasModel>> GetRowsAslistByClick(MapPoint clickedPoint)
+        {
+            var map = MapView.Active.Map;
+            var selectedLayers = MapView.Active.GetSelectedLayers();
+            var layer = selectedLayers.OfType<FeatureLayer>().FirstOrDefault();
+            var listRows = new List<ListarCoordenadasModel>();
+
+            await QueuedTask.Run(() =>
+            {
+                if (layer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
+                    return;
+                }
+                if (layer.Name.ToLower() != "catastro")
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona la capa de Catastro.", "Advertencia");
+                    return;
+                }
+
+                using (var rowCursor = layer.Search(null))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        using (Row row = rowCursor.Current)
+                        {
+                            var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                            var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                            //string fieldValue = Convert.ToString(row[field]);
+
+                            if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
+                            {
+                                var customRow = new ListarCoordenadasModel
+                                {
+                                    nombre = row["CONCESION"].ToString(),
+                                    numero = row["CONTADOR"].ToString(),
+                                    codigo = row["CODIGOU"].ToString(),
+                                    area = row["HECTAGIS"].ToString()
+                                };
+
+                                listRows.Add(customRow);
+                            }
+                        }
+                    }
+                }
+            });
+            return listRows;
+
 
         }
 

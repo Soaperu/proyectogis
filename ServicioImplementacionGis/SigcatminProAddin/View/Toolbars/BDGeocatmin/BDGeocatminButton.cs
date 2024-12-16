@@ -24,6 +24,9 @@ using System.Windows;
 using ArcGIS.Core.SystemCore;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using DevExpress.Drawing.Internal.Fonts;
+using SigcatminProAddin.View.Toolbars.BDGeocatmin.UI;
+using DevExpress.Data.Helpers;
+using ArcGIS.Core.Data.Analyst3D;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -34,7 +37,58 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         }
     }
     internal class ReporteDerechosMineros : BDGeocatminButton { }
-    internal class ListarCoordenadas : BDGeocatminButton { }
+
+
+    internal class ListarCoordenadasTool : MapTool
+    {
+        private static ListarCoordenadasWpf _listarCoordenadasWindow;
+        public ListarCoordenadasTool()
+        {
+            IsSketchTool = true;
+            SketchType = SketchGeometryType.Point;
+            SketchOutputMode = SketchOutputMode.Map;
+
+        }
+
+        protected override Task OnToolActivateAsync(bool active)
+        {
+            if (_listarCoordenadasWindow != null && _listarCoordenadasWindow.IsVisible)
+            {
+                _listarCoordenadasWindow.Show();
+            }
+            else
+            {
+                // Crea la ventana si no existe
+                _listarCoordenadasWindow = new ListarCoordenadasWpf();             
+                _listarCoordenadasWindow.Show();
+            }
+
+            return base.OnToolActivateAsync(active);
+        }
+
+        protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
+        {
+            base.OnToolMouseDown(args);
+            QueuedTask.Run(async () =>
+            {
+                var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
+                if (_listarCoordenadasWindow != null && _listarCoordenadasWindow.IsVisible)
+                {
+                    // Actualiza el contenido según los datos del punto
+                    if (_listarCoordenadasWindow is ListarCoordenadasWpf listarCoordenadasWpf)
+                    {
+                        await _listarCoordenadasWindow.UpdateContent(mapPoint); // Método para actualizar contenido
+                    }
+                }
+            });
+        }
+
+        protected override Task<bool> OnSketchCompleteAsync(Geometry geometry)
+        {
+            return base.OnSketchCompleteAsync(geometry);
+        }
+    }
+
     internal class ConsultaDm : BDGeocatminButton { }
     internal class CalculaPorcentajeRegion : BDGeocatminButton { }
     internal class LimitesRegionales : BDGeocatminButton { }
