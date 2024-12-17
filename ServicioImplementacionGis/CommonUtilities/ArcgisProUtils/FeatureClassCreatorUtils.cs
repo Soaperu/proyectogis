@@ -1,12 +1,15 @@
 ﻿using ArcGIS.Core.Data;
-//using ArcGIS.Core.CIM;
 using ArcGIS.Core.Data.DDL;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Core.Internal.Geometry;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
+using System;
+using System.Collections.Generic;
 using System.Globalization;
-using System.Windows.Controls;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using FieldDescription = ArcGIS.Core.Data.DDL.FieldDescription;
 
 namespace CommonUtilities.ArcgisProUtils
@@ -15,7 +18,7 @@ namespace CommonUtilities.ArcgisProUtils
     {
         static Geodatabase geodatabase;
         static Datastore? datastore;
-        public async static Task CreatePolygonInNewGdbAsync(string gdbFolderPath, string nameNewGdb,string featureClassName, List<MapPoint> vertices, string zone)
+        public async static Task CreatePolygonInNewGdbAsync(string gdbFolderPath, string nameNewGdb, string featureClassName, List<MapPoint> vertices, string zone)
         {
             // Validar entradas
             if (string.IsNullOrWhiteSpace(gdbFolderPath))

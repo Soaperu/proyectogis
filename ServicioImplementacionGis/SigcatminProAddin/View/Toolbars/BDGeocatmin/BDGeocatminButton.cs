@@ -174,7 +174,16 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             await cartaIgnElementsLayoutUtils.AddCartaIgnTextAsync(layoutItem, listHojas, "", listDist, "", listProv, "", listDep, "", "");
         }
     }
-    internal class DibujarPoligono : BDGeocatminButton { }
+    internal class DibujarPoligono : BDGeocatminButton 
+    {
+        DibujarPoligonoWpf DrawPolygonWpf;
+        protected override async void OnClick()
+        {
+            DrawPolygonWpf = new DibujarPoligonoWpf();
+            DrawPolygonWpf.Closed += (s, e) => DrawPolygonWpf = null;
+            DrawPolygonWpf.Show();
+        }
+    }
     internal class DmGoogleEarth : BDGeocatminButton
     {
         protected override async void OnClick()
