@@ -9,6 +9,7 @@ namespace CommonUtilities
         public static string currentUser = "";
         public static string pathFileContainerOut = @"C:\bdgeocatmin";
         public static string fileTemp = "Temporal";
+        public static string pathFileTemp = Path.Combine(pathFileContainerOut,fileTemp);
         public static bool stateDmY = true;
         public static string idExport = ""; 
         public static string mapNameCatastro = "CATASTRO MINERO";
