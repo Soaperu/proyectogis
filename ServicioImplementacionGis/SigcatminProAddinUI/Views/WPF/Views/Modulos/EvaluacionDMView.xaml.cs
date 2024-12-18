@@ -1,23 +1,37 @@
-﻿//using DevExpress.Xpf.Grid;
-using DevExpress.Xpf.Grid;
+﻿using DevExpress.Xpf.Grid;
+using Sigcatmin.pro.Application.UsesCases;
+using SigcatminProAddinUI.Views.WPF.ViewModel;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
 using System.Windows.Input;
-
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
 namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 {
     /// <summary>
-    /// Lógica de interacción para CartaNacionalView.xaml
+    /// Lógica de interacción para EvaluacionDMView.xaml
     /// </summary>
-    public partial class CartaNacionalView : Page
+    public partial class EvaluacionDMView : Page
     {
-        public CartaNacionalView()
+        private EvaluacionDMViewModel _evaluacionDMViewModel;
+        public EvaluacionDMView()
         {
             InitializeComponent();
+            _evaluacionDMViewModel = new EvaluacionDMViewModel();
         }
         private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
+
             TbxValue.Clear();
         }
         private void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
@@ -35,8 +49,8 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         }
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)
-        { 
-        
+        {
+
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
@@ -101,6 +115,5 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                 parentWindow.Close();
             }
         }
-
     }
 }

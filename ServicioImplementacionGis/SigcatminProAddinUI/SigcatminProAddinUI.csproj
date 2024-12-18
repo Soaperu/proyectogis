@@ -133,9 +133,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Views\WPF\ViewModel\" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Common\mapa100.png" />
     <Resource Include="Images\Common\usuario32.png" />
     <Resource Include="Images\Login\candado16.png" />
