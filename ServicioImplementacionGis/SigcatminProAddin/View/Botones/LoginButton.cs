@@ -58,7 +58,8 @@ namespace SigcatminProAddin.View.Botones
             {
                 var (username, password, expiration) = CredentialManager.DecryptCredentials(encryptedData);
 
-                if (DateTime.Now < expiration)
+                // DateTime.Now < expiration se usa para considerar tiempo de sesión, abajo se está usando dia de sesión solamente
+                if (DateTime.Now.Date <= expiration.Date)
                 {
                     activeSession = true;
                     // Aquí puedes agregar lógica para renovar credenciales si es necesario

@@ -7,7 +7,7 @@
       mc:Ignorable="d"       
       xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
       xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-      d:DesignHeight="460" d:DesignWidth="680"
+      d:DesignHeight="470" d:DesignWidth="680"
       Title="EvaluacionDM"
       FontFamily="Roboto">
     <Page.Resources>
@@ -26,7 +26,7 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="140"/>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="140"/>
+            <RowDefinition Height="150"/>
             <RowDefinition Height="5"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
@@ -70,7 +70,7 @@
             <TextBlock Text="Consultar" FontSize="10" Margin="0,0,0,10" FontWeight="Medium" 
                        HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
-                      x:Name="CbxTypeConsult" Width="250"
+                      x:Name="CbxTypeConsult" Width="250" FontSize="10"
                        Height="20" Padding="0,3,0,3" Loaded="CbxTypeConsult_Loaded" SelectionChanged="CbxTypeConsult_SelectionChanged"/>
             <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10"
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
@@ -167,7 +167,7 @@
             <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
                   Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="120"/>
+                    <RowDefinition Height="130"/>
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <!--<Image Margin="5,0,5,0"/>-->
@@ -227,7 +227,7 @@
                       Grid.Column="4"  VerticalAlignment="Center" IsChecked="True"
                       Margin="0,0,0,0" FontFamily="Roboto" FontSize="10"
                       Style="{DynamicResource Esri_CheckboxToggleSwitch}"/>
-            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
+            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" IsEnabled="False"
                 Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"

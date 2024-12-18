@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SigcatminProAddin.Models
+namespace CommonUtilities
 {
     public class ExtentModel
     {
