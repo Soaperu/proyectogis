@@ -23,15 +23,19 @@
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
         <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN" keytip="t0">
-          <group refID="SigcatminProAddin_Group1" />
-          <!--Tool Informes Tecnicos-->
-          <group refID="SigcatminProAddin_Group2" />
-          <!--Tool BDGeocatmin-->
-          <group refID="SigcatminProAddin_Group3" />
-          <!--Tool Modulo UEAs-->
-          <group refID="SigcatminProAddin_Group4" />
-          <!--Tool Evaluacion-->
-          <group refID="SigcatminProAddin_Group5" />
+            <group refID="SigcatminProAddin_Group1" />
+            
+			<!--Tool BDGeocatmin-->
+            <group refID="SigcatminProAddin_Group3" />
+			
+			<!--Tool Evaluacion-->
+			<group refID="SigcatminProAddin_Group5" />
+            
+			<!--Tool Modulo UEAs-->
+            <group refID="SigcatminProAddin_Group4" />
+			
+			<!--Tool Informes Tecnicos-->
+			<group refID="SigcatminProAddin_Group2" />
         </tab>
       </tabs>
       <groups>
@@ -90,24 +94,24 @@
         <button id="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" condition="Logged_condition" caption="Planos Masivos" className="SigcatminProAddin.View.Botones.GenerarPlanosMasivosBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a4">
           <tooltip heading="Tooltip Heading">Generar Planos Masivos<disabledText /></tooltip>
         </button>
-        <!--Controles Informe Técnico-->
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado"   caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="Images\Contenido32.png" largeImage="Images\Contenido32.png" keytip="i1">
+        <!--Controles Informes Técnicos-->
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado"   caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="Images\Contenido32.png" largeImage="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-32x32.png" keytip="i1">
           <tooltip heading="Tooltip Heading">Validar resultado<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_AreaSuperpuesta" caption="Superpuesta" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.AreaSuperpuesta" loadOnClick="true" smallImage="Images\Contenido32nuevo.png" largeImage="Images\Contenido32nuevo.png" keytip="i2">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_AreaSuperpuesta" caption="Superpuesta" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.AreaSuperpuesta" loadOnClick="true" smallImage="Images\Contenido32nuevo.png" largeImage="Images\Toolbars\InformesTecnicos\02-area-superpuesta-bd-32x32.png" keytip="i2">
           <tooltip heading="Tooltip Heading">Área superpuesta<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_SuperposicionAreaRestringida" caption="Superposición A.R." categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.SuperposicionAreaRestringida" loadOnClick="true" smallImage="pack://application:,,,/SigcatminProAddin;component/Images/Recurso.png" largeImage="pack://application:,,,/SigcatminProAddin;component/Images/Recurso.png" keytip="i3">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_SuperposicionAreaRestringida" caption="Superposición A.R." categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.SuperposicionAreaRestringida" loadOnClick="true" smallImage="pack://application:,,,/SigcatminProAddin;component/Images/Recurso.png" largeImage="Images\Toolbars\InformesTecnicos\05-superposicion-a-areas-restringidas-32x32.png" keytip="i3">
           <tooltip heading="Tooltip Heading">Superposición área restringida<disabledText /></tooltip>
           <content version="1.0" group="Group B" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GuardarInformeFA" caption="Guardar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GuardarInformeFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i4">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GuardarInformeFA" caption="Guardar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GuardarInformeFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="Images\Toolbars\InformesTecnicos\06-guardar-informe-32x32.png" keytip="i4">
           <tooltip heading="Tooltip Heading">Guardar informe F.A.<disabledText /></tooltip>
           <content version="1.0" group="Group B" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GenerarHistoricoFA" caption="Generar Histórico" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GenerarHistoricoFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="i5">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GenerarHistoricoFA" caption="Generar Histórico" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GenerarHistoricoFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="Images\Toolbars\InformesTecnicos\08-generar-historico-32x32.png" keytip="i5">
           <tooltip heading="Tooltip Heading">Generar histórico F.A.<disabledText /></tooltip>
           <content version="1.0" group="Group B" />
         </button>
@@ -186,7 +190,7 @@
 				  Número de Resolución de DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="RotularVertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="Rotular Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
           <tooltip heading="Tooltip Heading">
             Rotular Vértices<disabledText />
           </tooltip>
@@ -220,54 +224,54 @@
         
         
         <!--Controles Modulo UEAs-->
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegranteUEA" caption="Reporte de Integrante de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegranteUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-1">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegranteUEA" caption="Reporte de Integrante de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegranteUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\01-reporte-integrante-uea-32x32.png" keytip="UEA-1">
           <tooltip heading="Tooltip Heading">Reporte de Integrante de UEA<disabledText /></tooltip>
           <content version="1.0" group="Reportes" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmIncluidosUEA" caption="Reporte DM Incluidos UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmIncluidosUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-2">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmIncluidosUEA" caption="Reporte DM Incluidos UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmIncluidosUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\02-reporte-dm-incluidos-uea-32x32.png" keytip="UEA-2">
           <tooltip heading="Tooltip Heading">Reporte DM Incluidos UEA<disabledText /></tooltip>
           <content version="1.0" group="Reportes" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmExcluidosUEA" caption="Reporte DM Excluidos UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmExcluidosUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-3">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmExcluidosUEA" caption="Reporte DM Excluidos UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmExcluidosUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\03-reporte-dm-excluidos-uea-32x32.png" keytip="UEA-3">
           <tooltip heading="Tooltip Heading">Reporte DM Excluidos UEA<disabledText /></tooltip>
           <content version="1.0" group="Reportes" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmCirculo" caption="Reporte DM Circulo" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmCirculo" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-4">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmCirculo" caption="Reporte DM Circulo" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmCirculo" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\04-reporte-dm-en-circulo-32x32.png" keytip="UEA-4">
           <tooltip heading="Tooltip Heading">
 				  Reporte DM Círculo<disabledText /></tooltip>
           <content version="1.0" group="Reportes" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_GraficasDmsSegunRadio" caption="Graficas DM Segun Radio Circunferencia" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.GraficasDmsSegunRadio" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-5">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_GraficasDmsSegunRadio" caption="Graficas DM Segun Radio Circunferencia" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.GraficasDmsSegunRadio" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\05-graficas-dm-segun-radio-de-circulo-32x32.png" keytip="UEA-5">
           <tooltip heading="Tooltip Heading">
 				  Graficar DM Según Radio Circunferencia<disabledText /></tooltip>
           <content version="1.0" group="Graficas" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegrantesUEA" caption="Plano Integrantes de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegrantesUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-6">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegrantesUEA" caption="Plano Integrantes de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegrantesUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\06-plano-integrantes-de-uea-32x32.png" keytip="UEA-6">
           <tooltip heading="Tooltip Heading">
 				  Plano Integrantes de UEA<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoDmInclusionExclusionUEA" caption="Plano DM Inclusion/Exclusion de UEAs" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoDmInclusionExclusionUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-7">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoDmInclusionExclusionUEA" caption="Plano DM Inclusion/Exclusion de UEAs" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoDmInclusionExclusionUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\07-plano-dm-a-incluirse-en-uea-32x32.png" keytip="UEA-7">
           <tooltip heading="Tooltip Heading">
 				  Plano DM Inclusion/Exclusion de UEAs<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoDmExcluirseUEA" caption="Plano DM a Excluirse de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoDmExcluirseUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-8">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoDmExcluirseUEA" caption="Plano DM a Excluirse de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoDmExcluirseUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\08-plano-dm-a-excluirse-en-uea-32x32.png" keytip="UEA-8">
           <tooltip heading="Tooltip Heading">
 				  Plano DM a Excluirse de UEA<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoAnalisisUEA" caption="Plano de Analisis de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoAnalisisUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-9">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoAnalisisUEA" caption="Plano de Analisis de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoAnalisisUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\09-plano-analisis-de-uea-32x32.png" keytip="UEA-9">
           <tooltip heading="Tooltip Heading">
 				  Plano de Análisis de UEA<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegradoUEA" caption="Plano Integrado de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegradoUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-10">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegradoUEA" caption="Plano Integrado de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegradoUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\10-plano-integrado-de-uea-32x32.png" keytip="UEA-10">
           <tooltip heading="Tooltip Heading">
 				  Plano Integrado de UEA<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegradoUEA" caption="Reporte Integrado de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegradoUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="UEA-11">
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegradoUEA" caption="Reporte Integrado de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegradoUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-32x32.png" keytip="UEA-11">
           <tooltip heading="Tooltip Heading">
 				  Reporte Integrado de UEA<disabledText /></tooltip>
           <content version="1.0" group="Reportes" />

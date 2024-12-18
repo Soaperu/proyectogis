@@ -19,6 +19,9 @@ using System.Linq;
 using System.Runtime.ConstrainedExecution;
 using System.Text;
 using System.Threading.Tasks;
+using CommonUtilities.ArcgisProUtils;
+using CommonUtilities;
+using DevExpress.Pdf.Xmp;
 
 namespace SigcatminProAddin.View.Toolbars.Evaluacion
 {
@@ -28,11 +31,47 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
         {
         }
     }
-    internal class VerTodos: EvaluacionButton { }       
-    internal class VerAntPostColin : EvaluacionButton { }
-    internal class VerAntPost : EvaluacionButton { }
+    internal class VerTodos: EvaluacionButton
+    {
+        protected override async void OnClick()
+        {
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','PR','PO','SI','CO','EX','VE','AR')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }       
+    internal class VerAntPostColin : EvaluacionButton 
+    {
+        protected override async void OnClick()
+        {
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','PR','PO','CO')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }
+    internal class VerAntPost : EvaluacionButton
+    {
+        protected override async void OnClick()
+        {
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','PR','PO')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }
     internal class VerAnteriores : EvaluacionButton { }
-    internal class VerPosteriores : EvaluacionButton { }
+    internal class VerPosteriores : EvaluacionButton
+    {
+        protected override async void OnClick()
+        {
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','PO')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }
     internal class CargarCapasIntegrales : EvaluacionButton { }
     internal class VerSimultaneos : EvaluacionButton { }
     internal class VerExtinguidos : EvaluacionButton { }
