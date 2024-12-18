@@ -1,4 +1,5 @@
-﻿using ArcGIS.Core.Geometry;
+﻿using ArcGIS.Core.CIM;
+using ArcGIS.Core.Geometry;
 using ArcGIS.Core.Internal.Geometry;
 using ArcGIS.Desktop.Mapping;
 using CommonUtilities;
@@ -25,22 +26,14 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
     {
         string zona;
         string tipo;
+        string archi = GlobalVariables.idExport;
+        FeatureLayer layer;
         public DibujarPoligonoWpf()
         {
             InitializeComponent();
             btnGraficar.IsEnabled = false;
         }
-
-        private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            // El botón izquierdo del ratón esté presionado
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                // Permite el arrastre de la ventana
-                this.DragMove();
-            }
-        }
-
+        
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
@@ -61,7 +54,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             listBoxVertices.Items.Add(valor);
 
             //Habilitar el botón de generar / graficar si hay 3 o más puntos
-            if (listBoxVertices.Items.Count >= 4)
+            if (listBoxVertices.Items.Count >= 4 && tipo != null && zona != null)
                 btnGraficar.IsEnabled = true;
         }
 
@@ -69,7 +62,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
         {
             IEnumerable<string> linesString = listBoxVertices.Items.Cast<string>();
             var vertices = CommonUtilities.ArcgisProUtils.FeatureClassCreatorUtils.GetVerticesFromListBoxItems(linesString);
-            await CommonUtilities.ArcgisProUtils.FeatureClassCreatorUtils.CreatePolygonInNewGdbAsync(GlobalVariables.pathFileTemp, "GeneralGDB", "Poligono", vertices, zona);
+            layer = await CommonUtilities.ArcgisProUtils.FeatureClassCreatorUtils.CreatePolygonInNewGdbAsync(GlobalVariables.pathFileTemp, "GeneralGDB", "Poligono"+ archi, vertices, zona);
+            CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer(layer, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
         }
 
         public static List<MapPoint> CreateSampleVertices()
@@ -103,19 +97,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             {
                 // Obtener el elemento seleccionado
                 string elementoSeleccionado = listBoxVertices.SelectedItem as string;
-
-                // Confirmar la eliminación (opcional)
-                //MessageBoxResult resultado = MessageBox.Show(
-                //    $"¿Estás seguro de que deseas eliminar '{elementoSeleccionado}'?",
-                //    "Confirmar Eliminación",
-                //    MessageBoxButton.YesNo,
-                //    MessageBoxImage.Question);
-
-                //if (resultado == MessageBoxResult.Yes)
-                //{
-                    // Eliminar el elemento seleccionado
-                    listBoxVertices.Items.Remove(elementoSeleccionado);
-                //}
+                listBoxVertices.Items.Remove(elementoSeleccionado);
             }
             else
             {
@@ -126,7 +108,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                     MessageBoxButton.OK,
                     MessageBoxImage.Information);
             }
-            if (listBoxVertices.Items.Count >= 4)
+            if (listBoxVertices.Items.Count >= 4 && tipo != null && zona != null)
             {
                 btnGraficar.IsEnabled = true;
             }
@@ -170,6 +152,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
         {
             cbxTipo.Items.Add("Polígono");
             cbxTipo.Items.Add("Círculo");
+            cbxTipo.SelectedIndex = 0;
         }
 
         private void cbxZona_Loaded(object sender, RoutedEventArgs e)
@@ -179,19 +162,9 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             cbxZona.Items.Add("19");
         }
 
-        //private void cbxZona_Selected(object sender, RoutedEventArgs e)
-        //{
-        //    zona = cbxZona.Text;
-        //}
-
-        //private void cbxTipo_Selected(object sender, RoutedEventArgs e)
-        //{
-        //    tipo = cbxTipo.Text;
-        //}
-
         private void cbxTipo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            tipo = cbxTipo.Text;
+            tipo = cbxTipo.SelectedItem.ToString();
             if (listBoxVertices.Items.Count >= 4 && tipo != null)
             {
                 btnGraficar.IsEnabled = true;
@@ -200,10 +173,20 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
 
         private void cbxZona_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            zona = cbxZona.Text;
+            zona = cbxZona.SelectedItem.ToString();
             if (listBoxVertices.Items.Count >= 4 && zona != null)
             {
                 btnGraficar.IsEnabled = true;
+            }
+        }
+
+        private void gridHeader_MouseLeftButtonDown_1(object sender, MouseButtonEventArgs e)
+        {
+            // El botón izquierdo del ratón esté presionado
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                // Permite el arrastre de la ventana
+                this.DragMove();
             }
         }
     }

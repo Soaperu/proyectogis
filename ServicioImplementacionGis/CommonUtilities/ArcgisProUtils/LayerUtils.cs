@@ -5,6 +5,7 @@ using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Internal.Core.CommonControls;
+using ArcGIS.Desktop.Internal.Mapping;
 using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
@@ -321,6 +322,73 @@ namespace CommonUtilities.ArcgisProUtils
             {
 
             }
+        }
+
+        public static async Task AplicarFiltroYZoomAsync(string nameMap, string nameLayer, string definitionQuery)
+        {
+            await QueuedTask.Run(() =>
+            {
+                // 1. Nombre del mapa y la capa a buscar
+                string nombreMapa = "Catastro Minero";
+                string nombreCapa = "Catastro";
+
+                // 2. Buscar el mapa "Catastro Minero" en el proyecto actual
+                Map mapaObjetivo = Project.Current.GetMaps().FirstOrDefault(m => m.Name.Equals(nameMap, System.StringComparison.OrdinalIgnoreCase)).GetMap();
+
+                if (mapaObjetivo == null)
+                {
+                    // Mostrar mensaje de error si el mapa no se encuentra
+                    MessageBox.Show($"El mapa '{nameMap}' no fue encontrado en el proyecto.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // 3. Buscar la capa "Catastro" dentro del mapa encontrado
+                Layer capaObjetivo = mapaObjetivo.GetLayersAsFlattenedList().FirstOrDefault(l => l.Name.Equals(nameLayer, System.StringComparison.OrdinalIgnoreCase));
+
+                if (capaObjetivo == null)
+                {
+                    // Mostrar mensaje de error si la capa no se encuentra
+                    MessageBox.Show($"La capa '{nameLayer}' no fue encontrada en el mapa '{nameMap}'.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // 4. Verificar que la capa es de tipo FeatureLayer
+                if (!(capaObjetivo is FeatureLayer featureLayer))
+                {
+                    MessageBox.Show($"La capa '{nombreCapa}' no es una FeatureLayer válida.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+
+                // 5. Definir el DefinitionQuery
+                //string definitionQuery = "EVAL IN ('EV','PR','PO','SI','CO','EX','VE','AR')";
+
+                // 6. Aplicar el DefinitionQuery a la capa
+                featureLayer.SetDefinitionQuery(definitionQuery);
+
+                // 7. Asegurar que la capa está visible
+                featureLayer.SetVisibility(true);
+
+                // 8. Limpiar cualquier selección existente en la capa
+                featureLayer.ClearSelection();
+
+                // 9. Seleccionar todas las features que cumplen con el DefinitionQuery
+                featureLayer.Select(null, SelectionCombinationMethod.New);
+
+                // 10. Obtener la extensión (extent) de las features seleccionadas
+                Envelope extentSeleccion = featureLayer.GetFeatureClass().GetExtent();
+
+                if (extentSeleccion.IsEmpty)
+                {
+                    // Informar al usuario si no se encontraron elementos que coincidan con el filtro
+                    MessageBox.Show("No se encontraron elementos que coincidan con el filtro aplicado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // 11. Centrar y hacer zoom en el mapa a la extensión de las features seleccionadas
+                MapView.Active.ZoomTo(extentSeleccion, new TimeSpan(0, 0, 1)); // 1 segundo de animación
+
+                // Opcional: Resaltar o aplicar simbología adicional si es necesario
+            });
         }
     }
 }

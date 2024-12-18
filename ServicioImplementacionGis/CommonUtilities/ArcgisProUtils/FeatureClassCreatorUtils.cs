@@ -18,29 +18,33 @@ namespace CommonUtilities.ArcgisProUtils
     {
         static Geodatabase geodatabase;
         static Datastore? datastore;
-        public async static Task CreatePolygonInNewGdbAsync(string gdbFolderPath, string nameNewGdb, string featureClassName, List<MapPoint> vertices, string zone)
+        static FeatureLayer fLyr;
+        static Layer lyr;
+        
+        public async static Task<FeatureLayer> CreatePolygonInNewGdbAsync(string gdbFolderPath, string nameNewGdb, string featureClassName, List<MapPoint> vertices, string zone)
         {
             // Validar entradas
             if (string.IsNullOrWhiteSpace(gdbFolderPath))
-                throw new ArgumentException("La ruta de la carpeta no puede estar vacía.", nameof(gdbFolderPath));
+                return null;//throw new ArgumentException("La ruta de la carpeta no puede estar vacía.", nameof(gdbFolderPath));
+
 
             if (string.IsNullOrWhiteSpace(featureClassName))
-                throw new ArgumentException("El nombre del shapefile no puede estar vacío.", nameof(featureClassName));
+                return null;//throw new ArgumentException("El nombre del shapefile no puede estar vacío.", nameof(featureClassName));
 
             if (vertices == null)
-                throw new ArgumentNullException(nameof(vertices), "La lista de vértices no puede ser nula.");
+                return null;//throw new ArgumentNullException(nameof(vertices), "La lista de vértices no puede ser nula.");
 
             if (vertices.Count < 4)
-                throw new ArgumentException("Se requieren al menos cuatro vértices para crear un polígono.", nameof(vertices));
+                return null;
 
             // Verificar que todos los vértices sean únicos
             if (vertices.Distinct(new MapPointEqualityComparer()).Count() != vertices.Count)
-                throw new ArgumentException("La lista de vértices contiene puntos duplicados.", nameof(vertices));
+                return null;//throw new ArgumentException("La lista de vértices contiene puntos duplicados.", nameof(vertices));
             //string fullShapefilePath = System.IO.Path.Combine(shapefileFolderPath, $"{shapefileName}.geodatabase");
             string fullPathPolygonGdb = System.IO.Path.Combine(gdbFolderPath, $"{nameNewGdb}.gdb");
             // Ejecutar la creación del shapefile en el hilo adecuado
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
-            await QueuedTask.Run(async () =>
+            return await QueuedTask.Run(() =>
             {
                 // Verificar si la carpeta existe
                 if (!Directory.Exists(gdbFolderPath))
@@ -57,15 +61,30 @@ namespace CommonUtilities.ArcgisProUtils
                         geodatabase = new(new FileGeodatabaseConnectionPath(new Uri(fullPathPolygonGdb)));
                     }
                 }
+                FieldDescription countPolygonFieldDescription = new ArcGIS.Core.Data.DDL.FieldDescription("CONTADOR", FieldType.String)
+                {
+                    AliasName = "Contador",
+                    Length = 10
+                };
+                FieldDescription codePolygonFieldDescription = new ArcGIS.Core.Data.DDL.FieldDescription("CODIGO", FieldType.String)
+                {
+                    AliasName = "Codigo",
+                    Length = 25
+                };
                 FieldDescription namePolygonFieldDescription = new ArcGIS.Core.Data.DDL.FieldDescription("DESCRIPCION", FieldType.String)
                 {
                     AliasName = "Descripcion",
-                    Length = 100
+                    Length = 25
                 };
-                List<FieldDescription> fieldDescriptions = new List<FieldDescription>() { namePolygonFieldDescription };
+                List<FieldDescription> fieldDescriptions = new List<FieldDescription>() { countPolygonFieldDescription,
+                                                                                          codePolygonFieldDescription,
+                                                                                          namePolygonFieldDescription};
 
                 // Create a ShapeDescription object
-                ShapeDescription shapeDescription = new ShapeDescription(GeometryType.Polygon, SpatialReferenceBuilder.CreateSpatialReference($"327{zone}"));
+                string stringWkt = $"327{zone}";
+                int wkt = int.Parse(stringWkt);
+                SpatialReference spatialReference = SpatialReferenceBuilder.CreateSpatialReference(wkt);
+                ShapeDescription shapeDescription = new ShapeDescription(GeometryType.Polygon, spatialReference);
 
                 // Create a FeatureClassDescription object to describe the feature class to create
                 FeatureClassDescription featureClassDescription = new FeatureClassDescription(featureClassName, fieldDescriptions, shapeDescription);
@@ -88,8 +107,9 @@ namespace CommonUtilities.ArcgisProUtils
                 using (RowBuffer rowBuffer = featureClass.CreateRowBuffer())
                 {
                     rowBuffer[shapeFieldName] = polygon;
-                    // Asignar valor al campo "Nombre"
-                    rowBuffer["Nombre"] = featureClassName;
+                    // Asignar valor al campo "Contador"
+                    rowBuffer["CONTADOR"] = "1";
+                    rowBuffer["DESCRIPCION"] = featureClassName;
 
                     using (Feature feature = featureClass.CreateRow(rowBuffer))
                     {
@@ -104,16 +124,18 @@ namespace CommonUtilities.ArcgisProUtils
 
                 // Verificar si el shapefile ya está agregado al mapa
                 bool layerExists = map.Layers.FirstOrDefault(l => string.Equals(l.Name, featureClassName, StringComparison.OrdinalIgnoreCase)) != null;
+                
                 if (!layerExists)
                 {
-                    var lyr = LayerFactory.Instance.CreateLayer(new Uri(Path.Combine(fullPathPolygonGdb, featureClassName)), map);
-                    MapView.Active.ZoomTo(lyr);
+                    lyr = LayerFactory.Instance.CreateLayer(new Uri(Path.Combine(fullPathPolygonGdb, featureClassName)), map);
+                    _ = MapView.Active.ZoomTo(lyr);
                 }
                 else
                 {
                     // Opcional: Manejar el caso donde la capa ya existe
                     System.Diagnostics.Debug.WriteLine($"La capa '{featureClassName}' ya existe en el mapa.");
                 }
+                return lyr as FeatureLayer;
             });
 #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }

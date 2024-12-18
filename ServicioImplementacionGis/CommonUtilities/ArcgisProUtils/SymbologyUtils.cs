@@ -114,6 +114,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         public static async Task ApplySymbologyFromStyleAsync(string layerName, string styleFilePath, string fieldName, string codeValue)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 //Obtener el mapa y la capa
@@ -211,6 +212,7 @@ namespace CommonUtilities.ArcgisProUtils
                 featureLayer.SetRenderer(uniqueValueRenderer);
 
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>
@@ -244,7 +246,7 @@ namespace CommonUtilities.ArcgisProUtils
             return uniqueValues;
         }
 
-        public static string GetUniqueValueLabel(string styleItemName, string codeValue, string catastroH="", string estadoHDm="")
+        public static string GetUniqueValueLabel(string styleItemName, string codeValue="", string catastroH="", string estadoHDm="")
         {
             string value = string.Empty;  // Variable para almacenar el valor de la etiqueta
 
@@ -280,6 +282,12 @@ namespace CommonUtilities.ArcgisProUtils
                     break;
                 case "G8":
                     value = "D.M. con Res. Ext. sin Consentir"; // Activo
+                    break;
+                case "ZONA RESERVADA":
+                    value = "Zona Reservada"; // Activo
+                    break;
+                case "ZONA URBANA":
+                    value = "Zona Urbana"; // Activo
                     break;
                 // Puedes agregar más casos según sea necesario
                 default:
