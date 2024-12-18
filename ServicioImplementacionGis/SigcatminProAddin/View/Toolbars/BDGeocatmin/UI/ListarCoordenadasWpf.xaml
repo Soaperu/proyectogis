@@ -5,10 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SigcatminProAddin.View.Toolbars.BDGeocatmin.UI"
         xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid" x:Class="SigcatminProAddin.View.Toolbars.BDGeocatmin.UI.ListarCoordenadasWpf"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        x:Class="SigcatminProAddin.View.Toolbars.BDGeocatmin.UI.ListarCoordenadasWpf"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" Background="#F3F3F3"
-        Title="Listar Coordenadas" Height="400" Width="360" FontSize="10" WindowStyle="None">
+        Title="Listar Coordenadas" Height="400" Width="360" FontSize="10" ResizeMode="NoResize" WindowStyle="None">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -22,7 +23,7 @@
             <RowDefinition Height="350"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Background="#006DA0" Height="50" VerticalAlignment="Top"
-        x:Name="gridHeader" Margin="0,0,0,0">
+        x:Name="gridHeader" Margin="0,0,0,0" MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="*"/>

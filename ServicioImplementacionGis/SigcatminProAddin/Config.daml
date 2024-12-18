@@ -116,20 +116,22 @@
           <tooltip heading="Tooltip Heading">Reporte DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadasTool" caption="Listar Coordenadas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadasTool" loadOnClick="true" keytip="BDG-3"  smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" condition="esri_mapping_mapPane">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadasTool" caption="Listar Coordenadas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadasTool" loadOnClick="true" keytip="BDG-2"  smallImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" condition="esri_mapping_mapPane">
           <tooltip heading="Tooltip Heading">
             Listar Coordenadas<disabledText />
           </tooltip>
           <content version="1.0" group="Group A" />
         </tool>
-        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadas" caption="Listar Coordenadas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadas" loadOnClick="true" keytip="BDG-2" smallImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png">
-          <tooltip heading="Tooltip Heading">Listar Coordenadas<disabledText /></tooltip>
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDmTool" caption="Consulta Dm" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDmTool" loadOnClick="true" keytip="BDG-3"  smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Tooltip Heading">
+            Consulta DM<disabledText />
+          </tooltip>
           <content version="1.0" group="Group A" />
-        </button>-->
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDm" caption="Consulta Dm" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDm" loadOnClick="true" keytip="BDG-3" smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png">
+        </tool>
+        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDm" caption="Consulta Dm" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDm" loadOnClick="true" keytip="BDG-3" smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png">
           <tooltip heading="Tooltip Heading">Consulta DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
-        </button>
+        </button>-->
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegion" caption="Calcula Porcentaje Region" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegion" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png">
           <tooltip heading="Tooltip Heading">Porcentaje Región<disabledText /></tooltip>
           <content version="1.0" group="Group A" />

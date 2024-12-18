@@ -1,7 +1,17 @@
-﻿using ArcGIS.Core.Geometry;
-using ArcGIS.Core.Data;
+﻿using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.Topology;
+using ArcGIS.Core.Geometry;
+using ArcGIS.Core.Internal.CIM;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Mapping;
+using CommonUtilities.ArcgisProUtils.Models;
+using DatabaseConnector;
+using DevExpress.Xpf.Grid;
+using DevExpress.XtraPrinting;
+using SigcatminProAddin.Models.Constants;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,26 +23,17 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using DevExpress.Xpf.Grid;
-using SigcatminProAddin.Models.Constants;
-using System.Data;
-using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Desktop.Mapping;
-using DevExpress.Xpf.Grid.GroupRowLayout;
-using CommonUtilities.ArcgisProUtils.Models;
-using DatabaseConnector;
-using CommonUtilities;
-using DevExpress.Pdf.Native;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
 {
     /// <summary>
-    /// Lógica de interacción para ListarCoordenadasWpf.xaml
+    /// Lógica de interacción para ConsultaDMWpf.xaml
     /// </summary>
-    public partial class ListarCoordenadasWpf : Window
+    public partial class ConsultaDMWpf : Window
     {
         private DatabaseHandler dataBaseHandler;
-        public ListarCoordenadasWpf()
+        public ConsultaDMWpf()
         {
             InitializeComponent();
             ConfigureDataGridSelectedPolygonsColumns();
@@ -91,7 +92,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             var selectedLayers = MapView.Active.GetSelectedLayers();
             var layer = selectedLayers.OfType<FeatureLayer>().FirstOrDefault();
             var listRows = new List<ListarCoordenadasModel>();
-            await QueuedTask.Run(async() =>
+            await QueuedTask.Run(async () =>
             {
                 if (layer == null)
                 {
@@ -105,10 +106,10 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 }
 
                 listRows = await CommonUtilities.ArcgisProUtils.MapUtils.GetRowsAslistByClick(mapPoint);
-                
+
             });
 
-        Dispatcher.Invoke(() =>
+            Dispatcher.Invoke(() =>
             {
                 DataTable records = new DataTable();
                 records.Columns.Add("NUMERO", typeof(string));
@@ -128,25 +129,70 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
 
 
                 lblPolygonsFound.Content = $"Se encontraron {records.Rows.Count} registros";
-
-
-                
-
-
-
             });
         }
 
-        private void btnCopiarContenido_Click(object sender, RoutedEventArgs e)
+        public async Task<FeatureInfo> GetFeatureInfobyQuery(string p_Filtro, string layerName)
         {
-            //string text = "Código = 010090117\r\nNombre = MOGOSENCA 4\r\n--------------------------------------------------\r\n    Vert.          Norte          Este\r\n--------------------------------------------------\r\n     001     9 163 000.00     811 000.00\r\n     002     9 161 000.00     811 000.00\r\n     003     9 161 000.00     809 000.00\r\n     004     9 163 000.00     809 000.00\r\n--------------------------------------------------\r\n          Area UTM =  400.0000  (Ha)\r\n--------------------------------------------------";
-            Clipboard.SetText(textBlock.Text);
-            MessageBox.Show("Texto copiado");
+            Feature selectedFeature = null;
+            FeatureInfo featureInfo = new FeatureInfo();
+
+            await QueuedTask.Run(() =>
+            {
+                // Obtener la capa por nombre
+                var layer = MapView.Active.Map.Layers.FirstOrDefault(l => l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)) as FeatureLayer;
+
+                if (layer == null)
+                {
+                    MessageBox.Show("No se encuentra el Layer");
+                    return;
+                }
+
+                // Crear un query filter
+                var queryFilter = new ArcGIS.Core.Data.QueryFilter
+                {
+                    WhereClause = p_Filtro
+                };
+
+                using (var rowCursor = layer.Search(queryFilter))
+                {
+                    if (rowCursor.MoveNext())
+                    {
+                        selectedFeature = rowCursor.Current as Feature;
+                    }
+                }
+
+                if (selectedFeature == null)
+                {
+                    MessageBox.Show("No hay ninguna Selección");
+                }
+                else
+                {
+                    layer.Select(queryFilter);
+                };
+
+
+                featureInfo.Codigo = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
+                featureInfo.Nombre = selectedFeature.GetOriginalValue(selectedFeature.FindField("CONCESION")).ToString();
+                featureInfo.Fecha = selectedFeature.GetOriginalValue(selectedFeature.FindField("FEC_DENU")).ToString();
+                featureInfo.Area = selectedFeature.GetOriginalValue(selectedFeature.FindField("HECTAREA")).ToString();
+                featureInfo.Titular = selectedFeature.GetOriginalValue(selectedFeature.FindField("TIT_CONCES")).ToString();
+                featureInfo.TipoDM = selectedFeature.GetOriginalValue(selectedFeature.FindField("D_ESTADO")).ToString();
+                //featureInfo.TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
+                //featureInfo.TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
+                //featureInfo.TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
+                featureInfo.Contador = selectedFeature.GetOriginalValue(selectedFeature.FindField("CONTADOR")).ToString();
+                featureInfo.Hora = selectedFeature.GetOriginalValue(selectedFeature.FindField("HOR_DENU")).ToString();
+                featureInfo.Prioridad = selectedFeature.GetOriginalValue(selectedFeature.FindField("EVAL")).ToString();
+            });
+            
+            return featureInfo;
         }
 
-        private void DataGridSelectedPolygonsTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
+        
+
+        private async void DataGridSelectedPolygonsTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
-            string texto = "";
             var tableView = sender as DevExpress.Xpf.Grid.TableView;
             if (tableView != null && tableView.Grid.VisibleRowCount > 0)
             {
@@ -159,28 +205,22 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                     string codigoValue = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
                     string nombre = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "NOMBRE")?.ToString();
                     string area = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "AREA")?.ToString();
-                    var records = dataBaseHandler.GetDMData(codigoValue);
-                    texto += $"Código = {codigoValue} \n";
-                    texto += $"Nombre = {nombre}\n";
-                    texto += "--------------------------------------------------\n";
-                    texto += new string(' ', 3) + " Vert." + new string(' ', 10) + "Norte" + new string(' ', 10) + "Este\n";
-                    texto += "--------------------------------------------------\n";
+                    FeatureInfo selectedFeature = await GetFeatureInfobyQuery($"CODIGOU = '{codigoValue}'", "Catastro");
 
-                    for(int i = 0; i< records.Rows.Count; i++)
-                    {
-                        var este = Math.Round(double.Parse(records.Rows[i]["CD_COREST"].ToString()),3);
-                        var norte = Math.Round(double.Parse(records.Rows[i]["CD_CORNOR"].ToString()),3);
-                        var esteFormateado = string.Format("{0:### ###.#0}", este);
-                        var norteFormateado = string.Format("{0:# ### ###.#0}", norte);
-                        texto += new string(' ', 5) + (i+1).ToString().PadLeft(3, '0');
-                        texto += new string(' ', 5) + esteFormateado;
-                        texto += new string(' ', 5) + norteFormateado + "\n";
+                    //Actualizamos valores del ui
+                    TbxCodigo.Text = selectedFeature.Codigo;
+                    TbxNombre.Text = selectedFeature.Nombre;
+                    TbxFecha.Text = selectedFeature.Fecha;
+                    TbxArea.Text = selectedFeature.Area;
+                    TbxTitular.Text = selectedFeature.Titular;
+                    TbxTipoDM.Text = selectedFeature.TipoDM;
+                    //TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
+                    //TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
+                    //TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
 
-                    }
-                    texto += "--------------------------------------------------\n";
-                    texto += new string(' ', 10) + $"Área UTM = {area} (Ha)\n";
-                    texto += "--------------------------------------------------\n";
-                    textBlock.Text = texto;
+                    TbxContador.Text = selectedFeature.Contador;
+                    TbxHora.Text = selectedFeature.Hora;
+                    TbxPrioridad.Text = selectedFeature.Prioridad;
                 }
             }
 
@@ -200,5 +240,18 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 this.DragMove();
             }
         }
+    }
+
+    public class FeatureInfo
+    {
+        public string Codigo { get; set; }
+        public string Nombre { get; set; }
+        public string Fecha { get; set; }
+        public string Area { get; set; }
+        public string Titular { get; set; }
+        public string TipoDM { get; set; }
+        public string Contador { get; set; }
+        public string Hora { get; set; }
+        public string Prioridad {  get; set; }
     }
 }

@@ -50,8 +50,9 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 
         }
 
-        protected override Task OnToolActivateAsync(bool active)
+        protected override async Task OnToolActivateAsync(bool active)
         {
+            await base.OnToolActivateAsync(active);
             if (_listarCoordenadasWindow != null && _listarCoordenadasWindow.IsVisible)
             {
                 _listarCoordenadasWindow.Show();
@@ -63,7 +64,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 _listarCoordenadasWindow.Show();
             }
 
-            return base.OnToolActivateAsync(active);
+            //return base.OnToolActivateAsync(active);
         }
 
         protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
@@ -83,13 +84,78 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             });
         }
 
+        private async Task DeactivateTool(bool deactivateTool = false)
+        {
+            if (deactivateTool)
+                await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+        }
+        protected override void OnToolKeyDown(MapViewKeyEventArgs k)
+        {
+            base.OnToolKeyDown(k);
+            if (k.Key == System.Windows.Input.Key.Escape)
+            {
+                k.Handled = true;
+
+                FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+            }
+        }
         protected override Task<bool> OnSketchCompleteAsync(Geometry geometry)
         {
             return base.OnSketchCompleteAsync(geometry);
         }
     }
 
-    internal class ConsultaDm : BDGeocatminButton { }
+    internal class ConsultaDmTool : MapTool 
+    {
+        private static ConsultaDMWpf _ConsultaDMWpfWindow;
+        public ConsultaDmTool()
+        {
+            IsSketchTool = true;
+            SketchType = SketchGeometryType.Point;
+            SketchOutputMode = SketchOutputMode.Map;
+
+        }
+
+        protected override async Task OnToolActivateAsync(bool active)
+        {
+            await base.OnToolActivateAsync(active);
+            if (_ConsultaDMWpfWindow != null && _ConsultaDMWpfWindow.IsVisible)
+            {
+                _ConsultaDMWpfWindow.Show();
+            }
+            else
+            {
+                // Crea la ventana si no existe
+                _ConsultaDMWpfWindow = new ConsultaDMWpf();
+                _ConsultaDMWpfWindow.Show();
+            }
+
+            //return base.OnToolActivateAsync(active);
+        }
+
+        protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
+        {
+            base.OnToolMouseDown(args);
+            QueuedTask.Run(async () =>
+            {
+                var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
+                if (_ConsultaDMWpfWindow != null && _ConsultaDMWpfWindow.IsVisible)
+                {
+                    // Actualiza el contenido según los datos del punto
+                    if (_ConsultaDMWpfWindow is ConsultaDMWpf consultaDMWpfWindow)
+                    {
+                        await _ConsultaDMWpfWindow.UpdateContent(mapPoint); // Método para actualizar contenido
+                    }
+                }
+            });
+        }
+
+        private async Task DeactivateTool(bool deactivateTool = false)
+        {
+            if (deactivateTool)
+                await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+        }
+    }
     internal class CalculaPorcentajeRegion : BDGeocatminButton { }
     internal class LimitesRegionales : BDGeocatminButton { }
     internal class PlanoAreasSuperpuestas : BDGeocatminButton { }
