@@ -211,7 +211,13 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram56 + zone, false);
                         }
-                        await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, "Caram"+ GlobalVariables.idExport);
+                        string layerExportName = "Caram" + GlobalVariables.idExport;
+                        await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, layerExportName);
+                        List<string> layersToRemove = new List<string>() { "Caram" };
+                        string styleCaramPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCaram);
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(layerExportName, styleCaramPath, "ESTILO", StyleItemType.PolygonSymbol);
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerExportName, "Caram");
                         break;
                     case "Catastro Forestal":
                         if (datum == 1)
@@ -222,7 +228,13 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56+zone, false);
                         }
-                        await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, "CForestal" + GlobalVariables.idExport);
+                        string layerExportNameCForestal = "Catastro Forestal" + GlobalVariables.idExport;
+                        await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, layerExportNameCForestal);
+                        List<string> cforestalToRemove = new List<string>() { "Catastro Forestal" };
+                        string styleCForestalPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCForestal);
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(cforestalToRemove);
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplyUniqueSymbologyFromStyleAsync(layerExportNameCForestal, styleCForestalPath, StyleItemType.PolygonSymbol);
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerExportNameCForestal, "Catastro Forestal");
                         break;
                     case "Limite Departamental":
                         if (datum == 1)
@@ -285,7 +297,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Rios56, false);
                         }
-                        //cls_Catastro.DefinitionExpression(lo_Filtro_Dpto_mod, m_Application, "Drenaje");
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorLineSimple(function.pFeatureLayer_gene);
                         //cls_Catastro.UniqueSymbols(m_Application, "Drenaje");
                         break;
 
@@ -299,6 +311,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Carretera56, false);
                         }
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorLineSimple(function.pFeatureLayer_gene);
                         break;
 
                     case "Centros Poblados":

@@ -16,9 +16,9 @@ namespace CommonUtilities.ArcgisProUtils
 {
     public class UTMGridGenerator
     {
-        public async Task GenerateUTMGridAsync(double minEast, double minNorth, double maxEast, double maxNorth, string layerName, string zone)
+        public async Task<FeatureLayer> GenerateUTMGridAsync(double minEast, double minNorth, double maxEast, double maxNorth, string layerName, string zone)
         {
-            await QueuedTask.Run(() =>
+            FeatureLayer result = await QueuedTask.Run(() =>
             {
                 // Crear o verificar la existencia de la capa de destino (líneas)
                 FeatureLayer? gridLayer = GetOrCreateGridLayer(layerName, zone);
@@ -51,7 +51,7 @@ namespace CommonUtilities.ArcgisProUtils
                         clase_v = "2";
                     }
 
-                    AddFeatureToLayer(gridLayer, verticalLine, clase_v);
+                    AddFeatureToLayerGrid(gridLayer, verticalLine, clase_v);
 
                     // Crear puntos en cada intersección de las líneas
                     var point = MapPointBuilder.CreateMapPoint(x, limits.yMin);
@@ -83,7 +83,7 @@ namespace CommonUtilities.ArcgisProUtils
                         clase_h = "2";
                     }
 
-                    AddFeatureToLayer(gridLayer, horizontalLine, clase_h);
+                    AddFeatureToLayerGrid(gridLayer, horizontalLine, clase_h);
 
                     // Crear puntos en cada intersección de las líneas
                     var point = MapPointBuilder.CreateMapPoint(limits.xMin, y);
@@ -99,7 +99,9 @@ namespace CommonUtilities.ArcgisProUtils
                 List<string> listado = new List<string>();
                 listado.Add($"{layerName}p_{zone}");
                 CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);
+                return gridLayer;
             });
+            return result;
         }
 
         private (double xMin, double xMax, double yMin, double yMax) CalculateLimits(double minEast, double minNorth, double maxEast, double maxNorth)
@@ -178,7 +180,7 @@ namespace CommonUtilities.ArcgisProUtils
         }
 
 
-        private void  AddFeatureToLayer(FeatureLayer layer, Polyline line, string value)
+        private void  AddFeatureToLayerGrid(FeatureLayer layer, Polyline line, string value)
         {
             using (var featureClass = layer.GetFeatureClass())
             using (var rowBuffer = featureClass.CreateRowBuffer())

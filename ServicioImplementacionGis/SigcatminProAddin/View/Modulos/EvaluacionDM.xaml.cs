@@ -808,9 +808,20 @@ namespace SigcatminProAddin.View.Modulos
                 CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
                 await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, @"C:\bdgeocatmin\Estilos\CATASTRO.stylx", "LEYENDA", codigoValue);
+                string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol,codigoValue);
                 var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName);
+                List<string> layersToRemove = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
+                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+                GlobalVariables.CurrentShpName = "Catastro";
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "Anotaciones");
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                var gridLayer = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
                 try
                 {
                     // Itera todos items seleccionados en el ListBox de WPF
@@ -827,14 +838,6 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName);
-                List<string> layers = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
-                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layers);
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
-                GlobalVariables.CurrentShpName = "Catastro";
-                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "Anotaciones");
-                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-                await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
             }
             catch (Exception ex) { }
 

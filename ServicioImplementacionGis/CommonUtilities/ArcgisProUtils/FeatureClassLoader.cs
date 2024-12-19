@@ -408,13 +408,13 @@ namespace CommonUtilities.ArcgisProUtils
             // Ríos
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Rios56,
+                FeatureClassName =  FeatureClassConstants.gstrFC_Rios56,
                 LayerName = "Drenaje",
                 VariableName = "pFeatureLayer_gene"
             },
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Rios84,
+                FeatureClassName = FeatureClassConstants.gstrFC_Rios84,
                 LayerName = "Drenaje",
                 VariableName = "pFeatureLayer_gene"
             },

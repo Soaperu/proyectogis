@@ -29,10 +29,11 @@ namespace CommonUtilities
         public static string pythonExePath = @"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe";
         // Rutas del Sistemas
         public static string toolBoxPathEval = currentPath + @"\Scripts\CMIN_EVAL.atbx";
-        public static string stylePath = @"C:\bdgeocatmin\Estilos";
+        
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";
         public static string toolGetKMLodDM = "exportarDmKmz";
+        // Variables obtenidas de Evaluacion DM
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }
         public static string CurrentAreaDm { get; set; }
@@ -61,6 +62,15 @@ namespace CommonUtilities
         public static string planeNameEval ="";
         public static string planeNameDemarca = "Plano Demarca";
         public static string planeNameCarta = "Plano carta";
+
+        //Rutas Estilos .stylx
+        public static string stylePath = @"C:\bdgeocatmin\Estilos";
+
+        public static string styleCatastro = "CATASTRO.stylx";
+        public static string styleCaram = "CARAM.stylx";
+        public static string styleMalla = "MALLA.stylx";
+        public static string styleCForestal = "CATA_FORESTAL.stylx";
+
         // Tablas Generales
         public static double DistBorder { get; set; }
 
