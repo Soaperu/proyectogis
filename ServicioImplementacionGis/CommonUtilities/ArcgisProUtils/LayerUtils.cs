@@ -372,7 +372,7 @@ namespace CommonUtilities.ArcgisProUtils
                 featureLayer.ClearSelection();
 
                 // 9. Seleccionar todas las features que cumplen con el DefinitionQuery
-                featureLayer.Select(null, SelectionCombinationMethod.New);
+                //featureLayer.Select(null, SelectionCombinationMethod.New);
 
                 // 10. Obtener la extensión (extent) de las features seleccionadas
                 Envelope extentSeleccion = featureLayer.GetFeatureClass().GetExtent();

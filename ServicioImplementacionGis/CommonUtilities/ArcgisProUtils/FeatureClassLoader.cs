@@ -182,6 +182,7 @@ namespace CommonUtilities.ArcgisProUtils
                     break;
                 case "pFeatureLayer_hoja":
                     pFeatureLayer_hoja = featureLayer;
+                    loFeature = "Carta IGN";
                     break;
                 case "pFeatureLayer_tras":
                     pFeatureLayer_tras = featureLayer;
@@ -203,6 +204,7 @@ namespace CommonUtilities.ArcgisProUtils
                     break;
                 case "pFeatureLayer_caram":
                     pFeatureLayer_caram = featureLayer;
+                    loFeature = "Caram";
                     break;
                 default:
                     break;
@@ -518,6 +520,12 @@ namespace CommonUtilities.ArcgisProUtils
             new FeatureClassInfo
             {
                 FeatureClassName = "DATA_GIS.GPO_HOJ_HOJAS_18",
+                LayerName = "Carta IGN",
+                VariableName = "pFeatureLayer_hoja"
+            },
+            new FeatureClassInfo
+            {
+                FeatureClassName = "DATA_GIS.GPO_HOJ_HOJAS", //PSAD56
                 LayerName = "Carta IGN",
                 VariableName = "pFeatureLayer_hoja"
             }
