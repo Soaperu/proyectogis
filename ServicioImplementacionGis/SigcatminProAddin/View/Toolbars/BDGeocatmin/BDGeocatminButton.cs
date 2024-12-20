@@ -27,11 +27,13 @@ using DevExpress.Drawing.Internal.Fonts;
 using SigcatminProAddin.View.Toolbars.BDGeocatmin.UI;
 using DevExpress.Data.Helpers;
 using ArcGIS.Core.Data.Analyst3D;
+using ArcGIS.Desktop.Internal.Mapping.Ribbon;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
     internal class BDGeocatminButton : Button
     {
+        public const string ExploreToolName = "esri_mapping_exploreTool";
         protected override void OnClick()
         {
         }
@@ -167,6 +169,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             double y;
             string planeEval;
             string pathLayout;
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+
             if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval);
@@ -194,6 +198,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             double y;
             string planeDemarca;
             string pathLayout;
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeDemarca84);
@@ -219,6 +224,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             double y;
             string planeCarta;
             string pathLayout;
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+
             if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeCarta84);
@@ -245,6 +252,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         DibujarPoligonoWpf DrawPolygonWpf;
         protected override async void OnClick()
         {
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+
             DrawPolygonWpf = new DibujarPoligonoWpf();
             DrawPolygonWpf.Closed += (s, e) => DrawPolygonWpf = null;
             DrawPolygonWpf.Show();
@@ -254,6 +263,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick()
         {
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+
             var Params = Geoprocessing.MakeValueArray("Catastro");
             var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetKMLodDM, Params);
         }
@@ -296,7 +307,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick()
         {
-            await ArcGIS.Desktop.Framework.FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
             var response = System.Windows.MessageBox.Show("¿Desea Retirar los vértice?","caption", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel);
             if(response == MessageBoxResult.OK)
             {
@@ -314,7 +325,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick()
         {
-            await ArcGIS.Desktop.Framework.FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+
             MapUtils.AnnotateLayerbyName("Departamento", "NM_DEPA", "Anotación Departamento", "#895a44", "Tahoma", 25, "Bold");
             MapUtils.AnnotateLayerbyName("Provincia", "NM_PROV", "Anotación Provincia", "#007800", "Tahoma", 15, "Bold");
             MapUtils.AnnotateLayerbyName("Distrito", "NM_DIST", "Antoación Distrito", "#0000ff", "Tahoma", 8, "Bold");

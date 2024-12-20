@@ -27,6 +27,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
 {
     internal class EvaluacionButton : Button
     {
+        public const string ExploreToolName = "esri_mapping_exploreTool";
         protected override void OnClick()
         {
         }
@@ -35,6 +36,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     {
         protected override async void OnClick()
         {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             string layerName = "Catastro";
             string mapName = GlobalVariables.mapNameCatastro;
             string definitionQuery = "EVAL IN ('EV','PR','PO','SI','CO','EX','VE','AR')";
@@ -45,6 +47,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     {
         protected override async void OnClick()
         {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             string layerName = "Catastro";
             string mapName = GlobalVariables.mapNameCatastro;
             string definitionQuery = "EVAL IN ('EV','PR','PO','CO')";
@@ -55,6 +58,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     {
         protected override async void OnClick()
         {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             string layerName = "Catastro";
             string mapName = GlobalVariables.mapNameCatastro;
             string definitionQuery = "EVAL IN ('EV','PR','PO')";
@@ -66,6 +70,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     {
         protected override async void OnClick()
         {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             string layerName = "Catastro";
             string mapName = GlobalVariables.mapNameCatastro;
             string definitionQuery = "EVAL IN ('EV','PO')";
@@ -82,7 +87,16 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     internal class CalculoAreaDisponible : EvaluacionButton { }
     internal class ObservacionesCartaIGN : EvaluacionButton { }
     internal class VerCapas : EvaluacionButton { }
-    internal class GenerarMallaCuadriculas : EvaluacionButton { }
+    internal class GenerarMallaCuadriculas : EvaluacionButton {
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','PO')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }
     internal class PlanoCuadriculas : EvaluacionButton { }
     internal class GraficaDesdeExcel : EvaluacionButton { }
     internal class ConsultaAreaDisponible : EvaluacionButton { }

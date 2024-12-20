@@ -16,9 +16,9 @@ namespace CommonUtilities.ArcgisProUtils
 {
     public class UTMGridGenerator
     {
-        public async Task<FeatureLayer> GenerateUTMGridAsync(double minEast, double minNorth, double maxEast, double maxNorth, string layerName, string zone)
+        public async Task<(FeatureLayer GridLayer, FeatureLayer PointLayer)> GenerateUTMGridAsync(double minEast, double minNorth, double maxEast, double maxNorth, string layerName, string zone, int interval=0)
         {
-            FeatureLayer result = await QueuedTask.Run(() =>
+            var result = await QueuedTask.Run(() =>
             {
                 // Crear o verificar la existencia de la capa de destino (líneas)
                 FeatureLayer? gridLayer = GetOrCreateGridLayer(layerName, zone);
@@ -30,7 +30,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                 // Calcular los límites y el intervalo
                 var limits = CalculateLimits(minEast, minNorth, maxEast, maxNorth);
-                int interval = CalculateInterval(minNorth, maxNorth);
+                if(interval == 0) interval = CalculateInterval(minNorth, maxNorth);
                 string clase_v = "2";
                 int contador_v = 0;
                 // Generar líneas verticales
@@ -95,13 +95,31 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                     contador_h += 1;
                 }
-                MapUtils.AnnotateLayer(pointLayer, "VALOR","Graphics Layer");
+                //MapUtils.AnnotateLayer(pointLayer, "VALOR","Graphics Layer");
+                //List<string> listado = new List<string>();
+                //listado.Add($"{layerName}p_{zone}");
+                //CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);
+                return (GridLayer:gridLayer, PointLayer:pointLayer);
+            });
+            return result;
+        }
+
+        public async Task AnnotateGridLayer(FeatureLayer featurelayer, string field, string graphicLayerName="Grilla")
+        {
+            await QueuedTask.Run(() =>
+            {
+                MapUtils.AnnotateLayer(featurelayer, field, graphicLayerName);
+            });
+        }
+
+        public async Task RemoveGridLayer(string layerName, string zone)
+        {
+            await QueuedTask.Run(() =>
+            {
                 List<string> listado = new List<string>();
                 listado.Add($"{layerName}p_{zone}");
                 CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);
-                return gridLayer;
             });
-            return result;
         }
 
         private (double xMin, double xMax, double yMin, double yMax) CalculateLimits(double minEast, double minNorth, double maxEast, double maxNorth)
