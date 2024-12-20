@@ -51,7 +51,9 @@ namespace CommonUtilities.ArcgisProUtils
         public FeatureLayer pFeatureLayer_caram { get; private set; }
         public FeatureLayer pFeatureLayer_cuadriculasR { get; private set; }
         public FeatureLayer pFeatureLayer_temp { get; private set; }
-        public FeatureLayer pFeatureLayer_gene { get; private set; }
+        public FeatureLayer pFeatureLayer_drena { get; private set; }
+        public FeatureLayer pFeatureLayer_vias { get; private set; }
+        public FeatureLayer pFeatureLayer_ccpp { get; private set; }
 
         public FeatureClassLoader(Geodatabase geodatabase, Map map, string zonaDm, string regionSele)
         {
@@ -67,7 +69,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+                #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -108,7 +110,7 @@ namespace CommonUtilities.ArcgisProUtils
                         return featureLayer;
                     }
                 });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+                #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
             }
             catch (Exception ex)
             {
@@ -206,6 +208,19 @@ namespace CommonUtilities.ArcgisProUtils
                     pFeatureLayer_caram = featureLayer;
                     loFeature = "Caram";
                     break;
+                case "pFeatureLayer_drena":
+                    pFeatureLayer_drena = featureLayer;
+                    loFeature = "Drenaje";
+                    break;
+                case "pFeatureLayer_vias":
+                    pFeatureLayer_vias = featureLayer;
+                    loFeature = "Vías";
+                    break;
+                case "pFeatureLayer_ccpp":
+                    pFeatureLayer_ccpp = featureLayer;
+                    loFeature = "Centro Poblado";
+                    break;
+
                 default:
                     break;
             }
@@ -410,13 +425,13 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 FeatureClassName =  FeatureClassConstants.gstrFC_Rios56,
                 LayerName = "Drenaje",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_drena"
             },
             new FeatureClassInfo
             {
                 FeatureClassName = FeatureClassConstants.gstrFC_Rios84,
                 LayerName = "Drenaje",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_drena"
             },
 
             // Carreteras
@@ -424,13 +439,13 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Carretera56,
                 LayerName = "Vías",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_vias"
             },
             new FeatureClassInfo
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Carretera84,
                 LayerName = "Vías",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_vias"
             },
 
             // Centros Poblados
@@ -438,13 +453,13 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_CPoblado56,
                 LayerName = "Centro Poblado",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_ccpp"
             },
             new FeatureClassInfo
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_CPoblado84,
                 LayerName = "Centro Poblado",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_ccpp"
             },
 
             // Frontera

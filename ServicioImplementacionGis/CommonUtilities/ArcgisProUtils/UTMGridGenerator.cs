@@ -95,7 +95,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                     contador_h += 1;
                 }
-                MapUtils.AnnotateLayer(pointLayer, "VALOR","Graphics Layer");
+                MapUtils.AnnotateLayer(pointLayer, "VALOR","XY_Anotaciones");
                 List<string> listado = new List<string>();
                 listado.Add($"{layerName}p_{zone}");
                 CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);

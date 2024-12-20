@@ -107,13 +107,6 @@ namespace SigcatminProAddin.View.Modulos
         }
 
         /// <summary>
-        /// Escala las coordenadas al espacio del Canvas.
-        /// </summary>
-        /// <param name="coordinates">Coordenadas UTM originales.</param>
-        /// <param name="canvasWidth">Ancho del Canvas.</param>
-        /// <param name="canvasHeight">Alto del Canvas.</param>
-        /// <returns>Coordenadas escaladas.</returns>
-        /// <summary>
         /// Escala y centra las coordenadas en el Canvas.
         /// </summary>
         /// <param name="coordinates">Coordenadas UTM originales.</param>
@@ -665,6 +658,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -672,6 +666,7 @@ namespace SigcatminProAddin.View.Modulos
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertancia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
+                BtnGraficar.IsEnabled = true;
                 return;
             }
             if (ChkGraficarDmY.IsChecked == true)
@@ -686,7 +681,7 @@ namespace SigcatminProAddin.View.Modulos
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
-            //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
+            
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
             string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
@@ -763,7 +758,14 @@ namespace SigcatminProAddin.View.Modulos
                 orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
 
                 //Carga capa Hojas IGN
-                await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                if (datum == 1)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
+                }
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
                 //GlobalVariables.CurrentPagesDm = listHojas;
                 // Encontrando Caram superpuestos a DM con
@@ -817,7 +819,7 @@ namespace SigcatminProAddin.View.Modulos
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
                 GlobalVariables.CurrentShpName = "Catastro";
-                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "Anotaciones");
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
                 UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
                 var gridLayer = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
                 string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
@@ -951,6 +953,7 @@ namespace SigcatminProAddin.View.Modulos
             {
 
             }
+            BtnGraficar.IsEnabled = true;
         }
 
         private SubscriptionToken _eventToken = null;

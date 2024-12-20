@@ -9,9 +9,9 @@ namespace CommonUtilities
         public static string currentUser = "";
         public static string pathFileContainerOut = @"C:\bdgeocatmin";
         public static string fileTemp = "Temporal";
-        public static string pathFileTemp = Path.Combine(pathFileContainerOut,fileTemp);
+        public static string pathFileTemp = Path.Combine(pathFileContainerOut, fileTemp);
         public static bool stateDmY = true;
-        public static string idExport = ""; 
+        public static string idExport = "";
         public static string mapNameCatastro = "CATASTRO MINERO";
         public static string mapNameDemarcacionPo = "DEMARCACION POLITICA";
         public static string mapNameCartaIgn = "CARTA IGN";
@@ -29,7 +29,7 @@ namespace CommonUtilities
         public static string pythonExePath = @"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe";
         // Rutas del Sistemas
         public static string toolBoxPathEval = currentPath + @"\Scripts\CMIN_EVAL.atbx";
-        
+
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";
         public static string toolGetKMLodDM = "exportarDmKmz";
@@ -42,10 +42,10 @@ namespace CommonUtilities
         public static string CurrentProvDm { get; set; }
         public static string CurrentDistDm { get; set; }
         public static string CurrentShpName { get; set; }
-        public static string CurrentZoneDm {  get; set; }
+        public static string CurrentZoneDm { get; set; }
         public static string CurrentPagesDm { get; set; } // hojas Carta IGN
         // Intersecciones con DM
-        public static string listaCaramur {  get; set; }
+        public static string listaCaramur { get; set; }
         public static string listaCaramre { get; set; }
         public static string listaCforestal { get; set; }
 
@@ -59,17 +59,21 @@ namespace CommonUtilities
         public static string planeCarta56 = "plantilla_cartaign_56.pagx";
 
         //Terminos Constantes de Planos
-        public static string planeNameEval ="";
+        public static string planeNameEval = "";
         public static string planeNameDemarca = "Plano Demarca";
         public static string planeNameCarta = "Plano carta";
 
         //Rutas Estilos .stylx
-        public static string stylePath = @"C:\bdgeocatmin\Estilos";
+        public static string styleFolder = "Estilos";
+        public static string stylePath = Path.Combine(pathFileContainerOut,styleFolder);//@"C:\bdgeocatmin\Estilos";
 
         public static string styleCatastro = "CATASTRO.stylx";
         public static string styleCaram = "CARAM.stylx";
         public static string styleMalla = "MALLA.stylx";
         public static string styleCForestal = "CATA_FORESTAL.stylx";
+
+        //Lista de FeatureClass generales
+        public static List<string> generalFeatureClass = new List<string>{ "Vías", "Drenaje", "Centro Poblado" };
 
         // Tablas Generales
         public static double DistBorder { get; set; }

@@ -876,7 +876,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 },
                 {
-                    "Red Hidrografica",
+                    "Drenaje",
                     new SymbolConfiguration
                     {
                         //FillStyle = SimpleFillStyle.Null, // Asumiendo que el estilo es Hollow según VB.NET
@@ -887,7 +887,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 },
                 {
-                    "Red Vial",
+                    "Vías",
                     new SymbolConfiguration
                     {
                         //FillStyle = SimpleFillStyle.Null, // 
@@ -930,7 +930,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <returns>Objeto CIMPolygonSymbol configurado.</returns>
         private static CIMPolygonSymbol CreatePolygonSymbol(SimpleFillStyle style, CIMRGBColor color, CIMStroke lineSymbol)
         {
-            return SymbolFactory.Instance.ConstructPolygonSymbol(color, style, lineSymbol); ;
+            return SymbolFactory.Instance.ConstructPolygonSymbol(color, style, lineSymbol);
         }
 
         private static CIMLineSymbol CreateOnlyLineSymbol(SimpleLineStyle style, double width, CIMRGBColor color)

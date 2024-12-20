@@ -75,7 +75,6 @@ namespace CommonUtilities.ArcgisProUtils
         /// <summary>
         /// Elimina las capas de un mapa específico en ArcGIS Pro. Si la lista de capas está vacía, se eliminarán todas las capas.
         /// </summary>
-        /// <param name="mapName">El nombre del mapa en el que se eliminarán las capas.</param>
         /// <param name="layersToRemove">Lista opcional de nombres de capas a eliminar. Si está vacía, se eliminarán todas las capas.</param>
         public static async Task RemoveLayersFromActiveMapAsync(List<string> layersToRemove = null)
         {
@@ -297,7 +296,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Rios56, false);
                         }
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorLineSimple(function.pFeatureLayer_gene);
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorLineSimple(function.pFeatureLayer_drena);
                         //cls_Catastro.UniqueSymbols(m_Application, "Drenaje");
                         break;
 
@@ -311,7 +310,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Carretera56, false);
                         }
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorLineSimple(function.pFeatureLayer_gene);
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorLineSimple(function.pFeatureLayer_vias);
                         break;
 
                     case "Centros Poblados":
@@ -324,6 +323,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             currentFeatureLayer = await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CPoblado56, false);
                         }
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorLineSimple(function.pFeatureLayer_ccpp);
                         break;
                         
                     default:
