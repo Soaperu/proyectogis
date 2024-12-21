@@ -2,10 +2,10 @@
 using ArcGIS.Desktop.Framework.Contracts;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SigcatminProAddinUI.Helpers;
 using System;
 using System.IO;
 using Sigcatmin.pro.IoC;
+using SigcatminProAddinUI.Resourecs.Helpers;
 
 namespace SigcatminProAddinUI
 {

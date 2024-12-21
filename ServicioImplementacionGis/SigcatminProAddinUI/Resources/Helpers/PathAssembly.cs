@@ -6,12 +6,13 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SigcatminProAddinUI.Helpers
+namespace SigcatminProAddinUI.Resourecs.Helpers
 {
     public static class PathAssembly
     {
-        public static string GetExecutingAssembly(){
-             return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+        public static string GetExecutingAssembly()
+        {
+            return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
         }
     }
 }

@@ -35,8 +35,15 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         }
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)
-        { 
-        
+        {
+
+            //if (string.IsNullOrEmpty(TbxValue.Text))
+            //{
+            //    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(MessageConstants.Errors.EmptySearchValue,
+            //                                                     MessageConstants.Titles.MissingValue,
+            //                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
+            //    return;
+            //}
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
