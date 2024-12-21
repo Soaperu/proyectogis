@@ -403,5 +403,50 @@ namespace CommonUtilities.ArcgisProUtils
                 // Opcional: Resaltar o aplicar simbología adicional si es necesario
             });
         }
+        public static async Task<FeatureLayer> AddFeatureClassToMapFromGdbAsync(Geodatabase geodatabase, string featureClassName, string featureLayerName, bool isVisible = true)
+        {
+            FeatureLayer featureLayer = null;
+            return await QueuedTask.Run(() =>
+            {
+                // Obtener el mapa activo
+                Map map = MapView.Active?.Map;
+                if (map == null)
+                {
+                    System.Windows.MessageBox.Show("No se encontró un mapa activo.");
+                    return null;
+                }
+
+                try
+                {
+                    // Buscar el FeatureClass por nombre dentro de la Geodatabase
+                    using (FeatureClass featureClass = geodatabase.OpenDataset<FeatureClass>(featureClassName))
+                    {
+                        // Verificar si el FeatureClass fue encontrado
+                        if (featureClass == null)
+                        {
+                            System.Windows.MessageBox.Show($"No se encontró el FeatureClass con el nombre '{featureClassName}' en la geodatabase.");
+                            return null;
+                        }
+
+                        // Crear parámetros para el FeatureLayer
+                        FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
+                        {
+                            Name = featureLayerName, // Puedes personalizar el nombre que aparecerá en el mapa
+                            IsVisible = isVisible
+                        };
+
+                        // Crear y agregar el FeatureLayer al mapa
+                        featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, map);
+                        return featureLayer;
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show($"Error al agregar el FeatureClass '{featureClassName}' al mapa: {ex.Message}");
+                    return null;
+                }
+            });
+        }
+
     }
 }

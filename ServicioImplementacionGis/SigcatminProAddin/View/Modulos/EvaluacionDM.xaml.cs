@@ -91,10 +91,17 @@ namespace SigcatminProAddin.View.Modulos
             CurrentUserLabel.Text = GlobalVariables.ToTitleCase(AppConfig.fullUserName);
         }
 
-        //private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        //{
-
-        //}
+        private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbxSistema.SelectedValue.ToString() == "1")
+            {
+                GlobalVariables.CurrentDatumDm = "1";
+            }
+            else
+            {
+                GlobalVariables.CurrentDatumDm = "2";
+            }
+        }
 
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
@@ -319,6 +326,7 @@ namespace SigcatminProAddin.View.Modulos
 
             // Seleccionar la primera opción por defecto
             CbxSistema.SelectedIndex = 0;
+            GlobalVariables.CurrentDatumDm = "1";
         }
 
         public class ComboBoxPairs
@@ -948,12 +956,18 @@ namespace SigcatminProAddin.View.Modulos
                 string queryListCartaIGN = CommonUtilities.StringProcessorUtils.FormatStringCartaIgnForSql(GlobalVariables.CurrentPagesDm);
                 await CommonUtilities.ArcgisProUtils.RasterUtils.AddRasterCartaIGNLayerAsync(mosaicLayer, geodatabase, mapC, queryListCartaIGN);
                 //await MapView.Active.ZoomToAsync(fl1);
+                
             }
             catch (Exception ex)
             {
 
             }
+            finally
+            {
+                
+            }
             BtnGraficar.IsEnabled = true;
+            
         }
 
         private SubscriptionToken _eventToken = null;

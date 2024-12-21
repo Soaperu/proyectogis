@@ -159,6 +159,10 @@ namespace CommonUtilities.ArcgisProUtils
                     pFeatureLayer_cuadriculas = featureLayer;
                     loFeature = "Cuadriculas";
                     break;
+                case "pfeatureLayer_CuadriculasR":
+                    pFeatureLayer_cuadriculasR = featureLayer;
+                    loFeature = "Cuadricula Regional";
+                    break;
                 case "pFeatureLayer_boletin":
                     pFeatureLayer_boletin = featureLayer;
                     loFeature = "Boletin";
@@ -394,12 +398,26 @@ namespace CommonUtilities.ArcgisProUtils
                 VariableName = "pFeatureLayer_Actmin"
             },
 
-            // Cuadriculas
+            // Cuadriculas Regionales
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Cuadricula,
+                FeatureClassName = FeatureClassConstants.gstrFC_CuadriculaR_WGS84,
                 LayerName = "Cuadricula Regional",
                 VariableName = "pFeatureLayer_cuadriculasR"
+            },
+            new FeatureClassInfo
+            {
+                FeatureClassName = FeatureClassConstants.gstrFC_CuadriculaR_PSAD56,
+                LayerName = "Cuadricula Regional",
+                VariableName = "pFeatureLayer_cuadriculasR"
+            },
+
+            // Cuadriculas Individuales
+            new FeatureClassInfo
+            {
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_Z + v_zona_dm,
+                LayerName = "Cuadriculas",
+                VariableName = "pFeatureLayer_cuadriculas"
             },
             new FeatureClassInfo
             {
@@ -802,6 +820,10 @@ namespace CommonUtilities.ArcgisProUtils
         // Catastro
         public const string gstrFC_CatastroPSAD56 = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_";
         public const string gstrFC_CatastroWGS84 = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_";
+
+        // Cuadrículas Regionales
+        public const string gstrFC_CuadriculaR_WGS84 = "DATA_GIS.GPO_CRE_CUADRICULA_REGIONAL_18";
+        public const string gstrFC_CuadriculaR_PSAD56 = "DATA_GIS.GPO_CRE_CUADRICULA_REGIONAL";
 
         // Cuadrículas
         public const string gstrFC_Cuadricula = "DATA_GIS.GPO_CUA_CUADRICULAS";

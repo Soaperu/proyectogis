@@ -27,6 +27,7 @@ using DevExpress.Drawing.Internal.Fonts;
 using SigcatminProAddin.View.Toolbars.BDGeocatmin.UI;
 using DevExpress.Data.Helpers;
 using ArcGIS.Core.Data.Analyst3D;
+using DatabaseConnector;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -157,7 +158,31 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         }
     }
     internal class CalculaPorcentajeRegion : BDGeocatminButton { }
-    internal class LimitesRegionales : BDGeocatminButton { }
+    internal class LimitesRegionales : BDGeocatminButton 
+    {
+        protected override async void OnClick()
+        {
+            try
+            {
+                FeatureLayer featureLayer = null;
+                var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+                Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                            , AppConfig.userName
+                                                                                            , AppConfig.password);
+                var zoneDm = GlobalVariables.CurrentZoneDm;
+                if (GlobalVariables.CurrentDatumDm == "1")
+                {
+                    featureLayer = await LayerUtils.AddFeatureClassToMapFromGdbAsync(geodatabase,FeatureClassConstants.gstrFC_CuadriculaR_WGS84, "Cuadricula Regional", false);
+                }
+                else
+                {
+                    featureLayer = await LayerUtils.AddFeatureClassToMapFromGdbAsync(geodatabase, FeatureClassConstants.gstrFC_CuadriculaR_PSAD56, "Cuadricula Regional", false);
+                }
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureLayer);
+            }
+            catch (Exception ex) { }
+        }
+    }
     internal class PlanoAreasSuperpuestas : BDGeocatminButton { }
     internal class PlanoEvaluacion : BDGeocatminButton 
     {
