@@ -123,7 +123,7 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        public static async void SelectSetAndZoomByNameAsync(string layerName, string whereClause = "")
+        public static async void SelectSetAndZoomByNameAsync(string layerName, bool selected= true, string whereClause = "")
         {
             // Obtener el mapa activo
             var map = MapView.Active?.Map;
@@ -148,7 +148,7 @@ namespace CommonUtilities.ArcgisProUtils
                     layer.Select(qry);
                 }
                 // Hacer zoom a la capa seleccionada
-                MapView.Active?.ZoomTo(layer, true, new TimeSpan(0, 0, 2));
+                MapView.Active?.ZoomTo(layer, selected, new TimeSpan(0, 0, 2));
             });
         }
 
@@ -214,26 +214,26 @@ namespace CommonUtilities.ArcgisProUtils
                         await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, layerExportName);
                         List<string> layersToRemove = new List<string>() { "Caram" };
                         string styleCaramPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCaram);
-                        await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                        await RemoveLayersFromActiveMapAsync(layersToRemove);
                         await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(layerExportName, styleCaramPath, "ESTILO", StyleItemType.PolygonSymbol);
-                        await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerExportName, "Caram");
+                        await ChangeLayerNameAsync(layerExportName, "Caram");
                         break;
                     case "Catastro Forestal":
                         if (datum == 1)
                         {
-                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Cforestal+zone, false);
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Cforestal + zone, false);
                         }
                         else
                         {
-                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56+zone, false);
+                            await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zone, false);
                         }
                         string layerExportNameCForestal = "Catastro Forestal" + GlobalVariables.idExport;
                         await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, layerExportNameCForestal);
                         List<string> cforestalToRemove = new List<string>() { "Catastro Forestal" };
                         string styleCForestalPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCForestal);
-                        await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(cforestalToRemove);
+                        await RemoveLayersFromActiveMapAsync(cforestalToRemove);
                         await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplyUniqueSymbologyFromStyleAsync(layerExportNameCForestal, styleCForestalPath, StyleItemType.PolygonSymbol);
-                        await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerExportNameCForestal, "Catastro Forestal");
+                        await ChangeLayerNameAsync(layerExportNameCForestal, "Catastro Forestal");
                         break;
                     case "Limite Departamental":
                         if (datum == 1)

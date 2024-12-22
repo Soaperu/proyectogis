@@ -284,7 +284,13 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         }
     }
     internal class BorrarTemas : BDGeocatminButton { }
-    internal class VerCapas : BDGeocatminButton { }
+    internal class VerCapas : BDGeocatminButton 
+    {
+        protected override void OnClick()
+        {
+            LayerUtils.SelectSetAndZoomByNameAsync("Catastro", false);
+        }
+    }
     internal class GenerarNumeroResolucionDm : BDGeocatminButton { }
     internal class RotularVerticesTool: MapTool
     {

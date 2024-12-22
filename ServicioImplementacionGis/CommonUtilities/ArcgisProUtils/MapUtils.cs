@@ -402,14 +402,14 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        public static async Task<Map> GetActiveMapAsync()
+        public static Map? GetActiveMapAsync()
         {
             // Ejecutar la tarea en el contexto adecuado de ArcGIS Pro
-            return await QueuedTask.Run(() =>
-            {
+            //return QueuedTask.Run(() =>
+            //{
                 // Obtener el mapa activo desde la vista del mapa activa
-                return MapView.Active?.Map;
-            });
+            return MapView.Active?.Map;
+            //});
         }
     }
 }
