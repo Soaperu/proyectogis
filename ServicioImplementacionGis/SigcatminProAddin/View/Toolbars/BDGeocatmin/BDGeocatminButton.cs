@@ -29,6 +29,7 @@ using DevExpress.Data.Helpers;
 using ArcGIS.Core.Data.Analyst3D;
 using DatabaseConnector;
 
+
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
     internal class BDGeocatminButton : Button
@@ -283,7 +284,29 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetKMLodDM, Params);
         }
     }
-    internal class BorrarTemas : BDGeocatminButton { }
+    internal class BorrarTemas : BDGeocatminButton 
+    {
+        protected override async void OnClick()
+        {
+            // Mostrar el cuadro de diálogo con opciones "Sí" y "No"
+            var result = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("¿Deseas eliminar todas las capas del Mapa?",
+                                                                            "Confirmación",
+                                                                            System.Windows.MessageBoxButton.YesNo,
+                                                                            System.Windows.MessageBoxImage.Question);
+            
+            // Evaluar la respuesta del usuario
+            if (result == System.Windows.MessageBoxResult.Yes)
+            {
+                // Acción para "Sí"
+                await LayerUtils.RemoveLayersFromActiveMapAsync();
+            }
+            else
+            {
+                // Acción para "No"
+                return;
+            }
+        }
+    }
     internal class VerCapas : BDGeocatminButton 
     {
         protected override void OnClick()
