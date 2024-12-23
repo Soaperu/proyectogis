@@ -9,7 +9,8 @@
         x:Class="SigcatminProAddin.View.Toolbars.BDGeocatmin.UI.ListarCoordenadasWpf"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" Background="#F3F3F3"
-        Title="Listar Coordenadas" Height="400" Width="360" FontSize="10" ResizeMode="NoResize" WindowStyle="None">
+        Title="Listar Coordenadas" Height="400" Width="360" FontSize="10"
+        ResizeMode="NoResize" WindowStyle="None">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -70,8 +71,8 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-                <Button x:Name="btnCopiarContenido" Margin="0,0,3,0" Grid.Column="0" Foreground="White" Background="#006DA0" FontWeight="bold" Style="{DynamicResource Esri_Button}" Click="btnCopiarContenido_Click">Copiar</Button>
-                <Button x:Name="btnCerrar" Margin="3,0,0,0" Grid.Column="1" Click="btnCerrar_Click">Cerrar</Button>
+                <Button x:Name="btnCopiarContenido" Margin="3,0,0,0" Grid.Column="1" Foreground="White" Background="#006DA0" FontWeight="bold" Style="{DynamicResource Esri_Button}" Click="btnCopiarContenido_Click">Copiar</Button>
+                <Button x:Name="btnCerrar" Margin="0,0,3,0" Grid.Column="0" Click="btnCerrar_Click">Cerrar</Button>
         </Grid>
 
 

@@ -11,31 +11,33 @@ using System;
 using System.Threading.Tasks;
 using ArcGIS.Core.Internal.Geometry;
 using System.Windows.Documents;
+using System.Drawing;
 
 namespace CommonUtilities.ArcgisProUtils
 {
     public class UTMGridGenerator
     {
-        public async Task<FeatureLayer> GenerateUTMGridAsync(double minEast, double minNorth, double maxEast, double maxNorth, string layerName, string zone)
+        public async Task<(FeatureLayer GridLayer, FeatureLayer PointLayer)> GenerateUTMGridAsync(double minEast, double minNorth, double maxEast, double maxNorth, string layerName, string zone, int interval=0)
         {
-            FeatureLayer result = await QueuedTask.Run(() =>
+            var result = await QueuedTask.Run(() =>
             {
                 // Crear o verificar la existencia de la capa de destino (líneas)
-                FeatureLayer? gridLayer = GetOrCreateGridLayer(layerName, zone);
+                FeatureLayer? gridLayer = GetOrCreateLayerwithNoRows(layerName, zone);
                 if (gridLayer == null) throw new Exception("No se pudo crear o acceder a la capa.");
 
                 // Crear o verificar la existencia de la capa de puntos
-                FeatureLayer? pointLayer = GetOrCreatePointLayer($"{layerName}p",zone);
+                FeatureLayer? pointLayer = GetOrCreateLayerwithNoRows($"{layerName}p",zone);
                 if (pointLayer == null) throw new Exception("No se pudo crear o acceder a la capa de puntos.");
 
                 // Calcular los límites y el intervalo
                 var limits = CalculateLimits(minEast, minNorth, maxEast, maxNorth);
-                int interval = CalculateInterval(minNorth, maxNorth);
+                if(interval == 0) interval = CalculateInterval(minNorth, maxNorth);
                 string clase_v = "2";
                 int contador_v = 0;
                 // Generar líneas verticales
                 for (double x = limits.xMin; x <= limits.xMax; x += interval)
                 {
+
                     var verticalLine = PolylineBuilder.CreatePolyline(new[]
                     {
                     MapPointBuilder.CreateMapPoint(x, limits.yMin),
@@ -95,13 +97,31 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                     contador_h += 1;
                 }
-                MapUtils.AnnotateLayer(pointLayer, "VALOR","XY_Anotaciones");
+                //MapUtils.AnnotateLayer(pointLayer, "VALOR","Graphics Layer");
+                //List<string> listado = new List<string>();
+                //listado.Add($"{layerName}p_{zone}");
+                //CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);
+                return (GridLayer:gridLayer, PointLayer:pointLayer);
+            });
+            return result;
+        }
+
+        public async Task AnnotateGridLayer(FeatureLayer featurelayer, string field, string graphicLayerName="Grilla")
+        {
+            await QueuedTask.Run(() =>
+            {
+                MapUtils.AnnotateLayer(featurelayer, field, graphicLayerName);
+            });
+        }
+
+        public async Task RemoveGridLayer(string layerName, string zone)
+        {
+            await QueuedTask.Run(() =>
+            {
                 List<string> listado = new List<string>();
                 listado.Add($"{layerName}p_{zone}");
                 CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(listado);
-                return gridLayer;
             });
-            return result;
         }
 
         private (double xMin, double xMax, double yMin, double yMax) CalculateLimits(double minEast, double minNorth, double maxEast, double maxNorth)
@@ -130,31 +150,7 @@ namespace CommonUtilities.ArcgisProUtils
             };
         }
 
-        private FeatureLayer? GetOrCreateGridLayer(string layerName, string zone)
-        {
-            MapUtils.LoadFeatureClassToMap($"{layerName}_{zone}", $"{layerName}_{zone}", true);
-            MapUtils.DeleteRowsFromFeatureClass($"{layerName}_{zone}");
-
-            var map = MapView.Active.Map;
-            if (map == null)
-                throw new Exception("No hay un mapa activo.");
-
-            // Buscar la capa de entidad en el mapa
-            foreach (var layer in map.Layers)
-            {
-                if (layer.Name.Equals($"{layerName}_{zone}", StringComparison.OrdinalIgnoreCase) && layer is FeatureLayer featureLayer)
-                {
-                    return featureLayer;
-                }
-            }
-
-
-            // Si no existe, crea una nueva capa
-            return null;
-        }
-
-
-        private FeatureLayer? GetOrCreatePointLayer(string layerName, string zone)
+        public FeatureLayer? GetOrCreateLayerwithNoRows(string layerName, string zone)
         {
             MapUtils.LoadFeatureClassToMap($"{layerName}_{zone}", $"{layerName}_{zone}", true, -1);
             MapUtils.DeleteRowsFromFeatureClass($"{layerName}_{zone}");

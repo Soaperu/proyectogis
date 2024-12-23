@@ -36,6 +36,8 @@ namespace SigcatminProAddin.View.Modulos
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
         bool sele_denu;
+        int datumwgs84 = 2;
+        int datumpsad56 = 1;
         public EvaluacionDM()
         {
             InitializeComponent();
@@ -316,8 +318,8 @@ namespace SigcatminProAddin.View.Modulos
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
-            cbp.Add(new ComboBoxPairs("WGS-84", 1));
-            cbp.Add(new ComboBoxPairs("PSAD-56", 2));
+            cbp.Add(new ComboBoxPairs("WGS-84", 2));
+            cbp.Add(new ComboBoxPairs("PSAD-56", 1));
 
             // Asignar la lista al ComboBox
             CbxSistema.DisplayMemberPath = "_Key";
@@ -530,7 +532,7 @@ namespace SigcatminProAddin.View.Modulos
 
             var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
 
-            if (datum == 2)
+            if (datum == datumwgs84)
             {
                 requiredColumns = new string[] {
                     DatagridDetailsConstants.RawColumNames.Vertice,
@@ -616,6 +618,7 @@ namespace SigcatminProAddin.View.Modulos
                     var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
                     DataGridDetails.ItemsSource = dmrRecords.DefaultView;
                     GraficarCoordenadas(dmrRecords);
+                    GlobalVariables.CurrentTipoEx = DataGridResult.GetCellValue(focusedRowHandle, "TIPO")?.ToString();
                 }
             }
         }
@@ -718,7 +721,7 @@ namespace SigcatminProAddin.View.Modulos
                 var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
 
                 //Carga capa Catastro
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
                 }
@@ -728,7 +731,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
 
                 ////Carga capa Distrito
-                //if (datum == 1)
+                //if (datum == datumwgs84)
                 //{
                 //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
                 //}
@@ -738,7 +741,7 @@ namespace SigcatminProAddin.View.Modulos
                 //}
                 //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
                 //Carga capa Zona Urbana
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
                 }
@@ -749,11 +752,12 @@ namespace SigcatminProAddin.View.Modulos
 
                 var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
                 var extentDm = ObtenerExtent(codigoValue, datum);
+                GlobalVariables.currentExtentDM = extentDm;
                 // Llamar al método IntersectFeatureClassAsync desde la instancia
                 string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
                 // Encontrando Distritos superpuestos a DM con
                 DataTable intersectDist;
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
                 }
@@ -778,7 +782,7 @@ namespace SigcatminProAddin.View.Modulos
                 //GlobalVariables.CurrentPagesDm = listHojas;
                 // Encontrando Caram superpuestos a DM con
                 DataTable intersectCaram;
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
                 }
@@ -789,7 +793,7 @@ namespace SigcatminProAddin.View.Modulos
                 CommonUtilities.DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
 
                 DataTable intersectCForestal;
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Cforestal + zoneDm, codigoValue);
                 }
@@ -800,7 +804,7 @@ namespace SigcatminProAddin.View.Modulos
                 CommonUtilities.DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
 
                 DataTable intersectDm;
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
                 }
@@ -829,7 +833,9 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.CurrentShpName = "Catastro";
                 MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
                 UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-                var gridLayer = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                var (gridLayer, pointLayer ) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+                await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
                 string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
                 try
@@ -856,46 +862,46 @@ namespace SigcatminProAddin.View.Modulos
             // Obtener el mapa Demarcacion Politica//
             try
             {
-                await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameDemarcacionPo); //"DEMARCACION POLITICA"
-                Map mapD = await EnsureMapViewIsActiveAsync("DEMARCACION POLITICA");
-                var featureClassLoader = new FeatureClassLoader(geodatabase, mapD, zoneDm, "99");
-                var fl = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));
-                //Carga capa Distrito
-                if (datum == 1)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
-                }
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
-                //Carga capa Provincia
-                if (datum == 1)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
-                }
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
-                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
-                //Carga capa Departamento
-                if (datum == 1)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
-                }
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
-                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
-                //var mapView = MapView.Active as MapView;
-                CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");
+               await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameDemarcacionPo); //"DEMARCACION POLITICA"
+               Map mapD = await EnsureMapViewIsActiveAsync("DEMARCACION POLITICA");
+               var featureClassLoader = new FeatureClassLoader(geodatabase, mapD, zoneDm, "99");
+               var fl = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));
+               //Carga capa Distrito
+               if (datum == datumwgs84)
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+               }
+               else
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
+               }
+               await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
+               await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
+               //Carga capa Provincia
+               if (datum == datumwgs84)
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
+               }
+               else
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
+               }
+               await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
+               await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
+               //Carga capa Departamento
+               if (datum == datumwgs84)
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
+               }
+               else
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
+               }
+               await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
+               await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
+               //var mapView = MapView.Active as MapView;
+               CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
+               await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");
 
             }
             catch (Exception ex) { }
@@ -903,44 +909,44 @@ namespace SigcatminProAddin.View.Modulos
             // Obtener el mapa Carta IGN//
             try
             {
-                await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
-                Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCartaIgn);
-                var featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
-                var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
-                //Carga capa Distrito
-                if (datum == 1)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
-                }
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
-                //Carga capa Provincia
-                if (datum == 1)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
-                }
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
-                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
+               await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
+               Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCartaIgn);
+               var featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
+               var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
+               //Carga capa Distrito
+               if (datum == datumwgs84)
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+               }
+               else
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
+               }
+               await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
+               await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
+               //Carga capa Provincia
+               if (datum == datumwgs84)
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
+               }
+               else
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
+               }
+               await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
+               await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
 
-                //Carga capa Departamento
-                if (datum == 1)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
-                }
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
-                await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
+               //Carga capa Departamento
+               if (datum == datumwgs84)
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
+               }
+               else
+               {
+                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
+               }
+               await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
+               await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
 
                 CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl1, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(255, 0, 0, 0), CIMColor.CreateRGBColor(255, 0, 0));
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl1, "Catastro");
