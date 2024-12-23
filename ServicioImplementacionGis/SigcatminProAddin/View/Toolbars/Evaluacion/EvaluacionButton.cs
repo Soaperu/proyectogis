@@ -22,6 +22,10 @@ using System.Threading.Tasks;
 using CommonUtilities.ArcgisProUtils;
 using CommonUtilities;
 using DevExpress.Pdf.Xmp;
+using System.Data;
+using System.Security.Policy;
+using SigcatminProAddin.View.Toolbars.BDGeocatmin.UI;
+using SigcatminProAddin.View.Toolbars.Evaluacion.UI;
 
 namespace SigcatminProAddin.View.Toolbars.Evaluacion
 {
@@ -88,13 +92,29 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     internal class ObservacionesCartaIGN : EvaluacionButton { }
     internal class VerCapas : EvaluacionButton { }
     internal class GenerarMallaCuadriculas : EvaluacionButton {
+        GenerarMallaWpf generarMallaWpf;
         protected override async void OnClick()
         {
             await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
-            string layerName = "Catastro";
-            string mapName = GlobalVariables.mapNameCatastro;
-            string definitionQuery = "EVAL IN ('EV','PO')";
-            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+
+            generarMallaWpf = new GenerarMallaWpf();
+            generarMallaWpf.Closed += (s, e) => generarMallaWpf = null;
+            generarMallaWpf.Show();
+        }
+
+
+
+        private void Graficarcuadriculas10(ExtentModel extent)
+        {
+            DataTable lodtbDatos = new DataTable();
+            int k = 0;
+
+            lodtbDatos.Columns.Add("CG_CODIGO", Type.GetType("System.String"));
+            lodtbDatos.Columns.Add("PE_NOMDER", Type.GetType("System.String"));
+            lodtbDatos.Columns.Add("CD_COREST", Type.GetType("System.Double"));
+            lodtbDatos.Columns.Add("CD_CORNOR", Type.GetType("System.Double"));
+            lodtbDatos.Columns.Add("CD_NUMVER", Type.GetType("System.Double"));
+
         }
     }
     internal class PlanoCuadriculas : EvaluacionButton { }

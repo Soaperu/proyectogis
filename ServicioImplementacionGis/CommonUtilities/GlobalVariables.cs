@@ -44,10 +44,14 @@ namespace CommonUtilities
         public static string CurrentShpName { get; set; }
         public static string CurrentZoneDm {  get; set; }
         public static string CurrentPagesDm { get; set; } // hojas Carta IGN
+
+        public static string CurrentTipoEx { get; set; }
         // Intersecciones con DM
         public static string listaCaramur {  get; set; }
         public static string listaCaramre { get; set; }
         public static string listaCforestal { get; set; }
+
+        public static ExtentModel currentExtentDM { get; set; }
 
         //Contenedor de Plantillas 
         public static string ContaninerTemplates = @"U:\\Geocatmin\\Plantillas";
