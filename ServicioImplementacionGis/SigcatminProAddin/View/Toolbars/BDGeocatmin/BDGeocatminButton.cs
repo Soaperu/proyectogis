@@ -30,6 +30,7 @@ using ArcGIS.Core.Data.Analyst3D;
 using DatabaseConnector;
 
 using ArcGIS.Desktop.Internal.Mapping.Ribbon;
+using ArcGIS.Desktop.Internal.Editing;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -160,7 +161,72 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
         }
     }
-    internal class CalculaPorcentajeRegion : BDGeocatminButton { }
+    internal class CalculaPorcentajeRegionTool : MapTool
+    {
+        private static CalcularPorcentajeRegionWpf _calcularPorcentajeRegionWindow;
+        public CalculaPorcentajeRegionTool()
+        {
+            IsSketchTool = true;
+            SketchType = SketchGeometryType.Point;
+            SketchOutputMode = SketchOutputMode.Map;
+
+        }
+
+        protected override async Task OnToolActivateAsync(bool active)
+        {
+            await base.OnToolActivateAsync(active);
+            if (_calcularPorcentajeRegionWindow != null && _calcularPorcentajeRegionWindow.IsVisible)
+            {
+                _calcularPorcentajeRegionWindow.Show();
+            }
+            else
+            {
+                // Crea la ventana si no existe
+                _calcularPorcentajeRegionWindow = new CalcularPorcentajeRegionWpf();
+                _calcularPorcentajeRegionWindow.Show();
+            }
+
+            //return base.OnToolActivateAsync(active);
+        }
+
+        protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
+        {
+            base.OnToolMouseDown(args);
+            QueuedTask.Run(async () =>
+            {
+                var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
+                if (_calcularPorcentajeRegionWindow != null && _calcularPorcentajeRegionWindow.IsVisible)
+                {
+                    // Actualiza el contenido según los datos del punto
+                    if (_calcularPorcentajeRegionWindow is CalcularPorcentajeRegionWpf calcularPorcentajeRegionWpf)
+                    {
+                        await _calcularPorcentajeRegionWindow.UpdateContent(mapPoint); // Método para actualizar contenido
+                    }
+                }
+            });
+        }
+
+        private async Task DeactivateTool(bool deactivateTool = false)
+        {
+            if (deactivateTool)
+                await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+        }
+        protected override void OnToolKeyDown(MapViewKeyEventArgs k)
+        {
+            base.OnToolKeyDown(k);
+            if (k.Key == System.Windows.Input.Key.Escape)
+            {
+                k.Handled = true;
+
+                FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+            }
+        }
+        protected override Task<bool> OnSketchCompleteAsync(Geometry geometry)
+        {
+            return base.OnSketchCompleteAsync(geometry);
+        }
+    }
+
     internal class LimitesRegionales : BDGeocatminButton 
     {
         protected override async void OnClick()

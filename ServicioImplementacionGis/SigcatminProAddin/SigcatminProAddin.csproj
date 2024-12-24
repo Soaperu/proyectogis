@@ -266,6 +266,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">
@@ -370,6 +371,11 @@
     <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\Toolbars\BDGeocatmin\UI\CalcularPorcentajeRegionWpf.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
     <None Update="Scripts\CMIN_EVAL.atbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -380,6 +386,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\exportarKmz.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\ObtenerDepartamentos.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

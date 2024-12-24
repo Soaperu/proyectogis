@@ -33,6 +33,7 @@ namespace CommonUtilities
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";
         public static string toolGetKMLodDM = "exportarDmKmz";
+        public static string toolGetDepas = "obtenerDepartamento";
         // Variables obtenidas de Evaluacion DM
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }

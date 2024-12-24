@@ -132,21 +132,23 @@
           </tooltip>
           <content version="1.0" group="Group A" />
         </tool>
-        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDm" caption="Consulta Dm" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDm" loadOnClick="true" keytip="BDG-3" smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png">
-          <tooltip heading="Tooltip Heading">Consulta DM<disabledText /></tooltip>
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegionTool" caption="Porcentaje Región" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegionTool" loadOnClick="true" keytip="BDG-4"  smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Tooltip Heading">
+            Porcentaje Región<disabledText />
+          </tooltip>
           <content version="1.0" group="Group A" />
-        </button>-->
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegion" caption="Calcula Porcentaje Region" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegion" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png">
+        </tool>
+        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegion" caption="Calcula Porcentaje Region" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegion" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png">
           <tooltip heading="Tooltip Heading">Porcentaje Región<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
-        </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_LimitesRegionales" caption="Limites Regionales" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.LimitesRegionales" loadOnClick="true" keytip="BDG-5" smallImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png">
+        </button>-->
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_LimitesRegionales" caption="Límites Regionales" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.LimitesRegionales" loadOnClick="true" keytip="BDG-5" smallImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png">
           <tooltip heading="Tooltip Heading">
-				  Limites Regionales<disabledText /></tooltip>
+				  Límites Regionales<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoAreasSuperpuestas" caption="Plano de Areas Superpuestas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoAreasSuperpuestas" loadOnClick="true" keytip="BDG-6" smallImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png">
-          <tooltip heading="Tooltip Heading">
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoAreasSuperpuestas" caption="Plano A. Superpuestas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoAreasSuperpuestas" loadOnClick="true" keytip="BDG-6" smallImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png">
+          <tooltip heading="Plano de Áreas Superpuestas">
 				  Plano de Áreas Superpuestas<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
@@ -165,7 +167,7 @@
 				  Plano de Carta<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_DibujarPoligono" caption="Dibujar Poligono" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.DibujarPoligono" loadOnClick="true" keytip="BDG-10" smallImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png">
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_DibujarPoligono" caption="Dibujar Polígono" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.DibujarPoligono" loadOnClick="true" keytip="BDG-10" smallImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png">
           <tooltip heading="Tooltip Heading">
 				  Dibujar Polígono<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
@@ -190,18 +192,13 @@
 				  Número de Resolución de DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="Rotular Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
-          <tooltip heading="Tooltip Heading">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="Rotular Vértices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Rotular Vértices">
             Rotular Vértices<disabledText />
           </tooltip>
           <content version="1.0" group="Group A" />
         </tool>
-        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVertices" caption="Rotular Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVertices" loadOnClick="true" keytip="BDG-15" smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png">
-          <tooltip heading="Tooltip Heading">
-				  Rotular Vertices<disabledText /></tooltip>
-          <content version="1.0" group="Group A" />
-        </button>-->
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RetirarVertices" caption="Retirar Vertices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RetirarVertices" loadOnClick="true" keytip="BDG-16" smallImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png">
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RetirarVertices" caption="Retirar Vértices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RetirarVertices" loadOnClick="true" keytip="BDG-16" smallImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png">
           <tooltip heading="Tooltip Heading">
 				  Retirar Vértices<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
