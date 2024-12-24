@@ -185,7 +185,7 @@ namespace SigcatminProAddin.View.Modulos
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
-            //List<string> listMaps = new List<string> {"CATASTRO MINERO"};
+            List<string> listMaps = new List<string> {"CATASTRO MINERO"};
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             //int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
             //string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
@@ -257,12 +257,13 @@ namespace SigcatminProAddin.View.Modulos
                 //var extentDm = ObtenerExtent(codigoValue, datum);
 
                 var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, radio);
+                var extentDm = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum);
 
 
                 // Llamar al método IntersectFeatureClassAsync desde la instancia
                 string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
-                // Encontrando Distritos superpuestos a DM con
 
+                // Encontrando Distritos superpuestos a DM con
                 //DataTable intersectDist;
                 //if (datum == 1)
                 //{
@@ -273,6 +274,7 @@ namespace SigcatminProAddin.View.Modulos
                 //    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
                 //}
                 //CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
+
                 //DataTable orderUbigeosDM;
                 //orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
 
@@ -282,7 +284,7 @@ namespace SigcatminProAddin.View.Modulos
                 //string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax);
                 GlobalVariables.CurrentPagesDm = listHojas;
-                
+
                 // Encontrando Caram superpuestos a DM con
                 //DataTable intersectCaram;
                 //if (datum == 1)
@@ -316,7 +318,7 @@ namespace SigcatminProAddin.View.Modulos
                 //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
                 //}
                 //DataTable distBorder;
-               // var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
+                // var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
                 // GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
                 //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
                 //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
@@ -465,11 +467,11 @@ namespace SigcatminProAddin.View.Modulos
         //    }
         //}
 
-        public async Task ObtenerLimitesAsync()
+        public async Task ObtenerLimitesAsync(string nomArchivoSHP)
         {
             // Buscar la capa en el mapa por nombre
             var featureLayer = MapView.Active.Map.Layers
-                                .FirstOrDefault(l => l.Name == "NombreDeTuShapefile") as FeatureLayer;
+                                .FirstOrDefault(l => l.Name == nomArchivoSHP) as FeatureLayer;
 
             if (featureLayer != null)
             {
@@ -483,8 +485,8 @@ namespace SigcatminProAddin.View.Modulos
                 double maxY = envelope.YMax;
 
                 // Mostrar los límites en consola
-                Console.WriteLine($"Límite Mínimo: ({minX}, {minY})");
-                Console.WriteLine($"Límite Máximo: ({maxX}, {maxY})");
+                //Console.WriteLine($"Límite Mínimo: ({minX}, {minY})");
+                //Console.WriteLine($"Límite Máximo: ({maxX}, {maxY})");
             }
             else
             {
