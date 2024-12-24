@@ -118,7 +118,7 @@
                           VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded"  />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" />
+                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" SelectionChanged="CbxSistema_SelectionChanged_1" />
             </Grid>
         </Grid>
 

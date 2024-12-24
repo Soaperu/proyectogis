@@ -328,7 +328,7 @@ namespace SigcatminProAddin.View.Modulos
 
             // Seleccionar la primera opción por defecto
             CbxSistema.SelectedIndex = 0;
-            GlobalVariables.CurrentDatumDm = "1";
+            GlobalVariables.CurrentDatumDm = "2";
         }
 
         public class ComboBoxPairs
@@ -770,7 +770,7 @@ namespace SigcatminProAddin.View.Modulos
                 orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
 
                 //Carga capa Hojas IGN
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
                 }
@@ -951,7 +951,7 @@ namespace SigcatminProAddin.View.Modulos
                 CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl1, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(255, 0, 0, 0), CIMColor.CreateRGBColor(255, 0, 0));
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl1, "Catastro");
                 string mosaicLayer;
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     mosaicLayer = FeatureClassConstants.gstrRT_IngMosaic84;
                 }
@@ -1257,6 +1257,18 @@ namespace SigcatminProAddin.View.Modulos
             if (e.Key == Key.Enter)
             {
                 BtnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
+            }
+        }
+
+        private void CbxSistema_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbxSistema.SelectedValue.ToString() == "2")
+            {
+                GlobalVariables.CurrentDatumDm = "2";
+            }
+            else
+            {
+                GlobalVariables.CurrentDatumDm = "1";
             }
         }
     }

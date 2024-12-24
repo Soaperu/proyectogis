@@ -189,7 +189,7 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        public async static Task AddLayerCheckedListBox(string selectCheckedLayer, string zone, FeatureClassLoader function, int datum, ExtentModel extent)
+        public async static Task AddLayerCheckedListBox(string selectCheckedLayer, string zone, FeatureClassLoader function, int datum, ExtentModel extent = null)
         {
             try
             {

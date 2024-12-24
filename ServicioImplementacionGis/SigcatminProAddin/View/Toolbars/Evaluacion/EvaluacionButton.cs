@@ -90,7 +90,18 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     internal class GenerarResultadosEvaluacion : EvaluacionButton { }
     internal class CalculoAreaDisponible : EvaluacionButton { }
     internal class ObservacionesCartaIGN : EvaluacionButton { }
-    internal class VerCapas : EvaluacionButton { }
+    internal class VerCapas : EvaluacionButton 
+    {
+        VerCapasWpf verCapasWpf;
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+
+            verCapasWpf = new VerCapasWpf();
+            verCapasWpf.Closed += (s, e) => verCapasWpf = null;
+            verCapasWpf.Show();
+        }
+    }
     internal class GenerarMallaCuadriculas : EvaluacionButton {
         GenerarMallaWpf generarMallaWpf;
         protected override async void OnClick()
