@@ -31,7 +31,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <returns>El objeto Map creado.</returns>
         public static async Task CreateMapAsync(string mapName)
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 // Crear un nuevo mapa
@@ -40,7 +40,7 @@ namespace CommonUtilities.ArcgisProUtils
                 ProApp.Panes.CreateMapPaneAsync(map);
                 
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>

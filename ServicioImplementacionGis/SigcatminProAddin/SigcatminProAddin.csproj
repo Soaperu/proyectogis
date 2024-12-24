@@ -8,6 +8,12 @@
     <NoWarn>CA1416</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="View\Modulos\ConLimiteInteres.xaml.cs" />
+    <Compile Remove="View\Modulos\ConsultaSimulaPetitorio.xaml.cs" />
+    <Compile Remove="View\Modulos\ConsultaVariasCartasNac.xaml.cs" />
+    <Compile Remove="View\Modulos\Prueba.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
     <None Remove="Config.daml" />
     <None Remove="Images\EvaluacionDM\mapa100.png" />
     <None Remove="Images\EvaluacionDM\usuario32.png" />
@@ -102,6 +108,10 @@
     <None Remove="Images\Toolbars\Evaluacion\18-grafica-desde-excel-16x16.png" />
     <None Remove="Images\Toolbars\Evaluacion\18-grafica-desde-excel-32x32.png" />
     <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
+    <None Remove="View\Modulos\images.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="View\Modulos\Prueba.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config.daml" />    
@@ -284,6 +294,7 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
+    <Resource Include="View\Modulos\images.jpg" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />

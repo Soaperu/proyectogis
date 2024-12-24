@@ -1233,5 +1233,10 @@ namespace SigcatminProAddin.View.Modulos
                 BtnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
             }
         }
+
+        private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
     }
 }

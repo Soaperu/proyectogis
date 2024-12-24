@@ -10,14 +10,14 @@
       d:DesignHeight="470" d:DesignWidth="680"
       Title="EvaluacionDM"
       FontFamily="Roboto">
-    <Page.Resources>
+    <!--<Page.Resources>
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Page.Resources>
+    </Page.Resources>-->
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -118,7 +118,7 @@
                           VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded"  />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" />
+                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" SelectionChanged="CbxSistema_SelectionChanged" />
             </Grid>
         </Grid>
 
