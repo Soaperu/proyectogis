@@ -30,10 +30,10 @@
       <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework">
-      <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.11\ref\net8.0\PresentationFramework.dll</HintPath>
+      <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.8\ref\net8.0\PresentationFramework.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms.Analyzers">
-      <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.11\analyzers\dotnet\System.Windows.Forms.Analyzers.dll</HintPath>
+      <HintPath>C:\Program Files\dotnet\packs\Microsoft.WindowsDesktop.App.Ref\8.0.8\analyzers\dotnet\System.Windows.Forms.Analyzers.dll</HintPath>
     </Reference>
   </ItemGroup>
 
