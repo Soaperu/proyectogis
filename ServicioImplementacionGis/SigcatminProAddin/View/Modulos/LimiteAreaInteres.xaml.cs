@@ -31,6 +31,13 @@ using static SigcatminProAddin.View.Modulos.EvaluacionDM;
 using DevExpress.Utils;
 using DevExpress.XtraPrinting.Native;
 
+using ArcGIS.Desktop.Core;
+using ArcGIS.Desktop.Editing;
+
+
+
+
+
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -42,13 +49,18 @@ namespace SigcatminProAddin.View.Modulos
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
         bool sele_denu;
-        //public EvaluacionDM()
+        
 
 
         public LimiteAreaInteres()
         {
             InitializeComponent();
             AddCheckBoxesToListBox();
+            CurrentUser();
+
+            dataBaseHandler = new DatabaseHandler();
+            CbxTypeConsult.SelectedIndex = 0;
+            TbxRadio.Text = "5";
 
         }
 
@@ -419,6 +431,70 @@ namespace SigcatminProAddin.View.Modulos
 
             return extent;
         }
+        private void CurrentUser()
+        {
+            CurrentUserLabel.Text = GlobalVariables.ToTitleCase(AppConfig.fullUserName);
+        }
+
+        private void BtnSearch_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        //public async void ObtenerLimitesShapefile()
+        //{
+        //    // Nombre de la capa Shapefile que se encuentra en el mapa
+        //    string nombreShapefile = "NombreDeTuShapefile.shp";
+
+        //    // Buscar la capa en el mapa
+        //    var featureLayer = MapView.Active.Map.Layers
+        //                            .FirstOrDefault(l => l.Name == nombreShapefile) as FeatureLayer;
+
+        //    if (featureLayer != null)
+        //    {
+        //        // Usar QueuedTask para acceder a la capa y obtener la extensión
+        //        var envelope = await QueuedTask.Run(() => featureLayer.GetExtentAsync());
+
+        //        // Imprimir los límites
+        //        Console.WriteLine($"Límite Mínimo: ({envelope.XMin}, {envelope.YMin})");
+        //        Console.WriteLine($"Límite Máximo: ({envelope.XMax}, {envelope.YMax})");
+        //    }
+        //    else
+        //    {
+        //        Console.WriteLine("La capa no es de tipo FeatureLayer o no se encontró.");
+        //    }
+        //}
+
+        public async Task ObtenerLimitesAsync()
+        {
+            // Buscar la capa en el mapa por nombre
+            var featureLayer = MapView.Active.Map.Layers
+                                .FirstOrDefault(l => l.Name == "NombreDeTuShapefile") as FeatureLayer;
+
+            if (featureLayer != null)
+            {
+                // Usar QueryExtentAsync() para obtener la extensión de la capa
+                var envelope = await QueuedTask.Run(() => featureLayer.QueryExtent());
+
+                // Obtener las coordenadas mínimas y máximas de la extensión
+                double minX = envelope.XMin;
+                double minY = envelope.YMin;
+                double maxX = envelope.XMax;
+                double maxY = envelope.YMax;
+
+                // Mostrar los límites en consola
+                Console.WriteLine($"Límite Mínimo: ({minX}, {minY})");
+                Console.WriteLine($"Límite Máximo: ({maxX}, {maxY})");
+            }
+            else
+            {
+                Console.WriteLine("La capa no se encontró en el mapa.");
+            }
+        }
+
+
+
+
 
 
     }

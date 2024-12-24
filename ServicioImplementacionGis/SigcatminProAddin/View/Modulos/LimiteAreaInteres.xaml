@@ -84,7 +84,7 @@
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" IsEnabled="False" />
+                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" IsEnabled="False" Click="BtnSearch_Click" />
         </Grid>
         <Grid
               Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2">
@@ -125,7 +125,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Detalle de Selección" Foreground="#FF696969" HorizontalContentAlignment="Left"
                    FontFamily="Roboto" FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-                   Padding="0,0,0,3" Visibility="Hidden"/>
+                   Padding="0,0,0,3" />
             <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969" FontFamily="Roboto"
                    FontWeight="Bold" VerticalAlignment="Bottom" FontSize="10" Padding="0,0,0,3"/>
         </Grid>
@@ -139,7 +139,7 @@
                 <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0" Visibility="Hidden" Grid.ColumnSpan="3">
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0"  Grid.ColumnSpan="3">
                 <dxg:GridControl.View>
                     <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False"
                            AllowColumnFiltering="False"
@@ -174,8 +174,8 @@
                 </Border>
 
                 <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
-                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
-                    <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/View/Modulos/images.jpg" Stretch="Uniform"/>
+                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch" Grid.RowSpan="2">
+                    <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/View/Modulos/mapa100.png" Stretch="Uniform"/>
                 </Border>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"

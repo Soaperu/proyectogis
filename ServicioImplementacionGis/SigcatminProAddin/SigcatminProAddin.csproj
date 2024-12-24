@@ -109,6 +109,7 @@
     <None Remove="Images\Toolbars\Evaluacion\18-grafica-desde-excel-32x32.png" />
     <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
     <None Remove="View\Modulos\images.jpg" />
+    <None Remove="View\Modulos\mapa100.png" />
   </ItemGroup>
   <ItemGroup>
     <Page Remove="View\Modulos\Prueba.xaml" />
@@ -295,6 +296,7 @@
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
     <Resource Include="View\Modulos\images.jpg" />
+    <Resource Include="View\Modulos\mapa100.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
