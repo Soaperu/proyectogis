@@ -360,8 +360,6 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
-    <Resource Include="View\Modulos\images.jpg" />
-    <Resource Include="View\Modulos\mapa100.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />

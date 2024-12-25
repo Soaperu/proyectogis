@@ -49,15 +49,15 @@ namespace SigcatminProAddin.View.Modulos
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
         bool sele_denu;
-        
-
-
+        int datumwgs84 = 2;
+        int datumpsad56 = 1;
         public LimiteAreaInteres()
         {
             InitializeComponent();
             AddCheckBoxesToListBox();
             CurrentUser();
-
+            //ConfigureDataGridResultColumns();
+            //ConfigureDataGridDetailsColumns();
             dataBaseHandler = new DatabaseHandler();
             CbxTypeConsult.SelectedIndex = 0;
             TbxRadio.Text = "5";
@@ -72,8 +72,8 @@ namespace SigcatminProAddin.View.Modulos
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
-            cbp.Add(new ComboBoxPairs("WGS-84", 1));
-            cbp.Add(new ComboBoxPairs("PSAD-56", 2));
+            cbp.Add(new ComboBoxPairs("WGS-84", 2));
+            cbp.Add(new ComboBoxPairs("PSAD-56", 1));
 
             // Asignar la lista al ComboBox
             CbxSistema.DisplayMemberPath = "_Key";
@@ -82,19 +82,23 @@ namespace SigcatminProAddin.View.Modulos
 
             // Seleccionar la primera opción por defecto
             CbxSistema.SelectedIndex = 0;
+            GlobalVariables.CurrentDatumDm = "2";
 
         }
 
         private void CbxZona_Loaded(object sender, RoutedEventArgs e)
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
+
             cbp.Add(new ComboBoxPairs("17", 17));
             cbp.Add(new ComboBoxPairs("18", 18));
             cbp.Add(new ComboBoxPairs("19", 19));
+
             // Asignar la lista al ComboBox
             CbxZona.DisplayMemberPath = "_Key";
             CbxZona.SelectedValuePath = "_Value";
             CbxZona.ItemsSource = cbp;
+
             // Seleccionar la opción 18 por defecto
             CbxZona.SelectedIndex = 1;
 
@@ -136,17 +140,20 @@ namespace SigcatminProAddin.View.Modulos
 
                 LayersListBox.Items.Add(checkBox);
             }
+
         }
 
         
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxEsteMin.Text))
             {
                 string message = "Por favor ingrese un valor coordenada Este Mínimo";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertancia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
+                BtnGraficar.IsEnabled = true;
                 return;
             }
             if (string.IsNullOrEmpty(TbxEsteMax.Text))
@@ -155,6 +162,7 @@ namespace SigcatminProAddin.View.Modulos
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertancia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
+                BtnGraficar.IsEnabled = true;
                 return;
             }
             if (string.IsNullOrEmpty(TbxNorteMin.Text))
@@ -163,6 +171,7 @@ namespace SigcatminProAddin.View.Modulos
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertancia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
+                BtnGraficar.IsEnabled = true;
                 return;
             }
             if (string.IsNullOrEmpty(TbxNorteMax.Text))
@@ -171,8 +180,10 @@ namespace SigcatminProAddin.View.Modulos
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertancia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
+                BtnGraficar.IsEnabled = true;
                 return;
             }
+            BtnGraficar.IsEnabled = true;
             if (ChkGraficarDmY.IsChecked == true)
             {
                 GlobalVariables.stateDmY = true;
@@ -181,11 +192,12 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.stateDmY = false;
             }
+
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
-            List<string> listMaps = new List<string> {"CATASTRO MINERO"};
+
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             //int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
             //string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
@@ -208,7 +220,6 @@ namespace SigcatminProAddin.View.Modulos
             string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
             string dmShpName = "DM" + fechaArchi;
             string dmShpNamePath = "DM" + fechaArchi + ".shp";
-
             try
             {
                 // Obtener el mapa Catastro//
@@ -218,7 +229,7 @@ namespace SigcatminProAddin.View.Modulos
                 var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
 
                 //Carga capa Catastro
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
                 }
@@ -228,7 +239,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
 
                 ////Carga capa Distrito
-                //if (datum == 1)
+                //if (datum == datumwgs84)
                 //{
                 //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
                 //}
@@ -237,9 +248,8 @@ namespace SigcatminProAddin.View.Modulos
                 //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zoneDm, false);
                 //}
                 //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-
                 //Carga capa Zona Urbana
-                if (datum == 1)
+                if (datum == datumwgs84)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
                 }
@@ -247,7 +257,6 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
                 }
-
                 int Tbx_EsteMin = int.Parse(TbxEsteMin.Text);
                 int Tbx_EsteMax = int.Parse(TbxEsteMax.Text);
                 int Tbx_NorteMin = int.Parse(TbxNorteMin.Text);
@@ -255,17 +264,16 @@ namespace SigcatminProAddin.View.Modulos
 
                 //var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
                 //var extentDm = ObtenerExtent(codigoValue, datum);
-
+                
                 var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, radio);
                 var extentDm = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum);
-
+                GlobalVariables.currentExtentDM = extentDm;
 
                 // Llamar al método IntersectFeatureClassAsync desde la instancia
                 string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
-
                 // Encontrando Distritos superpuestos a DM con
                 //DataTable intersectDist;
-                //if (datum == 1)
+                //if (datum == datumwgs84)
                 //{
                 //    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
                 //}
@@ -274,20 +282,23 @@ namespace SigcatminProAddin.View.Modulos
                 //    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
                 //}
                 //CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
-
                 //DataTable orderUbigeosDM;
                 //orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
 
-
                 //Carga capa Hojas IGN
-                await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
-                //string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
-                string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax);
-                GlobalVariables.CurrentPagesDm = listHojas;
-
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
+                }
+                string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                //GlobalVariables.CurrentPagesDm = listHojas;
                 // Encontrando Caram superpuestos a DM con
                 //DataTable intersectCaram;
-                //if (datum == 1)
+                //if (datum == datumwgs84)
                 //{
                 //    intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
                 //}
@@ -298,7 +309,7 @@ namespace SigcatminProAddin.View.Modulos
                 //CommonUtilities.DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
 
                 //DataTable intersectCForestal;
-                //if (datum == 1)
+                //if (datum == datumwgs84)
                 //{
                 //    intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Cforestal + zoneDm, codigoValue);
                 //}
@@ -309,7 +320,7 @@ namespace SigcatminProAddin.View.Modulos
                 //CommonUtilities.DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
 
                 //DataTable intersectDm;
-                //if (datum == 1)
+                //if (datum == datumwgs84)
                 //{
                 //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
                 //}
@@ -318,18 +329,31 @@ namespace SigcatminProAddin.View.Modulos
                 //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
                 //}
                 //DataTable distBorder;
-                // var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
-                // GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
+                //var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
+                //GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
                 //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
                 //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-                ///await UpdateValueAsync(catastroShpName, codigoValue);
+                //await UpdateValueAsync(catastroShpName, codigoValue);
                 //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
                 //await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
-                ///await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
-                ///await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, @"C:\bdgeocatmin\Estilos\CATASTRO.stylx", "LEYENDA", codigoValue);
-                ///var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
-                /// var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                //await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
+                string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, codigoValue);
+                //var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
+                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
+                List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
+                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+                GlobalVariables.CurrentShpName = "Catastro";
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+                await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
+                string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
                 try
                 {
                     // Itera todos items seleccionados en el ListBox de WPF
@@ -346,16 +370,10 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName);
-                List<string> layers = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
-                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layers);
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
-                GlobalVariables.CurrentShpName = "Catastro";
-                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "Anotaciones");
-                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-                await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
             }
             catch (Exception ex) { }
+
+
 
 
 
@@ -443,29 +461,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        //public async void ObtenerLimitesShapefile()
-        //{
-        //    // Nombre de la capa Shapefile que se encuentra en el mapa
-        //    string nombreShapefile = "NombreDeTuShapefile.shp";
-
-        //    // Buscar la capa en el mapa
-        //    var featureLayer = MapView.Active.Map.Layers
-        //                            .FirstOrDefault(l => l.Name == nombreShapefile) as FeatureLayer;
-
-        //    if (featureLayer != null)
-        //    {
-        //        // Usar QueuedTask para acceder a la capa y obtener la extensión
-        //        var envelope = await QueuedTask.Run(() => featureLayer.GetExtentAsync());
-
-        //        // Imprimir los límites
-        //        Console.WriteLine($"Límite Mínimo: ({envelope.XMin}, {envelope.YMin})");
-        //        Console.WriteLine($"Límite Máximo: ({envelope.XMax}, {envelope.YMax})");
-        //    }
-        //    else
-        //    {
-        //        Console.WriteLine("La capa no es de tipo FeatureLayer o no se encontró.");
-        //    }
-        //}
+      
 
         public async Task ObtenerLimitesAsync(string nomArchivoSHP)
         {
