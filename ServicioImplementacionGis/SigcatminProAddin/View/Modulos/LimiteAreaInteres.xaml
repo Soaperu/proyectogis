@@ -175,7 +175,7 @@
 
                 <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
                         CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch" Grid.RowSpan="2">
-                    <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/View/Modulos/mapa100.png" Stretch="Uniform"/>
+                    <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/Images/EvaluacionDM/mapa100.png" Stretch="Uniform"/>
                 </Border>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
