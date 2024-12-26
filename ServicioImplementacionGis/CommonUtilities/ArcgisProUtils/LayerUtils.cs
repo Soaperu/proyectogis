@@ -112,14 +112,14 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        public static async void SelectSetAndZoomAsync(FeatureLayer layer, string whereClause="")
+        public static async void SelectSetAndZoomAsync(FeatureLayer layer, bool selected=false, string whereClause = "")
         {
             await QueuedTask.Run(() =>
             {
                 MapView.Active?.Map.SetSelection(null);
                 var qry = new QueryFilter() { WhereClause = whereClause };
                 layer.Select(qry);
-                MapView.Active?.ZoomTo(layer, true, new TimeSpan(0, 0, 2));
+                MapView.Active?.ZoomTo(layer, selected, new TimeSpan(0, 0, 2));
             });
         }
 
@@ -202,7 +202,7 @@ namespace CommonUtilities.ArcgisProUtils
                         //await function.ExportSpatialTemaAsync(layer, GlobalVariables.stateDmY, "zonaRese");
                         break;
                     case "Caram":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram84 + zone, false);
                         }
@@ -219,7 +219,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await ChangeLayerNameAsync(layerExportName, "Caram");
                         break;
                     case "Catastro Forestal":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Cforestal + zone, false);
                         }
@@ -236,7 +236,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await ChangeLayerNameAsync(layerExportNameCForestal, "Catastro Forestal");
                         break;
                     case "Limite Departamental":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_WGS + zone, false);
                         }
@@ -247,7 +247,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_depa);
                         break;
                     case "Limite Provincial":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Provincia_WGS + zone, false);
                         }
@@ -258,7 +258,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_prov);
                         break;
                     case "Limite Distrital":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zone, false);
                         }
@@ -270,7 +270,7 @@ namespace CommonUtilities.ArcgisProUtils
                         break;
 
                     case "Capitales Distritales":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CDistrito84, false);
                         }
@@ -301,7 +301,7 @@ namespace CommonUtilities.ArcgisProUtils
                         break;
 
                     case "Red Vial":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Carretera84, false);
 
@@ -315,7 +315,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                     case "Centros Poblados":
                         
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             currentFeatureLayer = await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CPoblado84, false);
                         }

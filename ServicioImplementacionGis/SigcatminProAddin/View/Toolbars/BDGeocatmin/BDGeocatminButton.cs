@@ -40,7 +40,18 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         {
         }
     }
-    internal class ReporteDerechosMineros : BDGeocatminButton { }
+    internal class ReporteDerechosMineros : BDGeocatminButton 
+    {
+        ReporteDMWpf reporteDMWpf;
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+
+            reporteDMWpf = new ReporteDMWpf();
+            reporteDMWpf.Closed += (s, e) => reporteDMWpf = null;
+            reporteDMWpf.Show();
+        }
+    }
 
 
     internal class ListarCoordenadasTool : MapTool
@@ -199,12 +210,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 
             if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval);
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval);
                 planeEval = GlobalVariables.planeEval.Split('.')[0];
             }
             else 
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeEval56);
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval56);
                 planeEval = GlobalVariables.planeEval56.Split('.')[0];
             }
             string mapName = GlobalVariables.mapNameCatastro;
@@ -227,12 +238,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeDemarca84);
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca84);
                 planeDemarca = GlobalVariables.planeDemarca84.Split('.')[0];
             }
             else
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeDemarca56);
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca56);
                 planeDemarca = GlobalVariables.planeDemarca56.Split('.')[0];
             }
             string mapName = GlobalVariables.mapNameDemarcacionPo;
@@ -254,12 +265,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 
             if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeCarta84);
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta84);
                 planeCarta = GlobalVariables.planeCarta84.Split('.')[0];
             }
             else
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplates, GlobalVariables.planeCarta56);
+                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta56);
                 planeCarta = GlobalVariables.planeCarta56.Split('.')[0];
             }
             string mapName = GlobalVariables.mapNameCartaIgn;
