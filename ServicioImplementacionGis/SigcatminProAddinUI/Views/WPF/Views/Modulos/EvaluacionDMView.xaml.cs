@@ -1,5 +1,6 @@
 ﻿using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.UsesCases;
+using SigcatminProAddinUI.Resourecs.Constants;
 using SigcatminProAddinUI.Views.WPF.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -24,10 +25,12 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
     public partial class EvaluacionDMView : Page
     {
         private EvaluacionDMViewModel _evaluacionDMViewModel;
+        private readonly GetDerechoMineroUseCase _getDerechoMineroUseCase; 
         public EvaluacionDMView()
         {
             InitializeComponent();
             _evaluacionDMViewModel = new EvaluacionDMViewModel();
+            _getDerechoMineroUseCase = Program.GetService<GetDerechoMineroUseCase>();
         }
         private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -52,11 +55,14 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         {
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(MessageConstants.Errors.EmptySearchValue,
-                                                                 MessageConstants.Titles.MissingValue,
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ErrorMessage.EmptySearchValue,
+                                                                 TitlesMessage.MissingValue,
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            _getDerechoMineroUseCase.Execute("clarita",2);
+
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)

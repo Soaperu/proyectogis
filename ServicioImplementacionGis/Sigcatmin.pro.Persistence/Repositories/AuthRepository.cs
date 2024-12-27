@@ -1,5 +1,6 @@
 ﻿using Oracle.ManagedDataAccess.Client;
 using Sigcatmin.pro.Application.Interfaces;
+using Sigcatmin.pro.Domain.Interfaces.Repositories.Configuration;
 using Sigcatmin.pro.Persistence.Helpers;
 using Sigcatmin.prop.Domain.Interfaces.Repositories;
 using Sigcatmin.prop.Domain.Settings;
@@ -10,13 +11,12 @@ namespace Sigcatmin.pro.Persistence.Repositories
 {
     public class AuthRepository : IAuthRepository
     {
-        private readonly IDbManagerFactory _dbManagerFactory;
+        private readonly IDbManager _dbManager;
         private readonly DdConnectionSettings _DbConnectionSettings;
         public AuthRepository(
-            IDbManagerFactory dbManagerFactory,
+            //IDbManager dbManager,
             IOptions<DdConnectionSettings> options)
         {
-            _dbManagerFactory = dbManagerFactory;
             _DbConnectionSettings = options.Value;
         }
         public async ValueTask<bool> Authenticate(string user, string password)

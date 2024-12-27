@@ -1,8 +1,8 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Sigcatmin.pro.Application.Interfaces;
-using Sigcatmin.pro.Shared.Interfaces;
-using Sigcatmin.pro.Shared.Services;
+using Sigcatmin.pro.Shared.Implements;
+using Sigcatmin.pro.Shared.DomainServices;
 using Sigcatmin.prop.Domain.Interfaces.Services;
 using Sigcatmin.prop.Domain.Settings;
 

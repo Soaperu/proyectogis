@@ -10,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sigcatmin.pro.Shared.Services
+namespace Sigcatmin.pro.Shared.DomainServices
 {
     public class AuthService : IAuthService
     {

@@ -27,7 +27,7 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.Buttons
         protected override void OnClick()
         {
             MainView mainView = new MainView();
-            mainView.frameContainer.Navigate(new CartaNacionalView());
+            mainView.frameContainer.Navigate(new EvaluacionDMView());
             mainView.Show();  
         }
     }

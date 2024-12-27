@@ -9,32 +9,32 @@ using System.Threading.Tasks;
 
 namespace Sigcatmin.pro.Persistence.Configuration
 {
-    public class DbContext : IDbContext
+    public class DbContext
     {
-        private readonly IDbManager _dbManager;
+        //private readonly IDbManager _dbManager;
 
-        public DbContext(IDbManager dbManager)
-        {
-            _dbManager = dbManager;
-        }
+        //public DbContext(IDbManager dbManager)
+        //{
+        //    _dbManager = dbManager;
+        //}
 
-        public async Task<DbConnection> GetConnectionAsync()
-        {
-            return await _dbManager.GetConnectionAsync();
-        }
+        //public async Task<DbConnection> GetConnectionAsync()
+        //{
+        //    return await _dbManager.GetConnectionAsync();
+        //}
 
-        public async Task<int> ExecuteNonQueryAsync(string query, CommandType commandType, params DbParameter[] parameters)
-        {
-            using var connection = await GetConnectionAsync();
-            using var command = _dbManager.CreateCommand(connection, query, commandType, parameters);
-            return await command.ExecuteNonQueryAsync();
-        }
+        //public async Task<int> ExecuteNonQueryAsync(string query, CommandType commandType, params DbParameter[] parameters)
+        //{
+        //    using var connection = await GetConnectionAsync();
+        //    using var command = _dbManager.CreateCommand(connection, query, commandType, parameters);
+        //    return await command.ExecuteNonQueryAsync();
+        //}
 
-        public async Task<DbDataReader> ExecuteReaderAsync(string query, CommandType commandType, params DbParameter[] parameters)
-        {
-            var connection = await GetConnectionAsync();
-            var command = _dbManager.CreateCommand(connection, query, commandType, parameters);
-            return await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
-        }
+        //public async Task<DbDataReader> ExecuteReaderAsync(string query, CommandType commandType, params DbParameter[] parameters)
+        //{
+        //    var connection = await GetConnectionAsync();
+        //    var command = _dbManager.CreateCommand(connection, query, commandType, parameters);
+        //    return await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
+        //}
     }
 }

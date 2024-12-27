@@ -46,7 +46,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Login
             }
             catch (Exception ex)
             {
-                _loggerService.LogError("",ex);
+           
             }
             //var loginService = Program.GetService<LoginUseCase>();
             _loginUseCase.Execute(new LoginRequestDto() { UserName = "pava2778", Password = "ingemmet" });

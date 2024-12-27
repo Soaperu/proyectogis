@@ -45,7 +45,8 @@ namespace Sigcatmin.pro.Persistence.Repositories
             var parameters = new OracleDynamicParameters();
             parameters.Add("V_CODIGO", code, OracleMappingType.Varchar2, ParameterDirection.Input, size: 13);
             parameters.Add("V_TIPO", type, OracleMappingType.Varchar2, ParameterDirection.Input, size: 1);
-       
+            parameters.Add("VO_CURSOR", type, OracleMappingType.RefCursor, ParameterDirection.Output);
+
             using var connection = await _dbManager.GetConnectionAsync(_DdConnectionSettings.Oracle);
 
            var result = await connection.QueryAsync<DerechoMineroDto>(

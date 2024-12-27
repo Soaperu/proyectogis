@@ -1,7 +1,7 @@
 ﻿using Serilog;
 using Sigcatmin.pro.Application.Interfaces; 
 
-namespace Sigcatmin.pro.Shared.Infrastructure
+namespace Sigcatmin.pro.Shared.Implements
 {
     public class LoggerService : ILoggerService
     {

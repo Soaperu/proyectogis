@@ -4,7 +4,7 @@ using Sigcatmin.pro.Shared.Constants;
 using Sigcatmin.prop.Domain.Entities;
 using Sigcatmin.prop.Domain.Interfaces.Services;
 
-namespace Sigcatmin.pro.Shared.Services
+namespace Sigcatmin.pro.Shared.DomainServices
 {
     public class UserSessionService : IUserSessionService
     {

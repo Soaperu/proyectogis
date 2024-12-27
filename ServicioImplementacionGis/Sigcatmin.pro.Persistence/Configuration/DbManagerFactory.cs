@@ -11,30 +11,30 @@ using System.Threading.Tasks;
 
 namespace Sigcatmin.pro.Persistence.Configuration
 {
-    public class DbManagerFactory: IDbManagerFactory
+    public class DbManagerFactory
     {
-        private readonly IUserSessionService _userSession;
+        //private readonly IUserSessionService _userSession;
 
-        public DbManagerFactory(IUserSessionService userSession)
-        {
-            _userSession = userSession ?? throw new ArgumentNullException(nameof(userSession));
-        }
+        //public DbManagerFactory(IUserSessionService userSession)
+        //{
+        //    _userSession = userSession ?? throw new ArgumentNullException(nameof(userSession));
+        //}
 
-        public IDbManager CreateDbManager(string connectionString)
-        {
+        //public IDbManager CreateDbManager(string connectionString)
+        //{
 
-            if (string.IsNullOrEmpty(connectionString))
-            {
-                throw new ArgumentException($"No se encontró la cadena de conexión");
-            }
+        //    if (string.IsNullOrEmpty(connectionString))
+        //    {
+        //        throw new ArgumentException($"No se encontró la cadena de conexión");
+        //    }
 
-            // Obtener las credenciales del archivo .dat o desde la sesión
-            //var user = _userSession.GetUsername();
-            //var password = _userSession.GetPassword();
+        //    // Obtener las credenciales del archivo .dat o desde la sesión
+        //    //var user = _userSession.GetUsername();
+        //    //var password = _userSession.GetPassword();
 
-            UserSessionDto user = _userSession.GetUserSession();
+        //    UserSessionDto user = _userSession.GetUserSession();
 
-            return new DbManager(connectionString, user.UserName, user.Password);
-        }
+        //    return new DbManager(connectionString, user.UserName, user.Password);
+        //}
     }
 }

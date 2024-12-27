@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sigcatmin.pro.Shared.Infrastructure
+namespace Sigcatmin.pro.Shared.Implements
 {
     public class Options<T> : IOptions<T>
     {

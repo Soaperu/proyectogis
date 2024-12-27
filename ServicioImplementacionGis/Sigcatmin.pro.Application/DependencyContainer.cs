@@ -8,6 +8,8 @@ namespace Sigcatmin.pro.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
             services.AddScoped<LoginUseCase>();
+            services.AddScoped<GetDerechoMineroUseCase>();
+            services.AddScoped<CountRowsGISUseCase>();
             return services;
         }
 
