@@ -34,6 +34,7 @@ namespace CommonUtilities
         public static string toolGetEval = "evalCriterios";
         public static string toolGetKMLodDM = "exportarDmKmz";
         public static string toolGetDepas = "obtenerDepartamento";
+        public static string toolGetAreasOverlay = "calculoAreaSupDisp";
         // Variables obtenidas de Evaluacion DM
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }
