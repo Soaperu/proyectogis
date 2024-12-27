@@ -51,7 +51,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         {
         }
 
-        private void BtnSearch_Click(object sender, RoutedEventArgs e)
+        private async void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
@@ -61,7 +61,10 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                 return;
             }
 
-            _getDerechoMineroUseCase.Execute("clarita",2);
+            var derechosMineros = await _getDerechoMineroUseCase.Execute("clarita",2);
+
+            DataGridResult.ItemsSource = derechosMineros;
+            DataGridResult.CustomUnboundColumnData += DataGridResult_CustomUnboundColumnData;
 
         }
 
