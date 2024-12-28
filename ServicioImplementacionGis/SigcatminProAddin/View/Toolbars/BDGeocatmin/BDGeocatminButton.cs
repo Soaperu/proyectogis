@@ -31,12 +31,16 @@ using DatabaseConnector;
 
 using ArcGIS.Desktop.Internal.Mapping.Ribbon;
 using ArcGIS.Desktop.Internal.Editing;
+using System.Data;
+using static ArcGIS.Desktop.Internal.GeoProcessing.Controls.rtbEditor;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
     internal class BDGeocatminButton : Button
     {
         public const string ExploreToolName = "esri_mapping_exploreTool";
+        public DatabaseHandler _dataBaseHandler = new DatabaseHandler();
         protected override void OnClick()
         {
         }
@@ -391,7 +395,124 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             LayerUtils.SelectSetAndZoomByNameAsync("Catastro", false);
         }
     }
-    internal class GenerarNumeroResolucionDm : BDGeocatminButton { }
+    internal class GenerarNumeroResolucionDm : BDGeocatminButton 
+    {
+        protected override async void OnClick()
+        {
+            //LayerUtils.SelectSetAndZoomByNameAsync("Catastro", false);
+            await UpdateResoluDMFields("Catastro");
+            System.Windows.MessageBox.Show("Proceso finalizado, Valide la tabla de contenido");
+        }
+
+        public async Task UpdateResoluDMFields(string capa)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener el documento del mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
+
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Preparar la fecha y hora
+                    string fecha = DateTime.Now.ToString("yyyy/MM/dd");
+                    string v_fec_denun = fecha + " 00:00";
+                    string v_hor_denun = DateTime.Now.ToString("HH:mm:ss");
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        int contador = 0;
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            contador++;
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+                                string v_codigo_dm = row["CODIGOU"].ToString();
+
+                                // Llamar al procedimiento para obtener datos de Datum y bloquear estado
+                                DataTable lodtbDatos_dm = _dataBaseHandler.GetDatosResolucion(v_codigo_dm);
+                                if (lodtbDatos_dm.Rows.Count > 0)
+                                {
+                                    string resol_tit = lodtbDatos_dm.Rows[0]["RESOL_TIT"].ToString();
+                                    var fec_titu_obj = lodtbDatos_dm.Rows[0]["FEC_TITU"];
+                                    string fec_titu = "";
+                                    string resol_ext = lodtbDatos_dm.Rows[0]["RESOL_EXT"].ToString();
+                                    var fec_ext_obj = lodtbDatos_dm.Rows[0]["FEC_EXT"];
+                                    string fec_ext = "";
+                                    string cali = lodtbDatos_dm.Rows[0]["CALI"].ToString();
+
+                                    if (fec_titu_obj == null || fec_titu_obj == DBNull.Value || !DateTime.TryParse(fec_titu_obj.ToString(), out DateTime fecTitu))
+                                    {
+                                        // No es fecha válida
+                                        fec_titu = "18000101";
+                                    }
+                                    else
+                                    {
+                                        // Sí es fecha válida
+                                        fec_titu = fecTitu.ToString("yyyyMMdd");
+                                    }
+
+                                    if (fec_ext_obj == null || fec_ext_obj == DBNull.Value || !DateTime.TryParse(fec_ext_obj.ToString(), out DateTime fecExt))
+                                    {
+                                        // No es fecha válida
+                                        fec_ext = "18000101";
+                                    }
+                                    else
+                                    {
+                                        // Sí es fecha válida
+                                        fec_ext = fecExt.ToString("yyyyMMdd");
+                                    }
+                                    if (DateTime.TryParse(fec_titu, out DateTime dt_titu) && DateTime.TryParse(fec_ext, out DateTime dt_fec_ext))
+                                    {
+                                        if (dt_titu > dt_fec_ext)
+                                        {
+                                            row["NUM_RESOL"] = resol_tit;
+                                            row["FEC_RESOL"] = fec_titu_obj.ToString();
+                                            row["CALIF"] = cali;
+                                        }
+                                        else if (dt_titu < dt_fec_ext)
+                                        {
+                                            row["NUM_RESOL"] = resol_ext;
+                                            row["FEC_RESOL"] = fec_ext_obj.ToString();
+                                            row["CALIF"] = cali;
+                                        }                                       
+                                    }                                    
+                  
+                                }                               
+
+                                row.Store();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+
+        }
+
+
+    }
     internal class RotularVerticesTool: MapTool
     {
         public RotularVerticesTool()
