@@ -265,6 +265,7 @@
     <None Include="Properties\launchSettings.json" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DevExpress.Reporting.Core" Version="23.1.12" />
     <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
   </ItemGroup>
   <ItemGroup>
@@ -360,6 +361,7 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
+    <Resource Include="View\Modulos\mapa100.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />

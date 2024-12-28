@@ -61,6 +61,7 @@ namespace SigcatminProAddin.View.Modulos
             dataBaseHandler = new DatabaseHandler();
             CbxTypeConsult.SelectedIndex = 0;
             TbxRadio.Text = "5";
+            BtnGraficar.IsEnabled = true;
 
         }
 
@@ -183,7 +184,7 @@ namespace SigcatminProAddin.View.Modulos
                 BtnGraficar.IsEnabled = true;
                 return;
             }
-            BtnGraficar.IsEnabled = true;
+            
             if (ChkGraficarDmY.IsChecked == true)
             {
                 GlobalVariables.stateDmY = true;
@@ -206,7 +207,7 @@ namespace SigcatminProAddin.View.Modulos
             //string zoneDm = DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
             //GlobalVariables.CurrentZoneDm = zoneDm;
 
-            string zoneDm = (string)CbxZona.SelectedValue;
+            string zoneDm = CbxZona.SelectedValue.ToString();
             GlobalVariables.CurrentZoneDm = zoneDm;
             var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
@@ -297,6 +298,7 @@ namespace SigcatminProAddin.View.Modulos
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
                 //GlobalVariables.CurrentPagesDm = listHojas;
                 // Encontrando Caram superpuestos a DM con
+
                 //DataTable intersectCaram;
                 //if (datum == datumwgs84)
                 //{
@@ -334,14 +336,16 @@ namespace SigcatminProAddin.View.Modulos
                 //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
                 //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-                //await UpdateValueAsync(catastroShpName, codigoValue);
+                await UpdateValueAsync(catastroShpName, "");
+
                 //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
                 //await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
                 //await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
                 string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
-                //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, codigoValue);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol);
+
                 //var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
-                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                //var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
@@ -366,6 +370,7 @@ namespace SigcatminProAddin.View.Modulos
                         }
                     }
                 }
+
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
@@ -490,7 +495,261 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
+        public async Task UpdateValueAsync(string capa, string codigoValue)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener el documento del mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
 
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Preparar la fecha y hora
+                    string fecha = DateTime.Now.ToString("yyyy/MM/dd");
+                    string v_fec_denun = fecha + " 00:00";
+                    string v_hor_denun = DateTime.Now.ToString("HH:mm:ss");
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        int contador = 0;
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            contador++;
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+                                string v_codigo_dm = row["CODIGOU"].ToString();
+
+                                // Llamar al procedimiento para obtener datos de Datum y bloquear estado
+                                DataTable lodtbDatos_dm = dataBaseHandler.ObtenerDatumDm(v_codigo_dm);
+                                if (lodtbDatos_dm.Rows.Count > 0)
+                                {
+                                    row["DATUM"] = lodtbDatos_dm.Rows[0]["ESTADO"].ToString();
+                                }
+
+                                // Llamar a otros procedimientos para obtener situación y estado
+                                DataTable lodtbDatos1 = dataBaseHandler.ObtenerBloqueadoDm(v_codigo_dm);
+                                if (lodtbDatos1.Rows.Count > 0)
+                                {
+                                    if (lodtbDatos1.Rows[0]["CODIGO"].ToString() == "1")
+                                    {
+                                        row["BLOQUEO"] = "1";
+                                        row["CASO"] = "D.M. - ANAP";
+                                    }
+
+                                }
+                                else
+                                {
+                                    row["BLOQUEO"] = "0";
+                                }
+
+                                row["CONTADOR"] = contador;
+
+                                DataTable lodtbDatos2 = dataBaseHandler.ObtenerDatosGeneralesDM(v_codigo_dm);
+                                if (lodtbDatos2.Rows.Count > 0)
+                                {
+                                    row["SITUACION"] = lodtbDatos2.Rows[0]["SITUACION"].ToString();
+                                }
+                                else
+                                {
+                                    row["SITUACION"] = "X";
+                                }
+
+                                // Lógica de asignación de leyenda dependiendo del estado
+                                string estado = row["ESTADO"].ToString();
+                                string leyenda = string.Empty;
+                                switch (estado)
+                                {
+                                    case " ":
+                                        leyenda = "G4";  // Denuncios Extinguidos
+                                        break;
+                                    case "P":
+                                        leyenda = "G1";  // Petitorio Tramite
+                                        break;
+                                    case "D":
+                                        leyenda = "G2";  // Denuncio Tramite
+                                        break;
+                                    case "E":
+                                    case "N":
+                                    case "Q":
+                                    case "T":
+                                        leyenda = "G3";  // Denuncios Titulados
+                                        break;
+                                    case "F":
+                                    case "J":
+                                    case "L":
+                                    case "H":
+                                    case "Y":
+                                    case "9":
+                                    case "X":
+                                        leyenda = "G4";  // Denuncios Extinguidos
+                                        break;
+                                    case "C":
+                                        DataTable lodtbDatos3 = dataBaseHandler.ObtenerDatosDM(v_codigo_dm);
+                                        string v_situacion_dm = "";
+                                        string v_estado_dm = "";
+                                        if (lodtbDatos3.Rows.Count > 0)
+                                        {
+                                            v_situacion_dm = lodtbDatos3.Rows[0]["SITUACION"].ToString();
+                                            v_estado_dm = lodtbDatos3.Rows[0]["ESTADO"].ToString();
+                                        }
+                                        if (v_situacion_dm == "V" && v_estado_dm == "T")
+                                        {
+                                            leyenda = "G3";
+                                        }
+                                        else if (v_situacion_dm == "V" && v_estado_dm == "R")
+                                        {
+                                            leyenda = "G1";
+                                        }
+                                        else
+                                        {
+                                            leyenda = "G4";
+                                        }
+                                        break;
+                                    case "A":
+                                    case "B":
+                                    case "S":
+                                    case "M":
+                                    case "G":
+                                    case "R":
+                                    case "Z":
+                                    case "K":
+                                    case "V":
+
+                                        leyenda = "G5";  // Otros
+                                        break;
+                                    default:
+                                        row["LEYENDA"] = "";
+                                        row["EVAL"] = "EV";
+                                        row["TIPO_EX"] = "PE";
+                                        row["CONCESION"] = "Dm_Simulado";
+                                        row["FEC_DENU"] = v_fec_denun;
+                                        row["HOR_DENU"] = v_hor_denun;
+                                        row["CARTA"] = "CARTA";
+
+                                        break;
+
+                                }
+                                if (row["BLOQUEO"].ToString() == "1")
+                                {
+                                    leyenda = "G7";
+                                }
+
+                                // Actualizar los valores de departamento, provincia y distrito
+                                DataTable lodtbDemarca = dataBaseHandler.ObtenerDatosUbigeo(row["DEMAGIS"].ToString().Substring(0, 6));
+                                if (lodtbDemarca.Rows.Count > 0)
+                                {
+                                    row["DPTO"] = lodtbDemarca.Rows[0]["DPTO"].ToString();
+                                    row["PROV"] = lodtbDemarca.Rows[0]["PROV"].ToString();
+                                    row["DIST"] = lodtbDemarca.Rows[0]["DIST"].ToString();
+                                }
+                                if (codigoValue == row["CODIGOU"].ToString())
+                                {
+                                    leyenda = "G6";
+                                }
+
+                                row["LEYENDA"] = leyenda;
+
+                                row.Store();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+
+        }
+
+        private void ClearCanvas()
+        {
+            PolygonCanvas.Children.Clear();
+        }
+
+        private void ClearDatagrids()
+        {
+            //DataGridResult.ItemsSource = null;
+            DataGridDetails.ItemsSource = null;
+        }
+
+        public void ClearControls()
+        {
+            var functions = new PageCommonFunctions();
+            functions.ClearControls(this);
+            ClearCanvas();
+            ClearDatagrids();
+        }
+
+        private void BtnOtraConsulta_Click(object sender, RoutedEventArgs e)
+        {
+            ClearControls();
+            CbxSistema.SelectedIndex = 0;
+            CbxTypeConsult.SelectedIndex = 0;
+            CbxZona.SelectedIndex = 1;
+            BtnGraficar.IsEnabled = false;
+        }
+
+        private void TbxEsteMin_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var regex = new Regex(@"^(\d{0,6}(\.\d{0,4})?)$");
+
+            // Validar si el texto ingresado es válido
+            e.Handled = !regex.IsMatch(((TextBox)sender).Text.Insert(((TextBox)sender).SelectionStart, e.Text));
+        }
+
+        private void TbxEsteMax_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var regex = new Regex(@"^(\d{0,6}(\.\d{0,4})?)$");
+            // Validar si el texto ingresado es válido
+            e.Handled = !regex.IsMatch(((TextBox)sender).Text.Insert(((TextBox)sender).SelectionStart, e.Text));
+        }
+
+        private void TbxNorteMin_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var regex = new Regex(@"^(\d{0,7}(\.\d{0,4})?)$");
+            // Validar si el texto ingresado es válido
+            e.Handled = !regex.IsMatch(((TextBox)sender).Text.Insert(((TextBox)sender).SelectionStart, e.Text));
+        }
+
+        private void TbxNorteMax_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            var regex = new Regex(@"^(\d{0,7}(\.\d{0,4})?)$");
+            // Validar si el texto ingresado es válido
+            e.Handled = !regex.IsMatch(((TextBox)sender).Text.Insert(((TextBox)sender).SelectionStart, e.Text));
+
+        }
+
+        //private void TbxEsteMin_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    double numero;
+        //    if (double.TryParse(TbxEsteMin.Text, out numero))
+        //    {
+        //        // Formateamos el número cada vez que cambia el texto
+        //        TbxEsteMin.Text = numero.ToString("000000.0000");
+        //        //TbxEsteMin.SelectionStart = TbxEsteMin.Text.Length;  // Para mantener el cursor al final
+        //    }
+
+        //}
 
 
 

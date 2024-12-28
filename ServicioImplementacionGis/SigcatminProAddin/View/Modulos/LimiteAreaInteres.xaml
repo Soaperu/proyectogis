@@ -94,17 +94,18 @@
             </Grid.ColumnDefinitions>
             <TextBlock Text="Este Min:" FontSize="10" Margin="67,26,413,0" VerticalAlignment="Top" FontWeight="Medium"/>
             <TextBox Width="100" Height="26" VerticalAlignment="Top"
-                x:Name="TbxEsteMin" VerticalContentAlignment="Center"   Margin="133,19,297,0"/>
+                x:Name="TbxEsteMin" VerticalContentAlignment="Center"   Margin="133,19,297,0" PreviewTextInput="TbxEsteMin_PreviewTextInput"
+                     />
 
             <TextBlock Text="Este Max:" FontSize="10" Margin="250,26,230,0" VerticalAlignment="Top" FontWeight="Medium"/>
             <TextBox Width="100" Height="26" VerticalAlignment="Top"
-                x:Name="TbxEsteMax" VerticalContentAlignment="Center"  Margin="315,19,115,0"/>
+                x:Name="TbxEsteMax" VerticalContentAlignment="Center"  Margin="315,19,115,0" PreviewTextInput="TbxEsteMax_PreviewTextInput"/>
             <TextBlock Text="Norte Min:" FontSize="10" Margin="67,66,413,0" VerticalAlignment="Top" FontWeight="Medium"/>
             <TextBox Width="100" Height="26" VerticalAlignment="Top"
-                x:Name="TbxNorteMin" VerticalContentAlignment="Center"  Margin="133,60,297,0"/>
+                x:Name="TbxNorteMin" VerticalContentAlignment="Center"  Margin="133,60,297,0" PreviewTextInput="TbxNorteMin_PreviewTextInput"/>
             <TextBlock Text="Norte Max:" FontSize="10" Margin="249,66,231,0" VerticalAlignment="Top" FontWeight="Medium"/>
             <TextBox Width="100" Height="26" VerticalAlignment="Top"
-                x:Name="TbxNorteMax" VerticalContentAlignment="Center" Margin="315,60,115,0"/>
+                x:Name="TbxNorteMax" VerticalContentAlignment="Center" Margin="315,60,115,0" PreviewTextInput="TbxNorteMax_PreviewTextInput"/>
             <TextBlock Text="Radio (km)" FontSize="10" Margin="443,26,37,0" IsEnabled="False"
                 VerticalAlignment="Top" FontWeight="Medium"/>
             <TextBlock Text="Zona" FontSize="10" Margin="445,66,35,0" VerticalAlignment="Top" FontWeight="Medium" RenderTransformOrigin="0.635,2.807"/>
@@ -170,7 +171,7 @@
                 <!--<Image Margin="5,0,5,0"/>-->
                 <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
                         CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
-                    <Canvas x:Name="PolygonCanvas" Background="White" />
+                    <Canvas x:Name="PolygonCanvas" Background="White" Margin="0,0,0,-25" />
                 </Border>
 
                 <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
@@ -203,7 +204,7 @@
                 Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" />
+                VerticalContentAlignment="Center" x:Name="BtnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="BtnOtraConsulta_Click" />
 
             <Button Content="Reporte" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="2" HorizontalAlignment="Center"
