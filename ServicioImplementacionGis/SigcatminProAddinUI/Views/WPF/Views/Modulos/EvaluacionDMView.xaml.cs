@@ -1,5 +1,7 @@
 ﻿using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.UsesCases;
+using SigcatminProAddinUI.Models;
+using SigcatminProAddinUI.Resources.Helpers;
 using SigcatminProAddinUI.Resourecs.Constants;
 using SigcatminProAddinUI.Views.WPF.ViewModel;
 using System;
@@ -49,6 +51,13 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         }
         private void CbxTypeConsult_Loaded(object sender, RoutedEventArgs e)
         {
+            var items = new List<ComboBoxItemGeneric<int>>
+            {
+                new ComboBoxItemGeneric<int> { Id = 1, DisplayName = "Código" },
+                new ComboBoxItemGeneric<int> { Id = 2, DisplayName = "Nombre" },
+            };
+
+            ComboBoxHelper.LoadComboBox(CbxTypeConsult, items);
         }
 
         private async void BtnSearch_Click(object sender, RoutedEventArgs e)
