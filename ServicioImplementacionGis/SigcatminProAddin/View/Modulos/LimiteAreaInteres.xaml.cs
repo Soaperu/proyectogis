@@ -377,6 +377,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
             }
             catch (Exception ex) { }
+            BtnGraficar.IsEnabled = true;
 
 
 

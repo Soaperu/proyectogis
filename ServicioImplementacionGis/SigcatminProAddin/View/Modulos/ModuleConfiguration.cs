@@ -40,6 +40,7 @@ namespace SigcatminProAddin.View.Modulos
                 new Modulo("Consulta Limites de Areas de Interés", typeof(LimiteAreaInteres)),
                 new Modulo("Simulación de Petitorios", typeof(SimulaPetitorios)),
                 new Modulo("Varias Cartas Nacionales", typeof(VariasCartasNacional)),
+                new Modulo("DM por Carta IGN", typeof(DMCartaIGN)),
 
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))

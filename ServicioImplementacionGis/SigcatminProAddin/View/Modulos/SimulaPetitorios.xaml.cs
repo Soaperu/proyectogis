@@ -37,6 +37,13 @@ using ArcGIS.Core.Geometry;
 using System.Collections.ObjectModel;
 using System.Text;
 
+using ArcGIS.Core.Internal.Geometry;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
+
+
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -272,16 +279,9 @@ namespace SigcatminProAddin.View.Modulos
             BtnGraficar.IsEnabled = false;
         }
 
-        private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
+        private void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-            if (listBoxVertices.Items.Count >= 4 && tipo != null && zona != null)
-                BtnGraficar.IsEnabled = true;
-
-            IEnumerable<string> linesString = listBoxVertices.Items.Cast<string>();
-            var vertices = CommonUtilities.ArcgisProUtils.FeatureClassCreatorUtils.GetVerticesFromListBoxItems(linesString);
-            layer = await CommonUtilities.ArcgisProUtils.FeatureClassCreatorUtils.CreatePolygonInNewGdbAsync(GlobalVariables.pathFileTemp, "GeneralGDB", "Poligono" + archi, vertices, zona);
-            CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer(layer, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
-
+           
 
         }
 
@@ -292,6 +292,21 @@ namespace SigcatminProAddin.View.Modulos
             {
                 BtnGraficar.IsEnabled = true;
             }
+        }
+
+        private async void BtnGeneraPoligono_Click(object sender, RoutedEventArgs e)
+        {
+            if (listBoxVertices.Items.Count >= 4 && tipo != null && zona != null)
+                BtnGraficar.IsEnabled = true;
+            //zona = CbxZona.SelectedItem.ToString();
+
+            zona = CbxZona.SelectedValue.ToString();
+            IEnumerable<string> linesString = listBoxVertices.Items.Cast<string>();
+            var vertices = CommonUtilities.ArcgisProUtils.FeatureClassCreatorUtils.GetVerticesFromListBoxItems(linesString);
+            layer = await CommonUtilities.ArcgisProUtils.FeatureClassCreatorUtils.CreatePolygonInNewGdbAsync(GlobalVariables.pathFileTemp, "GeneralGDB", "Poligono" + archi, vertices, zona);
+            CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer(layer, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
+
+
         }
     }
 }

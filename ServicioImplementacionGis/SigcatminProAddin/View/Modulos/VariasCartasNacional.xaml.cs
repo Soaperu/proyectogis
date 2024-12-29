@@ -245,8 +245,6 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-
-
         private void CbxSistema_Loaded(object sender, RoutedEventArgs e)
         {
             List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
@@ -428,22 +426,43 @@ namespace SigcatminProAddin.View.Modulos
             string valor = "Carta IGN " + (listBoxVertices.Items.Count + 1) + ":  " + TbxValue.Text.TrimEnd().ToUpper();
             listBoxVertices.Items.Add(valor);
             BtnGraficar.IsEnabled = true;
-            //try
-            //{
-            //    string value = "CODIGO";// (string)CbxTypeConsult.SelectedValue.ToString();
-            //    string datumStr = CbxSistema.Text;
-            //    var dmrRecords = dataBaseHandler.GetOfficialCarta(value, TbxValue.Text.TrimEnd(), datumStr);
-            //    //calculatedIndex(DataGridResult, records, DatagridResultConstants.ColumNames.Index);
-            //    DataGridResult.ItemsSource = dmrRecords.DefaultView;
-            //}
-            //catch (Exception ex)
-            //{
-            //    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.UnexpectedError, ex.Message),
-            //                                                        MessageConstants.Titles.Error,
-            //                                                        MessageBoxButton.OK,
-            //                                                        MessageBoxImage.Error);
-            //    return;
-            //}
+            string resultado = "";
+            for (int i = 0; i < listBoxVertices.Items.Count; i++)
+            {
+                string item = listBoxVertices.Items[i].ToString();
+                // Dividir el texto por el delimitador
+                string[] partes = item.Split(":");
+
+                string dato = partes[1];
+                dato = dato.Trim();
+                if (i == listBoxVertices.Items.Count - 1)
+                {
+                    resultado = resultado + "'" + dato + "'";
+                }
+                else
+                {
+                    resultado = resultado + "'" + dato + "'" + ",";
+                }
+            }
+
+
+            try
+            {
+                string value = "CODIGO";// (string)CbxTypeConsult.SelectedValue.ToString();
+                string datumStr = CbxSistema.Text;
+                //var dmrRecords = dataBaseHandler.GetOfficialCarta(value, TbxValue.Text.TrimEnd(), datumStr);
+                var dmrRecords = dataBaseHandler.GetOfficialCarta(value, resultado.TrimEnd(), datumStr);
+                //calculatedIndex(DataGridResult, records, DatagridResultConstants.ColumNames.Index);
+                DataGridResult.ItemsSource = dmrRecords.DefaultView;
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.UnexpectedError, ex.Message),
+                                                                    MessageConstants.Titles.Error,
+                                                                    MessageBoxButton.OK,
+                                                                    MessageBoxImage.Error);
+                return;
+            }
 
             TbxValue.Text = "";
 
@@ -579,6 +598,27 @@ namespace SigcatminProAddin.View.Modulos
                 //FeatureInfo selectedFeature = await GetFeatureInfobyQuery($"{resultado}'", "Carta IGN");
                 FeatureInfo selectedFeature = await GetFeatureInfobyQuery($"CD_HOJA IN ({resultado})", "Carta IGN");
 
+
+                //Carga capa Catastro
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
+                }
+
+                //var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
+                //var extentDm = ObtenerExtent(codigoValue, datum);
+                //GlobalVariables.currentExtentDM = extentDm;
+                //// Llamar al método IntersectFeatureClassAsync desde la instancia
+                //string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+                //// Encontrando Distritos superpuestos a DM con
+
+
+
+
             }
 
 
@@ -588,6 +628,106 @@ namespace SigcatminProAddin.View.Modulos
             {
                 System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
             }
+        }
+
+        public DataTable FilterColumns(DataTable originalTable, params string[] columnNames)
+        {
+            // Crear un nuevo DataTable para las columnas seleccionadas
+            DataTable filteredTable = new DataTable();
+
+            // Agregar las columnas seleccionadas al nuevo DataTable
+            foreach (string columnName in columnNames)
+            {
+                if (originalTable.Columns.Contains(columnName))
+                {
+                    filteredTable.Columns.Add(columnName, originalTable.Columns[columnName].DataType);
+                }
+                else
+                {
+                    throw new ArgumentException($"La columna '{columnName}' no existe en el DataTable original.");
+                }
+            }
+
+            // Copiar filas con los valores de las columnas seleccionadas
+            foreach (DataRow row in originalTable.Rows)
+            {
+                DataRow newRow = filteredTable.NewRow();
+                foreach (string columnName in columnNames)
+                {
+                    newRow[columnName] = row[columnName];
+                }
+                filteredTable.Rows.Add(newRow);
+            }
+
+            return filteredTable;
+        }
+        private DataTable ObtenerCoordenadas(string codigoValue, int datum)
+        {
+            DataTable filteredTable;
+            string[] requiredColumns = {
+                    DatagridDetailsConstants.RawColumNames.Vertice,
+                    DatagridDetailsConstants.RawColumNames.CoorEsteE,
+                    DatagridDetailsConstants.RawColumNames.CoorNorteE };
+
+            var dmrRecords = dataBaseHandler.GetDMDataWGS84_IN(codigoValue);
+
+            if (datum == datumwgs84)
+            {
+                requiredColumns = new string[] {
+                    DatagridDetailsConstants.RawColumNames.Vertice,
+                    DatagridDetailsConstants.RawColumNames.CoorEste,
+                    DatagridDetailsConstants.RawColumNames.CoorNorte };
+            }
+            filteredTable = FilterColumns(dmrRecords, requiredColumns);
+            // Renombrar las columnas
+            filteredTable.Columns[DatagridDetailsConstants.RawColumNames.Vertice].ColumnName = DatagridDetailsConstants.ColumnNames.Vertice;
+            filteredTable.Columns[requiredColumns[1]].ColumnName = DatagridDetailsConstants.ColumnNames.Este;
+            filteredTable.Columns[requiredColumns[2]].ColumnName = DatagridDetailsConstants.ColumnNames.Norte;
+
+            return filteredTable;
+        }
+
+
+
+        private ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm = 0)
+        {
+            // Obtener las coordenadas usando la función ObtenerCoordenadas
+            DataTable coordenadasTable = ObtenerCoordenadas(codigoValue, datum);
+
+            // Asegurarse de que la tabla contiene filas
+            if (coordenadasTable.Rows.Count == 0)
+            {
+                throw new Exception("No se encontraron coordenadas para calcular el extent.");
+            }
+            int radioMeters = radioKm * 1000;
+            // Inicializar las variables para almacenar los valores extremos
+            int xmin = int.MaxValue;
+            int xmax = int.MinValue;
+            int ymin = int.MaxValue;
+            int ymax = int.MinValue;
+
+            // Iterar sobre las filas para calcular los valores extremos
+            foreach (DataRow row in coordenadasTable.Rows)
+            {
+                int este = Convert.ToInt32(row["ESTE"]);
+                int norte = Convert.ToInt32(row["NORTE"]);
+
+                if (este < xmin) xmin = este;
+                if (este > xmax) xmax = este;
+                if (norte < ymin) ymin = norte;
+                if (norte > ymax) ymax = norte;
+            }
+
+            // Crear el objeto ExtentModel con los valores calculados
+            ExtentModel extent = new ExtentModel
+            {
+                xmin = xmin - radioMeters,
+                xmax = xmax + radioMeters,
+                ymin = ymin - radioMeters,
+                ymax = ymax + radioMeters
+            };
+
+            return extent;
         }
 
         public async Task<FeatureInfo> GetFeatureInfobyQuery(string p_Filtro, string layerName)
