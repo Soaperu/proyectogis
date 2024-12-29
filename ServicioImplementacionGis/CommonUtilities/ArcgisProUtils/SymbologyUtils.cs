@@ -896,6 +896,28 @@ namespace CommonUtilities.ArcgisProUtils
                         LineColor = GetRGBColor(255, 0, 0),
                         LineWidth = 1
                     }
+                },
+                {
+                    "Areadispo",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.BackwardDiagonal, // 
+                        FillColor = GetRGBColor(230, 76, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(230, 76, 0),
+                        LineWidth = 0.2
+                    }
+                },
+                {
+                    "Areainter",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.BackwardDiagonal, // 
+                        FillColor = GetRGBColor(56 , 168, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(56, 168, 0),
+                        LineWidth = 0.2
+                    }
                 }
                 // Agrega más configuraciones según sea necesario...
 

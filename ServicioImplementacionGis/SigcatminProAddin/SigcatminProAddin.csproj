@@ -267,6 +267,7 @@
   <ItemGroup>
     <PackageReference Include="DevExpress.Reporting.Core" Version="23.1.12" />
     <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">
@@ -348,6 +349,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CommonUtilities\CommonUtilities.csproj" />
     <ProjectReference Include="..\DatabaseConnector\DatabaseConnector.csproj" />
+    <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\EvaluacionDM\mapa100.png" />
@@ -361,7 +363,6 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
-    <Resource Include="View\Modulos\mapa100.png" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
@@ -370,6 +371,14 @@
     <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Update="View\Toolbars\BDGeocatmin\UI\CalcularPorcentajeRegionWpf.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Scripts\calculoAreasSuperpuestasDisponibles.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\CMIN_EVAL.atbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -380,6 +389,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\exportarKmz.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\ObtenerDepartamentos.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

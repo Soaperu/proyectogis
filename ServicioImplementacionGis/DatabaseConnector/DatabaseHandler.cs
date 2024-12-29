@@ -910,6 +910,17 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetDatosResolucion(string code) // F_Obtiene_Datos_Resolucion
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtenerrDatosResolucion;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public string CountRecords(string type, string search) // FT_Cuenta_Registro
         {
             string storedProcedure = DatabaseProcedures.Procedure_CuentaRegistros;
@@ -984,6 +995,16 @@ namespace DatabaseConnector
 
 
         //*----------------------*
+        public DataTable GetUbigeoData2(string code) // F_Obtiene_Datos_UBIGEO
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
         public DataTable GetUniqueDM(string code, int type) // F_OBTIENE_DM_UNIQUE
         {

@@ -33,6 +33,8 @@ namespace CommonUtilities
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";
         public static string toolGetKMLodDM = "exportarDmKmz";
+        public static string toolGetDepas = "obtenerDepartamento";
+        public static string toolGetAreasOverlay = "calculoAreaSupDisp";
         // Variables obtenidas de Evaluacion DM
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }
@@ -53,14 +55,18 @@ namespace CommonUtilities
 
         public static ExtentModel currentExtentDM { get; set; }
 
-        //Contenedor de Plantillas 
-        public static string ContaninerTemplates = @"U:\\Geocatmin\\Plantillas";
+        //Contenedor de Plantillas de Planos
+        public static string ContaninerTemplatesReport = @"U:\\Geocatmin\\Plantillas";
         public static string planeEval = "Plantilla_evd_84.pagx";
         public static string planeEval56 = "Plantilla_evd_56.pagx";
         public static string planeDemarca84 = "plantilla_demarca_84.pagx";
         public static string planeDemarca56 = "plantilla_demarca_56.pagx";
         public static string planeCarta84 = "plantilla_cartaign_84.pagx";
         public static string planeCarta56 = "plantilla_cartaign_56.pagx";
+
+        //Contenedor de Plantillas de Reportes
+        public static string ContaninerTemplatesReports = @"U:\\Geocatmin\\Reporte";
+        public static string reportDM = "rpt_Reporte_DM.xml";
 
         //Terminos Constantes de Planos
         public static string planeNameEval = "";

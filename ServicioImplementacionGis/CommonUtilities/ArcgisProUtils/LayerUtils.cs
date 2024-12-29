@@ -22,6 +22,8 @@ namespace CommonUtilities.ArcgisProUtils
 {
     public static class LayerUtils
     {
+        public static int datum_WGS84 = 2;
+        public static int datum_PSAD56 = 1;
         private static FeatureLayer currentFeatureLayer;
 
         /// <summary>
@@ -112,14 +114,14 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        public static async void SelectSetAndZoomAsync(FeatureLayer layer, string whereClause="")
+        public static async void SelectSetAndZoomAsync(FeatureLayer layer, bool selected=false, string whereClause = "")
         {
             await QueuedTask.Run(() =>
             {
                 MapView.Active?.Map.SetSelection(null);
                 var qry = new QueryFilter() { WhereClause = whereClause };
                 layer.Select(qry);
-                MapView.Active?.ZoomTo(layer, true, new TimeSpan(0, 0, 2));
+                MapView.Active?.ZoomTo(layer, selected, new TimeSpan(0, 0, 2));
             });
         }
 
@@ -202,7 +204,7 @@ namespace CommonUtilities.ArcgisProUtils
                         //await function.ExportSpatialTemaAsync(layer, GlobalVariables.stateDmY, "zonaRese");
                         break;
                     case "Caram":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram84 + zone, false);
                         }
@@ -219,7 +221,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await ChangeLayerNameAsync(layerExportName, "Caram");
                         break;
                     case "Catastro Forestal":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Cforestal + zone, false);
                         }
@@ -236,7 +238,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await ChangeLayerNameAsync(layerExportNameCForestal, "Catastro Forestal");
                         break;
                     case "Limite Departamental":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_WGS + zone, false);
                         }
@@ -247,7 +249,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_depa);
                         break;
                     case "Limite Provincial":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Provincia_WGS + zone, false);
                         }
@@ -258,7 +260,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_prov);
                         break;
                     case "Limite Distrital":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zone, false);
                         }
@@ -270,7 +272,7 @@ namespace CommonUtilities.ArcgisProUtils
                         break;
 
                     case "Capitales Distritales":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CDistrito84, false);
                         }
@@ -287,7 +289,7 @@ namespace CommonUtilities.ArcgisProUtils
                     //            break;
 
                     case "Red Hidrografica":
-                        if (datum == 1)
+                        if (datum == datum_WGS84)
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Rios84, false);
                             
@@ -301,7 +303,7 @@ namespace CommonUtilities.ArcgisProUtils
                         break;
 
                     case "Red Vial":
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Carretera84, false);
 
@@ -315,7 +317,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                     case "Centros Poblados":
                         
-                        if (datum == 1)
+                        if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
                         {
                             currentFeatureLayer = await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CPoblado84, false);
                         }
@@ -445,6 +447,34 @@ namespace CommonUtilities.ArcgisProUtils
                     System.Windows.MessageBox.Show($"Error al agregar el FeatureClass '{featureClassName}' al mapa: {ex.Message}");
                     return null;
                 }
+            });
+        }
+
+        /// <summary>
+        /// Retorna un FeatureLayer a partir de su nombre en el mapa activo.
+        /// Retorna null si no encuentra ninguna capa con ese nombre.
+        /// </summary>
+        /// <param name="layerName">Nombre de la capa a buscar (no distingue mayúsculas/minúsculas).</param>
+        /// <returns>Un FeatureLayer o null.</returns>
+        public static async Task<FeatureLayer> GetFeatureLayerByNameAsync(string layerName)
+        {
+            if (MapView.Active == null)
+                return null;  // No hay vista activa
+
+            Map map = MapView.Active.Map;
+            if (map == null)
+                return null;  // No hay un mapa activo
+
+            // Se necesita ejecutar en el hilo MCT, ya que consultamos la colección de capas
+            return await QueuedTask.Run(() =>
+            {
+                // Buscar la primera capa que coincida con el nombre, ignorando mayúsculas
+                FeatureLayer foundLayer = map.Layers
+                                             .OfType<FeatureLayer>()
+                                             .FirstOrDefault(fl =>
+                                                 fl.Name.Equals(layerName, StringComparison.InvariantCultureIgnoreCase));
+
+                return foundLayer;
             });
         }
 
