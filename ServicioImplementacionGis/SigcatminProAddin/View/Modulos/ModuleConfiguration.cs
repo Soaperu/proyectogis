@@ -37,7 +37,9 @@ namespace SigcatminProAddin.View.Modulos
         {
             new CategoriaModulo("Consultas", new List<Modulo>
             {
-                //new Modulo("Consulta por DM", typeof(ConsultaDM)),
+                new Modulo("Límite Departamental", typeof(LimiteDepartamental)),
+                new Modulo("Límite Provincial", typeof(LimiteProvincial)),
+                new Modulo("Límite Distrital", typeof(LimiteDistrital)),
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))
             }),

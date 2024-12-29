@@ -1108,5 +1108,28 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetDemarcacion(int type, string value) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_SeleccionListaUbigeo;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 100) { Value = value }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetZonasporUbigeo(string ubigeo) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneZonaporUbigeo;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_UBIGEO", OracleDbType.Varchar2, 6) { Value = ubigeo }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
     }
 }

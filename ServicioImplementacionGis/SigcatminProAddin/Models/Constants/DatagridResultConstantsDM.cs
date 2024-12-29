@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SigcatminProAddin.Models.Constants
 {
-    public static class DatagridResultConstants
+    public static class DatagridResultConstantsDM
     {
         public static class ColumNames
         {

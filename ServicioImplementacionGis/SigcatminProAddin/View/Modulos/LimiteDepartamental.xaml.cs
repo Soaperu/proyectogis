@@ -1,5 +1,6 @@
 ﻿using CommonUtilities;
 using DatabaseConnector;
+using DevExpress.Xpf.Grid;
 using SigcatminProAddin.Models.Constants;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.IO;
 using static SigcatminProAddin.View.Modulos.EvaluacionDM;
 
 namespace SigcatminProAddin.View.Modulos
@@ -28,13 +29,85 @@ namespace SigcatminProAddin.View.Modulos
         public DatabaseHandler dataBaseHandler;
         bool sele_denu;
 
+        private enum DemarcacionType
+        {
+            Departamento = 1,
+            Provincia = 2,
+            Distrito = 3
+        };
+
+        private void ConfigureDataGridResultColumns()
+        {
+            // Obtener la vista principal del GridControl
+            var tableView = DataGridResult.View as DevExpress.Xpf.Grid.TableView;
+
+            // Limpiar columnas existentes
+            DataGridResult.Columns.Clear();
+
+            if (tableView != null)
+            {
+                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
+            }
+
+            // Crear y configurar columnas
+
+            // Columna de índice (número de fila)
+            GridColumn indexColumn = new GridColumn
+            {
+                Header = DataGridResultsDepartamentoConstants.Headers.Index, // Encabezado
+                FieldName = DataGridResultsDepartamentoConstants.ColumNames.Index,
+                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
+                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
+                VisibleIndex = 0, // Mostrar como la primera columna
+                Width = DataGridResultsDepartamentoConstants.Widths.Index
+            };
+
+            GridColumn codigoColumn = new GridColumn
+            {
+                FieldName = DataGridResultsDepartamentoConstants.ColumNames.Codigo, // Nombre del campo en el DataTable
+                Header = DataGridResultsDepartamentoConstants.Headers.Codigo,    // Encabezado visible
+                Width = DataGridResultsDepartamentoConstants.Widths.Codigo            // Ancho de la columna
+            };
+
+            GridColumn departamentoColumn = new GridColumn
+            {
+                FieldName = DataGridResultsDepartamentoConstants.ColumNames.Departamento,
+                Header = DataGridResultsDepartamentoConstants.Headers.Departamento,
+                Width = DataGridResultsDepartamentoConstants.Widths.Departamento
+            };
+
+            
+            GridColumn capitalColumn = new GridColumn
+            {
+                FieldName = DataGridResultsDepartamentoConstants.ColumNames.Capital,
+                Header = DataGridResultsDepartamentoConstants.Headers.Capital,
+                Width = DataGridResultsDepartamentoConstants.Widths.Capital
+            };
+            
+            GridColumn ubigeoColumn = new GridColumn
+            {
+                FieldName = DataGridResultsDepartamentoConstants.ColumNames.Ubigeo,
+                Header = DataGridResultsDepartamentoConstants.Headers.Ubigeo,
+                Width = DataGridResultsDepartamentoConstants.Widths.Ubigeo
+            };
+
+
+            // Agregar columnas al GridControl
+            DataGridResult.Columns.Add(codigoColumn);
+            DataGridResult.Columns.Add(departamentoColumn);
+            DataGridResult.Columns.Add(capitalColumn);
+            DataGridResult.Columns.Add(ubigeoColumn);
+
+        }
         public LimiteDepartamental()
         {
             InitializeComponent();
             AddCheckBoxesToListBox();
             CurrentUser();
-            
-            
+            ConfigureDataGridResultColumns();
+
+
+
             dataBaseHandler = new DatabaseHandler();
             CbxTypeConsult.SelectedIndex = 0;
             TbxRadio.Text = "5";
@@ -49,19 +122,20 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxZona_Loaded(object sender, RoutedEventArgs e)
         {
-            List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
+            //List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
 
-            cbp.Add(new ComboBoxPairs("17", 17));
-            cbp.Add(new ComboBoxPairs("18", 18));
-            cbp.Add(new ComboBoxPairs("19", 19));
+            //cbp.Add(new ComboBoxPairs("Seleccione Zona", 0));
+            //cbp.Add(new ComboBoxPairs("17", 17));
+            //cbp.Add(new ComboBoxPairs("18", 18));
+            //cbp.Add(new ComboBoxPairs("19", 19));
 
-            // Asignar la lista al ComboBox
-            CbxZona.DisplayMemberPath = "_Key";
-            CbxZona.SelectedValuePath = "_Value";
-            CbxZona.ItemsSource = cbp;
+            //// Asignar la lista al ComboBox
+            //CbxZona.DisplayMemberPath = "_Key";
+            //CbxZona.SelectedValuePath = "_Value";
+            //CbxZona.ItemsSource = cbp;
 
-            // Seleccionar la opción 18 por defecto
-            CbxZona.SelectedIndex = 1;
+            //// Seleccionar la opción 18 por defecto
+            //CbxZona.SelectedIndex = 0;
         }
 
         private void CbxSistema_Loaded(object sender, RoutedEventArgs e)
@@ -142,6 +216,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
+          
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(MessageConstants.Errors.EmptySearchValue,
@@ -149,11 +224,95 @@ namespace SigcatminProAddin.View.Modulos
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+            try
+            {
+                var dmrRecords = dataBaseHandler.GetDemarcacion((int)DemarcacionType.Departamento, TbxValue.Text.ToUpper());
 
+                var countRecords = dmrRecords.Rows.Count;
+                int records = countRecords;
+                if (records == 0)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.NoRecordsFound, TbxValue.Text),
+                                                                    MessageConstants.Titles.NoMatches,
+                                                                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+                else if (records >= 150)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.TooManyMatches, countRecords),
+                                                                    MessageConstants.Titles.HighMatchLevel,
+                                                                    MessageBoxButton.OK,
+                                                                    MessageBoxImage.Warning);
+                    return;
+                }
+                LblCountRecords.Content = $"Resultados de Búsqueda: {countRecords.ToString()}";
+                DataGridResult.ItemsSource = dmrRecords.DefaultView;
+                BtnGraficar.IsEnabled = true;
+
+                var dtZona = dataBaseHandler.GetZonasporUbigeo(dmrRecords.Rows[0]["UBIGEO"].ToString()+"0000");
+                if (dtZona.Rows.Count == 2)
+                {
+                    TxtZonaAlerta.Visibility = Visibility.Hidden;
+                    CbxZona.ItemsSource = dtZona.DefaultView;
+                    CbxZona.DisplayMemberPath = "DESCRIPCION";
+                    CbxZona.SelectedValuePath = "CODIGO";
+                    CbxZona.SelectedIndex = 1;
+                }
+                else if (dtZona.Rows.Count == 3)
+                {
+                    CbxZona.ItemsSource = dtZona.DefaultView;
+                    CbxZona.DisplayMemberPath = "DESCRIPCION";
+                    CbxZona.SelectedValuePath = "CODIGO";
+                    CbxZona.SelectedIndex = 0;
+                    TxtZonaAlerta.Visibility = Visibility.Visible;
+                }
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(string.Format(MessageConstants.Errors.UnexpectedError, ex.Message),
+                                                                    MessageConstants.Titles.Error,
+                                                                    MessageBoxButton.OK,
+                                                                    MessageBoxImage.Error);
+                return;
+            }
+
+        }
+        private void calculatedIndex(GridControl table, int records, string columnName)
+        {
+            int newRowHandle = DataControlBase.NewItemRowHandle;
+
+            // Agregar registros de ejemplo con índice
+            for (int i = 1; i <= records; i++)
+            {
+                table.SetCellValue(newRowHandle, columnName, i);
+            }
         }
 
         private void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            BtnGraficar.IsEnabled = false;
+            if (string.IsNullOrEmpty(TbxValue.Text))
+            {
+                //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
+                string message = "Por favor ingrese un valor de radio";
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                 "Advertancia",
+                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                BtnGraficar.IsEnabled = true;
+                return;
+            }
+            if (ChkGraficarDmY.IsChecked == true)
+            {
+                GlobalVariables.stateDmY = true;
+            }
+            else
+            {
+                GlobalVariables.stateDmY = false;
+            }
+            int datum = (int)CbxSistema.SelectedValue;
+            string datumStr = CbxSistema.Text;
+            int radio = int.Parse(TbxRadio.Text);
+            string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
 
         }
 

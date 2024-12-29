@@ -265,7 +265,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 LblCountRecords.Content = $"Resultados de Búsqueda: {countRecords.ToString()}";
                 var dmrRecords = dataBaseHandler.GetUniqueDM(TbxValue.Text, (int)CbxTypeConsult.SelectedValue);
-                calculatedIndex(DataGridResult, records, DatagridResultConstants.ColumNames.Index);
+                calculatedIndex(DataGridResult, records, DatagridResultConstantsDM.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
                 BtnGraficar.IsEnabled = true;
             }
@@ -410,70 +410,70 @@ namespace SigcatminProAddin.View.Modulos
             // Columna de índice (número de fila)
             GridColumn indexColumn = new GridColumn
             {
-                Header = DatagridResultConstants.Headers.Index, // Encabezado
-                FieldName = DatagridResultConstants.ColumNames.Index,
+                Header = DatagridResultConstantsDM.Headers.Index, // Encabezado
+                FieldName = DatagridResultConstantsDM.ColumNames.Index,
                 UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
                 AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
                 VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstants.Widths.Index
+                Width = DatagridResultConstantsDM.Widths.Index
             };
            
             GridColumn codigoColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Codigo, // Nombre del campo en el DataTable
-                Header = DatagridResultConstants.Headers.Codigo,    // Encabezado visible
-                Width = DatagridResultConstants.Widths.Codigo            // Ancho de la columna
+                FieldName = DatagridResultConstantsDM.ColumNames.Codigo, // Nombre del campo en el DataTable
+                Header = DatagridResultConstantsDM.Headers.Codigo,    // Encabezado visible
+                Width = DatagridResultConstantsDM.Widths.Codigo            // Ancho de la columna
             };
 
             GridColumn nombreColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Nombre,
-                Header = DatagridResultConstants.Headers.Nombre,
-                Width = DatagridResultConstants.Widths.Nombre
+                FieldName = DatagridResultConstantsDM.ColumNames.Nombre,
+                Header = DatagridResultConstantsDM.Headers.Nombre,
+                Width = DatagridResultConstantsDM.Widths.Nombre
             };
 
             GridColumn pe_vigcatColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.PeVigCat,
-                Header = DatagridResultConstants.Headers.PeVigCat,
-                Width = DatagridResultConstants.Widths.PeVigCat
+                FieldName = DatagridResultConstantsDM.ColumNames.PeVigCat,
+                Header = DatagridResultConstantsDM.Headers.PeVigCat,
+                Width = DatagridResultConstantsDM.Widths.PeVigCat
             };
 
             GridColumn zonaColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Zona,
-                Header = DatagridResultConstants.Headers.Zona,
-                Width = DatagridResultConstants.Widths.Zona
+                FieldName = DatagridResultConstantsDM.ColumNames.Zona,
+                Header = DatagridResultConstantsDM.Headers.Zona,
+                Width = DatagridResultConstantsDM.Widths.Zona
             };
             GridColumn tipoColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Tipo,
-                Header = DatagridResultConstants.Headers.Tipo,
-                Width = DatagridResultConstants.Widths.Tipo
+                FieldName = DatagridResultConstantsDM.ColumNames.Tipo,
+                Header = DatagridResultConstantsDM.Headers.Tipo,
+                Width = DatagridResultConstantsDM.Widths.Tipo
             };
             GridColumn estadoColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Estado,
-                Header = DatagridResultConstants.Headers.Estado,
-                Width = DatagridResultConstants.Widths.Estado
+                FieldName = DatagridResultConstantsDM.ColumNames.Estado,
+                Header = DatagridResultConstantsDM.Headers.Estado,
+                Width = DatagridResultConstantsDM.Widths.Estado
             };
             GridColumn naturalezaColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Naturaleza,
-                Header = DatagridResultConstants.Headers.Naturaleza,
-                Width = DatagridResultConstants.Widths.Naturaleza
+                FieldName = DatagridResultConstantsDM.ColumNames.Naturaleza,
+                Header = DatagridResultConstantsDM.Headers.Naturaleza,
+                Width = DatagridResultConstantsDM.Widths.Naturaleza
             };
             GridColumn cartaColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Carta,
-                Header = DatagridResultConstants.Headers.Carta,
-                Width = DatagridResultConstants.Widths.Carta
+                FieldName = DatagridResultConstantsDM.ColumNames.Carta,
+                Header = DatagridResultConstantsDM.Headers.Carta,
+                Width = DatagridResultConstantsDM.Widths.Carta
             };
             GridColumn hectareaColumn = new GridColumn
             {
-                FieldName = DatagridResultConstants.ColumNames.Hectarea,
-                Header = DatagridResultConstants.Headers.Hectarea,
-                Width = DatagridResultConstants.Widths.Hectarea
+                FieldName = DatagridResultConstantsDM.ColumNames.Hectarea,
+                Header = DatagridResultConstantsDM.Headers.Hectarea,
+                Width = DatagridResultConstantsDM.Widths.Hectarea
             };
 
             // Agregar columnas al GridControl
