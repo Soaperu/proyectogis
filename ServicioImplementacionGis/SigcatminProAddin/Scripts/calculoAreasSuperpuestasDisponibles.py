@@ -187,7 +187,7 @@ def calculo_area_superpuestas_y_disponibles(
                         arcpy.management.DeleteField(capa, [field])
                     except:
                         arcpy.AddMessage("No se eliminaron los campos:" + str(field))
-                    pass
+                        pass
 
     # Mensajes informativos
     #arcpy.AddMessage("Proceso finalizado correctamente.")
@@ -206,7 +206,8 @@ def calculo_area_superpuestas_y_disponibles(
         mapa_activo.addDataFromPath(intersect_salida + ".shp")
         mapa_activo.addDataFromPath(no_intersect_salida + ".shp")
     
-    
+    resultado_areas["nombreSuperpuesta"] = nombre_intersect + fechaArchi
+    resultado_areas["nombreDisponible"] = nombre_no_intersect + fechaArchi
     return resultado_areas
 
 if __name__ == '__main__':

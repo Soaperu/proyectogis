@@ -450,5 +450,33 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        /// <summary>
+        /// Retorna un FeatureLayer a partir de su nombre en el mapa activo.
+        /// Retorna null si no encuentra ninguna capa con ese nombre.
+        /// </summary>
+        /// <param name="layerName">Nombre de la capa a buscar (no distingue mayúsculas/minúsculas).</param>
+        /// <returns>Un FeatureLayer o null.</returns>
+        public static async Task<FeatureLayer> GetFeatureLayerByNameAsync(string layerName)
+        {
+            if (MapView.Active == null)
+                return null;  // No hay vista activa
+
+            Map map = MapView.Active.Map;
+            if (map == null)
+                return null;  // No hay un mapa activo
+
+            // Se necesita ejecutar en el hilo MCT, ya que consultamos la colección de capas
+            return await QueuedTask.Run(() =>
+            {
+                // Buscar la primera capa que coincida con el nombre, ignorando mayúsculas
+                FeatureLayer foundLayer = map.Layers
+                                             .OfType<FeatureLayer>()
+                                             .FirstOrDefault(fl =>
+                                                 fl.Name.Equals(layerName, StringComparison.InvariantCultureIgnoreCase));
+
+                return foundLayer;
+            });
+        }
+
     }
 }

@@ -27,6 +27,7 @@ using System.Security.Policy;
 using SigcatminProAddin.View.Toolbars.BDGeocatmin.UI;
 using SigcatminProAddin.View.Toolbars.Evaluacion.UI;
 using ArcGIS.Desktop.Core.Geoprocessing;
+using Newtonsoft.Json;
 
 namespace SigcatminProAddin.View.Toolbars.Evaluacion
 {
@@ -123,12 +124,32 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     {
         protected override async void OnClick()
         {
-            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
-            string layerName = "Catastro";
-            string folderName = GlobalVariables.pathFileTemp;
-            string id = GlobalVariables.idExport;
-            var Params = Geoprocessing.MakeValueArray(layerName, folderName, id, 1);
-            var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetAreasOverlay, Params);
+            try
+            {
+                await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+                string layerName = "Catastro";
+                string folderName = GlobalVariables.pathFileTemp;
+                string id = GlobalVariables.idExport;
+                var Params = Geoprocessing.MakeValueArray(layerName, folderName, id, 1);
+                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetAreasOverlay, Params);
+                var responseJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.ReturnValue);
+                var areaDisponible = responseJson["area_disponible"];
+                var areaSuperpuesta = responseJson["area_superpuesta"];
+                string layerNameDisponible = responseJson["nombreDisponible"];
+                string layerNameSuperpuesta = responseJson["nombreSuperpuesta"];
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerNameDisponible, "Areadispo");
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerNameSuperpuesta, "Areainter");
+                var pFeatureLayer_dispo = await CommonUtilities.ArcgisProUtils.LayerUtils.GetFeatureLayerByNameAsync("Areadispo");
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(pFeatureLayer_dispo);
+                var pFeatureLayer_inter = await CommonUtilities.ArcgisProUtils.LayerUtils.GetFeatureLayerByNameAsync("Areainter");
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(pFeatureLayer_inter);
+                string layerNameDispoDm = "Areadispo_" + GlobalVariables.CurrentCodeDm;
+                string layerNameInterDm = "Areainter_" + GlobalVariables.CurrentCodeDm;
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync("Areainter", layerNameInterDm);
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync("Areadispo", layerNameDispoDm);
+            }
+            catch { }
+            
         }
     }
     internal class ObservacionesCartaIGN : EvaluacionButton { }
