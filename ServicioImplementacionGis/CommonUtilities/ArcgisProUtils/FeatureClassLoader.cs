@@ -664,6 +664,51 @@ namespace CommonUtilities.ArcgisProUtils
 
         }
 
+
+        public async Task QueryFeatureClassAsync(string loFeature, string queryClause, string shapeFileOut = "")
+        {
+            try
+            {
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return ;
+                }
+
+
+                await QueuedTask.Run(async () =>
+                {
+                    QueryFilter queryFilter = new QueryFilter
+                    {
+                        WhereClause = queryClause
+                        //WhereClause = $"EVAL = '{criterio}'"
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(queryFilter, SelectionCombinationMethod.New);
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+
+
+                });
+                
+            }
+            catch
+            {
+                return ;
+            }
+
+        }
+
         /// <summary>
         ///  Exporta un tema a la carpeta C:\bdgeocatmin\Temporal
         /// </summary>

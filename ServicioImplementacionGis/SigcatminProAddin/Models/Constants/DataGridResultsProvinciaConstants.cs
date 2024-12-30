@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SigcatminProAddin.Models.Constants
 {
-    internal class DataGridResultsDistritoConstants
+    internal class DataGridResultsProvinciaConstants
     {
         public static class ColumNames
         {
@@ -14,7 +14,6 @@ namespace SigcatminProAddin.Models.Constants
             public const string Codigo = "CODIGO";
             public const string Departamento = "DPTO";
             public const string Provincia = "PROV";
-            public const string Distrito = "DIST";
             public const string Capital = "CAP_DIST";
             public const string Zona = "ZONA";
             public const string Ubigeo = "UBIGEO";
@@ -27,7 +26,6 @@ namespace SigcatminProAddin.Models.Constants
             public const string Codigo = "Código";
             public const string Departamento = "Departamento";
             public const string Provincia = "Provincia";
-            public const string Distrito = "Distrito";
             public const string Capital = "Capital";
             public const string Zona = "Zona";
             public const string Ubigeo = "Ubigeo";
@@ -39,7 +37,6 @@ namespace SigcatminProAddin.Models.Constants
             public const int Codigo = 50;
             public const int Departamento = 120;
             public const int Provincia = 120;
-            public const int Distrito = 120;
             public const int Capital = 120;
             public const int Zona = 30;
             public const int Ubigeo = 100;

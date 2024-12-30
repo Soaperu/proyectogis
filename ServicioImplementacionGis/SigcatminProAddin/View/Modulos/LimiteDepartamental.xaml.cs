@@ -17,6 +17,12 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.IO;
 using static SigcatminProAddin.View.Modulos.EvaluacionDM;
+using CommonUtilities.ArcgisProUtils;
+using ArcGIS.Core.Data;
+using ArcGIS.Desktop.Mapping;
+using System.Security.Policy;
+using ArcGIS.Core.Events;
+using ArcGIS.Desktop.Mapping.Events;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -28,6 +34,7 @@ namespace SigcatminProAddin.View.Modulos
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
         bool sele_denu;
+        private string ubigeo;
 
         private enum DemarcacionType
         {
@@ -249,7 +256,9 @@ namespace SigcatminProAddin.View.Modulos
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
                 BtnGraficar.IsEnabled = true;
 
-                var dtZona = dataBaseHandler.GetZonasporUbigeo(dmrRecords.Rows[0]["UBIGEO"].ToString()+"0000");
+                ubigeo = dmrRecords.Rows[0]["UBIGEO"].ToString() + "0000";
+
+                var dtZona = dataBaseHandler.GetZonasporUbigeo(ubigeo);
                 if (dtZona.Rows.Count == 2)
                 {
                     TxtZonaAlerta.Visibility = Visibility.Hidden;
@@ -288,7 +297,39 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-        private void BtnGraficar_Click(object sender, RoutedEventArgs e)
+        private async Task<Map> EnsureMapViewIsActiveAsync(string mapName)
+        {
+            if (MapView.Active != null)
+            {
+                return MapView.Active.Map;
+            }
+
+            // Esperar hasta que MapView.Active esté disponible
+            TaskCompletionSource<Map> tcs = new TaskCompletionSource<Map>();
+
+            SubscriptionToken eventToken = null;
+            eventToken = DrawCompleteEvent.Subscribe(async args =>
+            {
+                // Desuscribirse del evento
+                // Desuscribirse del evento
+                if (eventToken != null)
+                {
+                    DrawCompleteEvent.Unsubscribe(eventToken);
+                }
+                // Activar el mapa "CATASTRO MINERO"
+                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync(mapName);
+                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+
+                // Completar la tarea con el mapa activo
+                //tcs.SetResult(MapView.Active.Map);
+                tcs.SetResult(map);
+            });
+
+            // Esperar hasta que el evento se complete
+            return await tcs.Task;
+        }
+
+        private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
             BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxValue.Text))
@@ -313,7 +354,20 @@ namespace SigcatminProAddin.View.Modulos
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
+            string zoneDm = "18";
 
+            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+
+            await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
+            Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
+            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+            await featureClassLoader.QueryFeatureClassAsync("Catastro", $"CD_DEPA = '{ubigeo}'", "catastroShpName");
+            // Encontrando Distritos superpuestos a DM con
+            
         }
 
 

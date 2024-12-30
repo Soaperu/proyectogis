@@ -84,10 +84,10 @@
                      Grid.Column="3" Width="140" VerticalContentAlignment="Center" HorizontalAlignment="Left"
                      x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" />
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
-                    Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
+                    Foreground="White" Grid.Column="4" HorizontalAlignment="Left" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
-                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" />
+                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Bottom" 
+                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" Margin="30,0,0,7" Click="BtnSearch_Click" />
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
@@ -125,8 +125,8 @@
                           VerticalAlignment="Center"  x:Name="CbxZona" />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="CbxSistema" />
-                <TextBlock Grid.Row="3" TextWrapping="Wrap"
+                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" />
+                <TextBlock x:Name="TxtZonaAlerta" Grid.Row="3" TextWrapping="Wrap"
                            FontSize="9" VerticalAlignment="Center" FontWeight="Medium" Height="30" Grid.ColumnSpan="2" Margin="10,0,0,0"><Run Text="*Area se encuentra entre dos zonas UTM, seleccionar zona a graficar"/><Run Text="."/></TextBlock>
 
             </Grid>
@@ -232,10 +232,10 @@
                       Margin="0,0,0,0" FontFamily="Roboto" FontSize="10"
                       Style="{DynamicResource Esri_CheckboxToggleSwitch}"/>
             <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" IsEnabled="False"
-                Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
-                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                Foreground="White" Grid.Column="6" HorizontalAlignment="Left"
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Bottom" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0"  />
+                VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0" Margin="30,0,0,7" Click="BtnGraficar_Click"  />
         </Grid>
 
 

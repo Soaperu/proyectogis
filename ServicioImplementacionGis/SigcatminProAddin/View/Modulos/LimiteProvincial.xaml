@@ -87,7 +87,7 @@
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" />
+                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" Click="BtnSearch_Click" />
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
@@ -125,8 +125,8 @@
                           VerticalAlignment="Center"  x:Name="CbxZona" />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="CbxSistema" />
-                <TextBlock Grid.Row="3" Grid.Column="1" TextWrapping="Wrap"
+                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" />
+                <TextBlock x:Name="TxtZonaAlerta" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap"
                            FontSize="7" VerticalAlignment="Center" FontWeight="Medium" Height="30"><Run Text="*Area se encuentra entre dos zonas UTM, seleccionar zona a graficar"/><Run Text="."/></TextBlock>
 
             </Grid>
