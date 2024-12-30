@@ -961,6 +961,33 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public DataTable GetOfficialCartaLimite(string field, string data, string datum) // F_Obtiene_Carta_oficial limites
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL_LI";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CAMPO", OracleDbType.Varchar2, 12) { Value = field },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 40) { Value = data },
+                new OracleParameter("V_DATUM", OracleDbType.Varchar2, 40) { Value = datum }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetOfficialCartaIn(string field, string data, string datum) // F_Obtiene_Carta_oficial x Filtro
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL_IN";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CAMPO", OracleDbType.Varchar2, 12) { Value = field },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 40) { Value = data },
+                new OracleParameter("V_DATUM", OracleDbType.Varchar2, 40) { Value = datum }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public DataTable GetDMData(string code) // F_Obtiene_Datos_DM
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";

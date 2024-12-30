@@ -838,7 +838,7 @@ namespace SigcatminProAddin.View.Modulos
                 e.Handled = true;
 
                 // Llamar a la acción que deseas ejecutar cuando se presiona Enter
-                MessageBox.Show("Enter");
+                //MessageBox.Show("Enter");
                 BtnAgregarHoja_Click(sender, e);
             }
 

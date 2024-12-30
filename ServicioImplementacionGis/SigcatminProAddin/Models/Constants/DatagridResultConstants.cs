@@ -82,11 +82,11 @@ namespace SigcatminProAddin.Models.Constants
         {
             public const int CdHoja = 30;
             public const int NmHoja = 100;
-            public const int Zona = 120;
+            public const int Zona = 40;
             public const int EsteMin = 70;
-            public const int NorteMin = 60;
-            public const int EsteMax = 50;
-            public const int NorteMax = 100;
+            public const int NorteMin = 70;
+            public const int EsteMax = 70;
+            public const int NorteMax = 70;
             //public const int Naturaleza = 80;
             //public const int Carta = 80;
             //public const int Hectarea = 80;
