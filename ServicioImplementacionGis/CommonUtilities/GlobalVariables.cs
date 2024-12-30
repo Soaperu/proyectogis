@@ -55,6 +55,12 @@ namespace CommonUtilities
 
         public static ExtentModel currentExtentDM { get; set; }
 
+        //Contenedor de Capas Fijas
+        public static string ContaninerFixedLayers = @"U:\\DATOS\\SHAPE\\WGS_84";
+        public static string layerNameAcceditarios = "acceditario{}.shp";
+        //public static string layerNameAcceditarios18 = "acceditario18.shp";
+        //public static string layerNameAcceditarios19 = "acceditario19.shp";
+
         //Contenedor de Plantillas de Planos
         public static string ContaninerTemplatesReport = @"U:\\Geocatmin\\Plantillas";
         public static string planeEval = "Plantilla_evd_84.pagx";

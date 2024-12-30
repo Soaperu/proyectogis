@@ -218,6 +218,12 @@
 				  Plano de Simultaneidad<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
+		  <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosEvaluacionReduccion" caption="Planos de Evaluación y Reduccion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosEvaluacionReduccion" loadOnClick="true" keytip="BDG-20" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+			  <tooltip heading="Tooltip Heading">
+				  Planos de Evaluación y Reducción<disabledText />
+			  </tooltip>
+			  <content version="1.0" group="Group A" />
+		  </button>
         
         
         <!--Controles Modulo UEAs-->

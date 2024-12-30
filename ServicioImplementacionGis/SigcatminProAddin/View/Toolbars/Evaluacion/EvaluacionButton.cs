@@ -152,7 +152,18 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             
         }
     }
-    internal class ObservacionesCartaIGN : EvaluacionButton { }
+    internal class ObservacionesCartaIGN : EvaluacionButton 
+    {
+        ObservacionesCartaIgnWpf observacionesCartaIgnWpf;
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+
+            observacionesCartaIgnWpf = new ObservacionesCartaIgnWpf();
+            observacionesCartaIgnWpf.Closed += (s, e) => observacionesCartaIgnWpf = null;
+            observacionesCartaIgnWpf.Show();
+        }
+    }
     internal class VerCapas : EvaluacionButton 
     {
         VerCapasWpf verCapasWpf;
