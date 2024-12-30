@@ -740,6 +740,16 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
+        private void BtnSalir_Click(object sender, RoutedEventArgs e)
+        {
+            // Obtener la ventana contenedora y cerrarla
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                parentWindow.Close();
+            }
+        }
+
         //private void TbxEsteMin_TextChanged(object sender, TextChangedEventArgs e)
         //{
         //    double numero;

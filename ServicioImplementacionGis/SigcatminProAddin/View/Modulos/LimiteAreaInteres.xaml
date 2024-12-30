@@ -198,7 +198,7 @@
                 Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0"  />
+                VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0" Click="BtnSalir_Click"  />
 
             <Button Content="Otra Consulta" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="1" HorizontalAlignment="Center"

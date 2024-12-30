@@ -404,6 +404,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     // Eliminar todos los elementos del ListBox
                     listBoxVertices.Items.Clear();
+                    datos_grilla();
 
                 }
             }
@@ -1263,7 +1264,15 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-
+        private void BtnSalir_Click(object sender, RoutedEventArgs e)
+        {
+            // Obtener la ventana contenedora y cerrarla
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                parentWindow.Close();
+            }
+        }
     }
 }
 
