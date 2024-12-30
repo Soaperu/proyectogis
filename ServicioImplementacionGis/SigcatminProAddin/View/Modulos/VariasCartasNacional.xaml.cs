@@ -443,6 +443,12 @@ namespace SigcatminProAddin.View.Modulos
         private void datos_grilla()
         {
             ResultadoCarta = "";
+            if (listBoxVertices.Items.Count==0)
+            {
+                DataGridResult.ItemsSource = null;
+                return;
+
+            }
             for (int i = 0; i < listBoxVertices.Items.Count; i++)
             {
                 string item = listBoxVertices.Items[i].ToString();
