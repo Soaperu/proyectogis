@@ -854,6 +854,8 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
+                string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
+                await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
             }
             catch (Exception ex) { }
 
