@@ -158,6 +158,7 @@ namespace CommonUtilities.ArcgisProUtils
         public static async Task ChangeLayerNameAsync(string oldLayerName, string newLayerName)
         {
             // Ejecutamos el cambio de nombre dentro de un contexto de cola (para asegurarnos de que se ejecute en el hilo correcto)
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 // Obtener el mapa activo en ArcGIS Pro
@@ -177,6 +178,7 @@ namespace CommonUtilities.ArcgisProUtils
                     System.Windows.MessageBox.Show($"Capa con nombre '{oldLayerName}' no encontrada.");
                 }
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
         public static async Task ChangeLayerNameByFeatureLayerAsync(FeatureLayer fLayer ,string newName)
         {

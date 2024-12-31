@@ -932,13 +932,12 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
-        public string ManageObservationCartaDM(string code, string format, string evalCode, string indicator, string userFor, string description, string logUser, string option) // FT_Man_Observacion_CartaDM_desa
+        public string ManageObservationCartaDM(string code, string evalCode, string indicator, string userFor, string description, string logUser, string option) // FT_Man_Observacion_CartaDM_desa
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTA_IGN";
             var parameters = new OracleParameter[]
             {
-                new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
-                new OracleParameter("V_CG_FORMAT", OracleDbType.Varchar2, 13) { Value = format },
+                new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code },                
                 new OracleParameter("V_CG_CODEVA", OracleDbType.Varchar2, 13) { Value = evalCode },
                 new OracleParameter("V_ET_INDICA", OracleDbType.Varchar2, 1000) { Value = indicator },
                 new OracleParameter("V_ET_USUFOR", OracleDbType.Varchar2, 8) { Value = userFor },
@@ -949,6 +948,18 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
+
+        public string CheckObservationStatus(string code) // FT_Estado_Observacion
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_VERIFICA_OBSERVACION";
+            var parameters = new OracleParameter[]
+            {
+        new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
         public DataTable GetOfficialCarta(string field, string data, string datum) // F_Obtiene_Carta_oficial
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL";

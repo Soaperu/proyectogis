@@ -66,6 +66,7 @@ namespace CommonUtilities.ArcgisProUtils
         }
         public static async void CustomLinePolygonLayer(FeatureLayer layer, SimpleLineStyle style, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2 = null)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 var trans = 75.0;//semi transparent
@@ -85,10 +86,12 @@ namespace CommonUtilities.ArcgisProUtils
                 // Actualiza la simbologia 
                 layer.SetRenderer(symbol);
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async void CustomLinePolygonGraphic(ArcGIS.Core.Geometry.Geometry geomPolygon, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 Map activeMap = MapView.Active.Map;
@@ -110,6 +113,7 @@ namespace CommonUtilities.ArcgisProUtils
                 };
                 MapView.Active.AddOverlay(cimGraphicElement);
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async Task ApplySymbologyFromStyleAsync(string layerName, string styleFilePath, string fieldName, StyleItemType styleGeomItem,string codeValue="")
@@ -218,6 +222,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         public static async Task ApplyUniqueSymbologyFromStyleAsync(string layerName, string styleFilePath, StyleItemType styleGeomItem)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 // Obtener el mapa y la capa
@@ -274,6 +279,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // Aplicar el renderizador a la capa
                 featureLayer.SetRenderer(simpleRenderer);
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>
@@ -406,6 +412,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         public static async Task ColorLineSimple(FeatureLayer featureLayer)//string layerName)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 string layerName = featureLayer.Name;
@@ -437,6 +444,7 @@ namespace CommonUtilities.ArcgisProUtils
                     MessageBox.Show($"Error al asignar simbología a la capa '{layerName}': {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>

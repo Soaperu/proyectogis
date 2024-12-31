@@ -1,12 +1,7 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<ArcGIS defaultAssembly="AutomapicProAddin.dll"
-        defaultNamespace="AutomapicProAddin"
-        xmlns="http://schemas.esri.com/DADF/Registry"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
-
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArcGIS defaultAssembly="AutomapicProAddin.dll" defaultNamespace="AutomapicProAddin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
   <AddInInfo id="{40ec3386-df48-4320-ae6f-360d264a45a1}" version="1.0" desktopVersion="3.3.52636" product="ArcGISPro">
-    <Name>AutomapicProAddin</Name>   
+    <Name>AutomapicProAddin</Name>
     <Description>AutomapicProAddin description</Description>
     <Image>Images\AddinDesktop32.png</Image>
     <Author>JORGELUISYH</Author>
@@ -16,7 +11,6 @@
     <!-- Note subject can be one or more of these topics:
                     Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
   </AddInInfo>
-
   <modules>
     <insertModule id="AutomapicProAddin_Module" className="Module1" autoLoad="false" caption="Module1">
       <!-- uncomment to have the control hosted on a separate tab-->
@@ -25,7 +19,6 @@
           <group refID="AutomapicProAddin_Group1"/>
         </tab>-->
       </tabs>
-              
       <groups>
         <!-- comment this out if you have no controls on the Addin tab to avoid
               an empty group-->
@@ -33,11 +26,9 @@
           <!-- host controls within groups -->
         </group>
       </groups>
-      
       <controls>
         <!-- add your controls here -->
-      </controls> 
-      
+      </controls>
     </insertModule>
   </modules>
 </ArcGIS>

@@ -1,4 +1,5 @@
-﻿<ArcGIS defaultAssembly="SigcatminProAddin.dll" defaultNamespace="SigcatminProAddin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArcGIS defaultAssembly="SigcatminProAddin.dll" defaultNamespace="SigcatminProAddin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
   <AddInInfo id="{36341280-dadf-4d50-9827-a7f25d2b9e5a}" version="1.0" desktopVersion="3.3.52636" product="ArcGISPro">
     <Name>SigcatminProAddin</Name>
     <Description>SigcatminProAddin description</Description>
@@ -23,19 +24,15 @@
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
         <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN" keytip="t0">
-            <group refID="SigcatminProAddin_Group1" />
-            
-			<!--Tool BDGeocatmin-->
-            <group refID="SigcatminProAddin_Group3" />
-			
-			<!--Tool Evaluacion-->
-			<group refID="SigcatminProAddin_Group5" />
-            
-			<!--Tool Modulo UEAs-->
-            <group refID="SigcatminProAddin_Group4" />
-			
-			<!--Tool Informes Tecnicos-->
-			<group refID="SigcatminProAddin_Group2" />
+          <group refID="SigcatminProAddin_Group1" />
+          <!--Tool BDGeocatmin-->
+          <group refID="SigcatminProAddin_Group3" />
+          <!--Tool Evaluacion-->
+          <group refID="SigcatminProAddin_Group5" />
+          <!--Tool Modulo UEAs-->
+          <group refID="SigcatminProAddin_Group4" />
+          <!--Tool Informes Tecnicos-->
+          <group refID="SigcatminProAddin_Group2" />
         </tab>
       </tabs>
       <groups>
@@ -95,7 +92,7 @@
           <tooltip heading="Tooltip Heading">Generar Planos Masivos<disabledText /></tooltip>
         </button>
         <!--Controles Informes Técnicos-->
-        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado"   caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="Images\Contenido32.png" largeImage="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-32x32.png" keytip="i1">
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado" caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="Images\Contenido32.png" largeImage="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-32x32.png" keytip="i1">
           <tooltip heading="Tooltip Heading">Validar resultado<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
@@ -120,22 +117,19 @@
           <tooltip heading="Tooltip Heading">Reporte DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadasTool" caption="Listar Coordenadas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadasTool" loadOnClick="true" keytip="BDG-2"  smallImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" condition="esri_mapping_mapPane">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadasTool" caption="Listar Coordenadas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadasTool" loadOnClick="true" keytip="BDG-2" smallImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" condition="esri_mapping_mapPane">
           <tooltip heading="Tooltip Heading">
-            Listar Coordenadas<disabledText />
-          </tooltip>
+            Listar Coordenadas<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </tool>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDmTool" caption="Consulta Dm" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDmTool" loadOnClick="true" keytip="BDG-3"  smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" condition="esri_mapping_mapPane">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDmTool" caption="Consulta Dm" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDmTool" loadOnClick="true" keytip="BDG-3" smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" condition="esri_mapping_mapPane">
           <tooltip heading="Tooltip Heading">
-            Consulta DM<disabledText />
-          </tooltip>
+            Consulta DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </tool>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegionTool" caption="Porcentaje Región" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegionTool" loadOnClick="true" keytip="BDG-4"  smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" condition="esri_mapping_mapPane">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegionTool" caption="Porcentaje Región" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegionTool" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" condition="esri_mapping_mapPane">
           <tooltip heading="Tooltip Heading">
-            Porcentaje Región<disabledText />
-          </tooltip>
+            Porcentaje Región<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </tool>
         <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegion" caption="Calcula Porcentaje Region" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegion" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png">
@@ -192,10 +186,9 @@
 				  Número de Resolución de DM<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="Rotular Vértices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15"  smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="Rotular Vértices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15" smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
           <tooltip heading="Rotular Vértices">
-            Rotular Vértices<disabledText />
-          </tooltip>
+            Rotular Vértices<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </tool>
         <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RetirarVertices" caption="Retirar Vértices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RetirarVertices" loadOnClick="true" keytip="BDG-16" smallImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png">
@@ -218,14 +211,11 @@
 				  Plano de Simultaneidad<disabledText /></tooltip>
           <content version="1.0" group="Group A" />
         </button>
-		  <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosEvaluacionReduccion" caption="Planos de Evaluación y Reduccion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosEvaluacionReduccion" loadOnClick="true" keytip="BDG-20" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
-			  <tooltip heading="Tooltip Heading">
-				  Planos de Evaluación y Reducción<disabledText />
-			  </tooltip>
-			  <content version="1.0" group="Group A" />
-		  </button>
-        
-        
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosEvaluacionReduccion" caption="Planos de Evaluación y Reduccion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosEvaluacionReduccion" loadOnClick="true" keytip="BDG-20" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Tooltip Heading">
+				  Planos de Evaluación y Reducción<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
         <!--Controles Modulo UEAs-->
         <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegranteUEA" caption="Reporte de Integrante de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegranteUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\01-reporte-integrante-uea-32x32.png" keytip="UEA-1">
           <tooltip heading="Tooltip Heading">Reporte de Integrante de UEA<disabledText /></tooltip>
@@ -366,7 +356,6 @@
         <button id="SigcatminProAddin_View_Modulos_ConfirmationModule" condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
           <tooltip heading="Confirmar">Confirmar Modulo<disabledText /></tooltip>
         </button>
-        
       </controls>
       <galleries>
         <gallery id="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" condition="Logged_condition" showGroup="true" caption="InformeTecnicoGallery" className="SigcatminProAddin.View.Toolbars.InformeTecnico.InformeTecnicoGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/InformeTecnico/InformeTecnicoGalleryTemplate.xaml" templateID="LargeGalleryItemTemplate" resizable="true" largeImage="GenericButtonOrange32" keytip="g1">
@@ -378,7 +367,7 @@
         <gallery id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsGallery" condition="Logged_condition" showGroup="true" caption="ModuloUEAsGallery" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ModuloUEAsGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/ModuloUEAs/ModuloUEAsGalleryTemplate.xaml" templateID="ModuloUEAsGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g3">
           <tooltip heading="Tooltip Heading">Modulo UEAs ToolBar<disabledText /></tooltip>
         </gallery>
-        <gallery id="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" condition="Logged_condition"  showGroup="true" caption="EvaluacionGallery" className="SigcatminProAddin.View.Toolbars.Evaluacion.EvaluacionGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/Evaluacion/EvaluacionGalleryTemplate.xaml" templateID="EvaluacionGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g4">
+        <gallery id="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" condition="Logged_condition" showGroup="true" caption="EvaluacionGallery" className="SigcatminProAddin.View.Toolbars.Evaluacion.EvaluacionGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/Evaluacion/EvaluacionGalleryTemplate.xaml" templateID="EvaluacionGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g4">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </gallery>
       </galleries>
