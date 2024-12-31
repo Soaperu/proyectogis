@@ -10,6 +10,7 @@ namespace Sigcatmin.pro.Application
             services.AddScoped<LoginUseCase>();
             services.AddScoped<GetDerechoMineroUseCase>();
             services.AddScoped<CountRowsGISUseCase>();
+            services.AddScoped<GetCoordenadasDMUseCase>();
             return services;
         }
 

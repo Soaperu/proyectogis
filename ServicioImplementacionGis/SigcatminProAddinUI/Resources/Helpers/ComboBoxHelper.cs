@@ -6,13 +6,13 @@ namespace SigcatminProAddinUI.Resources.Helpers
 {
     internal class ComboBoxHelper
     {
-        public static void LoadComboBox<TId>(ComboBox comboBox, List<ComboBoxItemGeneric<TId>> items)
+        public static void LoadComboBox<TId>(ComboBox comboBox, List<ComboBoxItemGeneric<TId>> items, int selectedIndex = 0)
         {
             comboBox.ItemsSource = items;
             comboBox.DisplayMemberPath = "DisplayName";
             comboBox.SelectedValuePath = "Id";
 
-            comboBox.SelectedIndex = 0;
+            comboBox.SelectedIndex = selectedIndex;
         }
     }
 }

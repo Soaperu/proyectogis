@@ -1,23 +1,17 @@
-﻿using DevExpress.Xpf.Grid;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using ArcGIS.Desktop.Mapping;
+using DevExpress.Mvvm.POCO;
+using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.UsesCases;
 using SigcatminProAddinUI.Models;
+using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
 using SigcatminProAddinUI.Resourecs.Constants;
 using SigcatminProAddinUI.Views.WPF.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 {
@@ -27,21 +21,23 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
     public partial class EvaluacionDMView : Page
     {
         private EvaluacionDMViewModel _evaluacionDMViewModel;
-        private readonly GetDerechoMineroUseCase _getDerechoMineroUseCase; 
+        private readonly GetDerechoMineroUseCase _getDerechoMineroUseCase;
+        private readonly CountRowsGISUseCase _countRowsGISUseCase;
+        private readonly GetCoordenadasDMUseCase _getCoordenadasDMUseCase;
         public EvaluacionDMView()
         {
             InitializeComponent();
             _evaluacionDMViewModel = new EvaluacionDMViewModel();
             _getDerechoMineroUseCase = Program.GetService<GetDerechoMineroUseCase>();
+            _countRowsGISUseCase = Program.GetService<CountRowsGISUseCase>();
+            _getCoordenadasDMUseCase = Program.GetService<GetCoordenadasDMUseCase>();
         }
         private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
 
             TbxValue.Clear();
         }
-        private void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
-        {
-        }
+      
         private void TbxValue_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -51,12 +47,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         }
         private void CbxTypeConsult_Loaded(object sender, RoutedEventArgs e)
         {
-            var items = new List<ComboBoxItemGeneric<int>>
-            {
-                new ComboBoxItemGeneric<int> { Id = 1, DisplayName = "Código" },
-                new ComboBoxItemGeneric<int> { Id = 2, DisplayName = "Nombre" },
-            };
-
+            var items = _evaluacionDMViewModel.GetItemsComboTypeConsult();
             ComboBoxHelper.LoadComboBox(CbxTypeConsult, items);
         }
 
@@ -64,17 +55,49 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         {
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ErrorMessage.EmptySearchValue,
-                                                                 TitlesMessage.MissingValue,
-                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+               MessageBoxHelper.ShowInfo(ErrorMessage.EmptySearchValue.FormatMessage(TbxValue.Text),
+                   TitlesMessage.MissingValue);
                 return;
             }
+            try
+            {
 
-            var derechosMineros = await _getDerechoMineroUseCase.Execute("clarita",2);
+                string typeValue = CbxTypeConsult.SelectedValue.ToString();
+                string searchValue = TbxValue.Text;
+                var totalRows = await _countRowsGISUseCase.Execute(typeValue, searchValue);
 
-            DataGridResult.ItemsSource = derechosMineros;
-            DataGridResult.CustomUnboundColumnData += DataGridResult_CustomUnboundColumnData;
+                bool isValid = _evaluacionDMViewModel.ValidTotalRowsDerechosMineros(totalRows, searchValue);
+                if (!isValid) return; 
 
+                var derechosMineros = await _getDerechoMineroUseCase.Execute(searchValue, Convert.ToInt32(typeValue));
+
+                DataGridResult.ItemsSource = derechosMineros;
+                DataGridResult.CustomUnboundColumnData += DataGridResult_CustomUnboundColumnData;
+                BtnGraficar.IsEnabled = true;
+            }
+            catch(Exception ex)
+            {
+                MessageBoxHelper.ShowError(ErrorMessage.UnexpectedError, TitlesMessage.Error);
+            }
+        }
+        private async void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
+        {
+
+            string codigo = DataGridResult.GetSelectedRow<string>(sender, "Codigo");
+            string zona = DataGridResult.GetSelectedRow<string>(sender, "Zona");
+            string nombre = DataGridResult.GetSelectedRow<string>(sender, "Nombre");
+            string hectarea = DataGridResult.GetSelectedRow<string>(sender, "Hectarea");
+
+            CbxZona.SelectedValue = zona;
+            TbxArea.Text = hectarea;
+            TbxArea.IsReadOnly = true;
+            ClearCanvas();
+
+            var coordenadas = await _getCoordenadasDMUseCase.Execute(codigo);
+            DataGridDetails.ItemsSource = coordenadas;
+            // GraficarCoordenadas(dmrRecords);
+
+            
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
@@ -100,11 +123,14 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 
         private void CbxZona_Loaded(object sender, RoutedEventArgs e)
         {
+            var items = _evaluacionDMViewModel.GetItemsComboZona();
+            ComboBoxHelper.LoadComboBox(CbxZona, items, 1);
         }
 
         private void CbxSistema_Loaded(object sender, RoutedEventArgs e)
         {
-
+            var items = _evaluacionDMViewModel.GetItemsComboSistema();
+            ComboBoxHelper.LoadComboBox(CbxSistema, items);
         }
         private void BtnOtraConsulta_Click(object sender, RoutedEventArgs e)
         {
@@ -128,7 +154,10 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                 e.Handled = false;
             }
         }
-
+        private void ClearCanvas()
+        {
+            PolygonCanvas.Children.Clear();
+        }
 
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {

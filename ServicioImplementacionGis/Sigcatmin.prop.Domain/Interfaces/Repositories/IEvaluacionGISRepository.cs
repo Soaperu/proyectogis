@@ -10,7 +10,7 @@ namespace Sigcatmin.pro.Domain.Interfaces.Repositories
     public interface IEvaluacionGISRepository
     {
         ValueTask<int> CountRecords(string type, string search);
-
         ValueTask<IEnumerable<DerechoMineroDto>> GetDerechosMinerosUnique(string code, int type);
+        ValueTask<IEnumerable<CoordenadaDto>> GetCoordenadasDMGS84ByCode(string code);
     }
 }

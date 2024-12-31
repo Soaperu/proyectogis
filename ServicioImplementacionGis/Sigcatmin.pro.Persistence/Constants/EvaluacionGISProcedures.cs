@@ -10,6 +10,8 @@ namespace Sigcatmin.pro.Persistence.Constants
     {
         public const string ProcedureCuentaRegistros = "PACK_DBA_SG_D_EVALGIS.SP_CUENTA_REGISTRO";
         public const string GetDerechoMineroUnique = "PACK_DBA_SG_D_EVALGIS.P_SEL_DM_UNIQUE";
-        
+        public const string GetWGS84Oficial = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";
+
+
     }
 }

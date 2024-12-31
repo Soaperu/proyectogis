@@ -96,7 +96,7 @@
             </Grid.ColumnDefinitions>
             <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridResult" CustomUnboundColumnData="DataGridResult_CustomUnboundColumnData">
                 <dxg:GridControl.Columns>
-                    <dxg:GridColumn FieldName="index" Header="N°" UnboundType="Integer" />
+                    <dxg:GridColumn FieldName="index" Header="N°" UnboundType="Integer" Width="40" />
                     <dxg:GridColumn FieldName="Codigo" Header="Código" />
                     <dxg:GridColumn FieldName="Nombre" Header="Nombre" />
                     <dxg:GridColumn FieldName="Zona" Header="Zona" />
@@ -159,6 +159,11 @@
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0">
+                <dxg:GridControl.Columns>
+                    <dxg:GridColumn FieldName="Vertice" Header="Vertice" Width="40" />
+                    <dxg:GridColumn FieldName="Norte" Header="Norte" />
+                    <dxg:GridColumn FieldName="Este" Header="Este" />
+                </dxg:GridControl.Columns>
                 <dxg:GridControl.View>
                     <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
