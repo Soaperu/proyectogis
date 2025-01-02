@@ -934,7 +934,7 @@ namespace DatabaseConnector
         }
         public string ManageObservationCartaDM(string code, string evalCode, string indicator, string userFor, string description, string logUser, string option) // FT_Man_Observacion_CartaDM_desa
         {
-            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTA_IGN";
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTAIGN";
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code },                

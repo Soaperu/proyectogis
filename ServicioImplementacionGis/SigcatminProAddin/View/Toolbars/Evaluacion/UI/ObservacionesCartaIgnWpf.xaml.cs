@@ -72,11 +72,15 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
         private void checked11_Checked(object sender, RoutedEventArgs e)
         {
             txtRio.Visibility = Visibility.Visible;
+            double currentHeight = this.Height;
+            this.Height = currentHeight + 20;
         }
 
         private void checked11_Unchecked(object sender, RoutedEventArgs e)
         {
             txtRio.Visibility = Visibility.Collapsed;
+            double currentHeight = this.Height;
+            this.Height = currentHeight - 20;
         }
 
         private void checked13_Checked(object sender, RoutedEventArgs e)
@@ -141,7 +145,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                     
                     int numero = -1;
                     var partes = controlName.Replace("checked", "");
-                    if (partes.Length > 1)
+                    if (partes.Length > 0)
                     {
                         int.TryParse(partes, out numero);
                     }
@@ -159,16 +163,16 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                         case 8: dataChecked8 = content; break;
                         case 9: dataChecked9 = content; break;
                         case 10: dataChecked10 = content; break;
-                        case 11: dataChecked11 = content; break;
+                        case 11: dataChecked11 = content + " " + txtRio.Text; break;
                         case 12: dataChecked12 = content; break;
-                        case 13: dataChecked13 = content; break;
+                        case 13: dataChecked13 = content + " " + txtLaguna.Text; break;
                         case 14: dataChecked14 = content; break;
                         case 15: dataChecked15 = content; break;
                         case 16: dataChecked16 = content; break;
                         case 17: dataChecked17 = content; break;
                         case 18: dataChecked18 = content; break;
                         case 19: dataChecked19 = content; break;
-                        case 20: dataChecked20 = content; break;
+                        case 20: dataChecked20 = content + " " + txtAreaUrbana.Text; break;
                     }
                 }
             }
@@ -281,7 +285,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
 
                     // Llamada final a tu método de persistencia
                     // (Ej. "INSERTA" o "UPDATE")
-                    string retorno = dataBaseHandler.ManageObservationCartaDM(v_codigo, v_codigo,
+                    string retorno = dataBaseHandler.ManageObservationCartaDM(codeDM, codeDM,
                         codObs, AppConfig.userName, descripcion, AppConfig.userName, lostrEstado);
                 }
             }
@@ -331,11 +335,11 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                 case "RP":
                     return dataChecked10;
                 case "RH":
-                    return dataChecked11 + " " + txtRio.Text;
+                    return dataChecked11;
                 case "CL":
                     return dataChecked12;
                 case "LG":
-                    return dataChecked13 + " " + txtLago.Text;
+                    return dataChecked13;
                 case "RS":
                     return dataChecked14;
                 case "FE":
@@ -349,7 +353,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                 case "FR":
                     return dataChecked19;
                 case "AU":
-                    return dataChecked20 + " " + txtAreaUrbana.Text;
+                    return dataChecked20;
                 // ... etc. 
                 default:
                     return string.Empty;

@@ -175,7 +175,8 @@ namespace CommonUtilities.ArcgisProUtils
                 else
                 {
                     // Si la capa no se encuentra, mostramos un mensaje de error (opcional)
-                    System.Windows.MessageBox.Show($"Capa con nombre '{oldLayerName}' no encontrada.");
+                    //System.Windows.MessageBox.Show($"Capa con nombre '{oldLayerName}' no encontrada.");
+                    return;
                 }
             });
 #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
@@ -232,7 +233,7 @@ namespace CommonUtilities.ArcgisProUtils
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zone, false);
                         }
                         string layerExportNameCForestal = "Catastro Forestal" + GlobalVariables.idExport;
-                        await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, layerExportNameCForestal);
+                        var layerResult = await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, layerExportNameCForestal);
                         List<string> cforestalToRemove = new List<string>() { "Catastro Forestal" };
                         string styleCForestalPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCForestal);
                         await RemoveLayersFromActiveMapAsync(cforestalToRemove);

@@ -73,7 +73,7 @@ namespace CommonUtilities.ArcgisProUtils
                 };
                 //var rasterLayer = LayerFactory.Instance.CreateLayer<MosaicLayer>(new LayerCreationParams(dataConnection), map);
                 var rasterLayer = LayerFactory.Instance.CreateLayer<MosaicLayer>(layerCreationParams, map);
-                rasterLayer.SetDefinitionQuery($"NAME IN ('{codeHoja}')");
+                rasterLayer.SetDefinitionQuery($"NAME IN ({codeHoja})");
                 // Opcionalmente, puedes personalizar la capa después de agregarla
             });
 #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
