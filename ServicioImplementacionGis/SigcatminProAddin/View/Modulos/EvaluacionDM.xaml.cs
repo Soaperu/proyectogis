@@ -93,18 +93,6 @@ namespace SigcatminProAddin.View.Modulos
             CurrentUserLabel.Text = GlobalVariables.ToTitleCase(AppConfig.fullUserName);
         }
 
-        private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbxSistema.SelectedValue.ToString() == "1")
-            {
-                GlobalVariables.CurrentDatumDm = "1";
-            }
-            else
-            {
-                GlobalVariables.CurrentDatumDm = "2";
-            }
-        }
-
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
             // Obtener la ventana contenedora y cerrarla
@@ -354,6 +342,17 @@ namespace SigcatminProAddin.View.Modulos
                 _Value = _value;
             }
 
+        }
+        private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (CbxSistema.SelectedValue?.ToString() == "2")
+            {
+                GlobalVariables.CurrentDatumDm = "2";
+            }
+            else
+            {
+                GlobalVariables.CurrentDatumDm = "1";
+            }
         }
 
         private void ConfigureDataGridDetailsColumns()
@@ -670,7 +669,7 @@ namespace SigcatminProAddin.View.Modulos
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
             BtnGraficar.IsEnabled = false;
-            if (string.IsNullOrEmpty(TbxValue.Text))
+            if (string.IsNullOrEmpty(TbxRadio.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
                 string message = "Por favor ingrese un valor de radio";
@@ -1272,6 +1271,11 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.CurrentDatumDm = "1";
             }
+        }
+
+        private void Page_Loaded(object sender, RoutedEventArgs e)
+        {
+            TbxValue.Focus();
         }
     }
 }

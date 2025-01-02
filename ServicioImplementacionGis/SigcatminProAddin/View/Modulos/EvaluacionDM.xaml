@@ -9,7 +9,7 @@
       xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
       d:DesignHeight="470" d:DesignWidth="680"
       Title="EvaluacionDM"
-      FontFamily="Roboto">
+      FontFamily="Roboto" Loaded="Page_Loaded">
     <!--<Page.Resources>
 
         <ResourceDictionary>
@@ -118,7 +118,7 @@
                           VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded"  />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" SelectionChanged="CbxSistema_SelectionChanged_1" />
+                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" SelectionChanged="CbxSistema_SelectionChanged" />
             </Grid>
         </Grid>
 

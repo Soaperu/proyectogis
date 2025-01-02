@@ -339,7 +339,7 @@ namespace CommonUtilities.ArcgisProUtils
                     throw new Exception("No hay un mapa activo.");
 
                 // Conectar a la geodatabase
-                string gdbPath = @"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
+                string gdbPath = GlobalVariables.localGdbPath; //@"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
                 using (var gdb = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(gdbPath))))
                 {
                     // Abrir la clase de entidad
@@ -368,7 +368,7 @@ namespace CommonUtilities.ArcgisProUtils
                 try
                 {
                     // Conectar a la geodatabase
-                    string gdbPath = @"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
+                    string gdbPath = GlobalVariables.localGdbPath; //@"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
                     using (var gdb = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(gdbPath))))
                     {
                         // Abrir la clase de entidad

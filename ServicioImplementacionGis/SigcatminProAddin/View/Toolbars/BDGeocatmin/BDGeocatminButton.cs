@@ -34,6 +34,9 @@ using ArcGIS.Desktop.Internal.Editing;
 using System.Data;
 using static ArcGIS.Desktop.Internal.GeoProcessing.Controls.rtbEditor;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using ArcGIS.Desktop.Internal.KnowledgeGraph;
+using DevExpress.Xpo;
+using static System.Net.WebRequestMethods;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -412,7 +415,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         {
             //LayerUtils.SelectSetAndZoomByNameAsync("Catastro", false);
             await UpdateResoluDMFields("Catastro");
-            System.Windows.MessageBox.Show("Proceso finalizado, Valide la tabla de contenido");
+            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Proceso finalizado, Valide la tabla de contenido");
         }
 
         public async Task UpdateResoluDMFields(string capa)
@@ -435,7 +438,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 
                     if (pFeatLayer1 == null)
                     {
-                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se encuentra el Layer");
                         return;
                     }
 
@@ -516,7 +519,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 }
                 catch (Exception ex)
                 {
-                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Error en UpdateValue: " + ex.Message);
                 }
             });
 
@@ -560,7 +563,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         protected override async void OnClick()
         {
             await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
-            var response = System.Windows.MessageBox.Show("¿Desea Retirar los vértice?", "caption", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel);
+            var response = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("¿Desea Retirar los vértice?", "caption", MessageBoxButton.OKCancel, MessageBoxImage.Information, MessageBoxResult.Cancel);
             if (response == MessageBoxResult.OK)
             {
                 //await ArcGIS.Desktop.Framework.FrameworkApplication.SetCurrentToolAsync(null);
@@ -570,7 +573,134 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             
         }
     }
-    internal class GenerarDemarcacionMultiple : BDGeocatminButton { }
+    internal class GenerarDemarcacionMultiple : BDGeocatminButton
+    {
+        protected override async void OnClick()
+        {
+            await UpdateDemarcacionFields("Catastro");
+            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Proceso finalizado, Valide la tabla de contenido");
+        }
+
+        public static int CalculateParameter(int length)
+        {
+            return length switch
+            {
+                6 => 1,
+                13 => 2,
+                20 => 3,
+                27 => 4,
+                34 => 5,
+                41 => 6,
+                48 => 7,
+                55 => 8,
+                62 => 9,
+                69 => 10,
+                _ => 0
+            };
+        }
+
+        public static string BuildJoinedCodes(string demagisValue, int parametro)
+        {
+            var codes = new List<string>();
+            for (int i = 0; i < parametro; i++)
+            {
+                int startIndex = i * 7;
+                codes.Add(demagisValue.Substring(startIndex, 6));
+            }
+            return string.Join(",", codes.Select(code => $"'{code}'"));
+        }
+
+        public static (string dptos, string provs, string dists) ProcessDemarcaData(DataTable demarcaData)
+        {
+            var listaDptos = new HashSet<string>();
+            var listaProvs = new HashSet<string>();
+            var listaDists = new HashSet<string>();
+
+            foreach (DataRow row in demarcaData.Rows)
+            {
+                listaDptos.Add(row["DPTO"].ToString());
+                listaProvs.Add(row["PROV"].ToString());
+                listaDists.Add(row["DIST"].ToString());
+            }
+
+            return (
+                string.Join(",", listaDptos),
+                string.Join(",", listaProvs),
+                string.Join(",", listaDists)
+            );
+        }
+        public async Task UpdateDemarcacionFields(string capa, string filter = "1=1")
+        {
+            try
+            {
+                // Encuentre la capa "Catastro" en el mapa activo usando el método de utilidad
+                var catastroLayer = LayerUtils.GetFeatureLayerByNameAsync(capa);
+
+                if (catastroLayer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"No se encuentra el Layer {capa}");
+                    return;
+                }
+
+                // Accede al feature class
+                await QueuedTask.Run(() =>
+                {
+                    using (FeatureClass featureClass = catastroLayer.Result.GetTable() as FeatureClass)
+                    {
+                        if (featureClass == null)
+                        {
+                            throw new InvalidOperationException("Feature class is not accessible.");
+                        }
+
+                        // Definir un filtro de consulta (actualmente recupera todas las funciones, ajustar según sea necesario)
+                        QueryFilter queryFilter = new QueryFilter { WhereClause = filter };
+
+                        using (RowCursor cursor = featureClass.Search(queryFilter, false))
+                        {
+                            int counter = 0;
+
+                            while (cursor.MoveNext())
+                            {
+                                using (Feature feature = cursor.Current as Feature)
+                                {
+                                    counter++;
+
+                                    // Actualizar campo "CONTADOR"
+                                    feature["CONTADOR"] = counter;
+
+                                    string demagisValue = feature["DEMAGIS"].ToString();
+                                    int length = demagisValue.Length;
+
+                                    int parametro = CalculateParameter(length);
+                                    if (parametro > 0)
+                                    {
+                                        string joinedCodes = BuildJoinedCodes(demagisValue, parametro);
+
+                                        // Recuperar datos adicionales 
+                                        DataTable demarcaData = _dataBaseHandler.GetUbigeoDataMultiple(joinedCodes);
+
+                                        if (demarcaData.Rows.Count > 0)
+                                        {
+                                            var (listaDptos, listaProvs, listaDists) = ProcessDemarcaData(demarcaData);
+
+                                            feature["DPTOS"] = listaDptos;
+                                            feature["PROVS"] = listaProvs;
+                                            feature["DISTS"] = listaDists;
+                                        }
+                                    }
+                                    feature.Store();
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Error: {ex.Message}");
+            }
+        }
+    }
     internal class RotulaTextoDemarcacion : BDGeocatminButton 
     {
         protected override async void OnClick()

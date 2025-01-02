@@ -19,6 +19,7 @@ namespace CommonUtilities
         public static string fieldTypeLong = "LONG";
         public static string fieldTypeDouble = "DOUBLE";
         public static string fieldTypeDate = "DATE";
+        public static string gdbNameTemporal = "BDGEOCATMINPRO_84.gdb";
         //Datums
         public static string datumWGS = "WGS-84";
         public static string datumPSAD = "PSAD-56";
@@ -26,9 +27,11 @@ namespace CommonUtilities
         // Ruta actual
         public static string? currentPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);
         public static string scriptsPath = @"scripts\AutomapicExt_addin.py";
+        // Ruta de Python
         public static string pythonExePath = @"C:\Program Files\ArcGIS\Pro\bin\Python\envs\arcgispro-py3\python.exe";
         // Rutas del Sistemas
         public static string toolBoxPathEval = currentPath + @"\Scripts\CMIN_EVAL.atbx";
+        public static string localGdbPath = Path.Combine(pathFileContainerOut, gdbNameTemporal);
 
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";

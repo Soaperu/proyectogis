@@ -95,7 +95,17 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     }
     internal class CargarCapasIntegrales : EvaluacionButton { }
     internal class VerSimultaneos : EvaluacionButton { }
-    internal class VerExtinguidos : EvaluacionButton { }
+    internal class VerExtinguidos : EvaluacionButton 
+    {
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','EX')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }
     internal class VerAntecesorRD : EvaluacionButton { }
     internal class VerColindantes : EvaluacionButton 
     {
@@ -104,7 +114,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             string layerName = "Catastro";
             string mapName = GlobalVariables.mapNameCatastro;
-            string definitionQuery = "EVAL IN ('EV', 'VE','CO')";
+            string definitionQuery = "EVAL IN ('EV', 'CO')";
             await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
         }
     }

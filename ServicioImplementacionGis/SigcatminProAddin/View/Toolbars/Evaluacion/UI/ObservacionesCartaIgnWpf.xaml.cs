@@ -73,34 +73,46 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
         {
             txtRio.Visibility = Visibility.Visible;
             double currentHeight = this.Height;
-            this.Height = currentHeight + 20;
+            this.Height = currentHeight + 25;
         }
 
         private void checked11_Unchecked(object sender, RoutedEventArgs e)
         {
             txtRio.Visibility = Visibility.Collapsed;
             double currentHeight = this.Height;
-            this.Height = currentHeight - 20;
+            this.Height = currentHeight - 25;
+            txtRio.Clear();
         }
 
         private void checked13_Checked(object sender, RoutedEventArgs e)
         {
             txtLaguna.Visibility = Visibility.Visible;
+            double currentHeight = this.Height;
+            this.Height = currentHeight + 25;
         }
 
         private void checked13_Unchecked(object sender, RoutedEventArgs e)
         {
             txtLaguna.Visibility = Visibility.Collapsed;
+            double currentHeight = this.Height;
+            this.Height = currentHeight - 25;
+            txtLaguna.Clear();
         }
 
         private void checked20_Checked(object sender, RoutedEventArgs e)
         {
             txtAreaUrbana.Visibility = Visibility.Visible;
+            double currentHeight = this.Height;
+            this.Height = currentHeight + 25;
+            txtAreaUrbana.Clear();
         }
 
         private void checked20_Unchecked(object sender, RoutedEventArgs e)
         {
             txtAreaUrbana.Visibility = Visibility.Collapsed;
+            double currentHeight = this.Height;
+            this.Height = currentHeight - 25;
+            txtAreaUrbana.Clear();
         }
 
         private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

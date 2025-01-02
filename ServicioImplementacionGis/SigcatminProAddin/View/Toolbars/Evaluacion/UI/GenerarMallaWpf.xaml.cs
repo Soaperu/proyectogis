@@ -195,7 +195,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
         {
             
 
-            await QueuedTask.Run(() =>
+            await QueuedTask.Run(async() =>
             {
                 // Crear o verificar la existencia de la capa de destino (líneas)
                 UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
@@ -219,9 +219,9 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                     AddFeatureToLayer(mallasLayer, polygon, codigo, "PE", idpolygon , "10");
 
                 }
-
-
-
+                string newNameMalla = "Cuadriculas_10HA";
+                mallasLayer.SetName(newNameMalla);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(mallasLayer);
             });
         }
 
@@ -236,7 +236,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                 };
 
 
-            await QueuedTask.Run(() =>
+            await QueuedTask.Run(async() =>
             {
                 // Crear o verificar la existencia de la capa de destino (líneas)
                 UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
@@ -259,7 +259,11 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
 
                     AddFeatureToLayer(mallasLayer, polygon, letrasMayusculas[idpolygon - 1], "PE", idpolygon.ToString(), "100");
                 }
+                string newNameMalla = "Cuadriculas_100HA";
+                mallasLayer.SetName(newNameMalla);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(mallasLayer);
             });
+
         }
 
         private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

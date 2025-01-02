@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
         WindowStartupLocation="CenterScreen" Background="#F3F3F3"
-        Title="VerCapasWpf" Height="500" Width="450" WindowStyle="None">
+        Title="VerCapasWpf" Height="425" Width="410" WindowStyle="None">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -30,7 +30,7 @@
                 x:Name="gridHeader" Margin="0,0,0,0" MouseLeftButtonDown="gridHeader_MouseLeftButtonDown"  >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="130"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="SIGCATMIN" Foreground="White" FontSize="16" 

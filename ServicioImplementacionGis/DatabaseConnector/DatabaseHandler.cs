@@ -1157,5 +1157,16 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetUbigeoDataMultiple(string code) // F_Obtiene_Datos_UBIGEO1
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO_MULTIPLE";
+            var parameters = new OracleParameter[]
+            {
+        new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 255) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
     }
 }
