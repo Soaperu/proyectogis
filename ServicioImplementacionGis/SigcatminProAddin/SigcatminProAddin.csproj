@@ -269,6 +269,7 @@
   <ItemGroup>
     <PackageReference Include="DevExpress.Reporting.Core" Version="23.1.12" />
     <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
+    <PackageReference Include="EPPlus" Version="7.5.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
   <ItemGroup>

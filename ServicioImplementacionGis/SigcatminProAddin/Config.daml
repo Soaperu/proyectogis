@@ -85,7 +85,7 @@
         <button id="SigcatminProAddin_View_Botones_LogoutButton" condition="Logged_condition" caption="Cerrar Sesión" className="SigcatminProAddin.View.Botones.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a2">
           <tooltip heading="Tooltip Heading">Cerrar Sesión<disabledText /></tooltip>
         </button>
-        <button id="SigcatminProAddin_View_Botones_GraficarExcelBtn" caption="Graficar Excel" className="SigcatminProAddin.View.Botones.GraficarExcelBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a3">
+        <button id="SigcatminProAddin_View_Botones_GraficarExcelBtn" condition="Logged_condition" caption="Graficar Excel" className="SigcatminProAddin.View.Botones.GraficarExcelBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a3">
           <tooltip heading="Tooltip Heading">Graficar Excel<disabledText /></tooltip>
         </button>
         <button id="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" condition="Logged_condition" caption="Planos Masivos" className="SigcatminProAddin.View.Botones.GenerarPlanosMasivosBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a4">

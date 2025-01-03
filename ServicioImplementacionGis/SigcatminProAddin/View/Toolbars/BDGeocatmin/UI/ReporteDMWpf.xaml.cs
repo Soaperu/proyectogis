@@ -38,13 +38,13 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             string pathReportTemplate;
             if (reportDm.IsChecked is true)
             {
-                pathReportTemplate = Path.Combine(GlobalVariables.ContaninerTemplatesReports, GlobalVariables.reportDM);
+                //pathReportTemplate = Path.Combine(GlobalVariables.ContaninerTemplatesReports, GlobalVariables.reportDM);
                 var table = await ReportGenerator.DataProcessorReports.GenerarReporteAsync("Catastro");//new DataTable();
                 var custom = new ReportGenerator.ReportCustomizations();
-                custom.Carta = "Carta XXX";
+                custom.Carta = GlobalVariables.CurrentPagesDm;
                 custom.Titulo = "Titulo de Prueba";
                 custom.FechaDocumento = DateTime.Now;
-                ReportGenerator.ReportDM.ShowReport(table, "Reporte Derecho Minero", pathReportTemplate, custom);
+                ReportGenerator.ReportDM.ShowReport(table, "Reporte Derecho Minero", custom);
             }
         }
 

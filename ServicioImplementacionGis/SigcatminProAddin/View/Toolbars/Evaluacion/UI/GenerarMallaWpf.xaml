@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SigcatminProAddin.View.Toolbars.Evaluacion.UI"
         xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
-        mc:Ignorable="d"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
         Title="GenerarMallaWpf" Height="180" Width="360"  FontSize="10" 
-        ResizeMode="NoResize" WindowStyle="None">
+        ResizeMode="NoResize" WindowStyle="None" Background="#F3F3F3">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -56,8 +56,12 @@ FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" H
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button x:Name="btnGraficar" Margin="3,0,3,0" Grid.Column="1" Foreground="White" Background="#006DA0" FontWeight="bold" Style="{DynamicResource Esri_Button}" Click="btnGraficar_Click" >Graficar</Button>
-            <Button x:Name="btnCerrar" Margin="3,0,3,0" Grid.Column="0" Click="btnCerrar_Click">Cerrar</Button>
+            <Button x:Name="btnGraficar" Margin="3,0,3,0" Grid.Column="1" Foreground="White" 
+                    Background="#006DA0" FontWeight="bold" Style="{DynamicResource Esri_Button}"
+                    Click="btnGraficar_Click" BorderBrush="White">Graficar</Button>
+            <Button x:Name="btnCerrar" Margin="3,0,3,0" Grid.Column="0" Foreground="#006DA0"
+                Style="{DynamicResource Esri_Button}" Click="btnCerrar_Click" FontWeight="Bold"
+                Background="White" BorderBrush="#006DA0">Salir</Button>
         </Grid>
         </Grid>
 

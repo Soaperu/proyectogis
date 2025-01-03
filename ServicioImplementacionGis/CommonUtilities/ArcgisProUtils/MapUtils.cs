@@ -19,6 +19,7 @@ using System.ComponentModel;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using System.Data;
 using CommonUtilities.ArcgisProUtils.Models;
+using System.Windows;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -71,6 +72,34 @@ namespace CommonUtilities.ArcgisProUtils
 
                 // Si se encuentra, se devuelve como objeto Map
                 return mapItem != null ? mapItem.GetMap() : null;
+            });
+        }
+
+        public static async Task DeleteSpecifiedMapsAsync(List<string>? mapNamesToDelete= null)
+        {
+            if (mapNamesToDelete == null || mapNamesToDelete.Count == 0)
+            {
+               var result =MessageBox.Show("No se proporcionaron nombres de mapas para eliminar. Desea Eliminar todos los mapas del proyecto?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
+            // Ejecuta en el contexto de ArcGIS Pro
+            await QueuedTask.Run(() =>
+            {
+                // Obtiene todos los mapas del proyecto actual
+                var allMaps = Project.Current.GetItems<MapProjectItem>();
+
+                foreach (var mapItem in allMaps)
+                {
+                    // Si el mapa está en la lista de nombres para eliminar, procede a eliminarlo
+                    if (mapNamesToDelete != null && mapNamesToDelete.Contains(mapItem.Name, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Project.Current.RemoveItem(mapItem);
+                    }
+                }
             });
         }
 

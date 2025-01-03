@@ -17,13 +17,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ToolTip;
+using SigcatminProAddin.View.Botones.UI;
 
 namespace SigcatminProAddin.View.Botones
 {
     internal class GenerarPlanosMasivosBtn : Button
     {
+        GenerarPlanosMasivosWpf generarPlanosMasivosWpf;
         protected override void OnClick()
         {
+            generarPlanosMasivosWpf = new GenerarPlanosMasivosWpf();
+            generarPlanosMasivosWpf.Closed += (s, e) => generarPlanosMasivosWpf = null;
+            generarPlanosMasivosWpf.Show();
         }
     }
 }

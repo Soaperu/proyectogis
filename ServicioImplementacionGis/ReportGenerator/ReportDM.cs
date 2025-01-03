@@ -19,26 +19,24 @@ namespace ReportGenerator
 {
     public class ReportDM
     {
-        public static void ShowReport(DataTable dataSource, string reportName, string definitionFilePath, ReportCustomizations customizations)
+        public static void ShowReport(DataTable dataSource, string reportName, ReportCustomizations customizations)
         {
-            XtraReport report = new XtraReport();
-            report.LoadLayout(definitionFilePath); // Cargar la definición del XML
-            report.XmlDataPath = definitionFilePath;
+            XtraReport report = new ReportsDevExpress.ReportEvalDM();
             report.DataSource = dataSource;
 
             // Personalizar campos si es necesario
-            var fieldFechaDocumento = report.FindControl("FECHA_DOCUMENTO", true) as XRLabel;
-            if (fieldFechaDocumento != null)
-                fieldFechaDocumento.Text = customizations.FechaDocumento.ToString("dd/MM/yyyy");
+            //var fieldFechaDocumento = report.FindControl("FECHA_DOCUMENTO", true) as XRLabel;
+            //if (fieldFechaDocumento != null)
+            //    fieldFechaDocumento.Text = customizations.FechaDocumento.ToString("dd/MM/yyyy");
 
-            var fieldTitulo = report.FindControl("lblTitulo_1", true) as XRLabel;
-            if (fieldTitulo != null)
-                fieldTitulo.Text = customizations.Titulo;
+            //var fieldTitulo = report.FindControl("lblTitulo_1", true) as XRLabel;
+            //if (fieldTitulo != null)
+            //    fieldTitulo.Text = customizations.Titulo;
 
-            var fieldCarta = report.FindControl("lblCarta", true) as XRLabel;
+            var fieldCarta = report.FindControl("lblHoja", true) as XRLabel;
             if (fieldCarta != null)
-                fieldCarta.Text = customizations.Carta;
-            report.CreateDocument(true);
+                fieldCarta.Text = "Carta: " + customizations.Carta.Replace("'", "");
+            report.CreateDocument();
             var w = new Window
             {
                 Title = "Vista Previa del Reporte",
@@ -46,15 +44,10 @@ namespace ReportGenerator
                 {
                     DocumentSource = report
                 },
-                Width = 800,
-                Height = 600
+                Width = 900,
+                Height = 700
             };
-            //var previewControl = new DevExpress.Xpf.Printing.DocumentPreviewControl();
-            //previewControl.DocumentSource = report;
-            //// Mostrar el reporte
-            //w.Content = previewControl;
-            PrintHelper.ShowPrintPreviewDialog(w,report);
-            //w.ShowDialog();
+            w.ShowDialog();
         }
     }
 
