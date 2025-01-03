@@ -65,7 +65,7 @@ namespace CommonUtilities.ArcgisProUtils
             featureLayerMap = new Dictionary<string, FeatureLayer>();
         }
 
-        public async Task<FeatureLayer> LoadFeatureClassAsync(string featureClassName, bool isVisible)
+        public async Task<FeatureLayer> LoadFeatureClassAsync(string featureClassName, bool isVisible, string queryClause="1=1")
         {
             try
             {
@@ -83,7 +83,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             FeatureClassName = featureClassName,
                             LayerName = featureClassName,
-                            VariableName = null
+                            VariableName = null                            
                         };
                     }
                     // Obtener el nombre real de la Feature Class
@@ -99,8 +99,9 @@ namespace CommonUtilities.ArcgisProUtils
                         FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
                         {
                             Name = actualLayerName,//featureClassInfo.LayerName,
-                            IsVisible = isVisible,                            
-                            
+                            IsVisible = isVisible,  
+                            DefinitionQuery = new DefinitionQuery(whereClause: queryClause, name: "Filtro dema")
+
                         };
                         FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams,_map);
                         //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
@@ -655,6 +656,202 @@ namespace CommonUtilities.ArcgisProUtils
 
                 return lostrJoinCodigos;
             
+
+            }
+            catch
+            {
+                return "";
+            }
+
+        }
+
+        public async Task<string> IntersectFeatureClassbyEnvelopeAsync(string loFeature, Envelope envelope, string shapeFileOut = "")
+        {
+            try
+            {
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return "";
+                }
+                // Ajustar la cláusula WHERE si es necesario
+                // ... código adicional ...
+
+                // Ejecutar la selección y obtener los resultados
+                string lostrJoinCodigos = "";
+
+                await QueuedTask.Run(async () =>
+                {
+                    
+
+                    // Crear el filtro espacial
+                    SpatialQueryFilter spatialFilter = new SpatialQueryFilter
+                    {
+                        FilterGeometry = envelope,
+                        SpatialRelationship = SpatialRelationship.Intersects
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+
+                    using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
+                    {
+                        while (rowCursor.MoveNext())
+                        {
+                            using (Row row = rowCursor.Current)
+                            {
+
+                                // Variables para las salidas del método
+                                string lostr_Join_Codigos_marcona;
+                                string valida_urb_shp;
+                                string lostr_Join_Codigos_AREA;
+
+                                // Llamar al método para procesar la fila
+                                lostrJoinCodigos += FeatureProcessorUtils.ProcessFeatureFields(
+                                                                                                    loFeature,
+                                                                                                    row,
+                                                                                                    "",
+                                                                                                    out lostr_Join_Codigos_marcona,
+                                                                                                    out valida_urb_shp,
+                                                                                                    out lostr_Join_Codigos_AREA
+                                );
+                            }
+                        }
+                    }
+                });
+                if (loFeature == "Carta IGN")
+                {
+                    GlobalVariables.CurrentPagesDm = lostrJoinCodigos;
+                }
+                // Construir la cláusula WHERE final
+                // ... código para construir la cláusula WHERE ...
+                if (!string.IsNullOrEmpty(lostrJoinCodigos))
+                {
+                    lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
+
+                    try
+                    {
+                        string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
+                        //Console.WriteLine(joinCondition);
+                        lostrJoinCodigos = joinCondition;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Console.WriteLine($"Error: {ex.Message}");
+                    }
+                }
+
+                return lostrJoinCodigos;
+
+
+            }
+            catch
+            {
+                return "";
+            }
+
+        }
+
+        public async Task<string> IntersectFeatureClassbyGeometryAsync(string loFeature, ArcGIS.Core.Geometry.Geometry geometry, string shapeFileOut = "")
+        {
+            try
+            {
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return "";
+                }
+                // Ajustar la cláusula WHERE si es necesario
+                // ... código adicional ...
+
+                // Ejecutar la selección y obtener los resultados
+                string lostrJoinCodigos = "";
+
+                await QueuedTask.Run(async () =>
+                {
+
+
+                    // Crear el filtro espacial
+                    SpatialQueryFilter spatialFilter = new SpatialQueryFilter
+                    {
+                        FilterGeometry = geometry,
+                        SpatialRelationship = SpatialRelationship.Intersects
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+
+                    using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
+                    {
+                        while (rowCursor.MoveNext())
+                        {
+                            using (Row row = rowCursor.Current)
+                            {
+
+                                // Variables para las salidas del método
+                                string lostr_Join_Codigos_marcona;
+                                string valida_urb_shp;
+                                string lostr_Join_Codigos_AREA;
+
+                                // Llamar al método para procesar la fila
+                                lostrJoinCodigos += FeatureProcessorUtils.ProcessFeatureFields(
+                                                                                                    loFeature,
+                                                                                                    row,
+                                                                                                    "",
+                                                                                                    out lostr_Join_Codigos_marcona,
+                                                                                                    out valida_urb_shp,
+                                                                                                    out lostr_Join_Codigos_AREA
+                                );
+                            }
+                        }
+                    }
+                });
+                if (loFeature == "Carta IGN")
+                {
+                    GlobalVariables.CurrentPagesDm = lostrJoinCodigos;
+                }
+                // Construir la cláusula WHERE final
+                // ... código para construir la cláusula WHERE ...
+                if (!string.IsNullOrEmpty(lostrJoinCodigos))
+                {
+                    lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
+
+                    try
+                    {
+                        string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
+                        //Console.WriteLine(joinCondition);
+                        lostrJoinCodigos = joinCondition;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Console.WriteLine($"Error: {ex.Message}");
+                    }
+                }
+
+                return lostrJoinCodigos;
+
 
             }
             catch

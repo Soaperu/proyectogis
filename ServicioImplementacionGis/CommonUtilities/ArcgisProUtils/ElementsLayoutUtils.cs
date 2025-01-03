@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonUtilities.ArcgisProUtils.Models;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -339,7 +340,8 @@ namespace CommonUtilities.ArcgisProUtils
                 {
                     
                     // Obtener resultados para el criterio actual
-                    var resultados = ObtenerResultadosEval(criterio).Result;
+                    //var resultados = ObtenerResultadosEval(criterio).Result;
+                    var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
 
                     if (resultados.Count > 0)
                     {
@@ -382,17 +384,7 @@ namespace CommonUtilities.ArcgisProUtils
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(async() =>
             {
-                // Obtener el mapa activo
-                //Map map = MapView.Active.Map;
-                //if (map == null)
-                //    throw new Exception("No hay un mapa activo.");
-
-                //// Buscar la capa "catastro"
-                //FeatureLayer catastroLayer = map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name.Equals("catastro", StringComparison.OrdinalIgnoreCase));
-                //if (catastroLayer == null)
-                //    throw new Exception("No se encontró la capa 'catastro' en el mapa.");
-                //Layout layout = _layout;
-                MapFrame mfrm = _layout.FindElement(GlobalVariables.mapNameCatastro + " Map Frame") as MapFrame;
+                
                 Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro);
                 
                 var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == GlobalVariables.CurrentShpName);
@@ -565,13 +557,5 @@ namespace CommonUtilities.ArcgisProUtils
 
         }
 
-    public class ResultadoEval
-    {
-        public string Contador { get; set; }
-        public string Concesion { get; set; }
-        public string TipoEx { get; set; }
-        public string CodigoU { get; set; }
-        public string Estado { get; set; }
-        public string Eval { get; set; }
-    }
+    
 }

@@ -1,6 +1,8 @@
 ﻿using ArcGIS.Desktop.Core.Geoprocessing;
+using CommonUtilities.ArcgisProUtils;
 using System.Data;
 using System.Globalization;
+using CommonUtilities.ArcgisProUtils.Models;
 
 namespace CommonUtilities
 {
@@ -87,6 +89,7 @@ namespace CommonUtilities
 
         // Tablas Generales
         public static double DistBorder { get; set; }
+        public static ResultadoEvaluacionModel resultadoEvaluacion = new ResultadoEvaluacionModel();
 
         public static string ToTitleCase(string input)
         {
