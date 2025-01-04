@@ -1,21 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows;
+﻿using System.Collections.Generic;
 using SigcatminProAddinUI.Models;
+using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
 using SigcatminProAddinUI.Resourecs.Constants;
-using SigcatminProAddinUI.Resources.Extensions;
 
 namespace SigcatminProAddinUI.Views.WPF.ViewModel
 {
     public class EvaluacionDMViewModel
     {
-
+        public int RadioDefaultValue { get; set; } = 5;
+        public List<string> Layers = new List<string>()
+        {
+            "Caram",
+             "Catastro Forestal",
+            "Predio Rural",
+            "Limite Departamental",
+            "Limite Provincial",
+            "Limite Distrital",
+            "Centros Poblados",
+            "Red Hidrografica",
+            "Red Vial"
+        };
         public List<ComboBoxItemGeneric<int>> GetItemsComboTypeConsult()
         {
             return new List<ComboBoxItemGeneric<int>>

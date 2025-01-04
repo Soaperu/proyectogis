@@ -31,6 +31,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             _getDerechoMineroUseCase = Program.GetService<GetDerechoMineroUseCase>();
             _countRowsGISUseCase = Program.GetService<CountRowsGISUseCase>();
             _getCoordenadasDMUseCase = Program.GetService<GetCoordenadasDMUseCase>();
+            TbxRadio.Text = _evaluacionDMViewModel.RadioDefaultValue.ToString();
         }
         private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
