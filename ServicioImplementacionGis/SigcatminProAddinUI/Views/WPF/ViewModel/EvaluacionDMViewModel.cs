@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Windows.Controls;
 using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
@@ -9,7 +10,7 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
     public class EvaluacionDMViewModel
     {
         public int RadioDefaultValue { get; set; } = 5;
-        public List<string> Layers = new List<string>()
+        private List<string> _layersText = new List<string>()
         {
             "Caram",
              "Catastro Forestal",
@@ -30,7 +31,6 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
             };
 
         }
-
         public List<ComboBoxItemGeneric<int>> GetItemsComboZona()
         {
             return new List<ComboBoxItemGeneric<int>>
@@ -40,7 +40,6 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
                 new ComboBoxItemGeneric<int> { Id = 19, DisplayName = "19" },
             };
         }
-
         public List<ComboBoxItemGeneric<int>> GetItemsComboSistema()
         {
             return new List<ComboBoxItemGeneric<int>>
@@ -49,7 +48,6 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
                 new ComboBoxItemGeneric<int> { Id =2, DisplayName = "PSAD-56" },
             };
         }
-
         public bool ValidTotalRowsDerechosMineros(int totalRows, string searchValue)
         {
             if (totalRows == 0)
@@ -66,6 +64,15 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
             }
 
             return true;
+        }
+        public void LoadLayer(ListBox lisbox)
+        {
+            foreach (string layerText in _layersText)
+            {
+               var checkbox = CheckboxHelper.GenerateChexbox(layerText,false);
+                lisbox.Items.Add(checkbox);
+            }
+        
         }
 
     }

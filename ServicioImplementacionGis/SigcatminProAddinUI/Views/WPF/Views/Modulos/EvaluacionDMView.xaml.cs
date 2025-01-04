@@ -1,13 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using ArcGIS.Desktop.Mapping;
-using DevExpress.Mvvm.POCO;
 using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.UsesCases;
-using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
 using SigcatminProAddinUI.Resourecs.Constants;
@@ -32,6 +28,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             _countRowsGISUseCase = Program.GetService<CountRowsGISUseCase>();
             _getCoordenadasDMUseCase = Program.GetService<GetCoordenadasDMUseCase>();
             TbxRadio.Text = _evaluacionDMViewModel.RadioDefaultValue.ToString();
+            _evaluacionDMViewModel.LoadLayer(LayersListBox);
         }
         private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {

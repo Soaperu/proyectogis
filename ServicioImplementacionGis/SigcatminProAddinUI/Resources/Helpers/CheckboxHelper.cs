@@ -9,7 +9,7 @@ using Microsoft.Extensions.Primitives;
 
 namespace SigcatminProAddinUI.Resources.Helpers
 {
-    public static class ChexboxHelper
+    public static class CheckboxHelper
     {
         public static CheckBox GenerateChexbox(string text, bool isCheked)
         {
