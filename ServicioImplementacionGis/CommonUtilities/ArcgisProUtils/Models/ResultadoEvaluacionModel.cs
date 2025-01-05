@@ -9,11 +9,12 @@ namespace CommonUtilities.ArcgisProUtils.Models
     public class ResultadoEvaluacionModel
     {
         public bool isCompleted = false;
-        public string codigo { get; set; }
-        public string nombre { get; set; }
-        public string distanciaFrontera { get; set; }
-        public string zonaReservada { get; set; }
-        public string zonaUrbana { get; set; }
+        public string codigo { get; set; } = string.Empty;
+        public string nombre { get; set; } = string.Empty;
+        public string distanciaFrontera { get; set; } = string.Empty;
+        public  string listaCaramUrbana { get; set; }= string.Empty;
+        public  string listaCaramReservada { get; set; }= string.Empty;
+        public  string listaCatastroforestal { get; set; }= string.Empty;
 
         public Dictionary<string, List<ResultadoEval>> ResultadosCriterio = new Dictionary<string, List<ResultadoEval>>();
     }

@@ -118,7 +118,18 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
         }
     }
-    internal class GenerarResultadosEvaluacion : EvaluacionButton { }
+    internal class GenerarResultadosEvaluacion : EvaluacionButton 
+    {
+        ResultadoEvaluacionWpf resultadoEvaluacionWpf;
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+
+            resultadoEvaluacionWpf = new ResultadoEvaluacionWpf();
+            resultadoEvaluacionWpf.Closed += (s, e) => resultadoEvaluacionWpf = null;
+            resultadoEvaluacionWpf.Show();
+        }
+    }
     internal class CalculoAreaDisponible : EvaluacionButton 
     {
         protected override async void OnClick()

@@ -858,17 +858,15 @@ namespace SigcatminProAddin.View.Modulos
                 ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
 
                 GlobalVariables.resultadoEvaluacion.codigo = codigoValue;
-                GlobalVariables.resultadoEvaluacion.nombre = "ActualName";
+                GlobalVariables.resultadoEvaluacion.nombre = GlobalVariables.CurrentNameDm;
                 GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
-                GlobalVariables.resultadoEvaluacion.zonaReservada = "Xona reservada";
-                GlobalVariables.resultadoEvaluacion.zonaUrbana = "Xona urbana";
 
 
                 var criterios = new string[] { "PR", "AR", "PO", "SI", "EX" };
                 //int contador = 0;
                 foreach (var criterio in criterios)
                 {
-                    GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio]= elementsLayoutUtils.ObtenerResultadosEval(criterio).Result;
+                    GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio]= await elementsLayoutUtils.ObtenerResultadosEval(criterio);
                 }
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;
             }

@@ -225,18 +225,18 @@ namespace CommonUtilities.ArcgisProUtils
             // contatexto=11: CATASTRO NO MINERO
             textList.Add(("CATASTRO NO MINERO", 18.2, posY, colorRed, fontSizeRedBlue));
             posY -= 0.4;
-            string listaCaramur = GlobalVariables.listaCaramur;
-            string listaCaramre = GlobalVariables.listaCaramre;
-            string listaCforestal = GlobalVariables.listaCforestal;
+            string listaCaramur = GlobalVariables.resultadoEvaluacion.listaCaramUrbana;
+            string listaCaramre = GlobalVariables.resultadoEvaluacion.listaCaramReservada;
+            string listaCforestal = GlobalVariables.resultadoEvaluacion.listaCatastroforestal;
             // contatexto=12: Zonas Urbanas
             string zonasUrbanasText;
-            if (string.IsNullOrEmpty(GlobalVariables.listaCaramur))
+            if (string.IsNullOrEmpty(GlobalVariables.resultadoEvaluacion.listaCaramUrbana))
             {
                 zonasUrbanasText = "Zonas Urbanas : No se encuentra superpuesto a un Área urbana";
             }
             else
             {
-                if (GlobalVariables.listaCaramur.Length > 65)
+                if (GlobalVariables.resultadoEvaluacion.listaCaramUrbana.Length > 65)
                 {
                     string posi_x = listaCaramur.Substring(0, 65);
                     string posi_x1 = listaCaramur.Substring(65);

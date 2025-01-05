@@ -27,11 +27,11 @@ namespace CommonUtilities
                 {
                     if (grupo.Key == "caramur")
                     {
-                        GlobalVariables.listaCaramur = string.Join(",", grupo.Select(row => row["NM_AREA"].ToString()));
+                        GlobalVariables.resultadoEvaluacion.listaCaramUrbana = string.Join(",", grupo.Select(row => row["NM_AREA"].ToString()));
                     }
                     else if (grupo.Key == "caramre")
                     {
-                         GlobalVariables.listaCaramre = string.Join(",", grupo.Select(row => row["NM_AREA"].ToString()));
+                         GlobalVariables.resultadoEvaluacion.listaCaramReservada = string.Join(",", grupo.Select(row => row["NM_AREA"].ToString()));
                     }
                 }
             } 
@@ -66,7 +66,7 @@ namespace CommonUtilities
                 }
 
                 // Asignar el resultado final a la variable lista_forestal
-                GlobalVariables.listaCforestal = lista_forestalBuilder.ToString();
+                GlobalVariables.resultadoEvaluacion.listaCatastroforestal = lista_forestalBuilder.ToString();
             }
         }
         public static void ProcessorDataAreaAdminstrative(DataTable lodbtExisteDist)

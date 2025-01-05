@@ -51,9 +51,9 @@ namespace CommonUtilities
 
         public static string CurrentTipoEx { get; set; }
         // Intersecciones con DM
-        public static string listaCaramur { get; set; }
-        public static string listaCaramre { get; set; }
-        public static string listaCforestal { get; set; }
+        public static string listaCaramUrbana { get; set; }
+        public static string listaCaramReservada { get; set; }
+        public static string listaCatastroforestal { get; set; }
 
         public static ExtentModel currentExtentDM { get; set; }
 
