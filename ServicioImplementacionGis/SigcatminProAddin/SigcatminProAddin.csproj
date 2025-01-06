@@ -141,6 +141,7 @@
     <None Remove="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-16x16.png" />
     <None Remove="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-32x32.png" />
     <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
+    <None Remove="View\Modulos\Diseño100.png" />
     <None Remove="View\Modulos\images.jpg" />
     <None Remove="View\Modulos\LimiteAreas.PNG" />
     <None Remove="View\Modulos\mapa100.png" />
@@ -371,6 +372,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
+    <Folder Include="Scripts\aprx\" />
+    <Folder Include="Scripts\sde\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
@@ -381,6 +384,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <None Update="Scripts\aprx\mapas\data_cat.sde">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\aprx\mapas\mapas.aprx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\calculoAreasSuperpuestasDisponibles.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
@@ -391,6 +400,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\evaluarPrioritarios.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\exportarImagenDemarcacion.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\exportarKmz.py">

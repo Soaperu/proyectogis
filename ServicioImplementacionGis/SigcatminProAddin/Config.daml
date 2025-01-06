@@ -270,80 +270,80 @@
           <content version="1.0" group="Reportes" />
         </button>
         <!--Controles Evaluacion-->
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerTodos" caption="Ver Todos (AN, PO, SI, ETC)" categoryRefID="EvaluacionTools" keytip="EV-1" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerTodos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\01-ver-todos-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver Todos (AN, PO, SI, ETC)<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerTodos" caption="Todos (AN, PO, SI, ETC)" categoryRefID="EvaluacionTools" keytip="EV-1" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerTodos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\01-ver-todos-32x32.png">
+          <tooltip heading=" Todos (AN, PO, SI, ETC)">Ver Todos (AN, PO, SI, ETC)<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntPostColin" caption="Ver Ant., Post., Colin" categoryRefID="EvaluacionTools" keytip="EV-2" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntPostColin" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Ant., Post., Colin<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntPostColin" caption="Ant., Post., Colin" categoryRefID="EvaluacionTools" keytip="EV-2" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntPostColin" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-32x32.png">
+          <tooltip heading="Ver DM Ant., Post., Colin">Ver DM Ant., Post., Colin<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntPost" caption="Ver Ant. y Post." categoryRefID="EvaluacionTools" keytip="EV-3" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntPost" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\03-ver-ant-post-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Ant. y Post<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntPost" caption="Ant. y Post." categoryRefID="EvaluacionTools" keytip="EV-3" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntPost" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\03-ver-ant-post-32x32.png">
+          <tooltip heading="Ver DM Ant. y Post">Ver DM Ant. y Post<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_VerAnteriores" caption="Ver Anteriores" categoryRefID="EvaluacionTools" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAnteriores" keytip="EV-4" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\04-ver-anteriores-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver Anteriores<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_VerAnteriores" caption="Anteriores" categoryRefID="EvaluacionTools" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAnteriores" keytip="EV-4" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\04-ver-anteriores-32x32.png">
+          <tooltip heading="Ver Anteriores">Ver Anteriores<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerPosteriores" caption="Ver Posteriores" categoryRefID="EvaluacionTools" keytip="EV-5" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerPosteriores" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\05-ver-posteriores-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Posteriores<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerPosteriores" caption="Posteriores" categoryRefID="EvaluacionTools" keytip="EV-5" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerPosteriores" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\05-ver-posteriores-32x32.png">
+          <tooltip heading="Ver DM Posteriores">Ver DM Posteriores<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_Evaluacion_CargarCapasIntegrales" caption="Cargar Capas Integrales" categoryRefID="EvaluacionTools" keytip="EV-6" className="SigcatminProAddin.View.Toolbars.Evaluacion.CargarCapasIntegrales" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\06-cargar-capas-integrales-32x32.png">
-          <tooltip heading="Tooltip Heading">Cargar Capas Integrales<disabledText /></tooltip>
+          <tooltip heading="Cargar Capas Integrales">Cargar Capas Integrales<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerSimultaneos" caption="Ver Simultaneos" categoryRefID="EvaluacionTools" keytip="EV-7" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerSimultaneos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\07-ver-simultaneos-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Simultaneos<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerSimultaneos" caption="Simultáneos" categoryRefID="EvaluacionTools" keytip="EV-7" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerSimultaneos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\07-ver-simultaneos-32x32.png">
+          <tooltip heading="Ver DM Simultáneos">Ver DM Simultáneos<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerExtinguidos" caption="Ver Extinguidos" categoryRefID="EvaluacionTools" keytip="EV-8" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerExtinguidos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\08-ver-extinguidos-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Extinguidos<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerExtinguidos" caption="Extinguidos" categoryRefID="EvaluacionTools" keytip="EV-8" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerExtinguidos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\08-ver-extinguidos-32x32.png">
+          <tooltip heading="Ver DM Extinguidos">Ver DM Extinguidos<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntecesorRD" caption="Ver Antecesor RD" categoryRefID="EvaluacionTools" keytip="EV-9" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntecesorRD" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\09-ver-antecesor-rd-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Antecesor RD<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntecesorRD" caption="Antecesor RD" categoryRefID="EvaluacionTools" keytip="EV-9" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntecesorRD" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\09-ver-antecesor-rd-32x32.png">
+          <tooltip heading="Ver DM Antecesor RD">Ver DM Antecesor RD<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerColindantes" caption="Ver Colindantes" categoryRefID="EvaluacionTools" keytip="EV-10" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerColindantes" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\10-ver-colindantes-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Colindantes<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerColindantes" caption="Colindantes" categoryRefID="EvaluacionTools" keytip="EV-10" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerColindantes" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\10-ver-colindantes-32x32.png">
+          <tooltip heading="Ver DM Colindantes">Ver DM Colindantes<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerEvaluado" caption="Ver Evaluado" categoryRefID="EvaluacionTools" keytip="EV-11" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerEvaluado" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\11-ver-evaluado-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver DM Evaluado<disabledText /></tooltip>
+          <tooltip heading="Ver DM Evaluado">Ver DM Evaluado<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GenerarResultadosEvaluacion" caption="Generar Resultados Evaluacion" categoryRefID="EvaluacionTools" keytip="EV-12" className="SigcatminProAddin.View.Toolbars.Evaluacion.GenerarResultadosEvaluacion" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\12-generar-resultados-de-evaluacion-32x32.png">
-          <tooltip heading="Tooltip Heading">Generar Resultados Evaluación<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GenerarResultadosEvaluacion" caption="Resultados Evaluación" categoryRefID="EvaluacionTools" keytip="EV-12" className="SigcatminProAddin.View.Toolbars.Evaluacion.GenerarResultadosEvaluacion" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\12-generar-resultados-de-evaluacion-32x32.png">
+          <tooltip heading="Generar Resultados Evaluación">Generar Resultados Evaluación<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_CalculoAreaDisponible" caption="Calculo Area Disponible" categoryRefID="EvaluacionTools" keytip="EV-13" className="SigcatminProAddin.View.Toolbars.Evaluacion.CalculoAreaDisponible" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\13-calculo-area-disponible-32x32.png">
-          <tooltip heading="Tooltip Heading">Calculo de Area Disponible<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_CalculoAreaDisponible" caption="Área Disponible" categoryRefID="EvaluacionTools" keytip="EV-13" className="SigcatminProAddin.View.Toolbars.Evaluacion.CalculoAreaDisponible" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\13-calculo-area-disponible-32x32.png">
+          <tooltip heading="Cálculo de Área Disponible">Cálculo de Área Disponible<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_Evaluacion_ObservacionesCartaIGN" caption="Observaciones Carta IGN" categoryRefID="EvaluacionTools" keytip="EV-14" className="SigcatminProAddin.View.Toolbars.Evaluacion.ObservacionesCartaIGN" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\14-observaciones-carta-ign-32x32.png">
-          <tooltip heading="Tooltip Heading">Observaciones de Carta IGN<disabledText /></tooltip>
+          <tooltip heading="Observaciones de Carta IGN">Observaciones de Carta IGN<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerCapas" caption="Ver Capas" categoryRefID="EvaluacionTools" keytip="EV-15" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerCapas" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\15-ver-capas-32x32.png">
-          <tooltip heading="Tooltip Heading">Ver Capas<disabledText /></tooltip>
+          <tooltip heading="Ver Capas">Ver Capas<disabledText /></tooltip>
           <content version="1.0" group="Visualización" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GenerarMallaCuadriculas" caption="Generar Malla Cuadriculas" categoryRefID="EvaluacionTools" keytip="EV-16" className="SigcatminProAddin.View.Toolbars.Evaluacion.GenerarMallaCuadriculas" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\16-generar-malla-cuadriculas-32x32.png">
-          <tooltip heading="Tooltip Heading">Generar Malla de Cuadriculas<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GenerarMallaCuadriculas" caption="Malla Cuadrículas" categoryRefID="EvaluacionTools" keytip="EV-16" className="SigcatminProAddin.View.Toolbars.Evaluacion.GenerarMallaCuadriculas" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\16-generar-malla-cuadriculas-32x32.png">
+          <tooltip heading="Generar Malla de Cuadrículas">Generar Malla de Cuadrículas<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_Evaluacion_PlanoCuadriculas" caption="Plano de Cuadriculas" categoryRefID="EvaluacionTools" keytip="EV-17" className="SigcatminProAddin.View.Toolbars.Evaluacion.PlanoCuadriculas" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\17-plano-cuadriculas-32x32.png">
-          <tooltip heading="Tooltip Heading">Plano de Cuadriculas<disabledText /></tooltip>
+          <tooltip heading="Plano de Cuadrículas">Plano de Cuadrículas<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
         <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GraficaDesdeExcel" caption="Grafica Desde Excel" categoryRefID="EvaluacionTools" keytip="EV-18" className="SigcatminProAddin.View.Toolbars.Evaluacion.GraficaDesdeExcel" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\18-grafica-desde-excel-32x32.png">
-          <tooltip heading="Tooltip Heading">Grafica desde Excel<disabledText /></tooltip>
+          <tooltip heading="Grafica desde Excel">Grafica desde Excel<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_ConsultaAreaDisponible" caption="Consulta Area Disponible" categoryRefID="EvaluacionTools" keytip="EV-19" className="SigcatminProAddin.View.Toolbars.Evaluacion.ConsultaAreaDisponible" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
-          <tooltip heading="Tooltip Heading">Consulta Area Disponible<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_ConsultaAreaDisponible" caption="Consulta Área Disponible" categoryRefID="EvaluacionTools" keytip="EV-19" className="SigcatminProAddin.View.Toolbars.Evaluacion.ConsultaAreaDisponible" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Consulta Área Disponible">Consulta Área Disponible<disabledText /></tooltip>
           <content version="1.0" group="Otros" />
         </button>
         <!--Controles Selector de Modulos-->

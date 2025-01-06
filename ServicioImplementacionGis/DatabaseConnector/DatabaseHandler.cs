@@ -1162,7 +1162,29 @@ namespace DatabaseConnector
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO_MULTIPLE";
             var parameters = new OracleParameter[]
             {
-        new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 255) { Value = code }
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 255) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable GetDemarcacion(int type, string value) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_SeleccionListaUbigeo;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 100) { Value = value }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetZonasporUbigeo(string ubigeo) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneZonaporUbigeo;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_UBIGEO", OracleDbType.Varchar2, 6) { Value = ubigeo }
             };
 
             return ExecuteDataTable(storedProcedure, parameters);

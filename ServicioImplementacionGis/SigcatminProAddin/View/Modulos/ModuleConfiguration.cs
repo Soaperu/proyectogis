@@ -43,6 +43,9 @@ namespace SigcatminProAddin.View.Modulos
                 new Modulo("Varias Cartas Nacionales", typeof(VariasCartasNacional)),
 
 
+                new Modulo("Límite Departamental", typeof(LimiteDepartamental)),
+                new Modulo("Límite Provincial", typeof(LimiteProvincial)),
+                new Modulo("Límite Distrital", typeof(LimiteDistrital)),
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))
             }),

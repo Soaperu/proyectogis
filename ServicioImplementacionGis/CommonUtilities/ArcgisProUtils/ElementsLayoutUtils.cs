@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommonUtilities.ArcgisProUtils.Models;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -224,18 +225,18 @@ namespace CommonUtilities.ArcgisProUtils
             // contatexto=11: CATASTRO NO MINERO
             textList.Add(("CATASTRO NO MINERO", 18.2, posY, colorRed, fontSizeRedBlue));
             posY -= 0.4;
-            string listaCaramur = GlobalVariables.listaCaramur;
-            string listaCaramre = GlobalVariables.listaCaramre;
-            string listaCforestal = GlobalVariables.listaCforestal;
+            string listaCaramur = GlobalVariables.resultadoEvaluacion.listaCaramUrbana;
+            string listaCaramre = GlobalVariables.resultadoEvaluacion.listaCaramReservada;
+            string listaCforestal = GlobalVariables.resultadoEvaluacion.listaCatastroforestal;
             // contatexto=12: Zonas Urbanas
             string zonasUrbanasText;
-            if (string.IsNullOrEmpty(GlobalVariables.listaCaramur))
+            if (string.IsNullOrEmpty(GlobalVariables.resultadoEvaluacion.listaCaramUrbana))
             {
                 zonasUrbanasText = "Zonas Urbanas : No se encuentra superpuesto a un Área urbana";
             }
             else
             {
-                if (GlobalVariables.listaCaramur.Length > 65)
+                if (GlobalVariables.resultadoEvaluacion.listaCaramUrbana.Length > 65)
                 {
                     string posi_x = listaCaramur.Substring(0, 65);
                     string posi_x1 = listaCaramur.Substring(65);
@@ -339,7 +340,8 @@ namespace CommonUtilities.ArcgisProUtils
                 {
                     
                     // Obtener resultados para el criterio actual
-                    var resultados = ObtenerResultadosEval(criterio).Result;
+                    //var resultados = ObtenerResultadosEval(criterio).Result;
+                    var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
 
                     if (resultados.Count > 0)
                     {
@@ -382,17 +384,7 @@ namespace CommonUtilities.ArcgisProUtils
 #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(async() =>
             {
-                // Obtener el mapa activo
-                //Map map = MapView.Active.Map;
-                //if (map == null)
-                //    throw new Exception("No hay un mapa activo.");
-
-                //// Buscar la capa "catastro"
-                //FeatureLayer catastroLayer = map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name.Equals("catastro", StringComparison.OrdinalIgnoreCase));
-                //if (catastroLayer == null)
-                //    throw new Exception("No se encontró la capa 'catastro' en el mapa.");
-                //Layout layout = _layout;
-                MapFrame mfrm = _layout.FindElement(GlobalVariables.mapNameCatastro + " Map Frame") as MapFrame;
+                
                 Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro);
                 
                 var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == GlobalVariables.CurrentShpName);
@@ -565,13 +557,5 @@ namespace CommonUtilities.ArcgisProUtils
 
         }
 
-    public class ResultadoEval
-    {
-        public string Contador { get; set; }
-        public string Concesion { get; set; }
-        public string TipoEx { get; set; }
-        public string CodigoU { get; set; }
-        public string Estado { get; set; }
-        public string Eval { get; set; }
-    }
+    
 }

@@ -58,6 +58,8 @@ namespace DatabaseConnector
         public const string Procedure_CuentaRegistros = "PACK_DBA_SG_D_EVALGIS.SP_CUENTA_REGISTRO";
         public const string Procedure_ObtenerrDatum = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_DATUM_DM";
         public const string Procedure_ObtenerrDatosResolucion = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_RESO_DM";
+        public const string Procedure_SeleccionListaUbigeo = "PACK_DBA_SG_D_EVALGIS.P_SEL_LISTA_UBIGEO";
+        public const string Procedure_ObtieneZonaporUbigeo = "PACK_DBA_SG_D_EVALGIS.P_SEL_UBIGEO_ZONA";
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;

@@ -99,7 +99,7 @@
                 <dxg:GridControl.View>
                     <dxg:TableView  x:Name="DataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
-                       ShowGroupPanel="False"  />
+                       ShowGroupPanel="False" FocusedRowChanged="DataGridResultTableView_FocusedRowChanged"  />
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
@@ -126,7 +126,7 @@
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
                           VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" />
-                <TextBlock Grid.Row="3" TextWrapping="Wrap"
+                <TextBlock x:Name="TxtZonaAlerta" Grid.Row="3" TextWrapping="Wrap"
                            FontSize="9" VerticalAlignment="Center" FontWeight="Medium" Height="30" Grid.ColumnSpan="2" Margin="10,0,0,0"><Run Text="*Area se encuentra entre dos zonas UTM, seleccionar zona a graficar"/><Run Text="."/></TextBlock>
 
             </Grid>

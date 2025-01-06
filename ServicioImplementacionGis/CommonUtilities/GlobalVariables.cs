@@ -1,6 +1,8 @@
 ﻿using ArcGIS.Desktop.Core.Geoprocessing;
+using CommonUtilities.ArcgisProUtils;
 using System.Data;
 using System.Globalization;
+using CommonUtilities.ArcgisProUtils.Models;
 
 namespace CommonUtilities
 {
@@ -38,6 +40,7 @@ namespace CommonUtilities
         public static string toolGetKMLodDM = "exportarDmKmz";
         public static string toolGetDepas = "obtenerDepartamento";
         public static string toolGetAreasOverlay = "calculoAreaSupDisp";
+        public static string toolGetDemaImage = "exportImageDema";
         // Variables obtenidas de Evaluacion DM
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }
@@ -52,9 +55,9 @@ namespace CommonUtilities
 
         public static string CurrentTipoEx { get; set; }
         // Intersecciones con DM
-        public static string listaCaramur { get; set; }
-        public static string listaCaramre { get; set; }
-        public static string listaCforestal { get; set; }
+        public static string listaCaramUrbana { get; set; }
+        public static string listaCaramReservada { get; set; }
+        public static string listaCatastroforestal { get; set; }
 
         public static ExtentModel currentExtentDM { get; set; }
 
@@ -96,6 +99,7 @@ namespace CommonUtilities
 
         // Tablas Generales
         public static double DistBorder { get; set; }
+        public static ResultadoEvaluacionModel resultadoEvaluacion = new ResultadoEvaluacionModel();
 
         public static string ToTitleCase(string input)
         {
