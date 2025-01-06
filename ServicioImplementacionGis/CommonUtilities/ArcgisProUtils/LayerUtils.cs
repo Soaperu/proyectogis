@@ -338,7 +338,7 @@ namespace CommonUtilities.ArcgisProUtils
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

@@ -513,6 +513,7 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.stateDmY = false;
             }
             int datum = (int)CbxSistema.SelectedValue;
+            GlobalVariables.CurrentDatumDm = datum.ToString();
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = System.IO.Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
@@ -578,6 +579,23 @@ namespace SigcatminProAddin.View.Modulos
 
             });
 
+            await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+            await UpdateValueAsync(catastroShpName, " ");
+            string styleCat = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, "");
+
+            CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
+            List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", "Zona Urbana" };
+            await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+            await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+            GlobalVariables.CurrentShpName = "Catastro";
+            UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+            var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax, "Malla", zoneDm);
+            await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+            await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
+            string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+
             try
             {
                 // Itera todos items seleccionados en el ListBox de WPF
@@ -603,26 +621,6 @@ namespace SigcatminProAddin.View.Modulos
             {
                 MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-
-            await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-            await UpdateValueAsync(catastroShpName, " ");
-            string styleCat = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
-            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, "");
-
-            CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
-            List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", "Zona Urbana" };
-            await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
-            await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
-            GlobalVariables.CurrentShpName = "Catastro";
-            UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-            var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax, "Malla", zoneDm);
-            await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
-            await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
-            string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
-            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
-
-            
-
         }
 
         private async void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
