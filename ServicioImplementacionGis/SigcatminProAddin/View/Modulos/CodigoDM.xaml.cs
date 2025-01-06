@@ -600,9 +600,7 @@ namespace SigcatminProAddin.View.Modulos
         {
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
-                //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(MessageConstants.Errors.EmptySearchValue,
-                //                                                 MessageConstants.Titles.MissingValue,
-                //                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                
                 string message = "Por favor ingrese Código de Derecho Minero";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertancia",

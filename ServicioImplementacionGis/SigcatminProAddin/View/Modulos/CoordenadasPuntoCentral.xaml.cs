@@ -210,31 +210,7 @@ namespace SigcatminProAddin.View.Modulos
         private ExtentModel ObtenerExtent(int cooEste, int cooNorte, int datum, int radioKm = 0)
         {
             //// Obtener las coordenadas usando la función ObtenerCoordenadas
-            //DataTable coordenadasTable = ObtenerCoordenadas(codigoValue, datum);
-
-            //// Asegurarse de que la tabla contiene filas
-            //if (coordenadasTable.Rows.Count == 0)
-            //{
-            //    throw new Exception("No se encontraron coordenadas para calcular el extent.");
-            //}
             int radioMeters = radioKm * 1000;
-            // Inicializar las variables para almacenar los valores extremos
-            //int xmin = XMin; // int.MaxValue;
-            //int xmax = XMax; // int.MinValue;
-            //int ymin = YMin; // int.MaxValue;
-            //int ymax = YMax; // int.MinValue;
-
-            // Iterar sobre las filas para calcular los valores extremos
-            //foreach (DataRow row in coordenadasTable.Rows)
-            //{
-            //    int este = Convert.ToInt32(row["ESTE"]);
-            //    int norte = Convert.ToInt32(row["NORTE"]);
-
-            //    if (este < xmin) xmin = este;
-            //    if (este > xmax) xmax = este;
-            //    if (norte < ymin) ymin = norte;
-            //    if (norte > ymax) ymax = norte;
-            //}
 
             // Crear el objeto ExtentModel con los valores calculados
             ExtentModel extent = new ExtentModel
@@ -506,12 +482,6 @@ namespace SigcatminProAddin.View.Modulos
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
 
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
-            //int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
-            //string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-            //GlobalVariables.CurrentCodeDm = codigoValue;
-            //string stateGraphic = DataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
-            //string zoneDm = DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
-            //GlobalVariables.CurrentZoneDm = zoneDm;
 
             string zoneDm = CbxZona.SelectedValue.ToString();
             GlobalVariables.CurrentZoneDm = zoneDm;
@@ -519,7 +489,6 @@ namespace SigcatminProAddin.View.Modulos
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
                                                                                         , AppConfig.userName
                                                                                         , AppConfig.password);
-            //var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
             string fechaArchi = DateTime.Now.Ticks.ToString();
             GlobalVariables.idExport = fechaArchi;
             string catastroShpName = "Catastro" + fechaArchi;
@@ -545,16 +514,6 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
                 }
 
-                ////Carga capa Distrito
-                //if (datum == datumwgs84)
-                //{
-                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
-                //}
-                //else
-                //{
-                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zoneDm, false);
-                //}
-                //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
                 //Carga capa Zona Urbana
                 if (datum == datumwgs84)
                 {
@@ -566,11 +525,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 int Tbx_Este = int.Parse(TbxEste.Text);
                 int Tbx_Norte = int.Parse(TbxNorte.Text);
-                //int Tbx_NorteMin = int.Parse(TbxNorteMin.Text);
-                //int Tbx_NorteMax = int.Parse(TbxNorteMax.Text);
 
-                //var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
-                //var extentDm = ObtenerExtent(codigoValue, datum);
 
                 var extentDmRadio = ObtenerExtent(Tbx_Este, Tbx_Norte, datum, radio);
                 var extentDm = ObtenerExtent(Tbx_Este, Tbx_Norte, datum);
