@@ -28,6 +28,9 @@ def exportarImagenDemarcacion(dema_name, query_string):
     
     map_frame = lyt.listElements("MAPFRAME_ELEMENT", "Marco de mapa")[0]
     map_frame.camera.setExtent(map_frame.getLayerExtent(lyr, False, True))
+    current_scale = map_frame.camera.scale
+    new_scale = current_scale * 1.20
+    map_frame.camera.scale = new_scale
     lyt.exportToPNG(salidapng,150, '24-BIT_TRUE_COLOR')
     return salidapng
 

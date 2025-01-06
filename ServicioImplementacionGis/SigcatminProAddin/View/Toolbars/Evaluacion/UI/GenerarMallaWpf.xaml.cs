@@ -83,11 +83,11 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
             lodtbDatos.Columns.Add("CD_CORNOR", Type.GetType("System.Double"));
             lodtbDatos.Columns.Add("CD_NUMVER", Type.GetType("System.Double"));
 
-            for (int i = extent.xmin; i <= extent.xmax - 1; i += step)
+            for (int i = (int)extent.xmin; i <= (int)extent.xmax - 1; i += step)
             {
 
 
-                for (int j = extent.ymin; j <= extent.ymax - 1; j += step)
+                for (int j = (int)extent.ymin; j <= (int)extent.ymax - 1; j += step)
                 {
                     k = k + 1;
 
@@ -144,11 +144,11 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
             lodtbDatos.Columns.Add("CD_CORNOR", Type.GetType("System.Double"));
             lodtbDatos.Columns.Add("CD_NUMVER", Type.GetType("System.Double"));
 
-            for (int i = extent.xmin; i <= extent.xmax - 1; i += step200)
+            for (int i = (int)extent.xmin; i <= (int)extent.xmax - 1; i += step200)
             {
 
 
-                for (int j = extent.ymin; j <= extent.ymax - 1; j += step500)
+                for (int j = (int)extent.ymin; j <= (int)extent.ymax - 1; j += step500)
                 {
                     k = k + 1;
 

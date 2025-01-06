@@ -528,13 +528,13 @@ namespace SigcatminProAddin.View.Modulos
 
             ArcGIS.Core.Geometry.Geometry polygon = null;
             ArcGIS.Core.Geometry.Envelope envelope = null;
+
+            await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
+            Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
+            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
             await QueuedTask.Run(async () =>
-            {
-
-
-                await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
-                Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
-                var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+            {                
                 var queryClause = $"CD_DIST = '{coddema}'";
 
                 if (datum == 2)
@@ -574,11 +574,35 @@ namespace SigcatminProAddin.View.Modulos
                         }
                     }
                 }
-                string listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);
-
-
+                string listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);            
 
             });
+
+            try
+            {
+                // Itera todos items seleccionados en el ListBox de WPF
+                foreach (var item in LayersListBox.Items)
+                {
+                    if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                    {
+                        string capaSeleccionada = checkBox.Content.ToString();
+                        ExtentModel extentDemarcacion = new ExtentModel
+                        {
+                            xmax = envelope.XMax,
+                            xmin = envelope.XMin,
+                            ymin = envelope.YMin,
+                            ymax = envelope.YMax,
+                        };
+                        {
+                            await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDemarcacion);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
             await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
             await UpdateValueAsync(catastroShpName, " ");
@@ -596,6 +620,8 @@ namespace SigcatminProAddin.View.Modulos
             await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
             string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
             await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+
+            
 
         }
 
