@@ -932,6 +932,20 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
+
+
+        public string CountRecordsAreaRestringida(string type, string search) // FT_Cuenta_Registro
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtenerDatosdeAreasRestringida;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 10) { Value = type },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2, 20) { Value = search }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
         public string ManageObservationCartaDM(string code, string format, string evalCode, string indicator, string userFor, string description, string logUser, string option) // FT_Man_Observacion_CartaDM_desa
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTA_IGN";
@@ -1051,6 +1065,18 @@ namespace DatabaseConnector
             {
                 new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
                 new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetUniqueAresReserva(string tipo, string busca) // F_OBTIENE_AREA_RESERCA
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_AREA_RESERVA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 10) { Value = tipo },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2,20) { Value = busca }
             };
 
             return ExecuteDataTable(storedProcedure, parameters);
