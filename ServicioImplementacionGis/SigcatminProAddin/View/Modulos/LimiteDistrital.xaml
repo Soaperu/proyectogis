@@ -99,7 +99,7 @@
                 <dxg:GridControl.View>
                     <dxg:TableView  x:Name="DataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
-                       ShowGroupPanel="False"  />
+                       ShowGroupPanel="False" FocusedRowChanged="DataGridResultTableView_FocusedRowChanged"  />
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
