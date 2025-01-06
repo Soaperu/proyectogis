@@ -975,6 +975,17 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetCartaColindante(string hoja) //cartas colindantes
+        {
+            string storedProcedure = "PACK_DBA_GIS.P_CARTA_COLINDANTE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_HOJA", OracleDbType.Varchar2, 12) { Value = hoja },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public DataTable GetOfficialCartaIn(string field, string data, string datum) // F_Obtiene_Carta_oficial x Filtro
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL_IN";

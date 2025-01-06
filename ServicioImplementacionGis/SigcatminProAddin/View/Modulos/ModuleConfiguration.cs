@@ -37,11 +37,13 @@ namespace SigcatminProAddin.View.Modulos
         {
             new CategoriaModulo("Consultas", new List<Modulo>
             {
-                new Modulo("Consulta Limites de Areas de Interés", typeof(LimiteAreaInteres)),
+                new Modulo("Código de DM", typeof(CodigoDM)),
+                new Modulo("Consulta Límites de Áreas de Interés", typeof(LimiteAreaInteres)),
+                new Modulo("Coordenadas del Punto Central", typeof(Coordenadas_Punto_Central)),
                 new Modulo("DM por Carta IGN", typeof(DMCartaIGN)),
-                //new Modulo("Simulación de Petitorios", typeof(SimulaPetitorios)),
+                new Modulo("DM por Demarcación Política", typeof(DMxDemarcacionPolitica)),
                 new Modulo("Varias Cartas Nacionales", typeof(VariasCartasNacional)),
-
+                
 
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))

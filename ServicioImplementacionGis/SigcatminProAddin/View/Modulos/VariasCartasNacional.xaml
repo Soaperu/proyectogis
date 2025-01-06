@@ -73,8 +73,8 @@
                        Height="20" Padding="0,3,0,3" SelectionChanged="CbxTypeConsult_SelectionChanged" />
             <TextBlock Text="Carta:" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10"
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
-            <TextBox Height="20" VerticalAlignment="Center" Width="163" VerticalContentAlignment="Center" HorizontalAlignment="Left"
-                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2"  Text="&#xD;&#xA;" Grid.Column="3"/>
+            <TextBox Height="20" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2"  Text="&#xD;&#xA;" Grid.Column="3" PreviewKeyDown="TbxValue_PreviewKeyDown" Margin="0,0,72,0" TextChanged="TbxValue_TextChanged"/>
             <Button Content="Agregar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="3" HorizontalAlignment="Left" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
@@ -88,11 +88,11 @@
                 <ColumnDefinition Width="511*"/>
                 <ColumnDefinition Width="157"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" x:Name="DataGridResult" HorizontalAlignment="Left" Width="432" Grid.Column="1" Margin="68,0,0,0">
+            <dxg:GridControl FontSize="10" x:Name="DataGridResult" HorizontalAlignment="Left" Width="353" Grid.Column="1" Margin="68,0,0,0">
                 <dxg:GridControl.View>
                     <dxg:TableView  x:Name="DataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
-                       ShowGroupPanel="False" Margin="-80,1,74,-1"  />
+                       ShowGroupPanel="False" Margin="-80,1,-2,-1" />
                 </dxg:GridControl.View>
             </dxg:GridControl>
             <ListBox x:Name="listBoxVertices" Margin="426,0,4,0" FontSize="10" FontFamily="Roboto" Grid.Column="1">
@@ -170,7 +170,7 @@
                 <ColumnDefinition Width="530"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Detalle de Selección:" Foreground="#FF696969" HorizontalContentAlignment="Left"
+            <Label Grid.Column="0" Content="Detalle de Selección:" Foreground="#FF696969" HorizontalContentAlignment="Left" IsEnabled="False"
                    FontFamily="Roboto" FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
                    Padding="0,0,0,3"/>
             <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969" FontFamily="Roboto"
@@ -184,7 +184,7 @@
                 <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0">
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" IsEnabled="False" Grid.Column="0">
                 <dxg:GridControl.View>
                     <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False"
                            AllowColumnFiltering="False"

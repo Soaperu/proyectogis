@@ -80,7 +80,7 @@ namespace SigcatminProAddin.Models.Constants
 
         public static class WidthsCarta
         {
-            public const int CdHoja = 30;
+            public const int CdHoja = 50;
             public const int NmHoja = 100;
             public const int Zona = 40;
             public const int EsteMin = 70;
