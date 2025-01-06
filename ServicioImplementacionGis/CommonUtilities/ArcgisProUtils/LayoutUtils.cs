@@ -20,7 +20,7 @@ namespace CommonUtilities.ArcgisProUtils
     public class LayoutUtils
     {
         //private const string V = "Plantilla_evd_84";
-        private readonly LayoutConfiguration _config;
+        private  LayoutConfiguration? _config;
         public LayoutUtils(LayoutConfiguration config)
         {
             _config = config;
@@ -191,7 +191,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// </summary>
         /// <param name="tipoPlano">Tipo de plano.</param>
         /// <returns>Ruta completa de la plantilla.</returns>
-        private string DeterminarRutaPlantilla(string tipoPlano)
+        public string DeterminarRutaPlantilla(string tipoPlano)
         {
             string rutaPlantilla = string.Empty;
 

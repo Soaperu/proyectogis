@@ -788,4 +788,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             await cartaIgnElementsLayoutUtils.AddCartaIgnTextAsync(layoutItem, listHojas, "", listDist, "", listProv, "", listDep, "", "");
         }
     }
+    internal class PlanosDiversosFormatos : BDGeocatminButton
+    {
+        protected override void OnClick()
+        {
+            UI.PlanosDiversosFormatos.Views.MainWindow mainWindow = new UI.PlanosDiversosFormatos.Views.MainWindow();
+            mainWindow.Show();
+        }
+    }
 }
