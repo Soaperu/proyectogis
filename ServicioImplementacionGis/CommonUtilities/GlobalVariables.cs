@@ -37,6 +37,7 @@ namespace CommonUtilities
         public static string toolGetKMLodDM = "exportarDmKmz";
         public static string toolGetDepas = "obtenerDepartamento";
         public static string toolGetAreasOverlay = "calculoAreaSupDisp";
+        public static string toolGetDemaImage = "exportImageDema";
         // Variables obtenidas de Evaluacion DM
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }

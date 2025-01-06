@@ -629,6 +629,61 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
+        private async void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
+        {
+            string demaName = "Departamento";
+            ImagenPoligono.Source = null;
 
+
+
+            var tableView = sender as DevExpress.Xpf.Grid.TableView;
+            if (tableView != null && tableView.Grid.VisibleRowCount > 0)
+            {
+                // Obtener el índice de la fila seleccionada
+                int focusedRowHandle = tableView.FocusedRowHandle;
+                int currentDatum = (int)CbxSistema.SelectedValue;
+
+
+                if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
+                {
+                    // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
+                    string cd_depa = DataGridResult.GetCellValue(focusedRowHandle, "UBIGEO")?.ToString();
+                    string query = $"CD_DEPA = '{cd_depa}'";
+                    var Params = Geoprocessing.MakeValueArray(demaName, query);
+                    var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetDemaImage, Params);
+                    string jsonString = response.ReturnValue;
+
+                    jsonString = jsonString.Trim('"');
+                    string path = jsonString; 
+                    path = path.Replace("\\", "/");
+                    string fullUri = "file:///" + path;
+
+                    using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    {
+                        BitmapImage bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+
+                        // 3) Obligamos a que la imagen se cargue completa en memoria
+                        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+
+                        // 4) Asignamos el stream como fuente de la imagen
+                        bitmap.StreamSource = fs;
+                        bitmap.EndInit();
+
+                        // 5) "Congelamos" la imagen para usarla en WPF sin lock al archivo
+                        bitmap.Freeze();
+
+                        // 6) Asignamos la imagen al control
+                        ImagenPoligono.Source = bitmap;
+                    }
+
+                    //BitmapImage bitmap = new BitmapImage();
+                    //bitmap.BeginInit();
+                    //bitmap.UriSource = new Uri(fullUri, UriKind.Absolute);
+                    //bitmap.EndInit();
+                    //ImagenPoligono.Source = bitmap;
+                }
+            }
+        }
     }
 }
