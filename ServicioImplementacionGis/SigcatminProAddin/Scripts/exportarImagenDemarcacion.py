@@ -17,7 +17,10 @@ def exportarImagenDemarcacion(dema_name, query_string):
     aprx = arcpy.mp.ArcGISProject(path_aprx_plantillas)
     lyt = aprx.listLayouts(f"{dema_name}Layout")[0]    
     salidapng = f"{temp_folder}\{dema_name}.png"
-    os.remove(salidapng)
+    try:
+        os.remove(salidapng)
+    except OSError:
+        pass
 
     map = aprx.listMaps(f"{dema_name}Map")[0]
     lyr = map.listLayers(f"{dema_name}")[0]
