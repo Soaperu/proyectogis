@@ -179,7 +179,11 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI.PlanosDiversosFormatos
             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Procesando:\nTipo de Plano: {SelectedTipoPlano}\nFormato: {SelectedFormato}\nEscala: {SelectedEscala}");
             var layoutConfiguration = new LayoutConfiguration();
             layoutConfiguration.BasePath = GlobalVariables.ContaninerTemplatesReport;
+            layoutConfiguration.SelePlano = SelectedFormato;
             var layoutUtils = new LayoutUtils(layoutConfiguration);
+            Dictionary<string, string> tiposPlanos = new Dictionary<string, string>() {{ "Plano para Atención Público", "Plano Venta" },
+                                                                                         { "Planos Diversos", "Plano_variado" } };
+
             var layoutPath = layoutUtils.DeterminarRutaPlantilla(SelectedTipoPlano);
             await LayoutUtils.AddLayoutPath(layoutPath, "Catastro", GlobalVariables.mapNameCatastro, "plantilla_PV_VA0");
         }

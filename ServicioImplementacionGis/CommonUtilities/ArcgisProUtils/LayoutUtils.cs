@@ -563,7 +563,7 @@ namespace CommonUtilities.ArcgisProUtils
         public string Sistema { get; set; } // Equivalente a v_sistema
         public string ValidaUrbShp { get; set; } // Equivalente a valida_urb_shp
         public string CasoLdMasivo { get; set; } // Equivalente a caso_ldmasivo
-        public string SelePlano { get; set; } // Equivalente a sele_plano
+        public string SelePlano { get; set; } // Equivalente a sele_plano - formato de plano
         public string SeleccionPlanoSi { get; set; } // Equivalente a seleccion_plano_si
         public int TablaIntegrantesCount { get; set; } // Equivalente a tabla_integrantes.Rows.Count
         public int ContaHojaSup { get; set; } // Equivalente a conta_hoja_sup
