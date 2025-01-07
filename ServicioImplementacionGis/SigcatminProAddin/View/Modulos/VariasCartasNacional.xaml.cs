@@ -950,32 +950,7 @@ namespace SigcatminProAddin.View.Modulos
 
             return filteredTable;
         }
-        //private DataTable ObtenerCoordenadas(string codigoValue, int datum)
-        //{
-        //    DataTable filteredTable;
-        //    string[] requiredColumns = {
-        //            DatagridDetailsConstants.RawColumNames.Vertice,
-        //            DatagridDetailsConstants.RawColumNames.CoorEsteE,
-        //            DatagridDetailsConstants.RawColumNames.CoorNorteE };
-
-        //    var dmrRecords = dataBaseHandler.GetDMDataWGS84_IN(codigoValue);
-
-        //    if (datum == datumwgs84)
-        //    {
-        //        requiredColumns = new string[] {
-        //            DatagridDetailsConstants.RawColumNames.Vertice,
-        //            DatagridDetailsConstants.RawColumNames.CoorEste,
-        //            DatagridDetailsConstants.RawColumNames.CoorNorte };
-        //    }
-        //    filteredTable = FilterColumns(dmrRecords, requiredColumns);
-        //    // Renombrar las columnas
-        //    filteredTable.Columns[DatagridDetailsConstants.RawColumNames.Vertice].ColumnName = DatagridDetailsConstants.ColumnNames.Vertice;
-        //    filteredTable.Columns[requiredColumns[1]].ColumnName = DatagridDetailsConstants.ColumnNames.Este;
-        //    filteredTable.Columns[requiredColumns[2]].ColumnName = DatagridDetailsConstants.ColumnNames.Norte;
-
-        //    return filteredTable;
-        //}
-
+      
         public async Task<FeatureInfo> GetFeatureInfobyQuery(string p_Filtro, string layerName)
         {
             Feature selectedFeature = null;
