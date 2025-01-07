@@ -38,6 +38,7 @@ namespace SigcatminProAddin.View.Modulos
             new CategoriaModulo("Consultas", new List<Modulo>
             {
                 new Modulo("Áreas Restringidas", typeof(AreasRestringidas)),
+                new Modulo("Código Carta Nacional", typeof(CodigoCartaNacional)),
                 new Modulo("Código de DM", typeof(CodigoDM)),
                 new Modulo("Consulta Límites de Áreas de Interés", typeof(LimiteAreaInteres)),
                 new Modulo("Coordenadas del Punto Central", typeof(Coordenadas_Punto_Central)),
