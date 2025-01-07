@@ -233,12 +233,12 @@
                 </Grid.RowDefinitions>
                 <!--<Image Margin="5,0,5,0"/>-->
                 <Border BorderBrush="#FF696969" BorderThickness="1"
-                        CornerRadius="5" Padding="5" Margin="0,0,0,-1" Grid.RowSpan="2">
+                        CornerRadius="5" Padding="0" Margin="0,0,0,0" Grid.RowSpan="2">
                     <Canvas x:Name="PolygonCanvas" Background="White" />
                 </Border>
 
                 <Border BorderBrush="#FF696969" BorderThickness="1"
-                        CornerRadius="5" Padding="5" Margin="0,0,0,-1" Grid.RowSpan="2">
+                        CornerRadius="5" Padding="0" Margin="0,0,0,0" Grid.RowSpan="2">
                     <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/View/Modulos/mapa100.png" Stretch="Uniform"/>
                 </Border>
 

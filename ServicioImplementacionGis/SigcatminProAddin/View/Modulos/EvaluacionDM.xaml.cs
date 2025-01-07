@@ -845,22 +845,22 @@ namespace SigcatminProAddin.View.Modulos
                 await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
                 string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
-                //try
-                //{
-                //    // Itera todos items seleccionados en el ListBox de WPF
-                //    foreach (var item in LayersListBox.Items)
-                //    {
-                //        if (item is CheckBox checkBox && checkBox.IsChecked == true)
-                //        {
-                //            string capaSeleccionada = checkBox.Content.ToString();
-                //            await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
-                //        }
-                //    }
-                //}
-                //catch (Exception ex)
-                //{
-                //    MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
-                //}
+                try
+                {
+                    // Itera todos items seleccionados en el ListBox de WPF
+                    foreach (var item in LayersListBox.Items)
+                    {
+                        if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                        {
+                            string capaSeleccionada = checkBox.Content.ToString();
+                            await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
 
                 ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
 
