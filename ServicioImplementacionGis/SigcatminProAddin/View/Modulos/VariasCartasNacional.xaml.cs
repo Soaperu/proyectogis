@@ -314,7 +314,7 @@ namespace SigcatminProAddin.View.Modulos
                 string elementoSeleccionado = listBoxVertices.SelectedItem as string;
                 listBoxVertices.Items.Remove(elementoSeleccionado);
                 //BtnAgregarHoja_Click_1(sender, e);
-                datos_grilla();
+                DatoGrilla();
 
 
             }
@@ -344,7 +344,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     // Eliminar todos los elementos del ListBox
                     listBoxVertices.Items.Clear();
-                    datos_grilla();
+                    DatoGrilla();
 
                 }
             }
@@ -373,7 +373,8 @@ namespace SigcatminProAddin.View.Modulos
             }
             if (listBoxVertices.Items.Count == 0)
             {
-                verifica_carta(TbxValue.Text.ToUpper().ToString().Trim());
+                VerificaCarta(TbxValue.Text.ToUpper().ToString().Trim());
+
             }
             else
             {
@@ -393,10 +394,10 @@ namespace SigcatminProAddin.View.Modulos
             string valor = "Carta " + ":  " + TbxValue.Text.TrimEnd().ToUpper();
             listBoxVertices.Items.Add(valor);
             BtnGraficar.IsEnabled = true;
-            datos_grilla();
+            DatoGrilla();
 
         }
-        private void verifica_carta(string carta)
+        private void VerificaCarta(string carta)
         {
             DataTable coordenadasTable = dataBaseHandler.GetCartaColindante(carta);
             if (coordenadasTable.Rows.Count == 0)
@@ -411,7 +412,7 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-        private void datos_grilla()
+        private void DatoGrilla()
         {
             QueryCarta = "";
             if (listBoxVertices.Items.Count == 0)
@@ -443,7 +444,6 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string value = "CODIGO";// (string)CbxTypeConsult.SelectedValue.ToString();
                 string datumStr = CbxSistema.Text;
-                //var dmrRecords = dataBaseHandler.GetOfficialCarta(value, TbxValue.Text.TrimEnd(), datumStr);
                 var dmrRecords = dataBaseHandler.GetOfficialCartaIn(value, QueryCarta, datumStr);
                 //calculatedIndex(DataGridResult, dmrRecords, DatagridResultConstants.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
@@ -794,8 +794,6 @@ namespace SigcatminProAddin.View.Modulos
                 string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol);
 
-                //var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
-                //var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
@@ -834,8 +832,6 @@ namespace SigcatminProAddin.View.Modulos
         private ExtentModel ObtenerExtent(int XMin, int YMin, int XMax, int YMax, int datum, int radioKm = 0)
         {
             //// Obtener las coordenadas usando la función ObtenerCoordenadas
-            //DataTable coordenadasTable = ObtenerCoordenadas(codigoValue, datum);
-
             int radioMeters = radioKm * 1000;
             // Inicializar las variables para almacenar los valores extremos
             int xmin = XMin; // int.MaxValue;
@@ -886,74 +882,31 @@ namespace SigcatminProAddin.View.Modulos
 
             return filteredTable;
         }
-        private DataTable ObtenerCoordenadas(string codigoValue, int datum)
-        {
-            DataTable filteredTable;
-            string[] requiredColumns = {
-                    DatagridDetailsConstants.RawColumNames.Vertice,
-                    DatagridDetailsConstants.RawColumNames.CoorEsteE,
-                    DatagridDetailsConstants.RawColumNames.CoorNorteE };
+        //private DataTable ObtenerCoordenadas(string codigoValue, int datum)
+        //{
+        //    DataTable filteredTable;
+        //    string[] requiredColumns = {
+        //            DatagridDetailsConstants.RawColumNames.Vertice,
+        //            DatagridDetailsConstants.RawColumNames.CoorEsteE,
+        //            DatagridDetailsConstants.RawColumNames.CoorNorteE };
 
-            var dmrRecords = dataBaseHandler.GetDMDataWGS84_IN(codigoValue);
+        //    var dmrRecords = dataBaseHandler.GetDMDataWGS84_IN(codigoValue);
 
-            if (datum == datumwgs84)
-            {
-                requiredColumns = new string[] {
-                    DatagridDetailsConstants.RawColumNames.Vertice,
-                    DatagridDetailsConstants.RawColumNames.CoorEste,
-                    DatagridDetailsConstants.RawColumNames.CoorNorte };
-            }
-            filteredTable = FilterColumns(dmrRecords, requiredColumns);
-            // Renombrar las columnas
-            filteredTable.Columns[DatagridDetailsConstants.RawColumNames.Vertice].ColumnName = DatagridDetailsConstants.ColumnNames.Vertice;
-            filteredTable.Columns[requiredColumns[1]].ColumnName = DatagridDetailsConstants.ColumnNames.Este;
-            filteredTable.Columns[requiredColumns[2]].ColumnName = DatagridDetailsConstants.ColumnNames.Norte;
+        //    if (datum == datumwgs84)
+        //    {
+        //        requiredColumns = new string[] {
+        //            DatagridDetailsConstants.RawColumNames.Vertice,
+        //            DatagridDetailsConstants.RawColumNames.CoorEste,
+        //            DatagridDetailsConstants.RawColumNames.CoorNorte };
+        //    }
+        //    filteredTable = FilterColumns(dmrRecords, requiredColumns);
+        //    // Renombrar las columnas
+        //    filteredTable.Columns[DatagridDetailsConstants.RawColumNames.Vertice].ColumnName = DatagridDetailsConstants.ColumnNames.Vertice;
+        //    filteredTable.Columns[requiredColumns[1]].ColumnName = DatagridDetailsConstants.ColumnNames.Este;
+        //    filteredTable.Columns[requiredColumns[2]].ColumnName = DatagridDetailsConstants.ColumnNames.Norte;
 
-            return filteredTable;
-        }
-
-
-
-        private ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm = 0)
-        {
-            // Obtener las coordenadas usando la función ObtenerCoordenadas
-            DataTable coordenadasTable = ObtenerCoordenadas(codigoValue, datum);
-
-            // Asegurarse de que la tabla contiene filas
-            if (coordenadasTable.Rows.Count == 0)
-            {
-                throw new Exception("No se encontraron coordenadas para calcular el extent.");
-            }
-            int radioMeters = radioKm * 1000;
-            // Inicializar las variables para almacenar los valores extremos
-            int xmin = int.MaxValue;
-            int xmax = int.MinValue;
-            int ymin = int.MaxValue;
-            int ymax = int.MinValue;
-
-            // Iterar sobre las filas para calcular los valores extremos
-            foreach (DataRow row in coordenadasTable.Rows)
-            {
-                int este = Convert.ToInt32(row["ESTE"]);
-                int norte = Convert.ToInt32(row["NORTE"]);
-
-                if (este < xmin) xmin = este;
-                if (este > xmax) xmax = este;
-                if (norte < ymin) ymin = norte;
-                if (norte > ymax) ymax = norte;
-            }
-
-            // Crear el objeto ExtentModel con los valores calculados
-            ExtentModel extent = new ExtentModel
-            {
-                xmin = xmin - radioMeters,
-                xmax = xmax + radioMeters,
-                ymin = ymin - radioMeters,
-                ymax = ymax + radioMeters
-            };
-
-            return extent;
-        }
+        //    return filteredTable;
+        //}
 
         public async Task<FeatureInfo> GetFeatureInfobyQuery(string p_Filtro, string layerName)
         {

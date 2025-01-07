@@ -533,20 +533,7 @@ namespace SigcatminProAddin.View.Modulos
 
                 // Llamar al método IntersectFeatureClassAsync desde la instancia
                 string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
-                // Encontrando Distritos superpuestos a DM con
-                //DataTable intersectDist;
-                //if (datum == datumwgs84)
-                //{
-                //    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
-                //}
-                //else
-                //{
-                //    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
-                //}
-                //CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
-                //DataTable orderUbigeosDM;
-                //orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
-
+                
                 //Carga capa Hojas IGN
                 if (datum == datumwgs84)
                 {
@@ -602,8 +589,6 @@ namespace SigcatminProAddin.View.Modulos
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                      "Advertancia",
                                                                      MessageBoxButton.OK, MessageBoxImage.Warning);
-                    //List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
-                    //await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
                     BtnGraficar.IsEnabled = true;
                     return;
                 }
