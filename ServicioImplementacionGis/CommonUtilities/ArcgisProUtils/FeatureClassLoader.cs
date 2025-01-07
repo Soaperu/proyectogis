@@ -69,7 +69,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
-                #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -103,15 +103,15 @@ namespace CommonUtilities.ArcgisProUtils
                             DefinitionQuery = new DefinitionQuery(whereClause: queryClause, name: "Filtro dema")
 
                         };
-                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams,_map);
+                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, _map);
                         //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
-                        
+
                         // Asignar el FeatureLayer a la variable correspondiente si es necesario
                         AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
                         return featureLayer;
                     }
                 });
-                #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
             }
             catch (Exception ex)
             {
@@ -120,6 +120,63 @@ namespace CommonUtilities.ArcgisProUtils
                 //MessageBox.Show($"Error al cargar la Feature Class '{featureClassName}': {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
+
+        public async Task<FeatureLayer> LoadFeatureClassAsync(string featureClassName, bool isVisible, string queryClause = "1=1")
+        {
+            try
+            {
+
+                return await QueuedTask.Run(() =>
+                {
+                    // Buscar la información de la Feature Class en la lista
+                    var featureClassInfo = FeatureClassMappings?.FirstOrDefault(f => string.Equals(f.FeatureClassName, featureClassName, StringComparison.OrdinalIgnoreCase)
+                                                                                    || (f.FeatureClassNameGenerator != null && string.Equals(f.FeatureClassNameGenerator(v_zona_dm), featureClassName, StringComparison.OrdinalIgnoreCase)));
+
+                    if (featureClassInfo == null)
+                    {
+                        // Si no se encuentra, usar un nombre genérico
+                        featureClassInfo = new FeatureClassInfo
+                        {
+                            FeatureClassName = featureClassName,
+                            LayerName = featureClassName,
+                            VariableName = null
+                        };
+                    }
+                    // Obtener el nombre real de la Feature Class
+                    string actualFeatureClassName = featureClassInfo.FeatureClassName ?? featureClassInfo.FeatureClassNameGenerator?.Invoke(v_zona_dm);
+
+                    // Abrir la Feature Class
+                    using (FeatureClass featureClass = _geodatabase.OpenDataset<FeatureClass>(actualFeatureClassName))
+                    {
+                        // Obtener el nombre real de la capa (Layer)
+                        string actualLayerName = featureClassInfo.LayerName ?? featureClassInfo.LayerNameGenerator?.Invoke(cd_region_sele);
+
+                        // Crear el FeatureLayer
+                        FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
+                        {
+                            Name = actualLayerName,//featureClassInfo.LayerName,
+                            IsVisible = isVisible,
+                            DefinitionQuery = new DefinitionQuery(whereClause: queryClause, name: "Filtro dema")
+
+                        };
+                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, _map);
+                        //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
+
+                        // Asignar el FeatureLayer a la variable correspondiente si es necesario
+                        AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
+                        return featureLayer;
+                    }
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+                // Manejo de excepciones
+                //MessageBox.Show($"Error al cargar la Feature Class '{featureClassName}': {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
+
 
         private void AssignFeatureLayerVariable(FeatureLayer featureLayer, string variableName)
         {
@@ -587,7 +644,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // Ejecutar la selección y obtener los resultados
                 string lostrJoinCodigos = "";
 
-                await QueuedTask.Run(async() =>
+                await QueuedTask.Run(async () =>
                 {
                     // Crear el envolvente
                     Envelope envelope = EnvelopeBuilder.CreateEnvelope(xMin, yMin, xMax, yMax, pFLayer.GetSpatialReference());
@@ -599,10 +656,10 @@ namespace CommonUtilities.ArcgisProUtils
                         SpatialRelationship = SpatialRelationship.Intersects
                     };
                     // Ejecuta seleccion
-                    pFLayer.Select(spatialFilter,SelectionCombinationMethod.New);
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
                     // Obtener el número de entidades seleccionadas
                     int selectionCount = pFLayer.SelectionCount;
-                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut)) 
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
                     {
                         await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
                     }
@@ -613,7 +670,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             using (Row row = rowCursor.Current)
                             {
-                               
+
                                 // Variables para las salidas del método
                                 string lostr_Join_Codigos_marcona;
                                 string valida_urb_shp;
@@ -641,7 +698,7 @@ namespace CommonUtilities.ArcgisProUtils
                 if (!string.IsNullOrEmpty(lostrJoinCodigos))
                 {
                     lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
-                
+
                     try
                     {
                         string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
@@ -655,7 +712,7 @@ namespace CommonUtilities.ArcgisProUtils
                 }
 
                 return lostrJoinCodigos;
-            
+
 
             }
             catch
@@ -943,7 +1000,7 @@ namespace CommonUtilities.ArcgisProUtils
                 }
 
                 // Definir la ruta de salida y el nombre del archivo
-                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut,GlobalVariables.fileTemp);
+                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
                 //string outputFileName = pNombreArchivo;
                 //string outputPath = Path.Combine(outputFolder, outputFileName + ".shp");
 
@@ -974,7 +1031,7 @@ namespace CommonUtilities.ArcgisProUtils
                 //{
                 // Exportar el FeatureClass a shapefile
                 tema.Select(queryFilter, SelectionCombinationMethod.And);
-                var valueArray = Geoprocessing.MakeValueArray(tema.Name, outputFolder, outputFileName);                
+                var valueArray = Geoprocessing.MakeValueArray(tema.Name, outputFolder, outputFileName);
                 //IGPResult gpResult = await Geoprocessing.ExecuteToolAsync("FeatureClassToShapefile_conversion", valueArray, null, null, null, GPExecuteToolFlags.Default);
                 IGPResult gpResult = await Geoprocessing.ExecuteToolAsync("FeatureClassToFeatureClass_conversion", valueArray, null, null, null, GPExecuteToolFlags.Default);
                 //});
@@ -985,7 +1042,7 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
-        public async Task ExportAttributesTemaAsync(string layerName, bool sele_denu, string outputLayerName, string customWhereClause="")
+        public async Task ExportAttributesTemaAsync(string layerName, bool sele_denu, string outputLayerName, string customWhereClause = "")
         {
             try
             {

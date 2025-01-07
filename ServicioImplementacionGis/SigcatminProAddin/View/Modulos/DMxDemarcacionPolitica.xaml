@@ -1,5 +1,5 @@
-﻿<Page x:Class="SigcatminProAddin.View.Modulos.AreasRestringidas"
-       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<Page x:Class="SigcatminProAddin.View.Modulos.DMxDemarcacionPolitica"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
@@ -10,17 +10,14 @@
       d:DesignHeight="470" d:DesignWidth="680"
       Title="EvaluacionDM"
       FontFamily="Roboto">
-
-    <Page.Resources>
+    <!--<Page.Resources>
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Page.Resources>
-
-
+    </Page.Resources>-->
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -33,16 +30,15 @@
             <RowDefinition Height="5"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
-
         <Grid Margin="0,0,0,0" VerticalAlignment="Center"
               Grid.Column="0" Grid.Row="0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="70*"/>
                 <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Consulta | Areas Restringidas" Grid.Row="0" Grid.Column="0"
+            <TextBlock Grid.Row="0" Grid.Column="0"
                    FontSize="16" FontWeight="Bold" Margin="0,0,0,0"
-                   VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"/>
+                   VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"><Run Text="Consulta"/><Run Text=" "/><Run Text="| D.M."/><Run Language="es-pe" Text=" por Demarcación Política"/></TextBlock>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center"
                         Grid.Column="1" HorizontalAlignment="Right">
                 <TextBlock Text="Administrador01" VerticalAlignment="Center" HorizontalAlignment="Right"
@@ -55,13 +51,11 @@
                        Width="20" Height="20" VerticalAlignment="Center"/>
             </StackPanel>
         </Grid>
-
         <Label Grid.Row="1" Content="Filtros de Búsqueda" Foreground="#FF696969" Padding="0,0,0,3"
                FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
         <Label Grid.Row="3" Content="Resultados de Búsqueda" Foreground="#FF696969"
                FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" 
                HorizontalAlignment="Stretch" Padding="0,0,0,3" x:Name="LblCountRecords"/>
-
         <!-- Panel de Filtros de Búsqueda -->
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch">
@@ -77,12 +71,12 @@
                        HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
                       x:Name="CbxTypeConsult" Width="250" FontSize="10"
-                       Height="20" Padding="0,3,0,3" Loaded="CbxTypeConsult_Loaded" SelectionChanged="CbxTypeConsult_SelectionChanged" />
+                       Height="20" Padding="0,3,0,3" Loaded="CbxTypeConsult_Loaded" SelectionChanged="CbxTypeConsult_SelectionChanged_1" />
             <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10"
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
             <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
                      Grid.Column="3" Width="230" VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" />
+                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" KeyDown="TbxValue_KeyDown" TextChanged="TbxValue_TextChanged"/>
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
@@ -95,11 +89,11 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridResult" >
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridResult" CustomUnboundColumnData="DataGridResult_CustomUnboundColumnData">
                 <dxg:GridControl.View>
                     <dxg:TableView  x:Name="DataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
-                       ShowGroupPanel="False"  />
+                       ShowGroupPanel="False" FocusedRowChanged="DataGridResultTableView_FocusedRowChanged"  />
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
@@ -117,14 +111,14 @@
                 </Grid.RowDefinitions>
                 <TextBlock Text="Radio (km)" FontSize="10" Margin="0,0,0,0"
                            VerticalAlignment="Center" FontWeight="Medium"/>
-                <TextBox Grid.Column="1" Width="100" Height="25" VerticalAlignment="Center" IsEnabled="false"
+                <TextBox Grid.Column="1" Width="100" Height="25" VerticalAlignment="Center"
                           x:Name="TbxRadio" VerticalContentAlignment="Center" />
-                <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium" IsEnabled="false"/>
-                <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" IsEnabled="False"
-                          VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded" />
+                <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
+                <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
+                          VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded" SelectionChanged="CbxZona_SelectionChanged"  />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" SelectionChanged="CbxSistema_SelectionChanged" />
+                          VerticalAlignment="Center" x:Name="CbxSistema" SelectionChanged="CbxSistema_SelectionChanged" Loaded="CbxSistema_Loaded" />
             </Grid>
         </Grid>
 
@@ -177,18 +171,24 @@
                     <RowDefinition Height="20"/>
                 </Grid.RowDefinitions>
                 <!--<Image Margin="5,0,5,0"/>-->
-                <Border BorderBrush="#FF696969" BorderThickness="1"
-                        CornerRadius="5" Padding="5" Margin="0,0,0,3" Grid.RowSpan="2">
+                <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
+                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
                     <Canvas x:Name="PolygonCanvas" Background="White" />
                 </Border>
 
-                <Border BorderBrush="#FF696969" BorderThickness="1"
-                        CornerRadius="5" Padding="5" Margin="0,0,0,1" Grid.RowSpan="2">
-                    <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/View/Modulos/mapa100.png" Stretch="Uniform"/>
+                <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
+                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
+                    <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/Images/EvaluacionDM/mapa100.png" Stretch="Uniform"/>
                 </Border>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                            VerticalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" />
+                            VerticalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" >
+                    <Label Content="Área (ha)" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center"
+                           Width="80" FontSize="10" FontWeight="Medium"/>
+                    <TextBox Text="100" Width="80" Height="18" VerticalAlignment="Center"
+                             VerticalContentAlignment="Center" x:Name="TbxArea"
+                             HorizontalContentAlignment="Center" Background="#DDDDDD" BorderBrush="#FF696969" BorderThickness="0.5"/>
+                </StackPanel>
             </Grid>
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
@@ -212,7 +212,7 @@
                 Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="BtnOtraConsulta_Click" />
+                VerticalContentAlignment="Center" x:Name="BtnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="BtnOtraConsulta_Click"/>
 
             <Button Content="Reporte" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="2" HorizontalAlignment="Center"
@@ -231,15 +231,8 @@
                 Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="BtnGraficar_Click"  />
-            <Button Content="Reporte" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
-                Foreground="White" HorizontalAlignment="Left"
-                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnReporte_Copiar" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Margin="10,0,0,0" RenderTransformOrigin="4.667,0.55" Grid.Column="3" />
+                VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="BtnGraficar_Click" />
         </Grid>
 
-
     </Grid>
-
 </Page>

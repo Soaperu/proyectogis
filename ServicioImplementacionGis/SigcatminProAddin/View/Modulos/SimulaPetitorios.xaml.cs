@@ -31,18 +31,13 @@ using static SigcatminProAddin.View.Modulos.EvaluacionDM;
 using DevExpress.Utils;
 using DevExpress.XtraPrinting.Native;
 
-using ArcGIS.Desktop.Core;
-using ArcGIS.Desktop.Editing;
-using ArcGIS.Core.Geometry;
-using System.Collections.ObjectModel;
-using System.Text;
 
-using ArcGIS.Core.Internal.Geometry;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
+//using ArcGIS.Desktop.Framework.Controls;
+//using ArcGIS.Desktop.Editing;
 
+
+//using ArcGIS.Desktop.Editing.Attributes;
+//using System.Windows.Forms;
 
 
 namespace SigcatminProAddin.View.Modulos
@@ -58,7 +53,7 @@ namespace SigcatminProAddin.View.Modulos
         int datumwgs84 = 2;
         int datumpsad56 = 1;
         string zona;
-        string tipo= "Polígono";
+        string tipo = "Polígono";
         string archi = GlobalVariables.idExport;
         FeatureLayer layer;
 
@@ -281,7 +276,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-           
+
 
         }
 
@@ -308,5 +303,13 @@ namespace SigcatminProAddin.View.Modulos
 
 
         }
+
+
+
+
+
+
+
+
     }
 }

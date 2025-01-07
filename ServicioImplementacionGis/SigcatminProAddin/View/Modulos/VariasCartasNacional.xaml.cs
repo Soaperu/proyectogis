@@ -36,6 +36,7 @@ using ArcGIS.Desktop.Editing;
 using ArcGIS.Core.Geometry;
 using System.Collections.ObjectModel;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using DevExpress.Xpo.Helpers;
 
 
 
@@ -54,37 +55,38 @@ namespace SigcatminProAddin.View.Modulos
         bool sele_denu;
         int datumwgs84 = 2;
         int datumpsad56 = 1;
-        string ResultadoCarta = "";
+        string QueryCarta = "";
+        string loCartaIGN = "";
 
         //public ObservableCollection<CartaIGN> CartaIGNs { get; set; }
 
 
-        public class CartaIGN
-        {
-            public string Codigo { get; set; }
-            public string Nombre { get; set; }
-            public int Zona { get; set; }
-            public int EsteMin { get; set; }
-            public int NorteMin { get; set; }
-            public int EsteMax { get; set; }
-            public int NorteMax { get; set; }
-            public override string ToString()
-            {
-                return $"Codigo: {Codigo}, Nombre: {Nombre}, Zona: {Zona}, EsteMin: {EsteMin}, NorteMin: {NorteMin}, EsteMax: {EsteMax}, NorteMax: {NorteMax}";
-            }
-        }
+        //public class CartaIGN
+        //{
+        //    public string Codigo { get; set; }
+        //    public string Nombre { get; set; }
+        //    public int Zona { get; set; }
+        //    public int EsteMin { get; set; }
+        //    public int NorteMin { get; set; }
+        //    public int EsteMax { get; set; }
+        //    public int NorteMax { get; set; }
+        //    public override string ToString()
+        //    {
+        //        return $"Codigo: {Codigo}, Nombre: {Nombre}, Zona: {Zona}, EsteMin: {EsteMin}, NorteMin: {NorteMin}, EsteMax: {EsteMax}, NorteMax: {NorteMax}";
+        //    }
+        //}
 
-        public class Vertice
-        {
-            public string Nombre { get; set; }
-            public int X { get; set; }
-            public int Y { get; set; }
+        //public class Vertice
+        //{
+        //    public string Nombre { get; set; }
+        //    public int X { get; set; }
+        //    public int Y { get; set; }
 
-            public override string ToString()
-            {
-                return $"Nombre: {Nombre}, X: {X}, Y: {Y}";
-            }
-        }
+        //    public override string ToString()
+        //    {
+        //        return $"Nombre: {Nombre}, X: {X}, Y: {Y}";
+        //    }
+        //}
 
 
 
@@ -357,16 +359,6 @@ namespace SigcatminProAddin.View.Modulos
         private void BtnEliminar_Click(object sender, RoutedEventArgs e)
         {
 
-            //var seleccionados = DataGridResult.GetSelectedRowHandles()
-            //                          .Select(handle => DataGridResult.GetRow(handle) as Registro)
-            //                          .ToList();
-
-            //foreach (var registro in seleccionados)
-            //{
-            //    Registros.Remove(registro);
-            //}
-
-
             // Verificar si hay un elemento seleccionado
             if (listBoxVertices.SelectedItem != null)
             {
@@ -425,9 +417,10 @@ namespace SigcatminProAddin.View.Modulos
         {
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(MessageConstants.Errors.EmptySearchValue,
-                                                                 MessageConstants.Titles.MissingValue,
-                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Ingrese código de la hoja.",
+                                                                   MessageConstants.Titles.Error,
+                                                                   MessageBoxButton.OK,
+                                                                   MessageBoxImage.Warning);
                 return;
             }
             // Crear la cadena valor con el número de punto y las coordenadas
@@ -443,6 +436,26 @@ namespace SigcatminProAddin.View.Modulos
             //}
 
             string valor = "Carta" + ": " + TbxValue.Text.TrimEnd().ToUpper();
+            if (listBoxVertices.Items.Count == 0)
+            {
+                verifica_carta(TbxValue.Text.ToUpper().ToString().Trim());
+            }
+            else
+            {
+                if (loCartaIGN.Contains(TbxValue.Text.ToUpper().ToString().Trim()))
+                {
+                }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("El codigo de hoja no es colindante.",
+                                                                   MessageConstants.Titles.Error,
+                                                                   MessageBoxButton.OK,
+                                                                   MessageBoxImage.Error);
+                    return;
+                };
+
+            }
+            string valor = "Carta " + ":  " + TbxValue.Text.TrimEnd().ToUpper();
             listBoxVertices.Items.Add(valor);
             BtnGraficar.IsEnabled = true;
             datos_grilla();
@@ -485,6 +498,12 @@ namespace SigcatminProAddin.View.Modulos
             {
                 return;
             }
+        }
+        private void verifica_carta(string carta)
+        {
+            DataTable coordenadasTable = dataBaseHandler.GetCartaColindante(carta);
+            if (coordenadasTable.Rows.Count == 0)
+            { }
             else
             {
                 foreach (DataRow row in coordenadasTable.Rows)
@@ -507,12 +526,16 @@ namespace SigcatminProAddin.View.Modulos
 
             string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
 
+                    loCartaIGN = loCartaIGN + row["CARTA"] + ":";
+                }
+                return;
+            }
         }
 
         private void datos_grilla()
         {
-            ResultadoCarta = "";
-            if (listBoxVertices.Items.Count==0)
+            QueryCarta = "";
+            if (listBoxVertices.Items.Count == 0)
             {
                 DataGridResult.ItemsSource = null;
                 return;
@@ -528,11 +551,11 @@ namespace SigcatminProAddin.View.Modulos
                 dato = dato.Trim();
                 if (i == listBoxVertices.Items.Count - 1)
                 {
-                    ResultadoCarta = ResultadoCarta + "'" + dato + "'";
+                    QueryCarta = QueryCarta + "'" + dato + "'";
                 }
                 else
                 {
-                    ResultadoCarta = ResultadoCarta + "'" + dato + "'" + ",";
+                    QueryCarta = QueryCarta + "'" + dato + "'" + ",";
                 }
             }
 
@@ -542,7 +565,7 @@ namespace SigcatminProAddin.View.Modulos
                 string value = "CODIGO";// (string)CbxTypeConsult.SelectedValue.ToString();
                 string datumStr = CbxSistema.Text;
                 //var dmrRecords = dataBaseHandler.GetOfficialCarta(value, TbxValue.Text.TrimEnd(), datumStr);
-                var dmrRecords = dataBaseHandler.GetOfficialCartaIn(value, ResultadoCarta.TrimEnd(), datumStr);
+                var dmrRecords = dataBaseHandler.GetOfficialCartaIn(value, QueryCarta, datumStr);
                 //calculatedIndex(DataGridResult, dmrRecords, DatagridResultConstants.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
                 int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
@@ -836,16 +859,6 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
                 }
 
-                ////Carga capa Distrito
-                //if (datum == datumwgs84)
-                //{
-                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
-                //}
-                //else
-                //{
-                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zoneDm, false);
-                //}
-                //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
                 //Carga capa Zona Urbana
                 if (datum == datumwgs84)
                 {
@@ -855,13 +868,12 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
                 }
-                //var resultado = "'17-I','18-i'";
 
                 int este_min = 0;
                 int norte_min = 0;
                 int este_max = 0;
                 int norte_max = 0;
-                DataTable coordenadasTable = dataBaseHandler.GetOfficialCartaLimite("CODIGO", ResultadoCarta, datumStr);
+                DataTable coordenadasTable = dataBaseHandler.GetOfficialCartaLimite("CODIGO", QueryCarta, datumStr);
                 if (coordenadasTable.Rows.Count == 0)
                 {
                     return;
@@ -882,7 +894,7 @@ namespace SigcatminProAddin.View.Modulos
                 int Tbx_NorteMin = norte_min; // int.Parse(TbxNorteMin.Text);
                 int Tbx_NorteMax = norte_max; // int.Parse(TbxNorteMax.Text);
 
-                var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, radio);
+                var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, 0);
                 var extentDm = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum);
                 GlobalVariables.currentExtentDM = extentDm;
 
@@ -1347,6 +1359,25 @@ namespace SigcatminProAddin.View.Modulos
             {
                 parentWindow.Close();
             }
+        }
+
+        private void TbxValue_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                // Evitar que se procese la tecla Enter (si se desea)
+                e.Handled = true;
+
+                // Llamar a la acción que deseas ejecutar cuando se presiona Enter
+                //MessageBox.Show("Enter");
+                BtnAgregarHoja_Click_1(sender, e);
+                
+            }
+        }
+
+        private void TbxValue_TextChanged(object sender, TextChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -986,6 +986,17 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetCartaColindante(string hoja) //cartas colindantes
+        {
+            string storedProcedure = "PACK_DBA_GIS.P_CARTA_COLINDANTE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_HOJA", OracleDbType.Varchar2, 12) { Value = hoja },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public DataTable GetOfficialCartaIn(string field, string data, string datum) // F_Obtiene_Carta_oficial x Filtro
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL_IN";
@@ -1051,6 +1062,18 @@ namespace DatabaseConnector
             {
                 new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
                 new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetUniqueAresReserva(string tipo, string busca) // F_OBTIENE_AREA_RESERCA
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_AREA_RESERVA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 10) { Value = tipo },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2,20) { Value = busca }
             };
 
             return ExecuteDataTable(storedProcedure, parameters);

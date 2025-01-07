@@ -262,11 +262,11 @@ namespace SigcatminProAddin.View.Modulos
                 int Tbx_EsteMax = int.Parse(TbxEsteMax.Text);
                 int Tbx_NorteMin = int.Parse(TbxNorteMin.Text);
                 int Tbx_NorteMax = int.Parse(TbxNorteMax.Text);
-
+                
                 //var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
                 //var extentDm = ObtenerExtent(codigoValue, datum);
                 
-                var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, radio);
+                var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, 0);
                 var extentDm = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum);
                 GlobalVariables.currentExtentDM = extentDm;
 
