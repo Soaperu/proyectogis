@@ -396,40 +396,6 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-        //private void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
-        //{
-        //    //var tableView = sender as TableView;
-        //    var tableView = sender as DevExpress.Xpf.Grid.TableView;
-        //    if (tableView != null && tableView.Grid.VisibleRowCount > 0)
-        //    {
-        //        // Obtener el índice de la fila seleccionada
-        //        int focusedRowHandle = tableView.FocusedRowHandle;
-        //        int currentDatum = (int)CbxSistema.SelectedValue;
-
-
-        //        if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
-        //        {
-        //            // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
-        //            string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-        //            int.TryParse(DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
-        //            CbxZona.SelectedValue = zona;
-        //            GlobalVariables.CurrentNameDm = DataGridResult.GetCellValue(focusedRowHandle, "NOMBRE")?.ToString();
-        //            // Mostrar el valor obtenido
-
-        //            string areaValue = DataGridResult.GetCellValue(focusedRowHandle, "HECTAREA")?.ToString();
-        //            GlobalVariables.CurrentAreaDm = areaValue;
-        //            TbxArea.Text = areaValue;
-        //            TbxArea.IsReadOnly = true;
-        //            // Llamar a funciones adicionales con el valor seleccionado
-        //            ClearCanvas();
-        //            var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
-        //            DataGridDetails.ItemsSource = dmrRecords.DefaultView;
-        //            GraficarCoordenadas(dmrRecords);
-        //            GlobalVariables.CurrentTipoEx = DataGridResult.GetCellValue(focusedRowHandle, "TIPO")?.ToString();
-        //        }
-        //    }
-        //}
-
         private void GraficarCoordenadas(DataTable dmrRecords)
         {
             // Verificar que el DataTable no sea nulo y tenga datos
