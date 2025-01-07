@@ -627,8 +627,7 @@ namespace SigcatminProAddin.View.Modulos
         {
             string demaName = "Distrito";
             ImagenPoligono.Source = null;
-
-
+            ImagenPoligono.Stretch = Stretch.Fill;
 
             var tableView = sender as DevExpress.Xpf.Grid.TableView;
             if (tableView != null && tableView.Grid.VisibleRowCount > 0)
