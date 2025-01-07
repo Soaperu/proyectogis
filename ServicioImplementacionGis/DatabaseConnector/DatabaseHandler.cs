@@ -1213,5 +1213,18 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public string CountRecordsAreaRestringida(string type, string search) // FT_Cuenta_Registro
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtenerDatosdeAreasRestringida;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 10) { Value = type },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2, 20) { Value = search }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+
     }
 }

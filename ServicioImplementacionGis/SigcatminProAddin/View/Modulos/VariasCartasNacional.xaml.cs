@@ -371,19 +371,6 @@ namespace SigcatminProAddin.View.Modulos
                                                                    MessageBoxImage.Warning);
                 return;
             }
-            // Crear la cadena valor con el número de punto y las coordenadas
-            //string valor = "Carta " + (listBoxVertices.Items.Count + 1) + ":  " + TbxValue.Text.TrimEnd().ToUpper();
-            //if (listBoxVertices.Items.Count == 0)
-            //{
-            //    string item = TbxValue.Text.TrimEnd().Trim().ToUpper();
-            //    // Dividir el texto por el delimitador
-            //    string[] partes = item.Split("-");
-            //    string dato = partes[1];
-            //    dato = dato.Trim();
-            //    verificar_carta(dato);
-            //}
-
-            string valor = "Carta" + ": " + TbxValue.Text.TrimEnd().ToUpper();
             if (listBoxVertices.Items.Count == 0)
             {
                 VerificaCarta(TbxValue.Text.ToUpper().ToString().Trim());
@@ -409,43 +396,6 @@ namespace SigcatminProAddin.View.Modulos
             BtnGraficar.IsEnabled = true;
             DatoGrilla();
 
-        private async void verificar_carta(string dato)
-        {
-            /**/
-            int datum = 2;
-            string datumStr = "WGS-84";
-            string zoneDm = string.Empty;
-            int este_min = 0;
-            int norte_min = 0;
-            int este_max = 0;
-            int norte_max = 0;
-
-            if ("ABCDEFG".Contains(dato)){
-                zoneDm = "17";
-            }
-            else if ("HIJKLMNOPQR".Contains(dato))
-            {
-                zoneDm = "18";
-            }
-            else if ("STUVXYZ".Contains(dato))
-            {
-                zoneDm = "19";
-            }
-
-            GlobalVariables.CurrentZoneDm = zoneDm;
-            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
-            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
-                                                                                        , AppConfig.userName
-                                                                                        , AppConfig.password);
-            
-            Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
-            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
-
-            DataTable coordenadasTable = dataBaseHandler.GetOfficialCartaLimite("CODIGO", ResultadoCarta, datumStr);
-            if (coordenadasTable.Rows.Count == 0)
-            {
-                return;
-            }
         }
         private void VerificaCarta(string carta)
         {
@@ -456,24 +406,6 @@ namespace SigcatminProAddin.View.Modulos
             {
                 foreach (DataRow row in coordenadasTable.Rows)
                 {
-                    este_min = Convert.ToInt32(row["XMIN"]);
-                    norte_min = Convert.ToInt32(row["YMIN"]);
-                    este_max = Convert.ToInt32(row["XMAX"]);
-                    norte_max = Convert.ToInt32(row["YMAX"]);
-                }
-            };
-
-            int Tbx_EsteMin = este_min;// int.Parse(TbxEsteMin.Text);
-            int Tbx_EsteMax = este_max; // int.Parse(TbxEsteMax.Text);
-            int Tbx_NorteMin = norte_min; // int.Parse(TbxNorteMin.Text);
-            int Tbx_NorteMax = norte_max; // int.Parse(TbxNorteMax.Text);
-            int radio = 0;
-            var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, radio);
-            var extentDm = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum);
-            GlobalVariables.currentExtentDM = extentDm;
-
-            string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
-
                     loCartaIGN = loCartaIGN + row["CARTA"] + ":";
                 }
                 return;
@@ -853,12 +785,12 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
                 //GlobalVariables.CurrentPagesDm = listHojas;
-                
+
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                 await UpdateValueAsync(catastroShpName, "");
 
                 //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
-                
+
                 string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol);
 
@@ -950,7 +882,7 @@ namespace SigcatminProAddin.View.Modulos
 
             return filteredTable;
         }
-      
+
         public async Task<FeatureInfo> GetFeatureInfobyQuery(string p_Filtro, string layerName)
         {
             Feature selectedFeature = null;
@@ -990,7 +922,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     layer.Select(queryFilter);
                 };
-             
+
             });
 
             return featureInfo;
@@ -1034,7 +966,7 @@ namespace SigcatminProAddin.View.Modulos
                 // Llamar a la acción que deseas ejecutar cuando se presiona Enter
                 //MessageBox.Show("Enter");
                 BtnAgregarHoja_Click_1(sender, e);
-                
+
             }
         }
 
