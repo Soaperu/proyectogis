@@ -422,11 +422,7 @@ namespace SigcatminProAddin.View.Modulos
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
 
-
-            //if (clase_sele== "AMORTIGUAMIENTO")
-            //{
-            //    clase_sele = clase_sele;
-            //}
+            /*-------------------------*/
 
             BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxValue.Text))
@@ -522,9 +518,9 @@ namespace SigcatminProAddin.View.Modulos
                {
                    WhereClause = queryClause
                };
-            envelope = featureClassLoader.pFeatureLayer_depa.QueryExtent();
+            envelope = featureClassLoader.pFeatureLayer_rese.QueryExtent();
 
-            using (RowCursor rowCursor = featureClassLoader.pFeatureLayer_depa.GetFeatureClass().Search(filter, false))
+            using (RowCursor rowCursor = featureClassLoader.pFeatureLayer_urba.GetFeatureClass().Search(filter, false))
             {
                 while (rowCursor.MoveNext())
                 {
@@ -535,7 +531,9 @@ namespace SigcatminProAddin.View.Modulos
                     }
                 }
             }
-            string listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);
+
+            //string listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);
+
 
 
 
