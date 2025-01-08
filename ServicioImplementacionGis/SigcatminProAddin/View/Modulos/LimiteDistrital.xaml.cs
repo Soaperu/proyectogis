@@ -589,6 +589,7 @@ namespace SigcatminProAddin.View.Modulos
             await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
             await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
             GlobalVariables.CurrentShpName = "Catastro";
+            MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
             UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
             var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax, "Malla", zoneDm);
             await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");

@@ -176,6 +176,18 @@ namespace CommonUtilities.ArcgisProUtils
         public static void AnnotateLayerbyName(string layername, string field, string graphicLayerName, string color = "#000000",
             string fontFamily ="Arial", double fontSize=8.5, string fontWeight="Regular")
         {
+
+            // Colores para Catastro
+            Dictionary<string, string> coloresCatastro = new Dictionary<string, string>()
+            {
+                { "G1", "#00FF00" },
+                { "G2", "#FF0000" },
+                { "G3", "#0000FF" },
+                { "G4", "#000000" },
+                { "G5", "#4E0000" },
+                { "G6", "#CD00ED" },
+                { "G7", "#000000" },
+            };
             
             var map = MapView.Active.Map;
 
@@ -207,6 +219,16 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
                             string fieldValue = Convert.ToString(row[field]);
+                            
+                            if (layername== "Catastro")
+                            {
+                                var leyenda = row["LEYENDA"].ToString();
+                                if (coloresCatastro.ContainsKey(leyenda))
+                                {
+                                    color = coloresCatastro[leyenda];
+                                }
+                            }
+                            
 
                             if (geometry != null && !string.IsNullOrEmpty(fieldValue))
                             {
