@@ -28,6 +28,7 @@ using SigcatminProAddin.View.Toolbars.BDGeocatmin.UI;
 using SigcatminProAddin.View.Toolbars.Evaluacion.UI;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using Newtonsoft.Json;
+using System.Windows;
 
 namespace SigcatminProAddin.View.Toolbars.Evaluacion
 {
@@ -145,12 +146,16 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     {
         protected override async void OnClick()
         {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+            string layerName = "Catastro";
+            string folderName = GlobalVariables.pathFileTemp;
+            string id = GlobalVariables.idExport;
             try
             {
-                await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
-                string layerName = "Catastro";
-                string folderName = GlobalVariables.pathFileTemp;
-                string id = GlobalVariables.idExport;
+                //await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+                //string layerName = "Catastro";
+                //string folderName = GlobalVariables.pathFileTemp;
+                //string id = GlobalVariables.idExport;
                 var Params = Geoprocessing.MakeValueArray(layerName, folderName, id, 1);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetAreasOverlay, Params);
                 var responseJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.ReturnValue);
@@ -158,18 +163,40 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
                 var areaSuperpuesta = responseJson["area_superpuesta"];
                 string layerNameDisponible = responseJson["nombreDisponible"];
                 string layerNameSuperpuesta = responseJson["nombreSuperpuesta"];
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerNameDisponible, "Areadispo");
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(layerNameSuperpuesta, "Areainter");
-                var pFeatureLayer_dispo = await CommonUtilities.ArcgisProUtils.LayerUtils.GetFeatureLayerByNameAsync("Areadispo");
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(pFeatureLayer_dispo);
-                var pFeatureLayer_inter = await CommonUtilities.ArcgisProUtils.LayerUtils.GetFeatureLayerByNameAsync("Areainter");
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(pFeatureLayer_inter);
+                await LayerUtils.ChangeLayerNameAsync(layerNameDisponible, "Areadispo");
+                await LayerUtils.ChangeLayerNameAsync(layerNameSuperpuesta, "Areainter");
+                var pFeatureLayer_dispo = await LayerUtils.GetFeatureLayerByNameAsync("Areadispo");
+                await SymbologyUtils.ColorPolygonSimple(pFeatureLayer_dispo);
+                var pFeatureLayer_inter = await LayerUtils.GetFeatureLayerByNameAsync("Areainter");
+                await SymbologyUtils.ColorPolygonSimple(pFeatureLayer_inter);
                 string layerNameDispoDm = "Areadispo_" + GlobalVariables.CurrentCodeDm;
                 string layerNameInterDm = "Areainter_" + GlobalVariables.CurrentCodeDm;
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync("Areainter", layerNameInterDm);
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync("Areadispo", layerNameDispoDm);
+                await LayerUtils.ChangeLayerNameAsync("Areainter", layerNameInterDm);
+                await LayerUtils.ChangeLayerNameAsync("Areadispo", layerNameDispoDm);
             }
-            catch { }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message, "Error en Calculo Area Disponible", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            try
+            {
+                // Paso 1: Preguntamos al usuario si desea continuar
+                MessageBoxResult result = ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "Calculo de area disponible exitoso.\n \n¿Desea generar Área Disponible en Distinto Datum?",
+                    "Confirmación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                // Paso 2: Verificamos la respuesta del usuario
+                if (result == MessageBoxResult.Yes)
+                {
+                    ComplementaryProcessesUtils.GenerateFreeAreaDm(layerName, folderName);
+                }
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message, "Error en Calculo Area Disponible en distinto datum", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
             
         }
     }

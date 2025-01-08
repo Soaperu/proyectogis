@@ -20,6 +20,10 @@ using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using System.Data;
 using CommonUtilities.ArcgisProUtils.Models;
 using System.Windows;
+using ArcGIS.Core.Events;
+using ArcGIS.Desktop.Mapping.Events;
+using DatabaseConnector;
+using CommonUtilities.ArcgisProUtils.Models.Constants;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -461,6 +465,92 @@ namespace CommonUtilities.ArcgisProUtils
                 // Obtener el mapa activo desde la vista del mapa activa
             return MapView.Active?.Map;
             //});
+        }
+
+        public static async Task<Map> EnsureMapViewIsActiveAsync(string mapName)
+        {
+            if (MapView.Active != null)
+            {
+                return MapView.Active.Map;
+            }
+
+            // Esperar hasta que MapView.Active esté disponible
+            TaskCompletionSource<Map> tcs = new TaskCompletionSource<Map>();
+
+            SubscriptionToken eventToken = null;
+            eventToken = DrawCompleteEvent.Subscribe(async args =>
+            {
+                // Desuscribirse del evento
+                // Desuscribirse del evento
+                if (eventToken != null)
+                {
+                    DrawCompleteEvent.Unsubscribe(eventToken);
+                }
+                // Activar el mapa "CATASTRO MINERO"
+                Map map = await FindMapByNameAsync(mapName);
+                await ActivateMapAsync(map);
+
+                // Completar la tarea con el mapa activo
+                //tcs.SetResult(MapView.Active.Map);
+                tcs.SetResult(map);
+            });
+
+            // Esperar hasta que el evento se complete
+            return await tcs.Task;
+        }
+                
+        public static ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm = 0)
+        {
+            DatabaseHandler dataBaseHandler = new DatabaseHandler();
+            var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+            int xmin = int.MaxValue;
+            int xmax = int.MinValue;
+            int ymin = int.MaxValue;
+            int ymax = int.MinValue;
+            int radioMeters = radioKm * 1000;
+            ExtentModel extent = null;
+            if (dmrRecords.Rows.Count > 0)
+            {
+                var originalDatumDm = dmrRecords.Rows[0]["SC_CODDAT"];
+                if (datum == int.Parse(originalDatumDm.ToString()))
+                {
+
+                    // Iterar sobre las filas para calcular los valores extremos
+                    foreach (DataRow row in dmrRecords.Rows)
+                    {
+                        int este = Convert.ToInt32(row["CD_COREST"]);
+                        int norte = Convert.ToInt32(row["CD_CORNOR"]);
+
+                        if (este < xmin) xmin = este;
+                        if (este > xmax) xmax = este;
+                        if (norte < ymin) ymin = norte;
+                        if (norte > ymax) ymax = norte;
+                    }
+                }
+                else
+                {
+                    // Iterar sobre las filas para calcular los valores extremos
+                    foreach (DataRow row in dmrRecords.Rows)
+                    {
+                        int este = Convert.ToInt32(row["CD_COREST_E"]);
+                        int norte = Convert.ToInt32(row["CD_CORNOR_E"]);
+
+                        if (este < xmin) xmin = este;
+                        if (este > xmax) xmax = este;
+                        if (norte < ymin) ymin = norte;
+                        if (norte > ymax) ymax = norte;
+                    }
+                }
+                extent = new ExtentModel
+                {
+                    xmin = xmin - radioMeters,
+                    xmax = xmax + radioMeters,
+                    ymin = ymin - radioMeters,
+                    ymax = ymax + radioMeters
+                };
+            }
+            return extent;
+
         }
     }
 }

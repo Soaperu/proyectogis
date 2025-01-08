@@ -48,6 +48,7 @@ namespace CommonUtilities
         public static string CurrentCodeDm { get; set; }
         public static string CurrentAreaDm { get; set; }
         public static string CurrentDatumDm { get; set; }
+        public static int CurrentRadioDm { get; set; }
         public static string CurrentDepDm { get; set; }
         public static string CurrentProvDm { get; set; }
         public static string CurrentDistDm { get; set; }

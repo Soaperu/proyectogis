@@ -6,6 +6,7 @@ using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Mapping;
+using DatabaseConnector;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -846,7 +847,190 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
+        public static async Task UpdateValueAsync(string capa, string codigoValue)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener la clase de entidades de la capa
+                    DatabaseHandler dataBaseHandler = new DatabaseHandler();
+                    // Obtener el documento del mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
 
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Preparar la fecha y hora
+                    string fecha = DateTime.Now.ToString("yyyy/MM/dd");
+                    string v_fec_denun = fecha + " 00:00";
+                    string v_hor_denun = DateTime.Now.ToString("HH:mm:ss");
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        int contador = 0;
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            contador++;
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+                                string v_codigo_dm = row["CODIGOU"].ToString();
+
+                                // Llamar al procedimiento para obtener datos de Datum y bloquear estado
+                                DataTable lodtbDatos_dm = dataBaseHandler.ObtenerDatumDm(v_codigo_dm);
+                                if (lodtbDatos_dm.Rows.Count > 0)
+                                {
+                                    row["DATUM"] = lodtbDatos_dm.Rows[0]["ESTADO"].ToString();
+                                }
+
+                                // Llamar a otros procedimientos para obtener situación y estado
+                                DataTable lodtbDatos1 = dataBaseHandler.ObtenerBloqueadoDm(v_codigo_dm);
+                                if (lodtbDatos1.Rows.Count > 0)
+                                {
+                                    if (lodtbDatos1.Rows[0]["CODIGO"].ToString() == "1")
+                                    {
+                                        row["BLOQUEO"] = "1";
+                                        row["CASO"] = "D.M. - ANAP";
+                                    }
+                                }
+                                else
+                                {
+                                    row["BLOQUEO"] = "0";
+                                }
+
+                                row["CONTADOR"] = contador;
+
+                                DataTable lodtbDatos2 = dataBaseHandler.ObtenerDatosGeneralesDM(v_codigo_dm);
+                                if (lodtbDatos2.Rows.Count > 0)
+                                {
+                                    row["SITUACION"] = lodtbDatos2.Rows[0]["SITUACION"].ToString();
+                                }
+                                else
+                                {
+                                    row["SITUACION"] = "X";
+                                }
+
+                                // Lógica de asignación de leyenda dependiendo del estado
+                                string estado = row["ESTADO"].ToString();
+                                string leyenda = string.Empty;
+                                switch (estado)
+                                {
+                                    case " ":
+                                        leyenda = "G4";  // Denuncios Extinguidos
+                                        break;
+                                    case "P":
+                                        leyenda = "G1";  // Petitorio Tramite
+                                        break;
+                                    case "D":
+                                        leyenda = "G2";  // Denuncio Tramite
+                                        break;
+                                    case "E":
+                                    case "N":
+                                    case "Q":
+                                    case "T":
+                                        leyenda = "G3";  // Denuncios Titulados
+                                        break;
+                                    case "F":
+                                    case "J":
+                                    case "L":
+                                    case "H":
+                                    case "Y":
+                                    case "9":
+                                    case "X":
+                                        leyenda = "G4";  // Denuncios Extinguidos
+                                        break;
+                                    case "C":
+                                        DataTable lodtbDatos3 = dataBaseHandler.ObtenerDatosDM(v_codigo_dm);
+                                        string v_situacion_dm = "";
+                                        string v_estado_dm = "";
+                                        if (lodtbDatos3.Rows.Count > 0)
+                                        {
+                                            v_situacion_dm = lodtbDatos3.Rows[0]["SITUACION"].ToString();
+                                            v_estado_dm = lodtbDatos3.Rows[0]["ESTADO"].ToString();
+                                        }
+                                        if (v_situacion_dm == "V" && v_estado_dm == "T")
+                                        {
+                                            leyenda = "G3";
+                                        }
+                                        else if (v_situacion_dm == "V" && v_estado_dm == "R")
+                                        {
+                                            leyenda = "G1";
+                                        }
+                                        else
+                                        {
+                                            leyenda = "G4";
+                                        }
+                                        break;
+                                    case "A":
+                                    case "B":
+                                    case "S":
+                                    case "M":
+                                    case "G":
+                                    case "R":
+                                    case "Z":
+                                    case "K":
+                                    case "V":
+                                        leyenda = "G5";  // Otros
+                                        break;
+                                    default:
+                                        row["LEYENDA"] = "";
+                                        row["EVAL"] = "EV";
+                                        row["TIPO_EX"] = "PE";
+                                        row["CONCESION"] = "Dm_Simulado";
+                                        row["FEC_DENU"] = v_fec_denun;
+                                        row["HOR_DENU"] = v_hor_denun;
+                                        row["CARTA"] = "CARTA";
+
+                                        break;
+                                }
+                                if (row["BLOQUEO"].ToString() == "1")
+                                {
+                                    leyenda = "G7";
+                                }
+
+                                // Actualizar los valores de departamento, provincia y distrito
+                                DataTable lodtbDemarca = dataBaseHandler.ObtenerDatosUbigeo(row["DEMAGIS"].ToString().Substring(0, 6));
+                                if (lodtbDemarca.Rows.Count > 0)
+                                {
+                                    row["DPTO"] = lodtbDemarca.Rows[0]["DPTO"].ToString();
+                                    row["PROV"] = lodtbDemarca.Rows[0]["PROV"].ToString();
+                                    row["DIST"] = lodtbDemarca.Rows[0]["DIST"].ToString();
+                                }
+                                if (codigoValue == row["CODIGOU"].ToString())
+                                {
+                                    leyenda = "G6";
+                                }
+
+                                row["LEYENDA"] = leyenda;
+
+                                row.Store();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+
+        }
     }
 }
 
