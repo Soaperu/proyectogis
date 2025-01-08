@@ -23,6 +23,8 @@ namespace CommonUtilities
         //Datums
         public static string datumWGS = "WGS-84";
         public static string datumPSAD = "PSAD-56";
+        public static string valueDatumWGS = "2";
+        public static string valueDatumPSAD = "1";
 
         // Ruta actual
         public static string? currentPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location);

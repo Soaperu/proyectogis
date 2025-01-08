@@ -23,12 +23,23 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI.PlanosDiversosFormatos.
         public Step3View()
         {
             InitializeComponent();
+            DataContext = new MainViewModel();
+            ((MainViewModel)DataContext).CloseWindowRequested += CloseWindow;
         }
 
 
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
             // Cierra la ventana que contiene este UserControl
+            Window parentWindow = Window.GetWindow(this);
+            if (parentWindow != null)
+            {
+                parentWindow.Close();
+            }
+        }
+
+        private void CloseWindow(object sender, EventArgs e)
+        {
             Window parentWindow = Window.GetWindow(this);
             if (parentWindow != null)
             {

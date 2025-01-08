@@ -281,7 +281,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             string pathLayout;
             await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
 
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval);
                 planeEval = GlobalVariables.planeEval.Split('.')[0];
@@ -309,7 +309,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             string planeDemarca;
             string pathLayout;
             await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca84);
                 planeDemarca = GlobalVariables.planeDemarca84.Split('.')[0];
@@ -336,7 +336,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             string pathLayout;
             await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
 
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta84);
                 planeCarta = GlobalVariables.planeCarta84.Split('.')[0];
@@ -729,7 +729,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
 
             // Plano Evaluación
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval);
                 planeEval = GlobalVariables.planeEval.Split('.')[0];
@@ -750,7 +750,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 
 
             // Plano Demarcación
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca84);
                 planeDemarca = GlobalVariables.planeDemarca84.Split('.')[0];
@@ -767,7 +767,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             await demarcaElementsLayoutUtils.AddDemarcaTextAsync("", GlobalVariables.CurrentDistDm, "", "", GlobalVariables.CurrentProvDm, "", GlobalVariables.CurrentDepDm, layoutItem);
 
             // Plano Carta IGN
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.datumWGS)
+            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
             {
                 pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta84);
                 planeCarta = GlobalVariables.planeCarta84.Split('.')[0];

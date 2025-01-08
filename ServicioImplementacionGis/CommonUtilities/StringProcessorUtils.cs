@@ -65,5 +65,24 @@ namespace CommonUtilities
             }
             return output;
         }
+
+        public static int? GetScaleFromFormatsString(string cadena)
+        {
+            if (string.IsNullOrEmpty(cadena))
+                return null;
+
+            // Definir el patrón de la expresión regular
+            // Este patrón busca un número después de '/' y antes de ')'
+            string patron = @"\/(\d+)\)";
+
+            Match match = Regex.Match(cadena, patron);
+            if (match.Success && match.Groups.Count > 1)
+            {
+                if (int.TryParse(match.Groups[1].Value, out int numero))
+                    return numero;
+            }
+
+            return null;
+        }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using ICIM = ArcGIS.Core.Internal.CIM;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,12 @@ using System.Threading.Tasks;
 using ArcGIS.Core.Internal.Geometry;
 using System.Windows.Documents;
 using System.Drawing;
+using ArcGIS.Core.CIM;
+using ArcGIS.Desktop.Layouts;
+using ArcGIS.Desktop.Framework.Dialogs;
+using ArcGIS.Core.Internal.CIM;
+using System.Windows.Shapes;
+using ArcGIS.Desktop.Core;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -176,7 +182,7 @@ namespace CommonUtilities.ArcgisProUtils
         }
 
 
-        private void  AddFeatureToLayerGrid(FeatureLayer layer, Polyline line, string value)
+        private void  AddFeatureToLayerGrid(FeatureLayer layer, ArcGIS.Core.Geometry.Polyline line, string value)
         {
             using (var featureClass = layer.GetFeatureClass())
             using (var rowBuffer = featureClass.CreateRowBuffer())
@@ -200,7 +206,195 @@ namespace CommonUtilities.ArcgisProUtils
                 featureCursor.Insert(rowBuffer);
             }
         }
+
+
+        /// <summary>
+        /// Crea medidas grillas en el layout especificado.
+        /// </summary>
+        /// <param name="nombre_dataframe">Nombre del DataFrame (MapFrame) en el layout.</param>
+        public static async Task CreationGridMesaures(LayoutProjectItem layoutItem, string mapName, int escalaf)
+        {
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            await QueuedTask.Run(async() =>
+            {
+                // Obtener el layout activo
+                Layout layout = layoutItem.GetLayout();
+                if (layout == null)
+                {
+                    MessageBox.Show("No hay un layout activo.");
+                    return;
+                }
+                MapFrame mapFrame = layout.FindElement(mapName + " Map Frame") as MapFrame;
+                Map mapCatastro = await MapUtils.FindMapByNameAsync(mapName);
+                // Encontrar el MapFrame por nombre
+                //MapFrame mapFrame = layout.FindElement(nombre_dataframe) as MapFrame;
+                var srcMap1 = mapFrame.Map.SpatialReference;
+                if (mapFrame == null)
+                {
+                    MessageBox.Show($"No se encontró un MapFrame con el nombre '{mapName}'.");
+                    return;
+                }
+
+                var mapFrameDefinition = mapFrame.GetDefinition() as CIMMapFrame;
+                //mapFrameDefinition.Grids = new CIMMapGrid[] {};
+
+                // Crear una nueva instancia de CIMMeasuredGrid
+                CIMMeasuredGrid cimMeasuredGrid = new CIMMeasuredGrid
+                {
+                    Name = "Coordenadas",
+                    IsVisible = true,
+                };
+                cimMeasuredGrid.ProjectedCoordinateSystem = srcMap1.ToCIMSpatialReference() as ICIM.ProjectedCoordinateSystem;
+                //var lineGrids = cimMeasuredGrid.GridLines;
+                var lineGrid = new CIMGridLine();
+                lineGrid.ElementType = GridElementType.Label;
+                lineGrid.GridLineOrientation = GridLineOrientation.NorthSouth;
+                
+
+                // Determinar el intervalo de la grilla basado en 'escalaf'
+                double gridInterval;
+                if (escalaf < 50000)
+                {
+                    gridInterval = 1000;
+                }
+                else if (escalaf >= 50000 && escalaf < 100000)
+                {
+                    gridInterval = 2000;
+                }
+                else if (escalaf >= 100000 && escalaf <= 150000)
+                {
+                    gridInterval = 4000;
+                }
+                else if (escalaf > 150000 && escalaf <= 200000)
+                {
+                    gridInterval = 5000;
+                }
+                else if (escalaf > 200000 && escalaf <= 300000)
+                {
+                    gridInterval = 8000;
+                }
+                else if (escalaf > 300000 && escalaf <= 400000)
+                {
+                    gridInterval = 20000;
+                }
+                else if (escalaf > 400000 && escalaf <= 1000000)
+                {
+                    gridInterval = 40000;
+                }
+                else
+                {
+                    gridInterval = 100000;
+                }
+
+                lineGrid.Pattern = new CIMGridPattern { Interval = gridInterval, Start = 1, Stop = 0};
+                lineGrid.FromTick = new CIMExteriorTick
+                {
+                    DrawPerpendicular = true,
+                    Length = 0.09,
+                    Offset = 0,
+                    IsVisible = true,
+                    EdgeAffinity = new int[] {}, // <-- This is not working
+                    GridEndpoint = new CIMGridEndpoint
+                    {
+                        GridLabelTemplate = new CIMSimpleGridLabelTemplate
+                        {
+                            // DynamicStringTemplate = $"<dyn type=\"grid\" units=\"{gridUnits}\" decimalPlaces=\"0\" separator=\"True\" showDirections=\"False\" showZeroMinutes=\"False\" showZeroSeconds=\"False\"/>", 
+                            DynamicStringTemplate = $"<dyn type=\"grid\" decimalPlaces=\"0\" separator=\"True\" showDirections=\"False\" showZeroMinutes=\"False\" showZeroSeconds=\"False\"/>",
+                            Symbol = (SymbolFactory.Instance.ConstructTextSymbol(ColorFactory.Instance.BlackRGB, 8, "Arial", "Regular")).MakeSymbolReference()
+                        },
+                        Offset = 0.083,
+                        Position = 4,  // <-- This is not working
+                        LineSelection = 7
+                    }
+                    
+                };
+                lineGrid.ToTick = new CIMExteriorTick
+                {
+                    Length = 0.09,
+                    Offset = 0.5,
+                    IsVisible = true,
+                    EdgeAffinity = new int[] { }, // <-- This is not working
+                    GridEndpoint = new CIMGridEndpoint
+                    {
+                        
+                        GridLabelTemplate = new CIMSimpleGridLabelTemplate
+                        {
+                            DynamicStringTemplate = "", //TODO                               
+                            Symbol = (SymbolFactory.Instance.ConstructTextSymbol(ColorFactory.Instance.BlackRGB, 0.5, "Arial", "Regular")).MakeSymbolReference()
+                        },
+                        Offset = 0.083,
+                        Position = 4,  // <-- This is not working
+                        LineSelection = 7
+                    }
+                };
+                var newLineSymbol = SymbolFactory.Instance.ConstructLineSymbol(new CIMRGBColor { R = 235, G = 235, B = 235, Alpha = 255 }, 0.5, SimpleLineStyle.Solid);
+                cimMeasuredGrid.NeatlineSymbol = newLineSymbol.MakeSymbolReference();
+                cimMeasuredGrid.GridLines = new CIMGridLine[] { lineGrid };
+                mapFrameDefinition.Grids = new CIMMapGrid[] { cimMeasuredGrid };
+                mapFrame.SetDefinition(mapFrameDefinition);
+                // Definir el símbolo de la línea de la grilla
+                //new CIMSymbol();
+
+                                
+                //// Configurar propiedades de ticks
+                //cimMeasuredGrid.TickLength = 2;
+
+                //// Definir el símbolo de la línea de ticks
+                //CIMSolidStroke tickStroke = new CIMSolidStroke
+                //{
+                //    Width = 0.0001,
+                //    Style = CIMLineStyle.Solid
+                //};
+                //cimMeasuredGrid.TickLineSymbol = tickStroke;
+
+                //// Definir el símbolo de los marcadores de ticks
+                //CIMMarkerSymbol markerSymbol = new CIMMarkerSymbol
+                //{
+                //    SymbolLayers = new CIMSymbolLayer[]
+                //    {
+                //        new CIMSimpleMarker
+                //        {
+                //            Size = 1.0,
+                //            Color = new CIMRGBColor { R = 235, G = 235, B = 235, A = 255 },
+                //            Style = SimpleMarkerStyle.Circle
+                //        }
+                //    }
+                //};
+                //cimMeasuredGrid.TickMarkerSymbol = markerSymbol;
+
+                //// Configurar visibilidad de ticks y etiquetas
+                //cimMeasuredGrid.TickVisible = true;
+                //cimMeasuredGrid.SubTickVisible = true;
+                //cimMeasuredGrid.LabelVisible = true;
+                //cimMeasuredGrid.SubLabelVisible = true;
+
+                //// Verificar si ya existe una grilla con el mismo nombre y eliminarla
+                //CIMMapFrame cimMapFrame = mapFrame..GetCIMFrame();
+                //if (cimMapFrame.MapGrids == null)
+                //{
+                //    cimMapFrame.MapGrids = new CIMMapGrids();
+                //}
+
+                //var existingGrid = cimMapFrame.MapGrids.FirstOrDefault(g => string.Equals(g.Name, "Coordenadas", StringComparison.OrdinalIgnoreCase));
+                //if (existingGrid != null)
+                //{
+                //    cimMapFrame.MapGrids.Remove(existingGrid);
+                //}
+
+                //// Añadir la nueva grilla al MapFrame
+                //cimMapFrame.MapGrids.Add(cimMeasuredGrid);
+
+                //// Aplicar los cambios al MapFrame
+                //mapFrame.SetCIMFrame(cimMapFrame);
+
+                //// Refrescar la vista del layout
+                //LayoutView.Active?.Invalidate();
+
+                //// Llamar a métodos auxiliares para crear etiquetas y bordes
+                //cls_planos.CreateFormattedGridLabel();
+                //cls_planos.CreateSimpleMapGridBorder();
+            });
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+        }
     }
-
-
 }

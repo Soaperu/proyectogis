@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -79,6 +80,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI.PlanosDiversosFormatos
         {
             get { return (_currentStep / 3.0) * 100; }
         }
+
+        public event EventHandler CloseWindowRequested;
 
         public MainViewModel()
         {
@@ -176,16 +179,23 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI.PlanosDiversosFormatos
             }
 
             // Lógica para graficar o procesar la información seleccionada
-            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Procesando:\nTipo de Plano: {SelectedTipoPlano}\nFormato: {SelectedFormato}\nEscala: {SelectedEscala}");
+            //ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Procesando:\nTipo de Plano: {SelectedTipoPlano}\nFormato: {SelectedFormato}\nEscala: {SelectedEscala}");
             var layoutConfiguration = new LayoutConfiguration();
             layoutConfiguration.BasePath = GlobalVariables.ContaninerTemplatesReport;
-            layoutConfiguration.SelePlano = SelectedFormato;
-            var layoutUtils = new LayoutUtils(layoutConfiguration);
+            layoutConfiguration.SeleccionPlanoSi = "Plano Catastral Publico";
+            layoutConfiguration.ValidaUrbShp = "NO";
             Dictionary<string, string> tiposPlanos = new Dictionary<string, string>() {{ "Plano para Atención Público", "Plano Venta" },
                                                                                          { "Planos Diversos", "Plano_variado" } };
-
-            var layoutPath = layoutUtils.DeterminarRutaPlantilla(SelectedTipoPlano);
-            await LayoutUtils.AddLayoutPath(layoutPath, "Catastro", GlobalVariables.mapNameCatastro, "plantilla_PV_VA0");
+            
+            layoutConfiguration.SelePlano = SelectedFormato;
+            var layoutUtils = new LayoutUtils(layoutConfiguration);
+            var layoutPath = layoutUtils.DeterminarRutaPlantilla(tiposPlanos[SelectedTipoPlano]);
+            string nameWithoutExtention = Path.GetFileNameWithoutExtension(layoutPath);
+            int scale = (int)StringProcessorUtils.GetScaleFromFormatsString(SelectedEscala);
+            var layoutProjectItem = await LayoutUtils.AddLayoutPath(layoutPath, "Catastro", GlobalVariables.mapNameCatastro, nameWithoutExtention, scale);
+            await UTMGridGenerator.CreationGridMesaures(layoutProjectItem, GlobalVariables.mapNameCatastro, scale);
+            // Cierra la ventana que contiene este UserControl
+            CloseWindowRequested?.Invoke(this, EventArgs.Empty);
         }
 
         private bool CanGraficar(object parameter)

@@ -1,4 +1,5 @@
 ﻿using ArcGIS.Core.Data;
+using ArcGIS.Core.CIM;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -25,7 +26,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             _config = config;
         }
-        public static async Task<LayoutProjectItem> AddLayoutPath(string layoutFilePath, string nameLayer, string mapName, string layoutName)
+        public static async Task<LayoutProjectItem> AddLayoutPath(string layoutFilePath, string nameLayer, string mapName, string layoutName, int scale = 1)
         {
             // Verificar si el archivo existe
             if (!File.Exists(layoutFilePath))
@@ -35,7 +36,8 @@ namespace CommonUtilities.ArcgisProUtils
             }
 
             // Ejecutar la tarea en el hilo principal de CIM
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
             return await QueuedTask.Run(async () =>
             {
                 try
@@ -46,7 +48,7 @@ namespace CommonUtilities.ArcgisProUtils
                     var addItem = ItemFactory.Instance.Create(layoutFilePath, ItemFactory.ItemType.PathItem) as IProjectItem;
                     // Agregar el layout al proyecto actual
                     Project.Current.AddItem(addItem);
-                    LayoutProjectItem layoutItem = Project.Current.GetItems<LayoutProjectItem>().FirstOrDefault(l => l.Name == layoutName);
+                    LayoutProjectItem layoutItem = Project.Current.GetItems<LayoutProjectItem>().FirstOrDefault(l => string.Equals(l.Name, layoutName, StringComparison.OrdinalIgnoreCase));
                     // Verificar si la capa fue agregada correctamente
                     //LayoutProjectItem layout = layoutProjectItem as LayoutProjectItem;
                     Layout layout = layoutItem.GetLayout();
@@ -57,8 +59,8 @@ namespace CommonUtilities.ArcgisProUtils
 
                         // Mostrar un mensaje de éxito
                         //MessageBox.Show($"Layout '{layout.Name}' agregado y abierto exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                        layout.SetName(mapName);
-                        MapFrame mfrm = layout.FindElement( mapName +" Map Frame") as MapFrame;
+                        //layout.SetName(mapName);
+                        MapFrame mfrm = layout.FindElement( mapName + " Map Frame") as MapFrame;
                         Map mapCatastro = await MapUtils.FindMapByNameAsync(mapName);
                         mfrm.SetMap(mapCatastro);
                         var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == nameLayer);
@@ -70,6 +72,12 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             Envelope layerExtent = fcDef.GetExtent();
                             mfrm.SetCamera(layerExtent);
+                            if (scale > 1)
+                            {
+                                Camera cam = mfrm.Camera;
+                                cam.Scale = scale;
+                                mfrm.SetCamera(cam);
+                            }
                         }
                         // Obtener la lista de mapas después de agregar el layout
                         var mapsAfter = Project.Current.GetItems<MapProjectItem>().Select(m => m.Name).ToList();
@@ -105,7 +113,8 @@ namespace CommonUtilities.ArcgisProUtils
                     MessageBox.Show($"Ocurrió un error al agregar el layout: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async Task ActivateLayoutAsync(Layout layout)
