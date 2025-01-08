@@ -523,28 +523,40 @@ namespace SigcatminProAddin.View.Modulos
 
         private DataTable ObtenerCoordenadas(string codigoValue, int datum)
         {
-            DataTable filteredTable;
-            string[] requiredColumns = { 
-                    DatagridDetailsConstants.RawColumNames.Vertice, 
-                    DatagridDetailsConstants.RawColumNames.CoorEsteE, 
-                    DatagridDetailsConstants.RawColumNames.CoorNorteE };
+            DataTable filteredTable = null;
+            try { 
+            
+                string[] requiredColumns = { 
+                        DatagridDetailsConstants.RawColumNames.Vertice, 
+                        DatagridDetailsConstants.RawColumNames.CoorEsteE, 
+                        DatagridDetailsConstants.RawColumNames.CoorNorteE };
 
-            var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+                var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+                if (dmrRecords.Rows.Count > 0)
+                {
+                    var originalDatumDm = dmrRecords.Rows[0]["SC_CODDAT"];
+                    if (datum == int.Parse(originalDatumDm.ToString()))
+                    {
+                        requiredColumns = new string[] {
+                        DatagridDetailsConstants.RawColumNames.Vertice,
+                        DatagridDetailsConstants.RawColumNames.CoorEste,
+                        DatagridDetailsConstants.RawColumNames.CoorNorte };
+                    }
+                }
+                
+                filteredTable = FilterColumns(dmrRecords, requiredColumns);
+                // Renombrar las columnas
+                filteredTable.Columns[DatagridDetailsConstants.RawColumNames.Vertice].ColumnName = DatagridDetailsConstants.ColumnNames.Vertice;
+                filteredTable.Columns[requiredColumns[1]].ColumnName = DatagridDetailsConstants.ColumnNames.Este;
+                filteredTable.Columns[requiredColumns[2]].ColumnName = DatagridDetailsConstants.ColumnNames.Norte;
 
-            if (datum == datumwgs84)
-            {
-                requiredColumns = new string[] {
-                    DatagridDetailsConstants.RawColumNames.Vertice,
-                    DatagridDetailsConstants.RawColumNames.CoorEste,
-                    DatagridDetailsConstants.RawColumNames.CoorNorte };
+                return filteredTable;
             }
-            filteredTable = FilterColumns(dmrRecords, requiredColumns);
-            // Renombrar las columnas
-            filteredTable.Columns[DatagridDetailsConstants.RawColumNames.Vertice].ColumnName = DatagridDetailsConstants.ColumnNames.Vertice;
-            filteredTable.Columns[requiredColumns[1]].ColumnName = DatagridDetailsConstants.ColumnNames.Este;
-            filteredTable.Columns[requiredColumns[2]].ColumnName = DatagridDetailsConstants.ColumnNames.Norte;
-
-            return filteredTable;
+            catch (Exception ex)
+            {
+                return filteredTable;
+            }
+            
         }
 
         private ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm=0)
@@ -699,7 +711,7 @@ namespace SigcatminProAddin.View.Modulos
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
-            
+            GlobalVariables.CurrentRadioDm= radio;
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
             string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();

@@ -89,17 +89,18 @@ def calculo_area_superpuestas_y_disponibles(
     aprx = arcpy.mp.ArcGISProject("CURRENT")
     mapa_activo = aprx.activeMap
     # Verificar nombre del mapa
-    if mapa_activo.name != "CATASTRO MINERO":
+    if mapa_activo.name not in ["CATASTRO MINERO", "CATASTRO MINERO - WGS-84", "CATASTRO MINERO - PSAD-56"]:
         # Crear la ventana raíz de Tk (aunque no se muestre)
         root = tkinter.Tk()
         root.withdraw()  # Oculta la ventana principal
-        
+        message="No se encuentra en el Mapa [CATASTRO MINERO]. Se abortará el proceso."
         # Mostrar el cuadro de diálogo
-        messagebox.showwarning("Advertencia", 
-            "No se encuentra en el Mapa [CATASTRO MINERO]. Se abortará el proceso.")
+        messagebox.showwarning("Advertencia", message)
         
         # Destruir la ventana raíz para evitar que quede abierta
         root.destroy()
+
+        response["Advertencia"]= message
         return
 
 
