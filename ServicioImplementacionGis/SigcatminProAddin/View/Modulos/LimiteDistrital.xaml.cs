@@ -512,6 +512,13 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.stateDmY = false;
             }
+
+            List<string> mapsToDelete = new List<string>()
+            {
+                GlobalVariables.mapNameCatastro
+            };
+
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
             int datum = (int)CbxSistema.SelectedValue;
             GlobalVariables.CurrentDatumDm = datum.ToString();
             string datumStr = CbxSistema.Text;

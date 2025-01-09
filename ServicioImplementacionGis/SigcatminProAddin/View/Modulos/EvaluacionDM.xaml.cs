@@ -353,6 +353,37 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.CurrentDatumDm = "1";
             }
+
+            var tableView =  DataGridResult.View as DevExpress.Xpf.Grid.TableView;
+            if (tableView != null && tableView.Grid.VisibleRowCount > 0)
+            {
+                // Obtener el índice de la fila seleccionada
+                int focusedRowHandle = tableView.FocusedRowHandle;
+                int currentDatum = (int)CbxSistema.SelectedValue;
+
+
+                if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
+                {
+                    // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
+                    string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+                    int.TryParse(DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
+                    CbxZona.SelectedValue = zona;
+                    GlobalVariables.CurrentNameDm = DataGridResult.GetCellValue(focusedRowHandle, "NOMBRE")?.ToString();
+                    // Mostrar el valor obtenido
+
+                    string areaValue = DataGridResult.GetCellValue(focusedRowHandle, "HECTAREA")?.ToString();
+                    GlobalVariables.CurrentAreaDm = areaValue;
+                    TbxArea.Text = areaValue;
+                    TbxArea.IsReadOnly = true;
+                    // Llamar a funciones adicionales con el valor seleccionado
+                    ClearCanvas();
+                    var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
+                    DataGridDetails.ItemsSource = dmrRecords.DefaultView;
+                    GraficarCoordenadas(dmrRecords);
+                    GlobalVariables.CurrentTipoEx = DataGridResult.GetCellValue(focusedRowHandle, "TIPO")?.ToString();
+                }
+            }
+
         }
 
         private void ConfigureDataGridDetailsColumns()
@@ -1297,19 +1328,6 @@ namespace SigcatminProAddin.View.Modulos
                 BtnSearch.RaiseEvent(new RoutedEventArgs(System.Windows.Controls.Button.ClickEvent));
             }
         }
-
-        private void CbxSistema_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-            if (CbxSistema.SelectedValue.ToString() == "2")
-            {
-                GlobalVariables.CurrentDatumDm = "2";
-            }
-            else
-            {
-                GlobalVariables.CurrentDatumDm = "1";
-            }
-        }
-
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
             TbxValue.Focus();
