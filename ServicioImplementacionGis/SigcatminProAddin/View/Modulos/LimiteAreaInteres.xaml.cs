@@ -152,7 +152,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string message = "Por favor ingrese un valor coordenada Este Mínimo";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
@@ -161,7 +161,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string message = "Por favor ingrese un valor coordenada Este Máximo";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
@@ -170,7 +170,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string message = "Por favor ingrese un valor coordenada Norte Mínimo";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
@@ -179,7 +179,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string message = "Por favor ingrese un valor coordenada Norte Máximo";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;

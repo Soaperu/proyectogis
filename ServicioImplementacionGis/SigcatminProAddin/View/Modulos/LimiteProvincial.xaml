@@ -77,12 +77,12 @@
                        HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="18,8,38,7" Grid.Column="1"
                       x:Name="CbxTypeConsult" FontSize="10"
-                       Height="20" Padding="0,3,0,3" />
+                       Height="20" Padding="0,3,0,3" IsEnabled="False"/>
             <TextBlock Text="Provincia:" VerticalAlignment="Top" FontSize="10" Margin="30,10,0,0"
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium" Width="60" Grid.ColumnSpan="2"/>
             <TextBox Height="20" VerticalAlignment="Center"
                      Grid.Column="3" Width="140" VerticalContentAlignment="Center" HorizontalAlignment="Left"
-                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" />
+                     x:Name="TbxValue" FontSize="10" Padding="5,0,0,0" />
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"

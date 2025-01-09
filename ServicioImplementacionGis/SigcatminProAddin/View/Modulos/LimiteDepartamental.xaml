@@ -82,7 +82,7 @@
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium" Width="80" Grid.ColumnSpan="2"/>
             <TextBox Height="20" Margin="10,0,0,0" VerticalAlignment="Center"
                      Grid.Column="3" Width="140" VerticalContentAlignment="Center" HorizontalAlignment="Left"
-                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" />
+                     x:Name="TbxValue" FontSize="10" Padding="5,0,0,0" />
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"

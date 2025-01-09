@@ -440,7 +440,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string message = "Por favor ingrese un valor coordenada Este";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
@@ -449,7 +449,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string message = "Por favor ingrese un valor coordenada Norte";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
@@ -460,7 +460,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 string message = "Por favor ingrese Zona (17, 18, 19)";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
@@ -587,7 +587,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     string message = "No existe información en esta punto central";
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                     "Advertancia",
+                                                                     "Advertencia",
                                                                      MessageBoxButton.OK, MessageBoxImage.Warning);
                     BtnGraficar.IsEnabled = true;
                     return;

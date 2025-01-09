@@ -569,7 +569,7 @@ namespace SigcatminProAddin.View.Modulos
                 
                 string message = "Por favor ingrese Código de Derecho Minero";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
 
                 return;
@@ -870,7 +870,7 @@ namespace SigcatminProAddin.View.Modulos
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
                 string message = "Por favor ingrese Código de Derecho Minero";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;

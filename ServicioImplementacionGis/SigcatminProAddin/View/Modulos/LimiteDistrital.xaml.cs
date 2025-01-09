@@ -497,9 +497,19 @@ namespace SigcatminProAddin.View.Modulos
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
-                string message = "Por favor ingrese un valor de radio";
+                string message = "Por favor, ingrese un valor de radio";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
+                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                BtnGraficar.IsEnabled = true;
+                return;
+            }
+
+            if (CbxZona.SelectedIndex == 0)
+            {
+                string message = "Por favor, Seleccione una zona";
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
@@ -524,7 +534,7 @@ namespace SigcatminProAddin.View.Modulos
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = System.IO.Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
-            string zoneDm = "18";
+            string zoneDm = CbxZona.SelectedValue.ToString();
 
             var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis

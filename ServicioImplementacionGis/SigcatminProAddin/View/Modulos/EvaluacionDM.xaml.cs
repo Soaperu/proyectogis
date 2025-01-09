@@ -715,9 +715,9 @@ namespace SigcatminProAddin.View.Modulos
             if (string.IsNullOrEmpty(TbxRadio.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
-                string message = "Por favor ingrese un valor de radio";
+                string message = "Por favor, ingrese un valor de radio";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                 "Advertancia",
+                                                                 "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
                 BtnGraficar.IsEnabled = true;
                 return;
