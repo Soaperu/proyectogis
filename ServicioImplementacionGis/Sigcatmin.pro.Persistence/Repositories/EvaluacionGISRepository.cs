@@ -38,29 +38,13 @@ namespace Sigcatmin.pro.Persistence.Repositories
             
             return int.Parse(outputValue);
         }
-
-        public async ValueTask<IEnumerable<CoordenadaDto>> GetCoordenadasDMGS84ByCode(string code)
-        {
-            var parameters = new OracleDynamicParameters();
-            parameters.Add("V_CODIGO", code, OracleMappingType.Varchar2, ParameterDirection.Input, size: 12);
-            parameters.Add("VO_CURSOR", null, OracleMappingType.RefCursor, ParameterDirection.Output);
-
-            using var connection = await _dbManager.GetConnectionAsync(_DdConnectionSettings.Oracle);
-
-            return await connection.QueryAsync<CoordenadaDto>(
-               EvaluacionGISProcedures.GetWGS84Oficial,
-               parameters,  
-               commandType: CommandType.StoredProcedure
-           );
-        }
-
         public async ValueTask<IEnumerable<DerechoMineroDto>> GetDerechosMinerosUnique(string code, int type)
         {
 
             var parameters = new OracleDynamicParameters();
             parameters.Add("V_CODIGO", code, OracleMappingType.Varchar2, ParameterDirection.Input, size: 13);
             parameters.Add("V_TIPO", type, OracleMappingType.Varchar2, ParameterDirection.Input, size: 1);
-            parameters.Add("VO_CURSOR", type, OracleMappingType.RefCursor, ParameterDirection.Output);
+            parameters.Add("VO_CURSOR", null, OracleMappingType.RefCursor, ParameterDirection.Output);
 
             using var connection = await _dbManager.GetConnectionAsync(_DdConnectionSettings.Oracle);
 
@@ -71,6 +55,21 @@ namespace Sigcatmin.pro.Persistence.Repositories
             );
 
             return result;
+        }
+
+        public async ValueTask<IEnumerable<CoordinateDto>> GetcoordinatesByCode(string code)
+        {
+            var parameters = new OracleDynamicParameters();
+            parameters.Add("V_CODIGO", code, OracleMappingType.Varchar2, ParameterDirection.Input, size: 12);
+            parameters.Add("VO_CURSOR", null, OracleMappingType.RefCursor, ParameterDirection.Output);
+
+            using var connection = await _dbManager.GetConnectionAsync(_DdConnectionSettings.Oracle);
+
+            return await connection.QueryAsync<CoordinateDto>(
+               EvaluacionGISProcedures.GetWGS84Oficial,
+               parameters,
+               commandType: CommandType.StoredProcedure
+           );
         }
     }
 }

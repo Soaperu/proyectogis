@@ -4,7 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sigcatmin.pro.Application.Dtos
+namespace Sigcatmin.pro.Domain.Enums
 {
-    public record struct LoginRequestDto (string UserName, string Password);
+    public enum CoordinateSystem
+    {
+        WGS84 = 1,
+        PSAD56 = 2,
+    }
 }

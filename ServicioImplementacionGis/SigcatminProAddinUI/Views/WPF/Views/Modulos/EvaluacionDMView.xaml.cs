@@ -4,6 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.UsesCases;
+using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
 using SigcatminProAddinUI.Resourecs.Constants;
@@ -20,6 +21,8 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         private readonly GetDerechoMineroUseCase _getDerechoMineroUseCase;
         private readonly CountRowsGISUseCase _countRowsGISUseCase;
         private readonly GetCoordenadasDMUseCase _getCoordenadasDMUseCase;
+
+        private string _seletecdRowCode = string.Empty;
         public EvaluacionDMView()
         {
             InitializeComponent();
@@ -80,22 +83,32 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         }
         private async void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
-
-            string codigo = DataGridResult.GetSelectedRow<string>(sender, "Codigo");
+         
             string zona = DataGridResult.GetSelectedRow<string>(sender, "Zona");
             string nombre = DataGridResult.GetSelectedRow<string>(sender, "Nombre");
             string hectarea = DataGridResult.GetSelectedRow<string>(sender, "Hectarea");
+            _seletecdRowCode = DataGridResult.GetSelectedRow<string>(sender, "Codigo");
+            int currentDatum = (int)CbxSistema.SelectedValue;
 
             CbxZona.SelectedValue = zona;
             TbxArea.Text = hectarea;
             TbxArea.IsReadOnly = true;
             ClearCanvas();
 
-            var coordenadas = await _getCoordenadasDMUseCase.Execute(codigo);
+            var coordenadas = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
             DataGridDetails.ItemsSource = coordenadas;
-            // GraficarCoordenadas(dmrRecords);
+            // GraficarCoordenadas(dmrRecords);    
+        }
 
-            
+        private async void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (string.IsNullOrEmpty(_seletecdRowCode)) return;
+
+            if (CbxSistema.SelectedItem is ComboBoxItemGeneric<int> selectedItem)
+            {
+                var coordenadas = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, selectedItem.Id);
+                DataGridDetails.ItemsSource = coordenadas;
+            }
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)

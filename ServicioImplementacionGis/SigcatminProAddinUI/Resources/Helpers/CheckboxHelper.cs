@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
-using Microsoft.Extensions.Primitives;
 
 namespace SigcatminProAddinUI.Resources.Helpers
 {
     public static class CheckboxHelper
     {
-        public static CheckBox GenerateChexbox(string text, bool isCheked)
+        public static CheckBox GenerateChexbox(string text, bool isCheked, bool isEnabled = true)
         {
             var checkBox = new CheckBox
             {
@@ -23,7 +17,7 @@ namespace SigcatminProAddinUI.Resources.Helpers
                 IsThreeState = true 
             };
             checkBox.IsChecked = isCheked; 
-            checkBox.IsEnabled = false; 
+            checkBox.IsEnabled = isEnabled; 
 
             return checkBox;
 

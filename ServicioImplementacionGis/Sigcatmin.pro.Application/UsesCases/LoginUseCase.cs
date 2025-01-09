@@ -1,4 +1,4 @@
-﻿using Sigcatmin.pro.Application.Dtos;
+﻿using Sigcatmin.pro.Application.Dtos.Request;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.prop.Domain.Interfaces.Repositories;
 using Sigcatmin.prop.Domain.Interfaces.Services;

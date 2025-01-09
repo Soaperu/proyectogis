@@ -133,7 +133,7 @@
                 <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
                       VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded"  />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
-                <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
+                <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" SelectionChanged="CbxSistema_SelectionChanged"
                       VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" />
             </Grid>
         </Grid>

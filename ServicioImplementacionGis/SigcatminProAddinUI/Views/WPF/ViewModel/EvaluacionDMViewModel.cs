@@ -13,7 +13,7 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
         private List<string> _layersText = new List<string>()
         {
             "Caram",
-             "Catastro Forestal",
+            "Catastro Forestal",
             "Predio Rural",
             "Limite Departamental",
             "Limite Provincial",
