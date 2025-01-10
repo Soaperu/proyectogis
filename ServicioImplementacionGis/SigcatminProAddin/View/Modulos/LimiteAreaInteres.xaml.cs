@@ -144,7 +144,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        
+
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
             BtnGraficar.IsEnabled = false;
@@ -184,7 +184,7 @@ namespace SigcatminProAddin.View.Modulos
                 BtnGraficar.IsEnabled = true;
                 return;
             }
-            
+
             if (ChkGraficarDmY.IsChecked == true)
             {
                 GlobalVariables.stateDmY = true;
@@ -194,13 +194,22 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.stateDmY = false;
             }
 
+            List<string> mapsToDelete = new List<string>()
+                 {
+                     GlobalVariables.mapNameCatastro,
+                     //GlobalVariables.mapNameDemarcacionPo,
+                     //GlobalVariables.mapNameCartaIgn
+                 };
+
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
 
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
-            
+
             string zoneDm = CbxZona.SelectedValue.ToString();
             GlobalVariables.CurrentZoneDm = zoneDm;
             var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
@@ -246,10 +255,10 @@ namespace SigcatminProAddin.View.Modulos
                 int Tbx_EsteMax = int.Parse(TbxEsteMax.Text);
                 int Tbx_NorteMin = int.Parse(TbxNorteMin.Text);
                 int Tbx_NorteMax = int.Parse(TbxNorteMax.Text);
-                
+
                 //var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
                 //var extentDm = ObtenerExtent(codigoValue, datum);
-                
+
                 var extentDmRadio = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum, 0);
                 var extentDm = ObtenerExtent(Tbx_EsteMin, Tbx_NorteMin, Tbx_EsteMax, Tbx_NorteMax, datum);
                 GlobalVariables.currentExtentDM = extentDm;

@@ -423,7 +423,19 @@ namespace SigcatminProAddin.View.Modulos
             else
             {
                 GlobalVariables.stateDmY = false;
-            }
+            };
+
+
+            List<string> mapsToDelete = new List<string>()
+             {
+            GlobalVariables.mapNameCatastro,
+            //GlobalVariables.mapNameDemarcacionPo,
+            //GlobalVariables.mapNameCartaIgn
+            };
+
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
+
 
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
@@ -826,9 +838,19 @@ namespace SigcatminProAddin.View.Modulos
             return await tcs.Task;
         }
 
+        private void TbxValue_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                // Evitar que se procese la tecla Enter (si se desea)
+                e.Handled = true;
 
+                // Llamar a la acción que deseas ejecutar cuando se presiona Enter
+                //MessageBox.Show("Enter");
+                BtnSearch_Click(sender, e);
 
+            }
 
-
+        }
     }
 }

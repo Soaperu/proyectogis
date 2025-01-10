@@ -435,6 +435,25 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            if (ChkGraficarDmY.IsChecked == true)
+            {
+                GlobalVariables.stateDmY = true;
+            }
+            else
+            {
+                GlobalVariables.stateDmY = false;
+            };
+
+
+            List<string> mapsToDelete = new List<string>()
+             {
+            GlobalVariables.mapNameCatastro,
+            //GlobalVariables.mapNameDemarcacionPo,
+            //GlobalVariables.mapNameCartaIgn
+            };
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
+
             BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxEste.Text))
             {
@@ -545,8 +564,8 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
 
-                if (File.Exists(catastroShpName))
-                {
+                //if (File.Exists(catastroShpName))
+                //{
                     await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                     await UpdateValueAsync(catastroShpName, "");
 
@@ -582,17 +601,19 @@ namespace SigcatminProAddin.View.Modulos
                     {
                         MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
-                }
-                else
-                {
-                    string message = "No existe información en esta punto central";
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                                                                     "Advertencia",
-                                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                    BtnGraficar.IsEnabled = true;
-                    return;
-                }
-                
+                CbxZona.SelectedIndex = 0;
+
+                //}
+                //else
+                //{
+                //    string message = "No existe información en esta punto central";
+                //    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                //                                                     "Advertencia",
+                //                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
+                //    BtnGraficar.IsEnabled = true;
+                //    return;
+                //}
+
             }
             catch (Exception ex) { }
             

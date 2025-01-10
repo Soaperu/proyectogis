@@ -696,6 +696,15 @@ namespace SigcatminProAddin.View.Modulos
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
 
+            List<string> mapsToDelete = new List<string>()
+             {
+                 //GlobalVariables.mapNameCatastro,
+                 //GlobalVariables.mapNameDemarcacionPo,
+                 GlobalVariables.mapNameCartaIgn
+             };
+
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
             try
             {
 
@@ -801,7 +810,7 @@ namespace SigcatminProAddin.View.Modulos
 
 
                     string listHojas = DataGridResult.GetCellValue(focusedRowHandle, "CARTA")?.ToString();
-                    GlobalVariables.CurrentPagesDm = listHojas.Replace("-", "").ToLower();
+                    GlobalVariables.CurrentPagesDm = "'" + listHojas.Replace("-", "").ToLower() + "'";
 
                     string mosaicLayer;
                     if (datum == datumwgs84)

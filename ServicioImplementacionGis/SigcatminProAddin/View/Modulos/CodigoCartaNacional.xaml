@@ -76,7 +76,7 @@
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
             <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
                      Grid.Column="3" Width="230" VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" KeyDown="TbxValue_KeyDown"/>
+                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" KeyDown="TbxValue_KeyDown" PreviewKeyDown="TbxValue_PreviewKeyDown"/>
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"

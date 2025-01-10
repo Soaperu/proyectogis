@@ -696,8 +696,17 @@ namespace SigcatminProAddin.View.Modulos
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
 
+            List<string> mapsToDelete = new List<string>()
+             {
+                 //GlobalVariables.mapNameCatastro,
+                 GlobalVariables.mapNameDemarcacionPo,
+                 //GlobalVariables.mapNameCartaIgn
+             };
 
- 
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
+
+
             try
             {
 
@@ -755,7 +764,7 @@ namespace SigcatminProAddin.View.Modulos
 
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, catastroShpName, "Zona Urbana" };
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
-                
+
                 try
                 {
                     var fl = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));

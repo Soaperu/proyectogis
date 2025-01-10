@@ -693,6 +693,14 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.stateDmY = false;
             }
 
+            List<string> mapsToDelete = new List<string>()
+             {
+                 GlobalVariables.mapNameCatastro,
+                 //GlobalVariables.mapNameDemarcacionPo,
+                 //GlobalVariables.mapNameCartaIgn
+             };
+
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
