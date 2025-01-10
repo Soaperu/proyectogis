@@ -270,7 +270,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 {
                     featureLayer = await LayerUtils.AddFeatureClassToMapFromGdbAsync(geodatabase, FeatureClassConstants.gstrFC_CuadriculaR_PSAD56, "Cuadricula Regional", false);
                 }
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureLayer);
+                await SymbologyUtils.ColorPolygonSimple(featureLayer);
             }
             catch (Exception ex) { }
         }
@@ -298,10 +298,10 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             }
             string mapName = GlobalVariables.mapNameCatastro;
             string nameLayer = GlobalVariables.CurrentShpName;
-            var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
+            var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
             ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
             (x, y) =await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
-            y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion",layoutItem, y);
+            y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion", layoutItem, 15.2);
             await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
         }
     }
@@ -553,7 +553,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             QueuedTask.Run(() =>
             {
                 var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
-                CommonUtilities.ArcgisProUtils.MapUtils.AnnotateVertices(mapPoint);
+                MapUtils.AnnotateVertices(mapPoint);
             });
                 
         }
@@ -573,7 +573,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             {
                 //await ArcGIS.Desktop.Framework.FrameworkApplication.SetCurrentToolAsync(null);
                 string graphicLayerName = "Vertices";
-                CommonUtilities.ArcgisProUtils.MapUtils.DeleteGraphicLayerByName(graphicLayerName);
+                MapUtils.DeleteGraphicLayerByName(graphicLayerName);
             }
             
         }
@@ -747,7 +747,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             
             mapName = GlobalVariables.mapNameCatastro;
             nameLayer = GlobalVariables.CurrentShpName;
-            var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
+            var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
             ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
             (x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
             y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion", layoutItem, y);
@@ -767,7 +767,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             }
             mapName = GlobalVariables.mapNameDemarcacionPo;
             mapName = GlobalVariables.CurrentShpName;
-            layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca);
+            layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca);
             DemarcaElementsLayoutUtils demarcaElementsLayoutUtils = new DemarcaElementsLayoutUtils();
             await demarcaElementsLayoutUtils.AddDemarcaTextAsync("", GlobalVariables.CurrentDistDm, "", "", GlobalVariables.CurrentProvDm, "", GlobalVariables.CurrentDepDm, layoutItem);
 
@@ -784,7 +784,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             }
             mapName = GlobalVariables.mapNameCartaIgn;
             nameLayer = GlobalVariables.CurrentShpName;
-            layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
+            layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
             CartaIgnElementsLayoutUtils cartaIgnElementsLayoutUtils = new CartaIgnElementsLayoutUtils();
             string listDist = GlobalVariables.CurrentDistDm;
             string listProv = GlobalVariables.CurrentProvDm;

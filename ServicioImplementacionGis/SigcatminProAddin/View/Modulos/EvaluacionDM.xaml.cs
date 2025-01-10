@@ -600,18 +600,18 @@ namespace SigcatminProAddin.View.Modulos
             {
                 throw new Exception("No se encontraron coordenadas para calcular el extent.");
             }
-            int radioMeters = radioKm*1000;
+            double radioMeters = radioKm*1000;
             // Inicializar las variables para almacenar los valores extremos
-            int xmin = int.MaxValue;
-            int xmax = int.MinValue;
-            int ymin = int.MaxValue;
-            int ymax = int.MinValue;
+            double xmin = int.MaxValue;
+            double xmax = int.MinValue;
+            double ymin = int.MaxValue;
+            double ymax = int.MinValue;
 
             // Iterar sobre las filas para calcular los valores extremos
             foreach (DataRow row in coordenadasTable.Rows)
             {
-                int este = Convert.ToInt32(row["ESTE"]);
-                int norte = Convert.ToInt32(row["NORTE"]);
+                double este = Convert.ToDouble(row["ESTE"]);
+                double norte = Convert.ToDouble(row["NORTE"]);
 
                 if (este < xmin) xmin = este;
                 if (este > xmax) xmax = este;

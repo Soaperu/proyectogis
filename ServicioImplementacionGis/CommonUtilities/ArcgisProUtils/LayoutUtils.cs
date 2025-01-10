@@ -136,64 +136,104 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
         /// <summary>
-        /// Genera y agrega un layout al proyecto de ArcGIS Pro basado en el tipo de plano.
+        /// Elimina los diseños (layouts) del proyecto actual cuyos nombres coincidan con la lista proporcionada.
+        /// Si la lista está vacía o es nula, pregunta al usuario si desea eliminar todos los layouts.
         /// </summary>
-        /// <param name="tipoPlano">Tipo de plano a generar.</param>
-        /// <returns>True si se agregó exitosamente, de lo contrario False.</returns>
-        //public async Task<bool> GeneraPlanoReporteAsync(string tipoPlano)
-        //{
-        //    string rutaPlantilla = DeterminarRutaPlantilla(tipoPlano);
+        /// <param name="layoutNamesToDelete">
+        /// Lista de nombres de layouts a eliminar. Puede ser nula o vacía.
+        /// </param>
+        public static async Task DeleteSpecifiedLayoutsAsync(List<string>? layoutNamesToDelete = null)
+        {
+            // Verificar si no se proporcionó lista o está vacía
+            if (layoutNamesToDelete == null || layoutNamesToDelete.Count == 0)
+            {
+                var result = MessageBox.Show(
+                    "No se proporcionaron nombres de layouts para eliminar. ¿Desea eliminar todos los layouts del proyecto?",
+                    "Advertencia",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
-        //    if (string.IsNullOrEmpty(rutaPlantilla))
-        //    {
-        //        MessageBox.Show($"No se encontró una plantilla para el tipo de plano: {tipoPlano}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return false;
-        //    }
+                if (result == MessageBoxResult.No)
+                {
+                    return; // Usuario canceló la operación
+                }
+            }
 
-        //    if (!File.Exists(rutaPlantilla))
-        //    {
-        //        MessageBox.Show($"No se encontró el archivo de plantilla: {rutaPlantilla}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return false;
-        //    }
+            // Ejecuta la operación en el contexto de ArcGIS Pro
+            await QueuedTask.Run(() =>
+            {
+                // Obtiene todos los layouts del proyecto actual
+                var allLayouts = Project.Current.GetItems<LayoutProjectItem>();
 
-        //    try
-        //    {
-        //        // Ejecutar en el hilo adecuado
-        //        await QueuedTask.Run(async () =>
-        //        {
-        //            try
-        //            {
-        //                // Agregar la plantilla al proyecto
-        //                var layoutProjectItem = await Project.Current.AddItemAsync(rutaPlantilla, ProjectItemType.Layout);
+                // Para evitar problemas al eliminar mientras iteramos, usamos .ToList()
+                foreach (var layoutItem in allLayouts.ToList())
+                {
+                    // Si layoutNamesToDelete es null o vacío, eliminamos todos
+                    // De lo contrario, eliminamos solo los que coincidan por nombre (ignorando mayúsc/minúsc)
+                    if ((layoutNamesToDelete == null || layoutNamesToDelete.Count == 0) ||
+                         layoutNamesToDelete.Contains(layoutItem.Name, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Project.Current.RemoveItem(layoutItem);
+                    }
+                }
+            });
+        }
 
-        //                // Verificar si la plantilla se agregó correctamente
-        //                if (layoutProjectItem is LayoutProjectItem layout)
-        //                {
-        //                    // Abrir la vista del layout
-        //                    await layout.OpenAsync();
+        /// <summary>
+        /// Exporta un layout a PDF dado su nombre y la ruta de salida.
+        /// </summary>
+        /// <param name="layoutName">El nombre del layout a exportar.</param>
+        /// <param name="outputPdfPath">Ruta completa (incluyendo el archivo) donde se guardará el PDF.</param>
+        /// <returns>Tarea asíncrona.</returns>
+        public static async Task ExportLayoutToPdfAsync(string layoutName, string outputPdfPath)
+        {
+            // Verificar que la ruta no sea nula o vacía
+            if (string.IsNullOrEmpty(outputPdfPath))
+            {
+                throw new ArgumentException("La ruta de salida para el PDF es inválida.", nameof(outputPdfPath));
+            }
 
-        //                    // Notificar al usuario
-        //                    MessageBox.Show($"Layout '{layout.Name}' agregado y abierto exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-        //                }
-        //                else
-        //                {
-        //                    MessageBox.Show("No se pudo agregar el layout. Asegúrate de que el archivo es un .pagx válido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show($"Ocurrió un error al agregar el layout: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            }
-        //        });
+            // Asegurarnos de que el directorio exista
+            string directory = Path.GetDirectoryName(outputPdfPath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
 
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return false;
-        //    }
-        //}
+            // Ejecutar en el hilo especializado de ArcGIS Pro
+            await QueuedTask.Run(() =>
+            {
+                // 1. Buscar el LayoutProjectItem con el nombre especificado
+                var layoutItem = Project.Current
+                                        .GetItems<LayoutProjectItem>()
+                                        .FirstOrDefault(item =>
+                                                string.Equals(item.Name, layoutName, StringComparison.OrdinalIgnoreCase));
+                if (layoutItem == null)
+                {
+                    throw new InvalidOperationException($"No se encontró el layout con nombre '{layoutName}'.");
+                }
+
+                // 2. Obtener el objeto Layout a partir del LayoutProjectItem
+                Layout layout = layoutItem.GetLayout();
+
+                // 3. Configurar los parámetros de exportación a PDF
+                //    Puedes ajustar la resolución, la calidad de compresión, etc.
+                ExportFormat pdfFormat = new PDFFormat
+                {
+                    OutputFileName = outputPdfPath,
+                    Resolution = 300,             // DPI (puntos por pulgada)
+                    DoCompressVectorGraphics = true,
+                    ImageCompression = ImageCompression.Adaptive,
+                    ImageCompressionQuality = 80, // Calidad de compresión de imágenes (0-100)
+                };
+
+                // 4. Exportar el layout a PDF
+                layout.Export(pdfFormat);
+
+                // (Opcional) Si quieres mostrar un mensaje de éxito o log
+                //MessageBox.Show($"Layout exportado correctamente a: {outputPdfPath}");
+            });
+        }
 
         /// <summary>
         /// Determina la ruta de la plantilla basada en el tipo de plano y otras configuraciones.

@@ -21,7 +21,7 @@ namespace CommonUtilities.ArcgisProUtils
         private Layout? _layout;
         private Dictionary<string, int> dictCriterios = new Dictionary<string, int>();
         // Variables de ejemplo (estas deberían ser proporcionadas externamente)
-        private string v_carta_dm = GlobalVariables.CurrentCodeDm;
+        private string v_carta_dm = GlobalVariables.CurrentPagesDm;
         private string v_codigo = GlobalVariables.CurrentCodeDm;
         private string v_area_eval = GlobalVariables.CurrentAreaDm;
         private string v_nombre_dm = GlobalVariables.CurrentNameDm;
@@ -40,7 +40,7 @@ namespace CommonUtilities.ArcgisProUtils
         public async Task<double> AgregarTextosLayoutAsync(string seleReporte, LayoutProjectItem layoutItem, double y)
         {
             double yPre = y;
-            return await QueuedTask.Run(() =>
+            return await QueuedTask.Run(async() =>
             {
                 _layout = layoutItem.GetLayout();
                 if (_layout == null)
@@ -50,7 +50,7 @@ namespace CommonUtilities.ArcgisProUtils
                 if (seleReporte == "Evaluacion")
                 {
                     // Aquí podríamos usar una lista de definiciones:
-                    var textos = GetTextDefinitionsForEvaluation(y);
+                    var textos = await GetTextDefinitionsForEvaluation(y);
 
                     // Crear un símbolo de texto básico
                     //CIMTextSymbol textSymbol = CrearSimboloTexto(ColorFromRGB(0, 0, 0), 10, "Arial");
@@ -101,47 +101,54 @@ namespace CommonUtilities.ArcgisProUtils
         private string FormatearTextoResultado(ResultadoEval res)
         {
             // Lógica de formateo de texto
-            return $"{res.Contador.PadRight(3)} {res.Concesion.PadRight(25)} {res.CodigoU.PadRight(20)} {res.TipoEx.PadRight(10)} {res.Eval.PadRight(10)} {res.Estado}";
+            //return $"{res.Contador.PadRight(3)} {res.Concesion.PadRight(25)} {res.CodigoU.PadRight(20)} {res.TipoEx.PadRight(10)} {res.Eval.PadRight(10)} {res.Estado}";
+            return $"{res.Contador.PadRight(3)} {res.Concesion.PadRight(30)} {res.CodigoU.PadRight(15)} {res.TipoEx.PadRight(10)} {res.Eval.PadRight(10)} {res.Estado}";
         }
-        private string FormatearTexto(string v_campo1, string v_campo2, string v_campo3, string v_campo4, string v_campo5, string v_campo6, string v_campo7, string v_campo8, string v_campo9)
+
+        private string FormatearTextoResultadoList(string vCampo1, string vCampo2, string vCampo3, string vCampo4, string vCampo5, string vCampo6, string vCampo7, string vCampo8, string vCampo9)
+        {
+            // Lógica de formateo de texto
+            return $"{vCampo1.PadRight(3)} {vCampo2.PadRight(25)} {vCampo3.PadRight(20)} {vCampo5.PadRight(5)} {vCampo6.PadRight(5)} {vCampo7}";
+        }
+        private string FormatearTexto(string vCampo1, string vCampo2, string vCampo3, string vCampo4, string vCampo5, string vCampo6, string vCampo7, string vCampo8, string vCampo9)
         {
             // Basado en la lógica original, ajusta el espaciado según la longitud de v_campo1, etc.
             // Por simplicidad, se presenta una versión simplificada:
-            string cadenatexto3 = v_campo3.PadRight(13); // Asegurar ancho para el codigo
-            string cadenatexto2 = v_campo2.PadRight(30, ' ');
+            string cadenaTexto3 = vCampo3.PadRight(13); // Asegurar ancho para el codigo
+            string cadenaTexto2 = vCampo2.PadRight(30, ' ');
 
-            string cadenatexto4 = (v_campo8.Length == 2) ? v_campo8 + "  " : v_campo8 + "   ";
+            string cadenaTexto4 = (vCampo8.Length == 2) ? vCampo8 + "  " : vCampo8 + "   ";
 
             // Ajustar espacios según la longitud de v_campo1
-            string cadenatexto = "";
-            int lenContador = v_campo1.Length;
+            string cadenaTexto = "";
+            int lenContador = vCampo1.Length;
             if (lenContador == 1)
             {
-                cadenatexto = v_campo1 + "    " + cadenatexto2 + " " + cadenatexto3 + "  " + v_campo5 + "   " + v_campo6 + "   " + cadenatexto4 + "  " + v_campo9;
+                cadenaTexto = vCampo1 + "    " + cadenaTexto2 + " " + cadenaTexto3 + "  " + vCampo5 + "   " + vCampo6 + "    " + cadenaTexto4 + "   " + vCampo9;
             }
             else if (lenContador == 2)
             {
-                cadenatexto = v_campo1 + "   " + cadenatexto2 + " " + cadenatexto3 + "  " + v_campo5 + "   " + v_campo6 + "   " + cadenatexto4 + "  " + v_campo9;
+                cadenaTexto = vCampo1 + "   " + cadenaTexto2 + " " + cadenaTexto3 + "  " + vCampo5 + "   " + vCampo6 + "    " + cadenaTexto4 + "   " + vCampo9;
             }
             else if (lenContador == 3)
             {
                 // Este caso en el código original era más complejo, aquí simplificamos:
-                cadenatexto = v_campo1 + "  " + cadenatexto2 + " " + cadenatexto3 + v_campo4 + "   " + v_campo5 + "   " + v_campo6 + "   " + v_campo7 + "   " + cadenatexto4 + "  " + v_campo9;
+                cadenaTexto = vCampo1 + "  " + cadenaTexto2 + " " + cadenaTexto3 + vCampo4 + "   " + vCampo5 + "   " + vCampo6 + "   " + vCampo7 + "   " + cadenaTexto4 + "  " + vCampo9;
             }
             else
             {
                 // Por si no se cumple ninguno, usar un fallback:
-                cadenatexto = v_campo1 + " " + cadenatexto2 + " " + cadenatexto3 + v_campo5 + " " + v_campo6 + " " + cadenatexto4 + " " + v_campo9;
+                cadenaTexto = vCampo1 + " " + cadenaTexto2 + " " + cadenaTexto3 + vCampo5 + " " + vCampo6 + " " + cadenaTexto4 + " " + vCampo9;
             }
 
-            return cadenatexto;
+            return cadenaTexto;
         }
 
         /// <summary>
         /// Devuelve una lista con la definición de cada texto a colocar en el layout para el caso "Evaluacion".
         /// Esto reemplaza la larga cadena de If/Else del código original.
         /// </summary>
-        private (string Texto, double X, double Y, CIMColor color, int fontSize)[] GetTextDefinitionsForEvaluation(double posY)
+        private async Task<(string Texto, double X, double Y, CIMColor color, int fontSize)[]> GetTextDefinitionsForEvaluation(double posY)
         {
             // Aquí simplificamos. Ajusta las coordenadas según el codigo anterior.
             CIMColor colorMagenta = ColorFromRGB(197, 0, 255);
@@ -150,7 +157,7 @@ namespace CommonUtilities.ArcgisProUtils
             int fontSizeRedBlue = 7;
             CIMColor colorBlue = ColorFromRGB(71, 61, 255);
             CIMColor colorBlack = ColorFromRGB(0, 0, 0);
-
+            double decrease;
             var textList = new List<(string Texto, double X, double Y, CIMColor color, int fontSize)>()
             {
             ("Carta: " + v_carta_dm, 9.2, 17.8, colorBlue, fontSizeRedBlue),
@@ -170,7 +177,8 @@ namespace CommonUtilities.ArcgisProUtils
                 ? "DERECHOS PRIORITARIOS : No Presenta DM Prioritarios"
                 : "DERECHOS PRIORITARIOS : (" + dictCriterios["PR"] + ")";
             textList.Add((derechosPriText, 18.2, 15.7, colorBlue, fontSizeRedBlue));
-            posY -= 0.4;
+            posY = await TextElementsEvalByCriteroAsync("PR",Y:15.3);
+            //posY -= 0.4;
 
             // contatexto=7: Petitorio RD
             string petitorioTexto;
@@ -207,6 +215,9 @@ namespace CommonUtilities.ArcgisProUtils
             }
             textList.Add((derechosPostText, 18.2, posY, colorBlue, fontSizeRedBlue));
             posY -= 0.4;
+            posY = await TextElementsEvalByCriteroAsync("PO", Y: posY);
+            //decrease = (dictCriterios["PO"] == 0) ? 0.4 : 0.1;
+            //posY -= decrease;
 
             // contatexto=9: DERECHOS SIMULTÁNEOS
             string derechosSimText = (dictCriterios["SI"] == 0)
@@ -214,6 +225,9 @@ namespace CommonUtilities.ArcgisProUtils
                 : "DERECHOS SIMULTÁNEOS : (" + dictCriterios["SI"] + ")";
             textList.Add((derechosSimText, 18.2, posY, colorBlue, fontSizeRedBlue));
             posY -= 0.4;
+            posY = await TextElementsEvalByCriteroAsync("SI", Y: posY);
+            //decrease = (dictCriterios["SI"] == 0) ? 0.4 : 0.1;
+            //posY -= decrease;
 
             // contatexto=10: DERECHOS EXTINGUIDOS
             string derechosExText = (dictCriterios["EX"] == 0)
@@ -221,6 +235,9 @@ namespace CommonUtilities.ArcgisProUtils
                 : "DERECHOS EXTINGUIDOS : (" + dictCriterios["EX"] + ")";
             textList.Add((derechosExText, 18.2, posY, colorBlue, fontSizeRedBlue));
             posY -= 0.4;
+            posY = await TextElementsEvalByCriteroAsync("EX", Y: posY);
+            //decrease = (dictCriterios["EX"] == 0) ? 0.4 : 0.1;
+            //posY -= decrease;
 
             // contatexto=11: CATASTRO NO MINERO
             textList.Add(("CATASTRO NO MINERO", 18.2, posY, colorRed, fontSizeRedBlue));
@@ -241,6 +258,7 @@ namespace CommonUtilities.ArcgisProUtils
                     string posi_x = listaCaramur.Substring(0, 65);
                     string posi_x1 = listaCaramur.Substring(65);
                     zonasUrbanasText = "Zonas Urbanas : " + posi_x + "\n" + posi_x1;
+                    posY -= 0.15;
                 }
                 else
                 {
@@ -263,6 +281,7 @@ namespace CommonUtilities.ArcgisProUtils
                     string posi_x = listaCaramre.Substring(0, 65);
                     string posi_x1 = listaCaramre.Substring(65);
                     zonasReservadasText = "Zonas Reservadas : " + posi_x + "\n" + posi_x1;
+                    posY -= 0.15;
                 }
                 else
                 {
@@ -285,6 +304,7 @@ namespace CommonUtilities.ArcgisProUtils
                     string posi_x = listaCforestal.Substring(0, 65);
                     string posi_x1 = listaCforestal.Substring(65);
                     serforText = "Cobertura temática SERFOR : " + posi_x + "\n" + posi_x1;
+                    posY -= 0.15;
                 }
                 else
                 {
@@ -301,18 +321,18 @@ namespace CommonUtilities.ArcgisProUtils
             posY -= 0.4;
 
             // contatexto=16: LISTADO DE DERECHOS MINEROS
-            string listadoDMText = "                                      LISTADO DE DERECHOS MINEROS";
+            string listadoDMText = "                                           LISTADO DE DERECHOS MINEROS";
             textList.Add((listadoDMText, 18.2, posY, colorBlack, 6));
             posY -= 0.4;
 
             // contatexto=17: Encabezado de columnas
-            string encabezadoDM = "Nº      NOMBRE                                    CÓDIGO              TE    TP   INCOR  SUST";
+            string encabezadoDM = "Nº      NOMBRE                                     CÓDIGO             TE    TP   INCOR  SUST";
             textList.Add((encabezadoDM, 18.2, posY, colorBlue, fontSizeRedBlue));
             posY -= 0.4;
             return textList.ToArray();
         }
 
-        public async Task<(double finalPosX, double finalPosY)> TextElementsEvalAsync(LayoutProjectItem layoutItem)
+        public async Task<(double finalPosX, double finalPosY)> TextElementsEvalAsync(LayoutProjectItem layoutItem, double posX = 18.2, double posY = 15.2)
         {
             //var layoutItem = Project.Current.GetItems<LayoutProjectItem>()
             //    .FirstOrDefault(l => l.Name.Equals(layoutName, StringComparison.OrdinalIgnoreCase));
@@ -321,9 +341,10 @@ namespace CommonUtilities.ArcgisProUtils
                 throw new Exception($"No se encontró el layout {layoutName}");
 
             // Variables de posición definidas aquí para que sean accesibles después del QueuedTask
-            double posX = 18.2; // Posición inicial X (ejemplo)
-            double posY = 15.2; //14.6; // Posición inicial Y (ejemplo)
+            //double posX = 18.2; // Posición inicial X (ejemplo)
+            //double posY = 15.2; //14.6; // Posición inicial Y (ejemplo)
 
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 _layout = layoutItem.GetLayout();
@@ -343,22 +364,22 @@ namespace CommonUtilities.ArcgisProUtils
                     //var resultados = ObtenerResultadosEval(criterio).Result;
                     var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
 
-                    if (resultados.Count > 0)
-                    {
-                        //contador += 1;
-                        // Procesar resultados, colocar textos
-                        foreach (var res in resultados)
-                        {
-                            string texto = FormatearTextoResultado(res);
-                            CrearTextElement(texto, posX, posY, textSymbol);
-                            posY -= 0.35; // Ajustar la posición vertical después de cada texto
-                        }
-                    }
-                    else
-                    {
-                        // Ajustar posición si no hubo resultados, según la lógica original
-                        //posY -= 0.4;
-                    }
+                    //if (resultados.Count > 0)
+                    //{
+                    //    //contador += 1;
+                    //    // Procesar resultados, colocar textos
+                    //    foreach (var res in resultados)
+                    //    {
+                    //        string texto = FormatearTextoResultado(res);
+                    //        CrearTextElement(texto, posX, posY, textSymbol);
+                    //        posY -= 0.35; // Ajustar la posición vertical después de cada texto
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    // Ajustar posición si no hubo resultados, según la lógica original
+                    //    //posY -= 0.4;
+                    //}
                     dictCriterios[criterio] = resultados.Count;
                     // Aquí se podrían hacer ajustes adicionales a posX y posY según el criterio,
                     // basándose en la lógica original.
@@ -369,6 +390,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // antes de salir del QueuedTask.
 
             }); // fin del QueuedTask.Run
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
 
             // Devuelve las coordenadas finales después de recorrer todos los criterios
             return (posX, posY);
@@ -381,7 +403,7 @@ namespace CommonUtilities.ArcgisProUtils
             List<ResultadoEval> resultados = new List<ResultadoEval>();
 
             // Ejecutar en el hilo adecuado de ArcGIS Pro
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(async() =>
             {
                 
@@ -443,7 +465,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 }
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
 
             return resultados;
             //return new List<ResultadoEval>();
@@ -451,7 +473,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         public async Task GeneralistaDmPlanoEvaAsync(double posi_y1_list)
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(async() =>
             {
                 //// Obtener el layout
@@ -485,8 +507,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                 double posi_y1 = posi_y1_list - 0.3;
                 double posi_y = posi_y1_list - 0.3;
-
-                
+                                
                 
                 using (RowCursor cursor = featureClass.Search(qf, false))
                 {
@@ -497,13 +518,13 @@ namespace CommonUtilities.ArcgisProUtils
                         using (Feature feature = (Feature)cursor.Current)
                         {
                             conta1++;
-                            string v_campo1 = feature[idxContador]?.ToString() ?? "";
-                            string v_campo2 = feature[idxConcesion]?.ToString().Trim() ?? "";
-                            string v_campo3 = feature[idxCodigou]?.ToString().Trim() ?? "";
-                            string v_campo4 = feature[idxZona]?.ToString().Trim() ?? "";
-                            string v_campo5 = feature[idxTipoEx]?.ToString().Trim() ?? "";
-                            string v_campo6 = feature[idxEstado]?.ToString().Trim() ?? "";
-                            string v_campo7 = feature[idxDepubl]?.ToString().Trim();
+                            string v_campo1 = feature[idxContador]?.ToString() ?? ""; // Contador
+                            string v_campo2 = feature[idxConcesion]?.ToString().Trim() ?? ""; // Concesion
+                            string v_campo3 = feature[idxCodigou]?.ToString().Trim() ?? ""; // CodigoU
+                            string v_campo4 = feature[idxZona]?.ToString().Trim() ?? ""; // Zona
+                            string v_campo5 = feature[idxTipoEx]?.ToString().Trim() ?? "";  // TipoEx
+                            string v_campo6 = feature[idxEstado]?.ToString().Trim() ?? ""; // Estado
+                            string v_campo7 = feature[idxDepubl]?.ToString().Trim(); // DePubl
                             if (string.IsNullOrEmpty(v_campo7)) v_campo7 = "NP";
 
                             string v_campo8 = feature[idxDeiden]?.ToString().Trim();
@@ -523,6 +544,7 @@ namespace CommonUtilities.ArcgisProUtils
                             }
 
                             string cadenatexto = FormatearTexto(v_campo1, v_campo2, v_campo3, v_campo4, v_campo5, v_campo6, v_campo7, v_campo8, v_campo9);
+                            //string cadenatexto = FormatearTextoResultadoList(v_campo1, v_campo2, v_campo3, v_campo4, v_campo5, v_campo6, v_campo7, v_campo8, v_campo9);
 
                             // Agregar el texto a la lista
                             // En el código original se usaba pPoint.X = 17.2 y luego pPoint.X = 18.2
@@ -551,11 +573,69 @@ namespace CommonUtilities.ArcgisProUtils
                 // El código original no mostraba lodtbReporte en este método, pero se podría agregar.
 
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+        }
+        public async Task<double> TextElementsEvalByCriteroAsync(string criterio, double X = 18.2, double Y = 15.2)
+        {
+            //var layoutItem = Project.Current.GetItems<LayoutProjectItem>()
+            //    .FirstOrDefault(l => l.Name.Equals(layoutName, StringComparison.OrdinalIgnoreCase));
+            //dictCriterios = new Dictionary<string, int>();
+            //if (layoutItem == null)
+            //    throw new Exception($"No se encontró el layout {layoutName}");
+
+            // Variables de posición definidas aquí para que sean accesibles después del QueuedTask
+            //double posX = 18.2; // Posición inicial X (ejemplo)
+            //double posY = 15.2; //14.6; // Posición inicial Y (ejemplo)
+
+            //await QueuedTask.Run(() =>
+            //{
+                //_layout = layoutItem.GetLayout();
+                //if (_layout == null)
+                //    throw new Exception("No se pudo obtener el layout.");
+
+                // Crear símbolo de texto
+                CIMTextSymbol textSymbol = CrearSimboloTexto(ColorFromRGB(0, 0, 0), 6.0, "Courier New");
+
+                // Criterios a procesar
+                //var criterios = new string[] { "PR", "AR", "PO", "SI", "EX" };
+                //int contador = 0;
+                //foreach (var criterio in criterios)
+                //{
+
+                    // Obtener resultados para el criterio actual
+                    //var resultados = ObtenerResultadosEval(criterio).Result;
+                    var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
+
+                    if (resultados.Count > 0)
+                    {
+                        //contador += 1;
+                        // Procesar resultados, colocar textos
+                        foreach (var res in resultados)
+                        {
+                            string texto = FormatearTextoResultado(res);
+                            CrearTextElement(texto, X, Y, textSymbol);
+                            Y -= 0.35; // Ajustar la posición vertical después de cada texto
+                        }
+                    }
+                    else
+                    {
+                        // Ajustar posición si no hubo resultados, según la lógica original
+                        //posY -= 0.4;
+                    }
+                    //dictCriterios[criterio] = resultados.Count;
+                    // Aquí se podrían hacer ajustes adicionales a posX y posY según el criterio,
+                    // basándose en la lógica original.
+                    // Por ahora asumimos que posX no cambia, y sólo posY se ajusta.
+                //}
+
+                // Opcionalmente puedes modificar posX y posY acá si lo requieres
+                // antes de salir del QueuedTask.
+
+            //}); // fin del QueuedTask.Run
+
+            // Devuelve las coordenadas finales después de recorrer todos los criterios
+            return Y;
         }
 
-
-        }
-
-    
+    }
 }
