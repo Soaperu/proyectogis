@@ -351,7 +351,7 @@ namespace CommonUtilities.ArcgisProUtils
                 string nombreCapa = "Catastro";
 
                 // 2. Buscar el mapa "Catastro Minero" en el proyecto actual
-                Map mapaObjetivo = Project.Current.GetMaps().FirstOrDefault(m => m.Name.Equals(nameMap, System.StringComparison.OrdinalIgnoreCase)).GetMap();
+                Map mapaObjetivo = MapView.Active?.Map;//Project.Current.GetMaps().FirstOrDefault(m => m.Name.Equals(nameMap, System.StringComparison.OrdinalIgnoreCase)).GetMap();
 
                 if (mapaObjetivo == null)
                 {
@@ -383,16 +383,32 @@ namespace CommonUtilities.ArcgisProUtils
                 // 6. Aplicar el DefinitionQuery a la capa
                 featureLayer.SetDefinitionQuery(definitionQuery);
 
-                // 7. Asegurar que la capa está visible
+                long count;
+                var qf = new QueryFilter();
+                if (!string.IsNullOrEmpty(definitionQuery))
+                    qf.WhereClause = definitionQuery;
+
+                // 7. Acceder a la tabla subyacente y contar los registros
+                using (Table table = featureLayer.GetTable())
+                {
+                    count = table.GetCount(qf);
+                }
+                if (count == 0)
+                {
+                    MessageBox.Show("No se encontraron elementos que coincidan con el filtro aplicado.", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // 8. Asegurar que la capa está visible
                 featureLayer.SetVisibility(true);
 
-                // 8. Limpiar cualquier selección existente en la capa
+                // 9. Limpiar cualquier selección existente en la capa
                 featureLayer.ClearSelection();
 
-                // 9. Seleccionar todas las features que cumplen con el DefinitionQuery
+                // 10. Seleccionar todas las features que cumplen con el DefinitionQuery
                 //featureLayer.Select(null, SelectionCombinationMethod.New);
 
-                // 10. Obtener la extensión (extent) de las features seleccionadas
+                // 11. Obtener la extensión (extent) de las features seleccionadas
                 Envelope extentSeleccion = featureLayer.GetFeatureClass().GetExtent();
 
                 if (extentSeleccion.IsEmpty)
@@ -402,10 +418,9 @@ namespace CommonUtilities.ArcgisProUtils
                     return;
                 }
 
-                // 11. Centrar y hacer zoom en el mapa a la extensión de las features seleccionadas
+                // 12. Centrar y hacer zoom en el mapa a la extensión de las features seleccionadas
                 MapView.Active.ZoomTo(extentSeleccion, new TimeSpan(0, 0, 1)); // 1 segundo de animación
 
-                // Opcional: Resaltar o aplicar simbología adicional si es necesario
             });
         }
         public static async Task<FeatureLayer> AddFeatureClassToMapFromGdbAsync(Geodatabase geodatabase, string featureClassName, string featureLayerName, bool isVisible = true)

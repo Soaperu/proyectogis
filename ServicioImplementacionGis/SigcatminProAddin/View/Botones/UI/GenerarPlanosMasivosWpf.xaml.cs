@@ -16,6 +16,9 @@ using System.Windows.Shapes;
 using ArcGIS.Desktop.Catalog;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework.Dialogs;
+using CommonUtilities;
+using CommonUtilities.ArcgisProUtils;
+
 //using ClosedXML.Excel;
 using DevExpress.ClipboardSource.SpreadsheetML;
 using OfficeOpenXml;
@@ -27,6 +30,7 @@ namespace SigcatminProAddin.View.Botones.UI
     /// </summary>
     public partial class GenerarPlanosMasivosWpf : Window
     {
+        string filePath = string.Empty;
         string excelFilePath = string.Empty;
         Dictionary<string, List<string>> columnData = new Dictionary<string, List<string>>();
         public List<string> SelectedColumnData { get; private set; }
@@ -69,7 +73,7 @@ namespace SigcatminProAddin.View.Botones.UI
                 if (result == true)
                 {
                     excelFilePath = openFileDialog.Items[0].Path;
-                    txtArchivo.Text = excelFilePath;
+                    tbxArchivo.Text = excelFilePath;
                     cbxField.IsEnabled = true;
                 }
                 cbxField.Items.Clear();
@@ -199,7 +203,6 @@ namespace SigcatminProAddin.View.Botones.UI
             return columnData;
         }
 
-
         private void cbxField_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             columnData = GetColumnDataWithEPPlus(excelFilePath, columnHeaders);
@@ -210,13 +213,76 @@ namespace SigcatminProAddin.View.Botones.UI
                 {
                     SelectedColumnData = columnData[selectedHeader];
                 }
-                btnGraficar.IsEnabled = true;
+                btnFolder.IsEnabled = true;
+                tbxFolder.IsEnabled = true;
             }
         }
 
-        private void btnGraficar_Click(object sender, RoutedEventArgs e)
+        public async void btnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            if (tbxArchivo.Text == string.Empty || tbxFolder.Text == string.Empty || cbxField.SelectedItem == null)
+            { 
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, complete todos los campos.", "Advertencia",
+                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+            foreach (KeyValuePair<string, List<string>> entry in columnData)
+            {
+                string key = entry.Key;
+                List<string> values = entry.Value;
 
+                //Console.WriteLine($"Clave: {key}");
+
+                // Iterar a través de la lista de valores
+                foreach (string value in values)
+                {
+
+                    double x;
+                    double y;
+                    string planeEval;
+                    string pathLayout;
+                    pathLayout = System.IO.Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval);
+                    planeEval = GlobalVariables.planeEval.Split('.')[0];
+                    List<string> layoutsToDelete = new List<string>()
+                    {
+                        planeEval,
+                    };
+                    await LayoutUtils.DeleteSpecifiedLayoutsAsync(layoutsToDelete);
+                    var table = ComplementaryProcessesUtils.SearchCodeValue(value);
+                    await ComplementaryProcessesUtils.EvaluationDmByCode(value, table);
+
+                    await LayoutUtils.DeleteSpecifiedLayoutsAsync(layoutsToDelete);
+                    string mapName = GlobalVariables.mapNameCatastro;
+                    string nameLayer = GlobalVariables.CurrentShpName;
+                    var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
+                    ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+                    (x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
+                    y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion", layoutItem, 15.2);
+                    await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
+                    string outPathPdf = System.IO.Path.Combine(filePath, "Evaluacion" + "_" + value + ".pdf");
+                    await LayoutUtils.ExportLayoutToPdfAsync(planeEval, outPathPdf);
+                }
+            }
+        }
+
+        private void btnFolder_Click(object sender, RoutedEventArgs e)
+        {
+            OpenItemDialog openFileDialog = new OpenItemDialog
+            {
+                Title = "Seleccionar carpeta para planos",
+                MultiSelect = false,
+                BrowseFilter = BrowseProjectFilter.GetFilter(ItemFilters.Folders)
+            };
+
+            bool? result = openFileDialog.ShowDialog();
+
+            if (result == true)
+            {
+                filePath = openFileDialog.Items[0].Path;
+                tbxFolder.Text = filePath;
+                cbxField.IsEnabled = true;
+            }
+            btnGraficar.IsEnabled = true;
         }
     }
 }

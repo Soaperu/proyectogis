@@ -95,7 +95,17 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
         }
     }
     internal class CargarCapasIntegrales : EvaluacionButton { }
-    internal class VerSimultaneos : EvaluacionButton { }
+    internal class VerSimultaneos : EvaluacionButton 
+    {
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','SI')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }
     internal class VerExtinguidos : EvaluacionButton 
     {
         protected override async void OnClick()
@@ -107,7 +117,17 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
         }
     }
-    internal class VerAntecesorRD : EvaluacionButton { }
+    internal class VerAntecesorRD : EvaluacionButton 
+    {
+        protected override async void OnClick()
+        {
+            await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
+            string layerName = "Catastro";
+            string mapName = GlobalVariables.mapNameCatastro;
+            string definitionQuery = "EVAL IN ('EV','AR')";
+            await LayerUtils.AplicarFiltroYZoomAsync(mapName, layerName, definitionQuery);
+        }
+    }
     internal class VerColindantes : EvaluacionButton 
     {
         protected override async void OnClick()
@@ -152,10 +172,6 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             string id = GlobalVariables.idExport;
             try
             {
-                //await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
-                //string layerName = "Catastro";
-                //string folderName = GlobalVariables.pathFileTemp;
-                //string id = GlobalVariables.idExport;
                 var Params = Geoprocessing.MakeValueArray(layerName, folderName, id, 1);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetAreasOverlay, Params);
                 var responseJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.ReturnValue);
@@ -190,7 +206,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
                 // Paso 2: Verificamos la respuesta del usuario
                 if (result == MessageBoxResult.Yes)
                 {
-                    ComplementaryProcessesUtils.GenerateFreeAreaDm(layerName, folderName);
+                    ComplementaryProcessesUtils.GenerateAvailableAreaDm(layerName, folderName);
                 }
             }
             catch (Exception ex)
@@ -234,8 +250,6 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             generarMallaWpf.Closed += (s, e) => generarMallaWpf = null;
             generarMallaWpf.Show();
         }
-
-
 
         private void Graficarcuadriculas10(ExtentModel extent)
         {

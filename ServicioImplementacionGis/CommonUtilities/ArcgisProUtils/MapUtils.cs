@@ -469,7 +469,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         public static async Task<Map> EnsureMapViewIsActiveAsync(string mapName)
         {
-            if (MapView.Active != null)
+            if (MapView.Active != null && string.Equals(MapView.Active.Map.Name, mapName, StringComparison.OrdinalIgnoreCase))
             {
                 return MapView.Active.Map;
             }
@@ -498,16 +498,84 @@ namespace CommonUtilities.ArcgisProUtils
             // Esperar hasta que el evento se complete
             return await tcs.Task;
         }
-                
+
+        ///// <summary>
+        ///// Asegura que el MapView especificado esté activo. Si no lo está, lo activa y espera a que se active.
+        ///// </summary>
+        ///// <param name="mapName">Nombre del mapa a activar.</param>
+        ///// <param name="timeoutMilliseconds">Tiempo máximo de espera en milisegundos.</param>
+        ///// <returns>El objeto Map activo.</returns>
+        //public static async Task<Map> EnsureMapViewIsActiveAsync(string mapName, int timeoutMilliseconds = 10000)
+        //{
+        //    if (string.IsNullOrEmpty(mapName))
+        //        throw new ArgumentException("El nombre del mapa no puede ser nulo o vacío.", nameof(mapName));
+
+        //    // Si el mapa deseado ya está activo, retornarlo
+        //    if (MapView.Active != null &&
+        //        string.Equals(MapView.Active.Map.Name, mapName, StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        return MapView.Active.Map;
+        //    }
+
+        //    // Crear un TaskCompletionSource para esperar hasta que el mapa esté activo
+        //    TaskCompletionSource<Map> tcs = new TaskCompletionSource<Map>();
+
+        //    // Suscribirse al evento de cambio de mapa activo
+        //    SubscriptionToken token = null;
+        //    token = ActiveMapViewChangedEvent.Subscribe((OnActiveMapViewChanged) =>
+        //    {
+        //        if (newMapView != null &&
+        //            string.Equals(newMapView.Map.Name, mapName, StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            // Desuscribirse del evento
+        //            MapView.ActiveChanged.Unsubscribe(token);
+
+        //            // Completar la tarea con el mapa activo
+        //            tcs.SetResult(newMapView.Map);
+        //        }
+        //    });
+
+        //    // Ejecutar la activación del mapa en el hilo especializado de ArcGIS Pro
+        //    await QueuedTask.Run(async () =>
+        //    {
+        //        // Buscar el mapa por nombre
+        //        Map map = await FindMapByNameAsync(mapName);
+        //        if (map == null)
+        //        {
+        //            // Desuscribirse si el mapa no se encuentra
+        //            MapView.ActiveChanged.Unsubscribe(token);
+        //            tcs.SetException(new InvalidOperationException($"No se encontró un mapa con el nombre '{mapName}'."));
+        //            return;
+        //        }
+
+        //        // Activar el mapa
+        //        await ActivateMapAsync(map);
+        //    });
+
+        //    // Implementar timeout
+        //    var delayTask = Task.Delay(timeoutMilliseconds);
+        //    var completedTask = await Task.WhenAny(tcs.Task, delayTask);
+
+        //    if (completedTask == delayTask)
+        //    {
+        //        // Desuscribirse del evento para evitar memory leaks
+        //        MapView.ActiveChanged.Unsubscribe(token);
+        //        throw new TimeoutException($"No se pudo activar el mapa '{mapName}' dentro del tiempo esperado.");
+        //    }
+
+        //    // Retornar el resultado
+        //    return await tcs.Task;
+        //}
+
         public static ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm = 0)
         {
             DatabaseHandler dataBaseHandler = new DatabaseHandler();
             var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
-            int xmin = int.MaxValue;
-            int xmax = int.MinValue;
-            int ymin = int.MaxValue;
-            int ymax = int.MinValue;
-            int radioMeters = radioKm * 1000;
+            double xmin = int.MaxValue;
+            double xmax = int.MinValue;
+            double ymin = int.MaxValue;
+            double ymax = int.MinValue;
+            double radioMeters = radioKm * 1000;
             ExtentModel extent = null;
             if (dmrRecords.Rows.Count > 0)
             {
@@ -518,8 +586,8 @@ namespace CommonUtilities.ArcgisProUtils
                     // Iterar sobre las filas para calcular los valores extremos
                     foreach (DataRow row in dmrRecords.Rows)
                     {
-                        int este = Convert.ToInt32(row["CD_COREST"]);
-                        int norte = Convert.ToInt32(row["CD_CORNOR"]);
+                        double este = Convert.ToDouble(row["CD_COREST"]);
+                        double norte = Convert.ToDouble(row["CD_CORNOR"]);
 
                         if (este < xmin) xmin = este;
                         if (este > xmax) xmax = este;
@@ -532,8 +600,8 @@ namespace CommonUtilities.ArcgisProUtils
                     // Iterar sobre las filas para calcular los valores extremos
                     foreach (DataRow row in dmrRecords.Rows)
                     {
-                        int este = Convert.ToInt32(row["CD_COREST_E"]);
-                        int norte = Convert.ToInt32(row["CD_CORNOR_E"]);
+                        double este = Convert.ToDouble(row["CD_COREST_E"]);
+                        double norte = Convert.ToDouble(row["CD_CORNOR_E"]);
 
                         if (este < xmin) xmin = este;
                         if (este > xmax) xmax = este;
