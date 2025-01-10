@@ -829,6 +829,7 @@ namespace SigcatminProAddin.View.Modulos
 
 
         }
+
         private ExtentModel ObtenerExtent(int XMin, int YMin, int XMax, int YMax, int datum, int radioKm = 0)
         {
             //// Obtener las coordenadas usando la función ObtenerCoordenadas

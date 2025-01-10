@@ -95,12 +95,15 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
+            
             <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridResult" >
                 <dxg:GridControl.View>
                     <dxg:TableView  x:Name="DataGridResultTableView" ShowAutoFilterRow="False"
                        AllowColumnFiltering="False"
                        ShowGroupPanel="False"  />
                 </dxg:GridControl.View>
+
+
             </dxg:GridControl>
 
 
@@ -137,7 +140,7 @@
             <Label Grid.Column="0" Content="Detalle de Búsqueda" Foreground="#FF696969" HorizontalContentAlignment="Left"
                    FontFamily="Roboto" FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
                    Padding="0,0,0,3"/>
-            <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969" FontFamily="Roboto"
+            <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969" FontFamily="Roboto" IsEnabled="False"
                    FontWeight="Bold" VerticalAlignment="Bottom" FontSize="10" Padding="0,0,0,3"/>
         </Grid>
 
@@ -148,9 +151,9 @@
                 <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0">
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0" IsEnabled="False" > 
                 <dxg:GridControl.View>
-                    <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False"
+                    <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False" IsEnabled="False" AllowBandMultiRow="True"
                            AllowColumnFiltering="False"
                            ShowGroupPanel="False" />
                 </dxg:GridControl.View>
