@@ -202,7 +202,6 @@ namespace CommonUtilities.ArcgisProUtils
                 switch (selectCheckedLayer)
                 {
                     case "Zona Reservada":
-
                         await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_AReservada84, false);
                         //await function.ExportSpatialTemaAsync(layer, GlobalVariables.stateDmY, "zonaRese");
                         break;

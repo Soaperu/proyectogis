@@ -36,7 +36,7 @@
                 <ColumnDefinition Width="70*"/>
                 <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Evaluación | Evaluación D.M." Grid.Row="0" Grid.Column="0"
+            <TextBlock Text="Consulta | Código de Carta Nacional" Grid.Row="0" Grid.Column="0"
                    FontSize="16" FontWeight="Bold" Margin="0,0,0,0"
                    VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center"
@@ -109,12 +109,12 @@
                     <RowDefinition Height="30"/>
                     <RowDefinition Height="30"/>
                 </Grid.RowDefinitions>
-                <TextBlock Text="Radio (km)" FontSize="10" Margin="0,0,0,0"
+                <TextBlock Text="Radio (km)" FontSize="10" Margin="0,0,0,0" IsEnabled="False"
                            VerticalAlignment="Center" FontWeight="Medium"/>
-                <TextBox Grid.Column="1" Width="100" Height="25" VerticalAlignment="Center"
+                <TextBox Grid.Column="1" Width="100" Height="25" VerticalAlignment="Center" IsEnabled="False"
                           x:Name="TbxRadio" VerticalContentAlignment="Center" PreviewTextInput="TbxRadio_PreviewTextInput_1" PreviewKeyDown="TbxRadio_PreviewKeyDown"/>
                 <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
-                <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
+                <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" IsEnabled="False"
                           VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded"  />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
@@ -128,7 +128,7 @@
                 <ColumnDefinition Width="530"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Detalle de Búsqueda" Foreground="#FF696969" HorizontalContentAlignment="Left"
+            <Label Grid.Column="0" Content="Detalle de Búsqueda" Foreground="#FF696969" HorizontalContentAlignment="Left" IsEnabled="False"
                    FontFamily="Roboto" FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
                    Padding="0,0,0,3"/>
             <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969" FontFamily="Roboto"
@@ -138,11 +138,12 @@
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="6" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="350"/>
+                <ColumnDefinition Width="36"/>
+                <ColumnDefinition Width="314"/>
                 <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0">
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" IsEnabled="False" Grid.Column="0" Grid.ColumnSpan="2">
                 <dxg:GridControl.View>
                     <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False"
                            AllowColumnFiltering="False"
@@ -150,7 +151,7 @@
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
-            <ListBox Grid.Column="2" x:Name="LayersListBox" Margin="10,0,-10,0" >
+            <ListBox Grid.Column="3" x:Name="LayersListBox" Margin="10,0,-10,0" >
                 <ListBox.Template>
                     <ControlTemplate TargetType="ListBox">
                         <Border Background="{TemplateBinding Background}" 
@@ -164,8 +165,8 @@
                     </ControlTemplate>
                 </ListBox.Template>
             </ListBox>
-            <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
-                  Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch">
+            <Grid
+                  Grid.Column="2" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="130"/>
                     <RowDefinition Height="20"/>
@@ -173,22 +174,16 @@
                 <!--<Image Margin="5,0,5,0"/>-->
                 <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
                         CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
-                    <Canvas x:Name="PolygonCanvas" Background="White" />
+                    <Canvas x:Name="PolygonCanvas" Background="White" Margin="0,0,0,-23" />
                 </Border>
 
-                <Border BorderBrush="#FF696969" BorderThickness="1" HorizontalAlignment="Stretch"
-                        CornerRadius="5" Padding="5" Margin="0" VerticalAlignment="Stretch">
+                <Border BorderBrush="#FF696969" BorderThickness="1"
+                        CornerRadius="5" Padding="5" Grid.RowSpan="2">
                     <Image x:Name="ImagenPoligono" Source="/SigcatminProAddin;component/Images/EvaluacionDM/mapa100.png" Stretch="Uniform"/>
                 </Border>
 
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center"
-                            VerticalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" >
-                    <Label Content="Área (ha)" Margin="0,0,5,0" VerticalAlignment="Center" HorizontalContentAlignment="Center"
-                           Width="80" FontSize="10" FontWeight="Medium"/>
-                    <TextBox Text="100" Width="80" Height="18" VerticalAlignment="Center"
-                             VerticalContentAlignment="Center" x:Name="TbxArea"
-                             HorizontalContentAlignment="Center" Background="#DDDDDD" BorderBrush="#FF696969" BorderThickness="0.5"/>
-                </StackPanel>
+                            VerticalAlignment="Center" Margin="0,0,0,0" Grid.Row="1" />
             </Grid>
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
