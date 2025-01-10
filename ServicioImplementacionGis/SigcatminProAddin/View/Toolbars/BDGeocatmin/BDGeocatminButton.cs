@@ -37,6 +37,11 @@ using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Desktop.Internal.KnowledgeGraph;
 using DevExpress.Xpo;
 using static System.Net.WebRequestMethods;
+using DevExpress.XtraPrinting.Native;
+using System.Security.Policy;
+using ArcGIS.Core.Events;
+using ArcGIS.Desktop.Mapping.Events;
+using DevExpress.CodeParser;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -794,6 +799,171 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         {
             UI.PlanosDiversosFormatos.Views.MainWindow mainWindow = new UI.PlanosDiversosFormatos.Views.MainWindow();
             mainWindow.Show();
+        }
+    }
+
+    internal class SituacionDM : BDGeocatminButton
+    {
+        private async Task<Map> EnsureMapViewIsActiveAsync(string mapName)
+        {
+            if (MapView.Active != null)
+            {
+                return MapView.Active.Map;
+            }
+
+            // Esperar hasta que MapView.Active esté disponible
+            TaskCompletionSource<Map> tcs = new TaskCompletionSource<Map>();
+
+            SubscriptionToken eventToken = null;
+            eventToken = DrawCompleteEvent.Subscribe(async args =>
+            {
+                // Desuscribirse del evento
+                // Desuscribirse del evento
+                if (eventToken != null)
+                {
+                    DrawCompleteEvent.Unsubscribe(eventToken);
+                }
+                // Activar el mapa "CATASTRO MINERO"
+                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync(mapName);
+                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+
+                // Completar la tarea con el mapa activo
+                //tcs.SetResult(MapView.Active.Map);
+                tcs.SetResult(map);
+            });
+
+            // Esperar hasta que el evento se complete
+            return await tcs.Task;
+        }
+
+        public async Task UpdateSituacionAsync(string capa)
+        {
+            var dataBaseHandler = new DatabaseHandler();
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener el documento del mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    string tempTipo = "";
+                    string calculatedTipo = "";
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
+
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        int contador = 0;
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            contador++;
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+                                string v_codigo_dm = row["CODIGOU"].ToString();
+
+                                // Llamar al procedimiento para obtener datos de Datum y bloquear estado
+                                DataTable lodtbDatos_dm = dataBaseHandler.GetDMEstaMin(v_codigo_dm);
+                                if (lodtbDatos_dm.Rows.Count > 0)
+                                {
+                                    tempTipo = lodtbDatos_dm.Rows[0]["SITUACIONUP"].ToString();
+                                }
+                                else
+                                {
+                                    DataTable lodtbDatos1 = dataBaseHandler.GetDMIntegranteUEA(v_codigo_dm);
+                                    if (lodtbDatos1.Rows.Count > 0)
+                                    {
+                                        string codigointegrante = lodtbDatos1.Rows[0]["CG_CODIGO"].ToString();
+                                        lodtbDatos_dm = dataBaseHandler.GetDMEstaMin(codigointegrante);
+                                        if (lodtbDatos_dm.Rows.Count > 0)
+                                        {
+                                            tempTipo = lodtbDatos_dm.Rows[0]["SITUACIONUP"].ToString();
+                                        }
+                                    }
+                                }
+
+                                // Actualizamos el campo tipo segun el tipo temporal y otras condiciones
+                                if (tempTipo == "EXPLORACIÓN")
+                                {
+                                    calculatedTipo = "CONCESIÓN MINERA EN EXPLORACIÓN (1)";
+                                }
+
+                                else if(tempTipo == "EXPLOTACIÓN")
+                                {
+                                    calculatedTipo = "CONCESIÓN MINERA EN EXPLOTACIÓN (1)";
+                                }
+                                else
+                                {
+                                    calculatedTipo = tempTipo;
+                                }
+                                if (calculatedTipo == "")
+                                {
+                                    string leyenda = row["LEYENDA"].ToString();
+
+                                    switch (leyenda)
+                                    {
+                                        case "G2":
+                                            calculatedTipo = "SOLICITUD DE DERECHO MINERO";
+                                            break;
+                                        case "G4":
+                                            calculatedTipo = "CONCESIÓN MINERA EXTINGUIDA";
+                                            break;
+                                        case "G5":
+                                            calculatedTipo = "PLANTAS DE BENEFICIO, CANTERAS (ESTADO)";
+                                            break;
+                                        default:
+                                            calculatedTipo = "CONCESIÓN SIN ACTIVIDAD MINERA";
+                                            break;
+
+
+                                    }
+                                }
+                                row["TIPO"] = calculatedTipo;
+                                row.Store();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+
+        }
+
+        protected override async void OnClick()
+        {
+            string fechaArchi = DateTime.Now.Ticks.ToString();
+            
+
+            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+            Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
+            string zoneDm = GlobalVariables.CurrentZoneDm;
+            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+            await featureClassLoader.ExportAttributesTemaAsync(GlobalVariables.CurrentShpName, GlobalVariables.stateDmY, "Situacion_DM");
+            await UpdateSituacionAsync("Situacion_DM");
+            MapUtils.AnnotateLayerbyName("Situacion_DM", "CONTADOR", "DM_Situacion");
+
+
         }
     }
 }

@@ -135,6 +135,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <Button x:Name="btnGuardar" Margin="0,0,3,0" Grid.Column="0" Foreground="White" Background="#006DA0" Click="btnGuardar_Click" >Guardar Datos de Evaluación</Button>
                 <Button x:Name="btnCerrar" Margin="0,0,3,0" Grid.Column="1" Click="BtnCerrar_Click">Cerrar</Button>
             </Grid>
 

@@ -119,5 +119,10 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
 
 
         }
+
+        private void btnGuardar_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
