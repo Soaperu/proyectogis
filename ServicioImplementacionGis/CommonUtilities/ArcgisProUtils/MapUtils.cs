@@ -192,7 +192,19 @@ namespace CommonUtilities.ArcgisProUtils
                 { "G6", "#CD00ED" },
                 { "G7", "#000000" },
             };
-            
+
+            // Colores para SituacionDM
+            Dictionary<string, string> coloresSituacionDM = new Dictionary<string, string>()
+            {
+                { "CONCESIÓN MINERA EN EXPLORACIÓN (1)", "#00A9E6" },
+                { "CONCESIÓN MINERA EN EXPLOTACIÓN (1)", "#E69800" },
+                { "SOLICITUD DE DERECHO MINERO", "#C5FEC3" },
+                { "CONCESIÓN MINERA EXTINGUIDA", "#D2D2D2" },
+                { "PLANTAS DE BENEFICIO, CANTERAS (ESTADO)", "#4E0000" },
+                { "CONCESIÓN SIN ACTIVIDAD MINERA", "#CD00ED" },
+                { "", "#888888" },
+            };
+
             var map = MapView.Active.Map;
 
             GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
@@ -232,7 +244,16 @@ namespace CommonUtilities.ArcgisProUtils
                                     color = coloresCatastro[leyenda];
                                 }
                             }
-                            
+
+                            if (layername == "Situacion_DM")
+                            {
+                                var tipo = row["TIPO"].ToString();
+                                if (coloresSituacionDM.ContainsKey(tipo))
+                                {
+                                    color = coloresSituacionDM[tipo];
+                                }
+                            }
+
 
                             if (geometry != null && !string.IsNullOrEmpty(fieldValue))
                             {

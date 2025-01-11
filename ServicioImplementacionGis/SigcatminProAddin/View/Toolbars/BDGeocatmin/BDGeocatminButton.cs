@@ -845,9 +845,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 {
                     // Obtener el documento del mapa y la capa
                     Map pMap = MapView.Active.Map;
-                    FeatureLayer pFeatLayer1 = null;
-                    string tempTipo = "";
-                    string calculatedTipo = "";
+                    FeatureLayer pFeatLayer1 = null;                    
                     foreach (var layer in pMap.Layers)
                     {
                         if (layer.Name.ToUpper() == capa.ToUpper())
@@ -875,6 +873,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                             contador++;
                             using (Row row = pUpdateFeatures.Current)
                             {
+                                string tempTipo = "";
+                                string calculatedTipo = "";
                                 string v_codigo_dm = row["CODIGOU"].ToString();
 
                                 // Llamar al procedimiento para obtener datos de Datum y bloquear estado
@@ -898,12 +898,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                                 }
 
                                 // Actualizamos el campo tipo segun el tipo temporal y otras condiciones
-                                if (tempTipo == "EXPLORACIÓN")
+                                if (tempTipo == "EXPLORACION")
                                 {
                                     calculatedTipo = "CONCESIÓN MINERA EN EXPLORACIÓN (1)";
                                 }
 
-                                else if(tempTipo == "EXPLOTACIÓN")
+                                else if(tempTipo == "EXPLOTACION")
                                 {
                                     calculatedTipo = "CONCESIÓN MINERA EN EXPLOTACIÓN (1)";
                                 }
@@ -961,6 +961,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
             await featureClassLoader.ExportAttributesTemaAsync(GlobalVariables.CurrentShpName, GlobalVariables.stateDmY, "Situacion_DM");
             await UpdateSituacionAsync("Situacion_DM");
+            string styleSituacion = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleSituacionDM);
+            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync("Situacion_DM", styleSituacion, "TIPO", StyleItemType.PolygonSymbol);
             MapUtils.AnnotateLayerbyName("Situacion_DM", "CONTADOR", "DM_Situacion");
 
 

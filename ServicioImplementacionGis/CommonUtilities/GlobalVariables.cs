@@ -96,6 +96,7 @@ namespace CommonUtilities
         public static string styleCaram = "CARAM.stylx";
         public static string styleMalla = "MALLA.stylx";
         public static string styleCForestal = "CATA_FORESTAL.stylx";
+        public static string styleSituacionDM = "SITUACIONDM.stylx";
 
         //Lista de FeatureClass generales
         public static List<string> generalFeatureClass = new List<string>{ "Vías", "Drenaje", "Centro Poblado" };
