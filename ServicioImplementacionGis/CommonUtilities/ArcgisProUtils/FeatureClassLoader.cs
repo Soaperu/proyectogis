@@ -54,6 +54,7 @@ namespace CommonUtilities.ArcgisProUtils
         public FeatureLayer pFeatureLayer_drena { get; private set; }
         public FeatureLayer pFeatureLayer_vias { get; private set; }
         public FeatureLayer pFeatureLayer_ccpp { get; private set; }
+        public FeatureLayer pFeatureLayer_polygon { get; private set; }
 
         public FeatureClassLoader(Geodatabase geodatabase, Map map, string zonaDm, string regionSele)
         {
@@ -225,6 +226,12 @@ namespace CommonUtilities.ArcgisProUtils
                     pFeatureLayer_ccpp = featureLayer;
                     loFeature = "Centro Poblado";
                     break;
+
+                case "pFeatureLayer_polygon":
+                    pFeatureLayer_polygon = featureLayer;
+                    loFeature = "Poligono";
+                    break;
+
 
                 default:
                     break;
@@ -516,6 +523,8 @@ namespace CommonUtilities.ArcgisProUtils
                 LayerName = "Zona Reservada",
                 VariableName = "pFeatureLayer_rese"
             },
+
+
             //new FeatureClassInfo
             //{
             //    FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_18",
@@ -562,8 +571,15 @@ namespace CommonUtilities.ArcgisProUtils
                 FeatureClassName = "DATA_GIS.GPO_HOJ_HOJAS", //PSAD56
                 LayerName = "Carta IGN",
                 VariableName = "pFeatureLayer_hoja"
-            }
+            },
             // Agregar todas las demás capas siguiendo el mismo patrón...
+            new FeatureClassInfo
+            {
+                FeatureClassName = "Poligono",
+                LayerName = "Poligono",
+                VariableName = "pFeatureLayer_polygon"
+            }
+
         };
 
         public async Task<string> IntersectFeatureClassAsync(string loFeature, double xMin, double yMin, double xMax, double yMax, string shapeFileOut = "")
@@ -1024,6 +1040,64 @@ namespace CommonUtilities.ArcgisProUtils
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Ha ocurrido un error al exportar la data: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        public async Task<FeatureLayer> LoadFeatureClassAsyncGDB(string featureClassName, bool isVisible, string queryClause = "1=1")
+        {
+            try
+            {
+                return await QueuedTask.Run(() =>
+                {
+                    // Buscar la información de la Feature Class en la lista
+                    var featureClassInfo = FeatureClassMappings?.FirstOrDefault(f => string.Equals(f.FeatureClassName, featureClassName, StringComparison.OrdinalIgnoreCase)
+                                                                                    || (f.FeatureClassNameGenerator != null && string.Equals(f.FeatureClassNameGenerator(v_zona_dm), featureClassName, StringComparison.OrdinalIgnoreCase)));
+
+                    if (featureClassInfo == null)
+                    {
+                        // Si no se encuentra, usar un nombre genérico
+                        featureClassInfo = new FeatureClassInfo
+                        {
+                            FeatureClassName = featureClassName,
+                            LayerName = featureClassName,
+                            VariableName = null
+                        };
+                    }
+                    // Obtener el nombre real de la Feature Class
+                    string actualFeatureClassName = featureClassInfo.FeatureClassName ?? featureClassInfo.FeatureClassNameGenerator?.Invoke(v_zona_dm);
+
+                    // Abrir la Feature Class
+                    Geodatabase geodatabase = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri("C:\\bdgeocatmin\\Temporal\\GeneralGDB.gdb")));
+
+                    using (FeatureClass featureClass = geodatabase.OpenDataset<FeatureClass>(actualFeatureClassName))
+                    {
+                        // Obtener el nombre real de la capa (Layer)
+                        string actualLayerName = featureClassInfo.LayerName ?? featureClassInfo.LayerNameGenerator?.Invoke(cd_region_sele);
+
+                        // Crear el FeatureLayer
+                        FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
+                        {
+                            Name = actualLayerName,//featureClassInfo.LayerName,
+                            IsVisible = isVisible,
+                            DefinitionQuery = new DefinitionQuery(whereClause: queryClause, name: "Filtro dema")
+
+                        };
+                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, _map);
+                        //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
+
+                        // Asignar el FeatureLayer a la variable correspondiente si es necesario
+                        AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
+                        return featureLayer;
+                    }
+                });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            }
+            catch (Exception ex)
+            {
+                return null;
+                // Manejo de excepciones
+                //MessageBox.Show($"Error al cargar la Feature Class '{featureClassName}': {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
+
 
     }
     public class FeatureClassInfo

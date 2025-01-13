@@ -179,6 +179,11 @@
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Top" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
                     VerticalContentAlignment="Center" x:Name="BtnGeneraPoligono" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.Row="3" Grid.Column="1" Margin="0,30,0,0" Grid.RowSpan="2" Click="BtnGeneraPoligono_Click" />
+                <Button Content="Example" Width="51" Height="26" Background="#006DA0" BorderBrush="White"
+                    Foreground="White" HorizontalAlignment="Center"
+                    Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                    HorizontalContentAlignment="Center" FontFamily="Roboto"
+                    VerticalContentAlignment="Center" x:Name="BtnExample" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.Row="4" Click="BtnExample_Click"  />
             </Grid>
         </Grid>
 
@@ -190,7 +195,7 @@
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" Content="Detalle de selección" Foreground="#FF696969" HorizontalContentAlignment="Left"
                    FontFamily="Roboto" FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
-                   Padding="0,0,0,3" />
+                   Padding="0,0,0,3" IsEnabled="False" />
             <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969" FontFamily="Roboto"
                    FontWeight="Bold" VerticalAlignment="Bottom" FontSize="10" Padding="0,0,0,3"/>
         </Grid>
@@ -199,11 +204,12 @@
               Grid.Column="0" Grid.Row="6" Grid.RowSpan="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="41.333"/>
-                <ColumnDefinition Width="308.667"/>
+                <ColumnDefinition Width="32.667"/>
+                <ColumnDefinition Width="276"/>
                 <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0" Grid.ColumnSpan="2">
+            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" Grid.Column="0" Grid.ColumnSpan="3" IsEnabled="False">
                 <dxg:GridControl.View>
                     <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False"
                            AllowColumnFiltering="False"
@@ -211,7 +217,7 @@
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
-            <ListBox Grid.Column="3" x:Name="LayersListBox" Margin="10,0,-10,0" >
+            <ListBox Grid.Column="4" x:Name="LayersListBox" Margin="10,0,-10,0" >
                 <ListBox.Template>
                     <ControlTemplate TargetType="ListBox">
                         <Border Background="{TemplateBinding Background}" 
@@ -226,7 +232,7 @@
                 </ListBox.Template>
             </ListBox>
             <Grid
-                  Grid.Column="2" Grid.Row="0">
+                  Grid.Column="3" Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="130"/>
                     <RowDefinition Height="20"/>
@@ -261,13 +267,13 @@
                 Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0" />
+                VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0" Click="BtnSalir_Click" />
 
             <Button Content="Otra Consulta" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
                 Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                VerticalContentAlignment="Center" x:Name="BtnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" />
+                VerticalContentAlignment="Center" x:Name="BtnOtraConsulta" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="BtnOtraConsulta_Click" />
 
             <Button Content="Reporte" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
                 Foreground="White" Grid.Column="2" HorizontalAlignment="Center"
