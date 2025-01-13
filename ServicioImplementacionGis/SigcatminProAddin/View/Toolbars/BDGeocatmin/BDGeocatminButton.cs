@@ -962,7 +962,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             await featureClassLoader.ExportAttributesTemaAsync(GlobalVariables.CurrentShpName, GlobalVariables.stateDmY, "Situacion_DM");
             await UpdateSituacionAsync("Situacion_DM");
             string styleSituacion = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleSituacionDM);
-            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync("Situacion_DM", styleSituacion, "TIPO", StyleItemType.PolygonSymbol);
+            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync("Situacion_DM", styleSituacion, "TIPO", StyleItemType.PolygonSymbol, "TIPO");
             MapUtils.AnnotateLayerbyName("Situacion_DM", "CONTADOR", "DM_Situacion");
 
 
