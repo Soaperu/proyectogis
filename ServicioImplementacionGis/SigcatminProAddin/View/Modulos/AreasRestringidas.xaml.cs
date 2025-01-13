@@ -2,12 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
+//using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+//using System.Windows.Media;
 using ArcGIS.Core.Data;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Mapping;
@@ -18,21 +18,22 @@ using DatabaseConnector;
 using DevExpress.Xpf.Grid;
 using SigcatminProAddin.Utils.UIUtils;
 using FlowDirection = System.Windows.FlowDirection;
-using System.Text.RegularExpressions;
-using SigcatminProAddin.Models;
+//using System.Text.RegularExpressions;
+//using SigcatminProAddin.Models;
 using SigcatminProAddin.Models.Constants;
-using ArcGIS.Desktop.Core.Geoprocessing;
+//using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Core.CIM;
-using DevExpress.Xpf.Grid.GroupRowLayout;
-using ArcGIS.Core.Data.UtilityNetwork.Trace;
-using DevExpress.CodeParser;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
-using System.Windows.Markup.Localizer;
-using DevExpress.XtraExport.Helpers;
+//using ArcGIS.Core.CIM;
+//using DevExpress.Xpf.Grid.GroupRowLayout;
+//using ArcGIS.Core.Data.UtilityNetwork.Trace;
+//using DevExpress.CodeParser;
+//using DevExpress.DataProcessing.InMemoryDataProcessor;
+//using System.Windows.Markup.Localizer;
+//using DevExpress.XtraExport.Helpers;
 using DevExpress.Xpf.Editors.Settings;
-using System.Collections.ObjectModel;
-using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
+//using System.Collections.ObjectModel;
+//using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
+//using System.Windows.Media.Imaging;
 //using ArcGIS.Core.Internal.CIM;
 //using System.Windows.Forms;
 //using DevExpress.Xpf.Editors.Settings;
@@ -70,7 +71,7 @@ namespace SigcatminProAddin.View.Modulos
         private void AddCheckBoxesToListBox()
         {
             string[] items = {
-                                //"Caram",
+                                "Caram"
                                 //"Catastro Forestal",
                                 //"Predio Rural",
                                 //"Limite Departamental",
@@ -389,6 +390,15 @@ namespace SigcatminProAddin.View.Modulos
                     value = "NOMBRE";
                 }
                 var countRecords = dataBaseHandler.CountRecordsAreaRestringida(value, TbxValue.Text.ToUpper());
+                if (countRecords == "null")
+                {
+                    string message = "No existe ningún registro con esta consulta.";
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                     "Advertencia",
+                                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+
+                }
                 int records = int.Parse(countRecords);
                 if (records == 0)
                 {
@@ -427,7 +437,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-            BtnGraficar.IsEnabled = false;
+            string listDms = "";
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -446,6 +456,63 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.stateDmY = false;
             }
+            /**/
+
+            var verificaCodigo = "";
+            string previousCodigo = null; // Variable para almacenar el código anterior
+            if (DataGridResult.ItemsSource is DataView dataView1)
+            {
+                foreach (DataRowView row in dataView1)
+                {
+                    var isChecked = row["FLG_SEL"].ToString();
+                    if (isChecked == "1")
+                    {
+                        string currentCodigo = row["CG_CODIGO"].ToString(); // Obtener el código actual
+                        string currentClase = row["PA_DESCRI"].ToString(); // Obtener la clase actual
+
+                        // Verificar si estamos en la primera fila seleccionada o si el código es el mismo que el anterior
+                        if (previousCodigo == null || currentCodigo == previousCodigo)
+                        {
+                            // Si es la primera fila o el código es el mismo, concatenamos con el filtro
+                            if (verificaCodigo.Length > 0)
+                            {
+                                verificaCodigo += " AND "; // Añadir un "AND" si ya hay condiciones previas
+                            }
+                            verificaCodigo += "CODIGO = '" + currentCodigo + "' AND CLASE = '" + currentClase + "'";
+
+                            // Actualizamos el código previo
+                            previousCodigo = currentCodigo;
+                        }
+                        else
+                        {
+                            string message = "Usted está seleccionando diferentes areas, debe seleccionar el mismo código de área";
+                            ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                             "Advertencia",
+                                                                             MessageBoxButton.OK, MessageBoxImage.Warning);
+                            return;
+                        }
+
+                    }
+
+                }
+
+            }
+            else
+            {
+                MessageBox.Show("La fuente de datos no es compatible con DataView.");
+            }
+
+            /**/
+
+
+            List<string> mapsToDelete = new List<string>()
+             {
+            GlobalVariables.mapNameCatastro,
+            //GlobalVariables.mapNameDemarcacionPo,
+            //GlobalVariables.mapNameCartaIgn
+            };
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
 
@@ -506,11 +573,6 @@ namespace SigcatminProAddin.View.Modulos
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
                                                                                         , AppConfig.userName
                                                                                         , AppConfig.password);
-            //var codigoValue = TbxValue.Text.TrimEnd();
-            //string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-            //await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
-            //Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCartaIgn);
-            //var featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
 
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCatastro); //"CARTA IGN"
             Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
@@ -518,22 +580,6 @@ namespace SigcatminProAddin.View.Modulos
 
             ArcGIS.Core.Geometry.Geometry polygon = null;
             ArcGIS.Core.Geometry.Envelope envelope = null;
-
-            //var cod_opcion = cod_rese.Substring(0, 2);
-            //var queryClause = "";
-            //switch (cod_opcion)
-            //{
-            //    case "ZU":
-            //        queryClause = $"CODIGO = '{cod_rese}'";
-            //        break;
-
-            //    default:
-            //        //caso amortiguamiento
-            //        queryClause = $"CODIGO = '{cod_rese}' and CLASE = '" + clase_sele + "'";
-            //        break;
-            //};
-
-
 
             await QueuedTask.Run(async () =>
             {
@@ -599,26 +645,23 @@ namespace SigcatminProAddin.View.Modulos
                             }
                         }
                         break;
-
                 }
-
-                string listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);
-
-                //if (File.Exists(outputFolder + catastroShpName + ".shp"))
-                //{
-                //    return;
-
-                //}
-                //else
-                //{
-                //    return;
-                //}
-
+                listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);
+                if (!string.IsNullOrEmpty(listDms))
+                {
+                }
+                else
+                {
+                    string message = "No existe Derechos Mineros en la consulta seleccionada";
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                     "Advertencia",
+                                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                 await UpdateValueAsync(catastroShpName, " ");
                 string styleCat = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, "");
-
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN" };
                 //List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", "Zona Urbana", "Zona Reservada" };
@@ -632,41 +675,34 @@ namespace SigcatminProAddin.View.Modulos
                 await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
                 string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
-                //}
-                //else
-                //{
-                //    string message = "No existe información";
-                //    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
-                //                                                     "Advertancia",
-                //                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
-                //    //BtnGraficar.IsEnabled = true;
-                //    return;
-
-                //}
             });
 
+            if (string.IsNullOrEmpty(listDms))
+            {
+                return;
+            }
             // Itera todos items seleccionados en el ListBox de WPF
-            //var extentDmRadio = ObtenerExtent(envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax, datum, 0);
-            //GlobalVariables.currentExtentDM = extentDmRadio;
-            //try
-            //{
-            //    // Itera todos items seleccionados en el ListBox de WPF
-            //    foreach (var item in LayersListBox.Items)
-            //    {
-            //        if (item is CheckBox checkBox && checkBox.IsChecked == true)
-            //        {
-            //            string capaSeleccionada = checkBox.Content.ToString();
-            //            await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
-            //        }
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
-            //}
-            string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCaram);
+            var extentDmRadio = ObtenerExtent(envelope.XMin, envelope.YMin, envelope.XMax, envelope.YMax, datum, 0);
+            GlobalVariables.currentExtentDM = extentDmRadio;
+            try
+            {
+                // Itera todos items seleccionados en el ListBox de WPF
+                foreach (var item in LayersListBox.Items)
+                {
+                    if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                    {
+                        string capaSeleccionada = checkBox.Content.ToString();
+                        await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
-            await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync("Zona Urbana", styleGrid, "CLASE", StyleItemType.LineSymbol);
+            // string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCaram);
+            // await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync("Zona Reservada", styleGrid, "CLASE", StyleItemType.LineSymbol);
         }
 
         private ExtentModel ObtenerExtent(double XMin, double YMin, double XMax, double YMax, int datum, int radioKm = 0)
@@ -915,37 +951,83 @@ namespace SigcatminProAddin.View.Modulos
             return await tcs.Task;
         }
 
+        private void TbxValue_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                // Evitar que se procese la tecla Enter (si se desea)
+                e.Handled = true;
 
-        //public List<MyRowModel> ObtenerSeleccionados(DataGrid dataGrid)
+                // Llamar a la acción que deseas ejecutar cuando se presiona Enter
+                //MessageBox.Show("Enter");
+                BtnSearch_Click(sender, e);
+            }
+
+        }
+
+        //private async void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         //{
-        //    var seleccionados = new List<MyRowModel>();
+        //string demaName = "AreaRestringida";
+        //ImagenPoligono.Source = null;
+        //ImagenPoligono.Stretch = Stretch.Fill;
 
-        //    // Recorrer todos los elementos de la grilla
-        //    foreach (var item in dataGrid.ItemsSource as ObservableCollection<MyRowModel>)
+        //var tableView = sender as DevExpress.Xpf.Grid.TableView;
+        //if (tableView != null && tableView.Grid.VisibleRowCount > 0)
+        //{
+        //    // Obtener el índice de la fila seleccionada
+        //    int focusedRowHandle = tableView.FocusedRowHandle;
+        //    int currentDatum = (int)CbxSistema.SelectedValue;
+
+
+        //    if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
         //    {
-        //        var modelo = item as MyRowModel;
+        //        // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
+        //        string cdCodigo = DataGridResult.GetCellValue(focusedRowHandle, "CG_CODIGO")?.ToString();
+        //        string cdClase = DataGridResult.GetCellValue(focusedRowHandle, "PA_DESCRI")?.ToString();
 
-        //        // Si el CheckBox está seleccionado (IsSelected es true), agregar a la lista
-        //        if (modelo != null && modelo.IsSelected)
+        //        string query = $"CODIGO = '{cdCodigo}' and CLASE = '{cdClase}'";
+
+
+
+        //        var Params = Geoprocessing.MakeValueArray(demaName, query);
+        //        var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetDemaImage, Params);
+        //        string jsonString = response.ReturnValue;
+
+        //        jsonString = jsonString.Trim('"');
+        //        string path = jsonString;
+        //        path = path.Replace("\\", "/");
+        //        string fullUri = "file:///" + path;
+
+        //        using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
         //        {
-        //            seleccionados.Add(modelo);
+        //            BitmapImage bitmap = new BitmapImage();
+        //            bitmap.BeginInit();
+
+        //            // 3) Obligamos a que la imagen se cargue completa en memoria
+        //            bitmap.CacheOption = BitmapCacheOption.OnLoad;
+
+        //            // 4) Asignamos el stream como fuente de la imagen
+        //            bitmap.StreamSource = fs;
+        //            bitmap.EndInit();
+
+        //            // 5) "Congelamos" la imagen para usarla en WPF sin lock al archivo
+        //            bitmap.Freeze();
+
+        //            // 6) Asignamos la imagen al control
+        //            ImagenPoligono.Source = bitmap;
         //        }
-        //    }
 
-        //    return seleccionados;
-        //}
-
-        //// Llamar al método para obtener los seleccionados
-        //public void MostrarSeleccionados(DataGrid dataGrid)
-        //{
-        //    var seleccionados = ObtenerSeleccionados(dataGrid);
-
-        //    // Mostrar los elementos seleccionados
-        //    foreach (var seleccionado in seleccionados)
-        //    {
-        //        Console.WriteLine($"Seleccionado: {seleccionado.Name}");
+        //        //BitmapImage bitmap = new BitmapImage();
+        //        //bitmap.BeginInit();
+        //        //bitmap.UriSource = new Uri(fullUri, UriKind.Absolute);
+        //        //bitmap.EndInit();
+        //        //ImagenPoligono.Source = bitmap;
         //    }
         //}
+
+        //}
+
+
 
 
 

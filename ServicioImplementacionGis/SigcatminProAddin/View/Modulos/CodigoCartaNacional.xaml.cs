@@ -37,6 +37,9 @@ using ArcGIS.Core.Geometry;
 using System.Collections.ObjectModel;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using DevExpress.Xpo.Helpers;
+using DevExpress.Office;
+
+
 
 
 namespace SigcatminProAddin.View.Modulos
@@ -46,6 +49,8 @@ namespace SigcatminProAddin.View.Modulos
     /// </summary>
     public partial class CodigoCartaNacional : Page
     {
+        private ToolTip toolTip;
+
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
         bool sele_denu;
@@ -66,6 +71,14 @@ namespace SigcatminProAddin.View.Modulos
             TbxRadio.Text = "5";
             BtnGraficar.IsEnabled = true;
 
+
+            ToolTip toolTip = new ToolTip
+            {
+                Content = "El código debe contener guión '-' ==>  25-m."
+            };
+
+            // Asignar el ToolTip al TextBox
+            TbxValue.ToolTip = toolTip;
         }
 
         private void ConfigureDataGridDetailsColumns()
@@ -358,6 +371,17 @@ namespace SigcatminProAddin.View.Modulos
                                                                    MessageBoxImage.Warning);
                 return;
             }
+            //Contiene caracter -
+            if (TbxValue.Text.Contains('-'))
+            { }
+            else
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Ejemplo. Código de Hoja con guión '- ' ==> 32-m",
+                                                                   MessageConstants.Titles.Error,
+                                                                   MessageBoxButton.OK,
+                                                                   MessageBoxImage.Warning);
+                return;
+            }
 
             string valor = TbxValue.Text.TrimEnd().ToUpper();
             //listBoxVertices.Items.Add(valor);
@@ -378,6 +402,14 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 string datumStr = CbxSistema.Text;
                 var dmrRecords = dataBaseHandler.GetOfficialCarta(value, QueryCarta, datumStr);
+                if (dmrRecords.Rows.Count==0)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No existe la Carta: " + TbxValue.Text.ToString(),
+                                                              MessageConstants.Titles.Error,
+                                                              MessageBoxButton.OK,
+                                                              MessageBoxImage.Warning);
+                    return;
+                }
                 //calculatedIndex(DataGridResult, dmrRecords, DatagridResultConstants.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
                 int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
@@ -852,5 +884,7 @@ namespace SigcatminProAddin.View.Modulos
             }
 
         }
+
+
     }
 }
