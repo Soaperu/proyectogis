@@ -711,6 +711,8 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Derecho Minero");
+            progressBar.Show();
             BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxRadio.Text))
             {
@@ -764,6 +766,7 @@ namespace SigcatminProAddin.View.Modulos
             string dmShpNamePath = "DM" + fechaArchi + ".shp";
             try
             {
+
                 // Obtener el mapa Catastro//
 
                 Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
@@ -780,17 +783,7 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
                 }
 
-                ////Carga capa Distrito
-                //if (datum == datumwgs84)
-                //{
-                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
-                //}
-                //else
-                //{
-                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zoneDm, false);
-                //}
-                //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-                //Carga capa Zona Urbana
+
                 if (datum == datumwgs84)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
@@ -815,7 +808,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
                 }
-                CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
+                DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
                 DataTable orderUbigeosDM;
                 orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
 
@@ -922,8 +915,10 @@ namespace SigcatminProAddin.View.Modulos
                 await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show("Error");
+                progressBar.Dispose();
             }
 
 
@@ -973,7 +968,11 @@ namespace SigcatminProAddin.View.Modulos
               await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");
 
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
+            }
 
             // Obtener el mapa Carta IGN//
             try
@@ -1035,14 +1034,12 @@ namespace SigcatminProAddin.View.Modulos
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
+            }
 
-            }
-            finally
-            {
-                
-            }
             BtnGraficar.IsEnabled = true;
-            
+            progressBar.Dispose();
         }
 
         private SubscriptionToken _eventToken = null;
