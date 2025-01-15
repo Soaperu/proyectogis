@@ -60,8 +60,11 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                 TbxNombre.Text = GlobalVariables.resultadoEvaluacion.nombre.ToString();
                 string distancia = GlobalVariables.resultadoEvaluacion.distanciaFrontera.ToString();
                 TbxFrontera.Text = $"Distancia de la línea de frontera de: {distancia} Km.";
-                var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ResultadosCriterio["PR"];
                 DataGridEvaluacion.ItemsSource = null;
+                string currentTag = TcEvaluacion.SelectedItem.ToString();
+                var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio
+                                        .Where(r => r.Eval != null && r.Eval.Equals(currentTag, StringComparison.OrdinalIgnoreCase))
+                                        .ToList(); ;
                 DataGridEvaluacion.ItemsSource = resultadosCriterio;
 
                 string zonasUrbanasText;
@@ -152,7 +155,48 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                 }
             }
         }
+
+        private void BtnEliminar_Click(object sender, RoutedEventArgs e)
+        {
+            // Obtener la fila seleccionada
+            if (sender is Button button )
+            {
+                if(button.Tag is DevExpress.Xpf.Grid.EditGridCellData cell && cell.Row is ResultadoEval resultadoSeleccionado) 
+                {
+                    MessageBoxResult confirmacion = MessageBox.Show(
+                    $"¿Estás seguro de eliminar el registro:{resultadoSeleccionado.CodigoU} ?",
+                    "Confirmar Eliminación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                    if (confirmacion == MessageBoxResult.Yes)
+                    {
+                        // 1. Eliminar de la base de datos
+                        databaseHandler.EliminarRegistroEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, resultadoSeleccionado.CodigoU);
+
+
+                        // 2. Eliminar del objeto en memoria
+                        GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio.Remove(resultadoSeleccionado);
+
+                        // 3. Refrescar el DataGrid
+                        DataGridEvaluacion.ItemsSource = null;
+                        string currentTag = TcEvaluacion.SelectedItem.ToString();
+                        var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio
+                                                .Where(r => r.Eval != null && r.Eval.Equals(currentTag, StringComparison.OrdinalIgnoreCase))
+                                                .ToList(); ;
+                        DataGridEvaluacion.ItemsSource = resultadosCriterio;
+
+                        MessageBox.Show("Registro eliminado correctamente.", "Eliminación Exitosa", MessageBoxButton.OK, MessageBoxImage.Information);
+
+
+                    }               
+                    
+                }
+            }
+        }
+
     }
+
 
     public class OpcionEval
     {

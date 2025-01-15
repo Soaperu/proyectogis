@@ -95,6 +95,18 @@
                         <dxg:GridColumn Header="Estado" Binding="{Binding Estado}" Width="60"/>
                         <dxg:GridColumn Header="Concesión" Binding="{Binding Concesion}" Width="160" />
                         <dxg:GridColumn Header="Código" Binding="{Binding CodigoU}" Width="60" />
+                        <dxg:GridColumn Header="Eliminar" Width="60">
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="🗑"
+                                        Background="White"
+                                        Foreground="Red"
+                                        Padding="5,2"
+                                        Tag="{Binding}"
+                                        Click="BtnEliminar_Click"/>     
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
                     </dxg:GridControl.Columns>
                     <dxg:GridControl.View>
                         <dxg:TableView  x:Name="DataGridEvaluacionTableView" ShowAutoFilterRow="False"

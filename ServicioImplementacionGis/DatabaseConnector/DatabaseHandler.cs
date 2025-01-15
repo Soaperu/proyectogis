@@ -1353,7 +1353,8 @@ namespace DatabaseConnector
 
         public void ActualizarRegistroEvaluacionTecnica(string codigo, string codigoEva, string newIndicador)
         {
-            string updateQuery = @"UPDATE SISGEM.SG_T_EVALTECNICA_DESA SET ET_INDICA = :newIndicador WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
+            string updateQuery = @"UPDATE SISGEM.SG_T_EVALTECNICA_DESA SET ET_INDICA = :newIndicador, ET_USUMOD = USER, ET_FECUPD= SYSDATE
+                                            WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("newIndicador", OracleDbType.Varchar2, 1000) { Value = newIndicador },
