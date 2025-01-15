@@ -27,6 +27,7 @@ using ArcGIS.Core.CIM;
 using DevExpress.Xpf.Grid.GroupRowLayout;
 using DevExpress.DataAccess.Native.Web;
 using Newtonsoft.Json;
+using CommonUtilities.ArcgisProUtils.Models;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -881,7 +882,7 @@ namespace SigcatminProAddin.View.Modulos
                 var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName,false);
                 List<string> layersToRemove = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
-                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
                 GlobalVariables.CurrentShpName = "Catastro";
                 MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
@@ -926,6 +927,12 @@ namespace SigcatminProAddin.View.Modulos
                 string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
                 await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;
+
+                dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
+                foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)
+                {
+                    dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval ,"",r.Concesion,"");
+                }
             }
             catch (Exception ex) {
                 MessageBox.Show("Error");

@@ -29,7 +29,7 @@ namespace DatabaseConnector
 
         public static string GetDatabaseByPackage(string packageName)
         {
-            return PackageToDatabaseMap.TryGetValue(packageName, out var dbName) ? dbName : null;
+            return PackageToDatabaseMap.TryGetValue(packageName, out var dbName) ? dbName : null; ;
         }
     }
 }

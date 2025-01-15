@@ -342,13 +342,11 @@ def act_geom_info(lyrpath, codigo):
 
 
 
-def obtener_area_disponible(lyr_path, geom_ini):
-    campos = ["shape@", "CODIGOU", "PRIORI", "AREAINT", "ESTADO", "IDENTI", "DE_IDEN", "TOTALSINO" ]
-    query = "PRIORI NOT IN ('VE', 'CO', 'EV')"
+def obtener_area_disponible(lyrpath, geom_ini):
+    campos = ["shape@", "CODIGOU", "EVAL" ]
+    query = "EVAL NOT IN ('VE', 'CO', 'EV')"
     geometria = geom_ini
     codigo_ad ='AD'
-    pkg.p_del_area_evalcoor(None, codigo)
-    pkg.p_del_area_eval(None,codigo)
 
     geometria_ad_ld = geom_ini    
     geometria_po_ld = geom_ini

@@ -71,7 +71,7 @@
                 <TabItem Header="Posterior" Tag="PO"/>
                 <TabItem Header="Simultáneo" Tag="SI"/>
                 <TabItem Header="Extinguido" Tag="EX"/>
-                <TabItem Header="Redenuncio" Tag="AR"/>
+                <TabItem Header="Redenuncio" Tag="RD"/>
             </TabControl>
 
             <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
@@ -83,7 +83,15 @@
                 <dxg:GridControl FontSize="10" x:Name="DataGridEvaluacion" Grid.ColumnSpan="2" >
                     <dxg:GridControl.Columns>
                         <dxg:GridColumn Binding="{Binding Contador}" Header="N°" UnboundType="Integer" Width="30" />
-                        <dxg:GridColumn Header="Evaluación" Binding="{Binding Eval}" Width="60" />
+                        <dxg:GridColumn Header="Evaluación" Binding="{Binding Eval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="60" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding EvalOptions}" 
+                                              DisplayMember="Nombre" 
+                                              ValueMember="Valor" 
+                                              ImmediatePopup="True"
+                                              AllowNullInput="False" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
                         <dxg:GridColumn Header="Estado" Binding="{Binding Estado}" Width="60"/>
                         <dxg:GridColumn Header="Concesión" Binding="{Binding Concesion}" Width="160" />
                         <dxg:GridColumn Header="Código" Binding="{Binding CodigoU}" Width="60" />
@@ -91,7 +99,7 @@
                     <dxg:GridControl.View>
                         <dxg:TableView  x:Name="DataGridEvaluacionTableView" ShowAutoFilterRow="False"
                  AllowColumnFiltering="False"
-                 ShowGroupPanel="False" />
+                 ShowGroupPanel="False" CellValueChanged="DataGridEvaluacionTableView_CellValueChanged" />
                     </dxg:GridControl.View>
                 </dxg:GridControl>
             </Grid>

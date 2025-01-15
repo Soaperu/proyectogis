@@ -114,6 +114,7 @@ namespace DatabaseConnector
         public string ExecuteScalar(string storedProcedure, OracleParameter[] parameters)
         {
             var connectionString = GetConnectionStringByPackage(storedProcedure);
+            
             using (var connection = new OracleConnection(connectionString))//_dbConnection.OracleConnectionString()))
             using (var command = new OracleCommand(storedProcedure, connection))
             {
@@ -156,9 +157,48 @@ namespace DatabaseConnector
             }
         }
 
+        public object ExecuteScalarQuery(string query, OracleParameter[] parameters)
+        {
+            object result = null;
+
+            // Asegúrate de reemplazar esta cadena con tu cadena de conexión real
+            string connectionString = _dbConnection.OracleConnectionString();
+
+            using (OracleConnection connection = new OracleConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (OracleCommand command = new OracleCommand(query, connection))
+                    {
+                        // Agregar parámetros si existen
+                        if (parameters != null)
+                        {
+                            command.Parameters.AddRange(parameters);
+                        }
+
+                        // Ejecutar la consulta y obtener el resultado
+                        result = command.ExecuteScalar();
+                    }
+                }
+                catch (OracleException ex)
+                {
+                    Console.WriteLine($"Error de Oracle: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error general: {ex.Message}");
+                }
+            }
+
+            return result;
+        }
+
         public void ExecuteNonQuery(string query, OracleParameter[] parameters)
         {
-            using (var connection = new OracleConnection("tu_cadena_de_conexion"))
+            var connectionString = _dbConnection.OracleConnectionString();
+            using (var connection = new OracleConnection(connectionString))
             {
                 connection.Open();
                 using (var command = new OracleCommand(query, connection))
@@ -1261,16 +1301,16 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public void InsertarEvaluacionTecnica(string codigo, string codigoeva, double hectarea, string descripcion, string clase)
+        public void InsertarEvaluacionTecnica(string codigo, string codigoeva, string indicador, string hectarea, string descripcion, string clase="")
         {
-            string insertQuery = @"INSERT INTO SG_T_EVALTECNICA(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
-                                    VALUES (:codigo, :codigoeva, :indicador, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
+            string insertQuery = @"INSERT INTO SISGEM.SG_T_EVALTECNICA_DESA(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_SESION, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
+                                    VALUES (:codigo, :codigoeva, :indicador, 1111, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
                 new OracleParameter("codigoeva", OracleDbType.Varchar2, 13) { Value = codigoeva },
-                new OracleParameter("indicador", OracleDbType.Varchar2, 1000) { Value = "1" },
-                new OracleParameter("hectarea", OracleDbType.Double, 10) { Value = hectarea },
+                new OracleParameter("indicador", OracleDbType.Varchar2, 1000) { Value = indicador },
+                new OracleParameter("hectarea", OracleDbType.Varchar2, 10) {Value= hectarea},
                 new OracleParameter("descripcion", OracleDbType.Varchar2, 1000) { Value = descripcion },
                 new OracleParameter("clase", OracleDbType.Varchar2, 1000) { Value = clase }
             };
@@ -1280,22 +1320,30 @@ namespace DatabaseConnector
 
         public void MoveraHistoricoEvaluacionTecnica(string codigo)
         {
-            string insertQuery = @"INSERT INTO SG_H_EVALTECNICA
-                                    SELECT * FROM SG_T_EVALTECNICA WHERE CG_CODIGO = :codigo";
-            string deleteQuery = @"DELETE FROM SG_T_EVALTECNICA WHERE CG_CODIGO = :codigo";
+            string validarExistenciaQuery = @"SELECT COUNT(*) FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo";
+
+            string insertQuery = @"INSERT INTO SISGEM.SG_H_EVALTECNICA_DESA
+                                    SELECT * FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo";
+            string deleteQuery = @"DELETE FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo";
 
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo }
             };
-            ExecuteNonQuery(insertQuery, parameters);
-            ExecuteNonQuery(deleteQuery, parameters);
+            // Ejecutar la validación
+            object resultado = ExecuteScalarQuery(validarExistenciaQuery, parameters);
+            int cantidadRegistros = Convert.ToInt32(resultado);
+            if (cantidadRegistros > 0)
+            {
+                ExecuteNonQuery(insertQuery, parameters);
+                ExecuteNonQuery(deleteQuery, parameters);
+            }
         }
 
         public DataTable ObtenerResultadosEvaluacionTecnica(string codigo)
         {
             string consulta = @"Select cg_codigo, cg_codeva, et_indica, et_canare, et_descri
-                                from sg_t_evaltecnica
+                                from SISGEM.sg_t_evaltecnica_desa
                                 where cg_codigo = :codigo";
             var parametro = new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo };
 
@@ -1305,7 +1353,7 @@ namespace DatabaseConnector
 
         public void ActualizarRegistroEvaluacionTecnica(string codigo, string codigoEva, string newIndicador)
         {
-            string updateQuery = @"UPDATE SG_T_EVALTECNICA SET ET_INDICA = :newIndicador WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
+            string updateQuery = @"UPDATE SISGEM.SG_T_EVALTECNICA_DESA SET ET_INDICA = :newIndicador WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("newIndicador", OracleDbType.Varchar2, 1000) { Value = newIndicador },
@@ -1317,7 +1365,7 @@ namespace DatabaseConnector
 
         public void EliminarRegistroEvaluacionTecnica(string codigo, string codigoEva)
         {
-            string deleteQuery = @"DELETE FROM SG_T_EVALTECNICA WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
+            string deleteQuery = @"DELETE FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },

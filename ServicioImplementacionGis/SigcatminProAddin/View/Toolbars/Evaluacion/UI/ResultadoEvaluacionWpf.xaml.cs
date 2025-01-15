@@ -12,6 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using CommonUtilities;
+using CommonUtilities.ArcgisProUtils.Models;
+using DatabaseConnector;
 
 namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
 {
@@ -20,9 +22,20 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
     /// </summary>
     public partial class ResultadoEvaluacionWpf : Window
     {
+        private DatabaseHandler databaseHandler = new DatabaseHandler();
+        public List<OpcionEval> EvalOptions { get; set; }
         public ResultadoEvaluacionWpf()
         {
             InitializeComponent();
+            EvalOptions = new List<OpcionEval>
+            {
+                new OpcionEval { Nombre = "PR", Valor = "PR" },
+                new OpcionEval { Nombre = "PO", Valor = "PO" },
+                new OpcionEval { Nombre = "SI", Valor = "SI" },
+                new OpcionEval { Nombre = "EX", Valor = "EX" },
+                new OpcionEval { Nombre = "RD", Valor = "RD" }
+            };
+            DataContext = this;
         }
         private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
@@ -106,7 +119,10 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
 
                 if (!string.IsNullOrEmpty(filtro) && GlobalVariables.resultadoEvaluacion.ResultadosCriterio.ContainsKey(filtro))
                 {
-                    var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[filtro];
+                    //var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[filtro];
+                    var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio
+                                            .Where(r => r.Eval != null && r.Eval.Equals(filtro, StringComparison.OrdinalIgnoreCase))
+                                            .ToList(); ;
                     DataGridEvaluacion.ItemsSource = null;
                     DataGridEvaluacion.ItemsSource = resultadosCriterio;
                 }
@@ -124,5 +140,24 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
         {
 
         }
+
+        private void DataGridEvaluacionTableView_CellValueChanged(object sender, DevExpress.Xpf.Grid.CellValueChangedEventArgs e)
+        {
+            if (e.Column.Header.ToString() == "Evaluación") // Solo actualiza si se modifica la columna Eval
+            {
+                if (e.Row is ResultadoEval resultadoModificado)
+                {
+                    // Llama al método para actualizar la base de datos
+                    databaseHandler.ActualizarRegistroEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo ,resultadoModificado.CodigoU, resultadoModificado.Eval);
+                }
+            }
+        }
     }
+
+    public class OpcionEval
+    {
+        public string Nombre { get; set; }  // Texto visible
+        public string Valor { get; set; }   // Valor real
+    }
+
 }
