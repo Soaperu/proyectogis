@@ -25,6 +25,8 @@ using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Core.CIM;
 using DevExpress.Xpf.Grid.GroupRowLayout;
+using DevExpress.DataAccess.Native.Web;
+using Newtonsoft.Json;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -876,6 +878,7 @@ namespace SigcatminProAddin.View.Modulos
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol,codigoValue);
                 var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName,false);
                 List<string> layersToRemove = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
@@ -912,12 +915,14 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
 
 
-                var criterios = new string[] { "PR", "AR", "PO", "SI", "EX" };
+                var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
                 //int contador = 0;
                 foreach (var criterio in criterios)
                 {
                     GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio]= await elementsLayoutUtils.ObtenerResultadosEval(criterio);
                 }
+                GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
+                GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
                 string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
                 await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;

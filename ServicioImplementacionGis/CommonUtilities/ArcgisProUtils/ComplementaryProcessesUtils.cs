@@ -272,12 +272,13 @@ namespace CommonUtilities.ArcgisProUtils
                 GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
 
 
-                var criterios = new string[] { "PR", "AR", "PO", "SI", "EX" };
+                var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
                 //int contador = 0;
                 foreach (var criterio in criterios)
                 {
                     GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio] = await elementsLayoutUtils.ObtenerResultadosEval(criterio);
                 }
+                GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;
 
             }

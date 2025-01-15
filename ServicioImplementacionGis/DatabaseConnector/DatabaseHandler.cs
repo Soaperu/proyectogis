@@ -156,6 +156,19 @@ namespace DatabaseConnector
             }
         }
 
+        public void ExecuteNonQuery(string query, OracleParameter[] parameters)
+        {
+            using (var connection = new OracleConnection("tu_cadena_de_conexion"))
+            {
+                connection.Open();
+                using (var command = new OracleCommand(query, connection))
+                {
+                    command.Parameters.AddRange(parameters);
+                    command.ExecuteNonQuery();
+                }
+            }
+        }
+
         // Metodos que consumen los Paquetes SQL
         public DataTable VerifyUser(string username, string password) // Verifica_usuario
         {
@@ -937,7 +950,7 @@ namespace DatabaseConnector
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTAIGN";
             var parameters = new OracleParameter[]
             {
-                new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code },                
+                new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
                 new OracleParameter("V_CG_CODEVA", OracleDbType.Varchar2, 13) { Value = evalCode },
                 new OracleParameter("V_ET_INDICA", OracleDbType.Varchar2, 1000) { Value = indicator },
                 new OracleParameter("V_ET_USUFOR", OracleDbType.Varchar2, 8) { Value = userFor },
@@ -1125,7 +1138,7 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public DataTable ObtenerDatumDm(string code) 
+        public DataTable ObtenerDatumDm(string code)
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_DATUM_DM";
             var parameters = new OracleParameter[]
@@ -1136,7 +1149,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public DataTable ObtenerBloqueadoDm(string code) 
+        public DataTable ObtenerBloqueadoDm(string code)
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_BLOQUEADO_DM";
             var parameters = new OracleParameter[]
@@ -1147,7 +1160,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public DataTable ObtenerDatosUbigeo(string code) 
+        public DataTable ObtenerDatosUbigeo(string code)
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO";
             var parameters = new OracleParameter[]
@@ -1248,7 +1261,70 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public void InsertarEvaluacionTecnica(string codigo, string codigoeva, double hectarea, string descripcion, string clase)
+        {
+            string insertQuery = @"INSERT INTO SG_T_EVALTECNICA(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
+                                    VALUES (:codigo, :codigoeva, :indicador, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoeva", OracleDbType.Varchar2, 13) { Value = codigoeva },
+                new OracleParameter("indicador", OracleDbType.Varchar2, 1000) { Value = "1" },
+                new OracleParameter("hectarea", OracleDbType.Double, 10) { Value = hectarea },
+                new OracleParameter("descripcion", OracleDbType.Varchar2, 1000) { Value = descripcion },
+                new OracleParameter("clase", OracleDbType.Varchar2, 1000) { Value = clase }
+            };
 
+            ExecuteNonQuery(insertQuery, parameters);
+        }
 
+        public void MoveraHistoricoEvaluacionTecnica(string codigo)
+        {
+            string insertQuery = @"INSERT INTO SG_H_EVALTECNICA
+                                    SELECT * FROM SG_T_EVALTECNICA WHERE CG_CODIGO = :codigo";
+            string deleteQuery = @"DELETE FROM SG_T_EVALTECNICA WHERE CG_CODIGO = :codigo";
+
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo }
+            };
+            ExecuteNonQuery(insertQuery, parameters);
+            ExecuteNonQuery(deleteQuery, parameters);
+        }
+
+        public DataTable ObtenerResultadosEvaluacionTecnica(string codigo)
+        {
+            string consulta = @"Select cg_codigo, cg_codeva, et_indica, et_canare, et_descri
+                                from sg_t_evaltecnica
+                                where cg_codigo = :codigo";
+            var parametro = new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo };
+
+            return ExecuteDataTable(consulta, new[] { parametro });
+
+        }
+
+        public void ActualizarRegistroEvaluacionTecnica(string codigo, string codigoEva, string newIndicador)
+        {
+            string updateQuery = @"UPDATE SG_T_EVALTECNICA SET ET_INDICA = :newIndicador WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("newIndicador", OracleDbType.Varchar2, 1000) { Value = newIndicador },
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoEva", OracleDbType.Varchar2, 13) { Value = codigoEva }
+            };
+            ExecuteNonQuery(updateQuery, parameters);
+        }
+
+        public void EliminarRegistroEvaluacionTecnica(string codigo, string codigoEva)
+        {
+            string deleteQuery = @"DELETE FROM SG_T_EVALTECNICA WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoEva", OracleDbType.Varchar2, 13) { Value = codigoEva }
+            };
+            ExecuteNonQuery(deleteQuery, parameters);
+        }
     }
+
 }

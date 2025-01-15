@@ -21,6 +21,7 @@ _POSTERIOR = 'PO'
 _EXTINGUIDO = 'EX'
 _EVALUADO = 'EV'
 _SIMULTANEO = 'SI'
+_REDENUNCIO = 'RD'
 
 
 
@@ -331,16 +332,43 @@ def act_geom_info(lyrpath, codigo):
                                                 priori = _POSTERIOR
             if codigo == codigo_x:
                 priori = _EVALUADO
+            if estado_x == "F":
+                priori = _REDENUNCIO
             i[4] = priori
             i[17] = totalsino            
             cursor.updateRow(i)
     return geom_dm
 
+
+
+
+def obtener_area_disponible(lyr_path, geom_ini):
+    campos = ["shape@", "CODIGOU", "PRIORI", "AREAINT", "ESTADO", "IDENTI", "DE_IDEN", "TOTALSINO" ]
+    query = "PRIORI NOT IN ('VE', 'CO', 'EV')"
+    geometria = geom_ini
+    codigo_ad ='AD'
+    pkg.p_del_area_evalcoor(None, codigo)
+    pkg.p_del_area_eval(None,codigo)
+
+    geometria_ad_ld = geom_ini    
+    geometria_po_ld = geom_ini
+    po_regional = 'INGEMMET'
+
+    area_ld_ad = round((geometria.area /10000.0) ,4)
+    with arcpy.da.SearchCursor(lyrpath,campos,query) as cursor:
+        for i in cursor:
+            if i[2] in ('AN', 'SI'):
+                geometria_ad_ld = geometria_ad_ld.difference(i[0])
+                codigo_ad = i[1]
+
+    areadisponible_ld = round((geometria_ad_ld.area /10000.0) ,4)
+    return areadisponible_ld
+
 if __name__ == '__main__':
     try:
         lyr_path = os.path.join(temp_folder, in_layer)
         out_geom = act_geom_info(lyr_path, in_codigo)
-        response = in_layer
+        response = obtener_area_disponible(lyr_path, out_geom)
         arcpy.AddMessage("Satisfactorio")
     except Exception as e:
         arcpy.AddError("Error: " + str(e))
