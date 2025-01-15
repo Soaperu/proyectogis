@@ -13,6 +13,9 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DevExpress.CodeParser;
+using ReportGenerator.ReportsDevExpress.ReporteEvInformacion;
+using DevExpress.XtraReports;
+using CommonUtilities;
 
 
 namespace ReportGenerator
@@ -21,33 +24,123 @@ namespace ReportGenerator
     {
         public static void ShowReport(DataTable dataSource, string reportName, ReportCustomizations customizations)
         {
-            XtraReport report = new ReportsDevExpress.ReportEvalDM();
-            report.DataSource = dataSource;
-
-            // Personalizar campos si es necesario
-            //var fieldFechaDocumento = report.FindControl("FECHA_DOCUMENTO", true) as XRLabel;
-            //if (fieldFechaDocumento != null)
-            //    fieldFechaDocumento.Text = customizations.FechaDocumento.ToString("dd/MM/yyyy");
-
-            //var fieldTitulo = report.FindControl("lblTitulo_1", true) as XRLabel;
-            //if (fieldTitulo != null)
-            //    fieldTitulo.Text = customizations.Titulo;
-
-            var fieldCarta = report.FindControl("lblHoja", true) as XRLabel;
-            if (fieldCarta != null)
-                fieldCarta.Text = "Carta: " + customizations.Carta.Replace("'", "");
-            report.CreateDocument();
-            var w = new Window
+            if(reportName == "Reporte_DM_01")
             {
-                Title = "Vista Previa del Reporte",
-                Content = new DocumentPreviewControl
+                XtraReport report = new ReportsDevExpress.ReportEvalDM();
+                report.DataSource = dataSource;
+
+                var fieldCarta = report.FindControl("lblHoja", true) as XRLabel;
+                if (fieldCarta != null)
+                    fieldCarta.Text = "Carta: " + customizations.Carta.Replace("'", "");
+                report.CreateDocument();
+                var w = new Window
                 {
-                    DocumentSource = report
-                },
-                Width = 900,
-                Height = 700
-            };
-            w.ShowDialog();
+                    Title = "Vista Previa del Reporte",
+                    Content = new DocumentPreviewControl
+                    {
+                        DocumentSource = report
+                    },
+                    Width = 900,
+                    Height = 700
+                };
+                w.ShowDialog();
+            }
+
+            if (reportName == "Reporte_DM_03")
+            {
+                // Crear instancia del reporte y asignar la fuente de datos
+                XtraReport report = new ReportsDevExpress.ReporteEvInformacion.ReporteEvInformacion();
+
+                // Crear instancia del subreporte y asignar la fuente de datos
+                var subreporte = new SR_01_datos_derechos();
+                subreporte.DataSource = dataSource;
+
+                // Asignar las fuentes de datos a los subreportes
+                var dmDatosSubreporte = (XRSubreport)report.FindControl("xrSubreport1", true);
+                dmDatosSubreporte.ReportSource = subreporte;
+
+
+                // Asignar los valores de las propiedades personalizadas
+                var fieldCodigoDM = report.FindControl("lblCodigo", true) as XRLabel;
+                if (fieldCodigoDM != null)
+                    fieldCodigoDM.Text = GlobalVariables.CurrentCodeDm;
+
+                var fieldNombreDM = report.FindControl("lblConcesion", true) as XRLabel;
+                if (fieldNombreDM != null)
+                    fieldNombreDM.Text = GlobalVariables.CurrentNameDm;
+
+                var fieldAreaDM = report.FindControl("lblHectarea", true) as XRLabel;
+                if (fieldAreaDM != null)
+                    fieldAreaDM.Text = GlobalVariables.CurrentAreaDm;
+
+                string distancia = GlobalVariables.resultadoEvaluacion.distanciaFrontera.ToString();
+                var fieldLimitesDM = report.FindControl("lblLimitesF", true) as XRLabel;
+                if (fieldLimitesDM != null)
+                    fieldLimitesDM.Text = $"Distancia de la línea de frontera de: {distancia} Km."; ;
+
+                string zonasUrbanasText;
+                if (string.IsNullOrEmpty(GlobalVariables.resultadoEvaluacion.listaCaramUrbana))
+                {
+                    zonasUrbanasText = "No se encuentra superpuesto a un Área urbana";
+                }
+                else
+                {
+                    if (GlobalVariables.resultadoEvaluacion.listaCaramUrbana.Length > 65)
+                    {
+                        string posi_x = GlobalVariables.resultadoEvaluacion.listaCaramUrbana.Substring(0, 65);
+                        string posi_x1 = GlobalVariables.resultadoEvaluacion.listaCaramUrbana.Substring(65);
+                        zonasUrbanasText = posi_x + "\n" + posi_x1;
+                    }
+                    else
+                    {
+                        zonasUrbanasText = GlobalVariables.resultadoEvaluacion.listaCaramUrbana;
+                    }
+                }
+
+                string zonasReservadasText;
+                if (string.IsNullOrEmpty(GlobalVariables.resultadoEvaluacion.listaCaramReservada))
+                {
+                    zonasReservadasText = "No se encuentra superpuesto a un Área de Reserva";
+                }
+                else
+                {
+                    if (GlobalVariables.resultadoEvaluacion.listaCaramReservada.Length > 65)
+                    {
+                        string posi_x = GlobalVariables.resultadoEvaluacion.listaCaramReservada.Substring(0, 65);
+                        string posi_x1 = GlobalVariables.resultadoEvaluacion.listaCaramReservada.Substring(65);
+                        zonasReservadasText = posi_x + "\n" + posi_x1;
+                    }
+                    else
+                    {
+                        zonasReservadasText = GlobalVariables.resultadoEvaluacion.listaCaramReservada;
+                    }
+                }
+
+                var fieldZonasReservadasDM = report.FindControl("lblZonasReservadas", true) as XRLabel;
+                if (fieldZonasReservadasDM != null)
+                    fieldZonasReservadasDM.Text = zonasReservadasText;
+
+                var fieldZonasUrbanasDM = report.FindControl("lblZonasUrbanas", true) as XRLabel;
+                if (fieldZonasUrbanasDM != null)
+                    fieldZonasUrbanasDM.Text = zonasUrbanasText;
+
+
+                report.CreateDocument();
+                var w = new Window
+                {
+                    Title = "Vista Previa del Reporte",
+                    Content = new DocumentPreviewControl
+                    {
+                        DocumentSource = report
+                    },
+                    Width = 900,
+                    Height = 700
+                };
+                w.ShowDialog();
+            }
+
+
+
         }
     }
 

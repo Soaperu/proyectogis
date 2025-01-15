@@ -9,6 +9,7 @@ using ArcGIS.Desktop.Mapping;
 using ArcGIS.Core.Data;
 using DatabaseConnector;
 using ArcGIS.Desktop.Editing;
+using CommonUtilities;
 
 namespace ReportGenerator
 {
@@ -214,5 +215,158 @@ namespace ReportGenerator
             // 7. Devolvemos el DataTable
             return lodtRegistros;
         }
+
+        //
+        //
+        //
+        //
+        // --------------------------------------------------------------------------------------------------------
+
+        public async Task<DataTable> LeerResultadosEvalReporteAsync()
+        {
+            DataTable lodtbReporte = new DataTable();
+            lodtbReporte.Columns.Add("CONTADOR", typeof(string));
+            lodtbReporte.Columns.Add("CONCESION", typeof(string));
+            lodtbReporte.Columns.Add("TIPO_EX", typeof(string));
+            lodtbReporte.Columns.Add("CODIGOU", typeof(string));
+            lodtbReporte.Columns.Add("ESTADO", typeof(string));
+            lodtbReporte.Columns.Add("EVAL", typeof(string));
+            lodtbReporte.Columns.Add("ORDEN", typeof(int));
+
+            bool afound = false;
+            FeatureLayer pFeatLayer = null;
+
+            await QueuedTask.Run(() =>
+            {
+                var map = MapView.Active?.Map;
+                if (map == null)
+                {
+                    MessageBox.Show("No hay un MapView activo.",
+                                    "BDGEOCATMIN",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Buscamos la capa que coincida con el nombre "Catastro"
+                pFeatLayer = map.Layers.OfType<FeatureLayer>()
+                               .FirstOrDefault(lyr => lyr.Name.Equals("Catastro", StringComparison.OrdinalIgnoreCase));
+
+                if (pFeatLayer == null)
+                {
+                    MessageBox.Show("Layer Catastro No Existe.",
+                                    "BDGEOCATMIN",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                    return;
+                }
+
+                afound = true;
+            });
+
+            if (!afound || pFeatLayer == null) return lodtbReporte;
+
+            await QueuedTask.Run(() =>
+            {
+                FeatureClass fclas_tema = pFeatLayer.GetFeatureClass();
+
+                int Cuenta_an = 0, Cuenta_po = 0, Cuenta_si = 0, Cuenta_ex = 0, Cuenta_rd = 0;
+                string[] criterios = { "PR", "PO", "SI", "EX", "AR"};
+
+                foreach (var criterio in criterios)
+                {
+                    QueryFilter queryFilter = new QueryFilter
+                    {
+                        WhereClause = $"EVAL = '{criterio}'"
+                    };
+
+                    int cuenta = 0;
+                    using (var cursor = fclas_tema.Search(queryFilter, false))
+                    {
+                        while (cursor.MoveNext())
+                        {
+                            using (Row row = cursor.Current)
+                            {
+                                var dRow = lodtbReporte.NewRow();
+                                dRow["CONTADOR"] = row["CONTADOR"];
+                                dRow["CONCESION"] = row["CONCESION"];
+                                dRow["TIPO_EX"] = row["TIPO_EX"];
+                                dRow["CODIGOU"] = row["CODIGOU"];
+                                dRow["ESTADO"] = row["ESTADO"];
+                                dRow["EVAL"] = ""; // Asignar EVAL vacío temporalmente
+                                dRow["ORDEN"] = Array.IndexOf(criterios, criterio);
+                                lodtbReporte.Rows.Add(dRow);
+                                cuenta++;
+                            }
+                        }
+                    }
+
+                    switch (criterio)
+                    {
+                        case "PR":
+                            Cuenta_an = cuenta;
+                            break;
+                        case "PO":
+                            Cuenta_po = cuenta;
+                            break;
+                        case "SI":
+                            Cuenta_si = cuenta;
+                            break;
+                        case "EX":
+                            Cuenta_ex = cuenta;
+                            break;
+                        case "AR":
+                            Cuenta_rd = cuenta;
+                            break;
+                    }
+
+                    
+
+                    // Actualizar las filas de lodtbReporte con el valor correcto de EVAL
+                    foreach (DataRow dRow in lodtbReporte.Rows)
+                    {
+                        if (dRow["EVAL"].ToString() == "")
+                        {
+                            dRow["EVAL"] = criterio switch
+                            {
+                                "PR" => $"DERECHOS PRIORITARIOS : ({Cuenta_an})",
+                                "PO" => (GlobalVariables.CurrentTipoEx == "RD") ? $"DERECHOS QUE DEBEN RESPETAR EL AREA PETICIONADA: ({Cuenta_rd})" : $"DERECHOS POSTERIORES : ({Cuenta_po})",
+                                "SI" => $"DERECHOS SIMULTANEOS : ({Cuenta_si})",
+                                "EX" => $"DERECHOS EXTINGUIDOS : ({Cuenta_ex})",
+                                "AR" => $"Petitorio formulado al amparo del Art.12 de la Ley 26615, sobre el área del derecho extinguido y publicado de libre denunciabilidad ({Cuenta_rd})",
+                                _ => ""
+                            };
+                        }
+                    }
+                }
+
+                // Agregar filas adicionales si no hay resultados
+                if (Cuenta_an == 0) lodtbReporte.Rows.Add(CreateEmptyRow(lodtbReporte, "DERECHOS PRIORITARIOS : No Presenta DM Prioritarios", 1));
+                if (Cuenta_po == 0)
+                {
+                    lodtbReporte.Rows.Add(CreateEmptyRow(lodtbReporte, GlobalVariables.CurrentTipoEx == "RD" ? "DERECHOS QUE DEBEN RESPETAR EL AREA PETICIONADA : No Presenta" : "DERECHOS POSTERIORES : No Presenta DM Posteriores", 2));
+                }
+                if (Cuenta_si == 0) lodtbReporte.Rows.Add(CreateEmptyRow(lodtbReporte, "DERECHOS SIMULTANEOS : No Presenta DM Simultaneos", 3));
+                if (Cuenta_ex == 0) lodtbReporte.Rows.Add(CreateEmptyRow(lodtbReporte, "DERECHOS EXTINGUIDOS : No Presenta DM Extinguidos", 4));
+            });
+
+            return lodtbReporte;
+
+        }
+
+        private DataRow CreateEmptyRow(DataTable table, string evalValue, int orden)
+        {
+            DataRow row = table.NewRow();
+            row["CONTADOR"] = "";
+            row["CONCESION"] = "";
+            row["TIPO_EX"] = "";
+            row["CODIGOU"] = "";
+            row["ESTADO"] = "";
+            row["EVAL"] = evalValue;
+            row["ORDEN"] = orden;
+            return row;
+        }
+
+
     }
 }

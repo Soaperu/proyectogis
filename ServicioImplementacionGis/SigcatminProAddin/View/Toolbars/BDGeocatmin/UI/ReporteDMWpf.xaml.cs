@@ -44,7 +44,19 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 custom.Carta = GlobalVariables.CurrentPagesDm;
                 custom.Titulo = "Titulo de Prueba";
                 custom.FechaDocumento = DateTime.Now;
-                ReportGenerator.ReportDM.ShowReport(table, "Reporte Derecho Minero", custom);
+                ReportGenerator.ReportDM.ShowReport(table, "Reporte_DM_01", custom);
+            }
+            
+            if (reportEvatDm.IsChecked is true)
+            {
+                var dataProcessor = new ReportGenerator.DataProcessorReports();
+                var table = await dataProcessor.LeerResultadosEvalReporteAsync();
+                var custom = new ReportGenerator.ReportCustomizations();
+                custom.Carta = GlobalVariables.CurrentPagesDm;
+                custom.Titulo = "Titulo de Prueba";
+                custom.FechaDocumento = DateTime.Now;
+
+                ReportGenerator.ReportDM.ShowReport(table, "Reporte_DM_03", custom);
             }
         }
 
