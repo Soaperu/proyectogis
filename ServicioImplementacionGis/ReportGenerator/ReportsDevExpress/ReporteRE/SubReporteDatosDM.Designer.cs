@@ -1,6 +1,6 @@
-﻿namespace ReportGenerator.ReportsDevExpress.ReporteEvInformacion
+﻿namespace ReportGenerator.ReportsDevExpress.ReporteRE
 {
-    partial class SR_01_datos_derechos
+    partial class SubReporteDatosDM
     {
         /// <summary>
         /// Required designer variable.

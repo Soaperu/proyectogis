@@ -10,6 +10,7 @@ using ArcGIS.Core.Data;
 using DatabaseConnector;
 using ArcGIS.Desktop.Editing;
 using CommonUtilities;
+using DevExpress.DataAccess.Sql.DataApi;
 
 namespace ReportGenerator
 {
@@ -87,19 +88,7 @@ namespace ReportGenerator
                     // Creamos un cursor de búsqueda (modo lectura y edición si así lo necesitamos)
                     using (RowCursor rowCursor = table.Search(queryFilter, false))
                     {
-                        // Verificamos si hay al menos una fila
-                        if (!rowCursor.MoveNext())
-                        {
-                            MessageBox.Show(".:: No Hay Datos para el Reporte ::.",
-                                            "BDGEOCATMIN",
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Information);
-                            return; // Nada más que hacer
-                        }
-
-                        // Regresamos al inicio del cursor para procesar todo
-                        //rowCursor;//.Reset();
-
+                        // Procesamos todas las filas
                         while (rowCursor.MoveNext())
                         {
                             using (Row row = rowCursor.Current)
@@ -186,6 +175,11 @@ namespace ReportGenerator
                                         dr["DISTRITO"] = "";
                                         dr["HECTAREA"] = row["HASDATUM"];
                                     }
+
+                                    // Agregamos la fila al DataTable
+                                    lodtRegistros.Rows.Add(dr);
+
+
                                 }
                                 catch (Exception ex)
                                 {
@@ -193,8 +187,7 @@ namespace ReportGenerator
                                     MessageBox.Show("Error obteniendo Ubigeo: " + ex.Message);
                                 }
 
-                                // Agregamos la fila al DataTable
-                                lodtRegistros.Rows.Add(dr);
+                                
                             }
                         } // while
                     } // using RowCursor
@@ -221,6 +214,98 @@ namespace ReportGenerator
         //
         //
         // --------------------------------------------------------------------------------------------------------
+        //
+        //
+        //
+
+
+        public async Task<DataTable> GenerarReporteSPEAsync()
+        {
+            DataTable lodtbReporte = new DataTable();
+            lodtbReporte.Columns.Add("NUM", typeof(string));
+            lodtbReporte.Columns.Add("CODIGO", typeof(string));
+            lodtbReporte.Columns.Add("NOMBRE", typeof(string));
+            lodtbReporte.Columns.Add("ZONA", typeof(string));
+            lodtbReporte.Columns.Add("TE", typeof(string));
+            lodtbReporte.Columns.Add("TP", typeof(string));
+            lodtbReporte.Columns.Add("PUBL", typeof(string));
+            lodtbReporte.Columns.Add("INCOR", typeof(string));
+            lodtbReporte.Columns.Add("SUST", typeof(string));
+
+
+            await QueuedTask.Run(() =>
+            {
+                // 1. Obtenemos el mapa activo y buscamos la capa por su nombre
+                var map = MapView.Active?.Map;
+                if (map == null)
+                {
+                    MessageBox.Show("No hay un MapView activo.",
+                                    "BDGEOCATMIN",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Buscamos la capa que coincida con el nombre "Catastro"
+                FeatureLayer featureLayer = map.Layers.OfType<FeatureLayer>()
+                                             .FirstOrDefault(lyr => lyr.Name.Equals("Catastro", StringComparison.OrdinalIgnoreCase));
+
+                if (featureLayer == null)
+                {
+                    MessageBox.Show("Layer Catastro No Existe.",
+                                    "BDGEOCATMIN",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                    return;
+                }
+
+                FeatureClass fclas_tema = featureLayer.GetFeatureClass();
+
+                QueryFilter queryFilter = new QueryFilter { WhereClause = "1=1" };
+
+                // Creamos un cursor de búsqueda
+                using (RowCursor cursor = fclas_tema.Search(queryFilter, false))
+                {
+                    // Procesamos todas las filas
+                    while (cursor.MoveNext())
+                    {
+                        using (Row row = cursor.Current)
+                        {
+                            DataRow dRow = lodtbReporte.NewRow();
+                            dRow["NUM"] = row["CONTADOR"];
+                            dRow["CODIGO"] = row["CODIGOU"];
+                            dRow["NOMBRE"] = row["CONCESION"];
+                            dRow["ZONA"] = row["ZONA"];
+                            dRow["TE"] = row["TIPO_EX"];
+                            dRow["TP"] = row["ESTADO"];
+                            dRow["PUBL"] = row["DE_PUBL"].ToString();
+                            if (string.IsNullOrWhiteSpace(row["DE_PUBL"].ToString()))
+                            {
+                                dRow["PUBL"] = "NP";
+                            }
+
+                            dRow["INCOR"] = row["DE_IDEN"].ToString();
+                            if (string.IsNullOrWhiteSpace(row["DE_IDEN"].ToString()))
+                            {
+                                dRow["INCOR"] = "NI";
+                            }
+
+                            dRow["SUST"] = row["NATURALEZA"];
+                            lodtbReporte.Rows.Add(dRow);
+                        }
+                    }
+                }
+            });
+
+
+            return lodtbReporte;
+        }
+
+        //
+        //
+        //
+        //
+        // --------------------------------------------------------------------------------------------------------
 
         public async Task<DataTable> LeerResultadosEvalReporteAsync()
         {
@@ -232,9 +317,6 @@ namespace ReportGenerator
             lodtbReporte.Columns.Add("ESTADO", typeof(string));
             lodtbReporte.Columns.Add("EVAL", typeof(string));
             lodtbReporte.Columns.Add("ORDEN", typeof(int));
-
-            bool afound = false;
-            FeatureLayer pFeatLayer = null;
 
             await QueuedTask.Run(() =>
             {
@@ -249,7 +331,7 @@ namespace ReportGenerator
                 }
 
                 // Buscamos la capa que coincida con el nombre "Catastro"
-                pFeatLayer = map.Layers.OfType<FeatureLayer>()
+                FeatureLayer pFeatLayer = map.Layers.OfType<FeatureLayer>()
                                .FirstOrDefault(lyr => lyr.Name.Equals("Catastro", StringComparison.OrdinalIgnoreCase));
 
                 if (pFeatLayer == null)
@@ -261,17 +343,10 @@ namespace ReportGenerator
                     return;
                 }
 
-                afound = true;
-            });
-
-            if (!afound || pFeatLayer == null) return lodtbReporte;
-
-            await QueuedTask.Run(() =>
-            {
                 FeatureClass fclas_tema = pFeatLayer.GetFeatureClass();
 
                 int Cuenta_an = 0, Cuenta_po = 0, Cuenta_si = 0, Cuenta_ex = 0, Cuenta_rd = 0;
-                string[] criterios = { "PR", "PO", "SI", "EX", "AR"};
+                string[] criterios = { "PR", "PO", "SI", "EX", "AR" };
 
                 foreach (var criterio in criterios)
                 {
@@ -320,7 +395,7 @@ namespace ReportGenerator
                             break;
                     }
 
-                    
+
 
                     // Actualizar las filas de lodtbReporte con el valor correcto de EVAL
                     foreach (DataRow dRow in lodtbReporte.Rows)
@@ -348,6 +423,8 @@ namespace ReportGenerator
                 }
                 if (Cuenta_si == 0) lodtbReporte.Rows.Add(CreateEmptyRow(lodtbReporte, "DERECHOS SIMULTANEOS : No Presenta DM Simultaneos", 3));
                 if (Cuenta_ex == 0) lodtbReporte.Rows.Add(CreateEmptyRow(lodtbReporte, "DERECHOS EXTINGUIDOS : No Presenta DM Extinguidos", 4));
+
+
             });
 
             return lodtbReporte;

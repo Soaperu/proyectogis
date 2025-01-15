@@ -4,11 +4,11 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace ReportGenerator.ReportsDevExpress.ReporteEvInformacion
+namespace ReportGenerator.ReportsDevExpress.ReporteRE
 {
-    public partial class SR_01_datos_derechos : DevExpress.XtraReports.UI.XtraReport
+    public partial class SubReporteDatosDM : DevExpress.XtraReports.UI.XtraReport
     {
-        public SR_01_datos_derechos()
+        public SubReporteDatosDM()
         {
             InitializeComponent();
             ConfigureReport();

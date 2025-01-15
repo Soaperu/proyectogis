@@ -1,6 +1,6 @@
-﻿namespace ReportGenerator.ReportsDevExpress.ReporteEvInformacion
+﻿namespace ReportGenerator.ReportsDevExpress.ReporteRE
 {
-    partial class ReporteEvInformacion
+    partial class ReportePrincipal
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReporteEvInformacion));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ReportePrincipal));
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();

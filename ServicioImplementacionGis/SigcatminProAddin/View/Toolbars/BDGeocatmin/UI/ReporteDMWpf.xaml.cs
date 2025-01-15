@@ -47,6 +47,17 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 ReportGenerator.ReportDM.ShowReport(table, "Reporte_DM_01", custom);
             }
             
+            if (reportPlaneEvaDm.IsChecked is true)
+            {
+                var dataProcessor = new ReportGenerator.DataProcessorReports();
+                var table = await dataProcessor.GenerarReporteSPEAsync();
+                var custom = new ReportGenerator.ReportCustomizations();
+                custom.Carta = GlobalVariables.CurrentPagesDm;
+                custom.Titulo = "Titulo de Prueba";
+                custom.FechaDocumento = DateTime.Now;
+                ReportGenerator.ReportDM.ShowReport(table, "Reporte_DM_02", custom);
+            }
+            
             if (reportEvatDm.IsChecked is true)
             {
                 var dataProcessor = new ReportGenerator.DataProcessorReports();
@@ -58,6 +69,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
 
                 ReportGenerator.ReportDM.ShowReport(table, "Reporte_DM_03", custom);
             }
+
         }
 
         private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

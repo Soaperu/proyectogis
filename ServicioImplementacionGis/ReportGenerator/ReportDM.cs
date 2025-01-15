@@ -13,7 +13,7 @@ using System.Windows.Media;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DevExpress.CodeParser;
-using ReportGenerator.ReportsDevExpress.ReporteEvInformacion;
+using ReportGenerator.ReportsDevExpress.ReporteRE;
 using DevExpress.XtraReports;
 using CommonUtilities;
 
@@ -46,13 +46,32 @@ namespace ReportGenerator
                 w.ShowDialog();
             }
 
+            if (reportName == "Reporte_DM_02")
+            {
+                XtraReport report = new ReportsDevExpress.ReporteSPE.ReportePrincipal();
+                report.DataSource = dataSource;
+
+                report.CreateDocument();
+                var w = new Window
+                {
+                    Title = "Vista Previa del Reporte",
+                    Content = new DocumentPreviewControl
+                    {
+                        DocumentSource = report
+                    },
+                    Width = 900,
+                    Height = 700
+                };
+                w.ShowDialog();
+            }
+
             if (reportName == "Reporte_DM_03")
             {
                 // Crear instancia del reporte y asignar la fuente de datos
-                XtraReport report = new ReportsDevExpress.ReporteEvInformacion.ReporteEvInformacion();
+                XtraReport report = new ReportsDevExpress.ReporteRE.ReportePrincipal();
 
                 // Crear instancia del subreporte y asignar la fuente de datos
-                var subreporte = new SR_01_datos_derechos();
+                var subreporte = new SubReporteDatosDM();
                 subreporte.DataSource = dataSource;
 
                 // Asignar las fuentes de datos a los subreportes
