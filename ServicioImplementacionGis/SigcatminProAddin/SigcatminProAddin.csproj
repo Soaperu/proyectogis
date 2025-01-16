@@ -9,6 +9,16 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Scripts\aprx\**" />
+    <Compile Remove="Scripts\sde\**" />
+    <EmbeddedResource Remove="Scripts\aprx\**" />
+    <EmbeddedResource Remove="Scripts\sde\**" />
+    <None Remove="Scripts\aprx\**" />
+    <None Remove="Scripts\sde\**" />
+    <Page Remove="Scripts\aprx\**" />
+    <Page Remove="Scripts\sde\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="View\Modulos\ConLimiteInteres.xaml.cs" />
     <Compile Remove="View\Modulos\ConsultaSimulaPetitorio.xaml.cs" />
     <Compile Remove="View\Modulos\ConsultaVariasCartasNac.xaml.cs" />
@@ -376,8 +386,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
-    <Folder Include="Scripts\aprx\" />
-    <Folder Include="Scripts\sde\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
@@ -388,10 +396,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Scripts\aprx\mapas\data_cat.sde">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\aprx\mapas\mapas.aprx">
+    <None Update="Scripts\areaReduccionDm.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\calculoAreasSuperpuestasDisponibles.py">

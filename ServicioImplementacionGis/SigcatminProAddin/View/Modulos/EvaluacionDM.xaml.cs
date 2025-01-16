@@ -745,7 +745,7 @@ namespace SigcatminProAddin.View.Modulos
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
             GlobalVariables.CurrentRadioDm= radio;
-            await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
+            await MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
             string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
             GlobalVariables.CurrentCodeDm= codigoValue;
@@ -833,7 +833,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
                 }
-                CommonUtilities.DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
+                DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
 
                 DataTable intersectCForestal;
                 if (datum == datumwgs84)
@@ -844,12 +844,12 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
                 }
-                CommonUtilities.DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
+                DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
 
                 DataTable intersectDm;
                 if (datum == datumwgs84)
                 {
-                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
+                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
                 }
                 else
                 {
@@ -860,19 +860,19 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
                 //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
                 //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
-                await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+                await FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                 await UpdateValueAsync(catastroShpName, codigoValue);
-                CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
-                await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
+                FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
+                await FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
                 await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
                 string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol,codigoValue);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol,codigoValue);
                 var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
-                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName,false);
+                LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName,false);
                 List<string> layersToRemove = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
-                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
-                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+                await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                await LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
                 GlobalVariables.CurrentShpName = "Catastro";
                 MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
                 UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
@@ -880,7 +880,7 @@ namespace SigcatminProAddin.View.Modulos
                 await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
                 await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
                 string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
-                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
                 try
                 {
                     // Itera todos items seleccionados en el ListBox de WPF
@@ -912,12 +912,13 @@ namespace SigcatminProAddin.View.Modulos
                     GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio]= await elementsLayoutUtils.ObtenerResultadosEval(criterio);
                 }
                 string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
-                await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
+                var fLayerAcceditarios = (FeatureLayer)await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
+                await QueuedTask.Run(() => {fLayerAcceditarios.SetVisibility(false);});
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Error");
+                MessageBox.Show("Error", ex.Message, MessageBoxButton.OK, MessageBoxImage.Error);
                 progressBar.Dispose();
             }
 
@@ -926,10 +927,10 @@ namespace SigcatminProAddin.View.Modulos
             // Obtener el mapa Demarcacion Politica//
             try
             {
-              await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameDemarcacionPo); //"DEMARCACION POLITICA"
+              await MapUtils.CreateMapAsync(GlobalVariables.mapNameDemarcacionPo); //"DEMARCACION POLITICA"
               Map mapD = await EnsureMapViewIsActiveAsync("DEMARCACION POLITICA");
               var featureClassLoader = new FeatureClassLoader(geodatabase, mapD, zoneDm, "99");
-              var fl = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));
+              var fl = await LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, dmShpNamePath));
               //Carga capa Distrito
               if (datum == datumwgs84)
               {
@@ -939,8 +940,8 @@ namespace SigcatminProAddin.View.Modulos
               {
                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
               }
-              await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-              await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
+              await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
+              await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
               //Carga capa Provincia
               if (datum == datumwgs84)
               {
@@ -950,8 +951,8 @@ namespace SigcatminProAddin.View.Modulos
               {
                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
               }
-              await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
-              await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
+              await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
+              await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
               //Carga capa Departamento
               if (datum == datumwgs84)
               {
@@ -961,11 +962,11 @@ namespace SigcatminProAddin.View.Modulos
               {
                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
               }
-              await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
-              await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
+              await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
+              await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
               //var mapView = MapView.Active as MapView;
-              CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
-              await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");
+              SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
+              await LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");
 
             }
             catch (Exception ex)
@@ -977,10 +978,10 @@ namespace SigcatminProAddin.View.Modulos
             // Obtener el mapa Carta IGN//
             try
             {
-              await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
+              await MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
               Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCartaIgn);
               var featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
-              var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
+              var fl1 = await LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
               //Carga capa Distrito
               if (datum == datumwgs84)
               {
@@ -990,8 +991,8 @@ namespace SigcatminProAddin.View.Modulos
               {
                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
               }
-              await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-              await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
+              await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
+              await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
               //Carga capa Provincia
               if (datum == datumwgs84)
               {
@@ -1001,8 +1002,8 @@ namespace SigcatminProAddin.View.Modulos
               {
                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
               }
-              await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
-              await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
+              await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
+              await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
 
               //Carga capa Departamento
               if (datum == datumwgs84)
@@ -1013,11 +1014,11 @@ namespace SigcatminProAddin.View.Modulos
               {
                   await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
               }
-              await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
-              await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
+              await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
+              await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
 
-               CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl1, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(255, 0, 0, 0), CIMColor.CreateRGBColor(255, 0, 0));
-               await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl1, "Catastro");
+               SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl1, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(255, 0, 0, 0), CIMColor.CreateRGBColor(255, 0, 0));
+               await LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl1, "Catastro");
                string mosaicLayer;
                if (datum == datumwgs84)
                {
@@ -1028,7 +1029,7 @@ namespace SigcatminProAddin.View.Modulos
                    mosaicLayer = FeatureClassConstants.gstrRT_IngMosaic56;
                }
                string queryListCartaIGN = CommonUtilities.StringProcessorUtils.FormatStringCartaIgnForSql(GlobalVariables.CurrentPagesDm);
-               await CommonUtilities.ArcgisProUtils.RasterUtils.AddRasterCartaIGNLayerAsync(mosaicLayer, geodatabase, mapC, queryListCartaIGN);
+               await RasterUtils.AddRasterCartaIGNLayerAsync(mosaicLayer, geodatabase, mapC, queryListCartaIGN);
                //await MapView.Active.ZoomToAsync(fl1);
                 
             }
@@ -1055,8 +1056,8 @@ namespace SigcatminProAddin.View.Modulos
                 // MapView.Active está disponible, llamar directamente al método
                 //_ = AddLayersBase(lyrBase, lyrCartaIGN);
                 //EnableRadioButtonsStartingWithRbtn();
-                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
-                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+                Map map = await MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+                await MapUtils.ActivateMapAsync(map);
             }
         }
         private async void OnDrawComplete(MapViewEventArgs args)
@@ -1068,8 +1069,8 @@ namespace SigcatminProAddin.View.Modulos
                 _eventToken = null;
             }
             // Llamar al método para agregar capas una vez que MapView.Active está disponible
-            Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
-            await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+            Map map = await MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+            await MapUtils.ActivateMapAsync(map);
 
         }
 
@@ -1279,8 +1280,8 @@ namespace SigcatminProAddin.View.Modulos
                     DrawCompleteEvent.Unsubscribe(eventToken);
                 }
                 // Activar el mapa "CATASTRO MINERO"
-                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync(mapName);
-                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+                Map map = await MapUtils.FindMapByNameAsync(mapName);
+                await MapUtils.ActivateMapAsync(map);
 
                 // Completar la tarea con el mapa activo
                 //tcs.SetResult(MapView.Active.Map);

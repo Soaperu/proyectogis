@@ -43,6 +43,8 @@ namespace CommonUtilities
         public static string toolGetDepas = "obtenerDepartamento";
         public static string toolGetAreasOverlay = "calculoAreaSupDisp";
         public static string toolGetDemaImage = "exportImageDema";
+        public static string toolGetAreaDecrese = "calculoAreaReducir";
+        
         // Variables obtenidas de Evaluacion DM
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }

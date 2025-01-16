@@ -219,7 +219,7 @@ namespace CommonUtilities.ArcgisProUtils
                         List<string> layersToRemove = new List<string>() { "Caram" };
                         string styleCaramPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCaram);
                         await RemoveLayersFromActiveMapAsync(layersToRemove);
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(layerExportName, styleCaramPath, "ESTILO", StyleItemType.PolygonSymbol);
+                        await SymbologyUtils.ApplySymbologyFromStyleAsync(layerExportName, styleCaramPath, "ESTILO", StyleItemType.PolygonSymbol);
                         await ChangeLayerNameAsync(layerExportName, "Caram");
                         break;
                     case "Catastro Forestal":
@@ -231,12 +231,12 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zone, false);
                         }
-                        string layerExportNameCForestal = "Catastro Forestal" + GlobalVariables.idExport;
+                        string layerExportNameCForestal = "CatastroForestal" + GlobalVariables.idExport;
                         var layerResult = await function.IntersectFeatureClassAsync(selectCheckedLayer, extent.xmin, extent.ymin, extent.xmax, extent.ymax, layerExportNameCForestal);
                         List<string> cforestalToRemove = new List<string>() { "Catastro Forestal" };
                         string styleCForestalPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCForestal);
                         await RemoveLayersFromActiveMapAsync(cforestalToRemove);
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplyUniqueSymbologyFromStyleAsync(layerExportNameCForestal, styleCForestalPath, StyleItemType.PolygonSymbol);
+                        await SymbologyUtils.ApplyUniqueSymbologyFromStyleAsync(layerExportNameCForestal, styleCForestalPath, StyleItemType.PolygonSymbol);
                         await ChangeLayerNameAsync(layerExportNameCForestal, "Catastro Forestal");
                         break;
                     case "Limite Departamental":
