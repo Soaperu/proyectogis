@@ -55,7 +55,8 @@ namespace CommonUtilities
         public static string CurrentShpName { get; set; }
         public static string CurrentZoneDm { get; set; }
         public static string CurrentPagesDm { get; set; } // hojas Carta IGN
-
+        public static string CurrentAvaiableAreDm { get; set; } // Almacena el area disponible del DM evaluado
+        public static string CurrentOverlayAreDm { get; set; } // Almacena el area superpuesta del DM evaluado
         public static string CurrentTipoEx { get; set; }
         // Intersecciones con DM
         public static string listaCaramUrbana { get; set; }

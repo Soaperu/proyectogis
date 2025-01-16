@@ -4,11 +4,11 @@ using System.Collections;
 using System.ComponentModel;
 using System.Drawing;
 
-namespace ReportGenerator.ReportsDevExpress
+namespace ReportGenerator.ReportsDevExpress.ReporteDM
 {
-    public partial class ReportEvalDM : DevExpress.XtraReports.UI.XtraReport
+    public partial class ReportePrincipal : DevExpress.XtraReports.UI.XtraReport
     {
-        public ReportEvalDM()
+        public ReportePrincipal()
         {
             InitializeComponent();
         }

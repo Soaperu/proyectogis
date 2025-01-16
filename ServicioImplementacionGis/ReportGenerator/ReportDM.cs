@@ -16,6 +16,7 @@ using DevExpress.CodeParser;
 using ReportGenerator.ReportsDevExpress.ReporteRE;
 using DevExpress.XtraReports;
 using CommonUtilities;
+using ReportGenerator.ReportsDevExpress.ReporteAD;
 
 
 namespace ReportGenerator
@@ -26,7 +27,7 @@ namespace ReportGenerator
         {
             if(reportName == "Reporte_DM_01")
             {
-                XtraReport report = new ReportsDevExpress.ReportEvalDM();
+                XtraReport report = new ReportsDevExpress.ReporteDM.ReportePrincipal();
                 report.DataSource = dataSource;
 
                 var fieldCarta = report.FindControl("lblHoja", true) as XRLabel;
@@ -35,7 +36,7 @@ namespace ReportGenerator
                 report.CreateDocument();
                 var w = new Window
                 {
-                    Title = "Vista Previa del Reporte",
+                    Title = "Vista Previa del Reporte de Derechos Mineros",
                     Content = new DocumentPreviewControl
                     {
                         DocumentSource = report
@@ -54,7 +55,7 @@ namespace ReportGenerator
                 report.CreateDocument();
                 var w = new Window
                 {
-                    Title = "Vista Previa del Reporte",
+                    Title = "Vista Previa del Reporte de D.M. Según Plano de Evaluación",
                     Content = new DocumentPreviewControl
                     {
                         DocumentSource = report
@@ -147,10 +148,65 @@ namespace ReportGenerator
                 report.CreateDocument();
                 var w = new Window
                 {
-                    Title = "Vista Previa del Reporte",
+                    Title = "Vista Previa del Reporte de Resultados de Evaluación",
                     Content = new DocumentPreviewControl
                     {
                         DocumentSource = report
+                    },
+                    Width = 900,
+                    Height = 700
+                };
+                w.ShowDialog();
+            }
+
+
+            if (reportName == "Reporte_DM_04")
+            {
+                // Crear instancia del reporte y asignar la fuente de datos
+                XtraReport reporte = new ReportsDevExpress.ReporteAD.ReportePrincipal();
+
+                // Crear instancia del subreporte y asignar la fuente de datos
+                var subreporte = new SubReporteDatosAreas();
+                subreporte.DataSource = dataSource;
+
+                // Asignar las fuentes de datos a los subreportes
+                var dmDatosSubreporte = (XRSubreport)reporte.FindControl("xrSubreport1", true);
+                dmDatosSubreporte.ReportSource = subreporte;
+
+
+                // Asignar los valores de las propiedades personalizadas
+                var fieldCodigoDM = reporte.FindControl("lblCodigo", true) as XRLabel;
+                if (fieldCodigoDM != null)
+                    fieldCodigoDM.Text = GlobalVariables.CurrentCodeDm;
+
+                var fieldNombreDM = reporte.FindControl("lblConcesion", true) as XRLabel;
+                if (fieldNombreDM != null)
+                    fieldNombreDM.Text = GlobalVariables.CurrentNameDm;
+
+                var fieldAreaDM = reporte.FindControl("lblAreaTotal", true) as XRLabel;
+                if (fieldAreaDM != null)
+                    fieldAreaDM.Text = GlobalVariables.CurrentAreaDm;
+
+                var fieldAreaDisponible = reporte.FindControl("lblAreaDisponible", true) as XRLabel;
+                if (fieldAreaDisponible != null)
+                {
+                    //fieldAreaDM.Text = GlobalVariables.CurrentAreaDm;
+                    double areaMetros = double.Parse(GlobalVariables.CurrentAvaiableAreDm);
+                    double areaHectareas = areaMetros / 10000;
+                    fieldAreaDisponible.Text = areaHectareas.ToString("N2");
+
+                }
+
+                
+
+
+                reporte.CreateDocument();
+                var w = new Window
+                {
+                    Title = "Vista Previa del Reporte de Áreas Disponibles",
+                    Content = new DocumentPreviewControl
+                    {
+                        DocumentSource = reporte
                     },
                     Width = 900,
                     Height = 700

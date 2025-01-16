@@ -11,6 +11,15 @@ using DatabaseConnector;
 using ArcGIS.Desktop.Editing;
 using CommonUtilities;
 using DevExpress.DataAccess.Sql.DataApi;
+using ArcGIS.Core.CIM;
+//using ArcGIS.Core.Internal.CIM;
+using DevExpress.XtraCharts.Native;
+using System.Windows.Forms;
+using System.Windows.Media;
+using ArcGIS.Core.Geometry;
+using Microsoft.VisualBasic;
+
+
 
 namespace ReportGenerator
 {
@@ -210,12 +219,7 @@ namespace ReportGenerator
         }
 
         //
-        //
-        //
-        //
         // --------------------------------------------------------------------------------------------------------
-        //
-        //
         //
 
 
@@ -301,8 +305,6 @@ namespace ReportGenerator
             return lodtbReporte;
         }
 
-        //
-        //
         //
         //
         // --------------------------------------------------------------------------------------------------------
@@ -444,6 +446,75 @@ namespace ReportGenerator
             return row;
         }
 
+        public async Task<DataTable> LeerResultadosAreasReporteAsync()
+        {
+            DataTable lodtbReporte = new DataTable();
+            lodtbReporte.Columns.Add("FID", typeof(int));
+            lodtbReporte.Columns.Add("CODIGO", typeof(string));
+            lodtbReporte.Columns.Add("CONCESION", typeof(string));
+            lodtbReporte.Columns.Add("VERTICE", typeof(int));
+            lodtbReporte.Columns.Add("ESTE", typeof(string));
+            lodtbReporte.Columns.Add("NORTE", typeof(string));
+            lodtbReporte.Columns.Add("AREA", typeof(double));
+            //lodtbReporte.Columns.Add("NUM_AREA", typeof(double));
+
+            await QueuedTask.Run(() =>
+            {
+                // 1. Obtenemos el mapa activo y buscamos la capa por su nombre
+                var map = MapView.Active?.Map;
+                FeatureLayer featureLayer = map.Layers
+                                                   .OfType<FeatureLayer>()
+                                                   .FirstOrDefault(lyr => lyr.Name.StartsWith("Areainter", StringComparison.OrdinalIgnoreCase));
+
+                if (featureLayer == null)
+                {
+                    MessageBox.Show("Layer Catastro No Existe.",
+                                    "BDGEOCATMIN",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                    return;
+                }
+
+                FeatureClass fclas_tema = featureLayer.GetFeatureClass();
+
+                QueryFilter queryFilter = new QueryFilter { WhereClause = "1=1" };
+
+                // Creamos un cursor de búsqueda
+                using (RowCursor cursor = fclas_tema.Search(queryFilter, false))
+                {
+                    // Procesamos todas las filas
+                    while (cursor.MoveNext())
+                    {
+                        using (Row row = cursor.Current)
+                        {
+                            Feature feature = (Feature)cursor.Current;
+                            Polygon polygon = feature.GetShape() as Polygon;
+
+                            if (polygon != null)
+                            {
+                                for (int i = 0; i < polygon.PointCount - 1; i++)
+                                {
+                                    var point = polygon.Points[i];
+                                    var dRow = lodtbReporte.NewRow();
+                                    dRow["FID"] = row["FID"];
+                                    dRow["CODIGO"] = row["CODIGOU_1"];
+                                    dRow["CONCESION"] = row["CONCESIO_1"];
+                                    dRow["VERTICE"] = i+1;
+                                    dRow["ESTE"] = Math.Round(point.X, 2).ToString("N2");
+                                    dRow["NORTE"] = Math.Round(point.Y, 2).ToString("N2");
+                                    dRow["AREA"] = Math.Round(Convert.ToDouble(row["AREA_FINAL"]), 4);
+                                    lodtbReporte.Rows.Add(dRow);
+                                }
+                            }
+                        }
+
+                    }
+                }
+            });
+
+            return lodtbReporte;
+        }
 
     }
 }
+

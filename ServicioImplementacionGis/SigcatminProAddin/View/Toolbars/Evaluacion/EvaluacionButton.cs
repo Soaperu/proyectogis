@@ -177,6 +177,8 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
                 var responseJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.ReturnValue);
                 var areaDisponible = responseJson["area_disponible"];
                 var areaSuperpuesta = responseJson["area_superpuesta"];
+                GlobalVariables.CurrentOverlayAreDm = areaSuperpuesta;
+                GlobalVariables.CurrentAvaiableAreDm = areaDisponible;
                 string layerNameDisponible = responseJson["nombreDisponible"];
                 string layerNameSuperpuesta = responseJson["nombreSuperpuesta"];
                 await LayerUtils.ChangeLayerNameAsync(layerNameDisponible, "Areadispo");
