@@ -30,8 +30,9 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             _getDerechoMineroUseCase = Program.GetService<GetDerechoMineroUseCase>();
             _countRowsGISUseCase = Program.GetService<CountRowsGISUseCase>();
             _getCoordenadasDMUseCase = Program.GetService<GetCoordenadasDMUseCase>();
-            TbxRadio.Text = _evaluacionDMViewModel.RadioDefaultValue.ToString();
             _evaluacionDMViewModel.LoadLayer(LayersListBox);
+
+            TbxRadio.Text = _evaluacionDMViewModel.RadioDefaultValue.ToString();
         }
         private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
@@ -87,8 +88,8 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             string zona = DataGridResult.GetSelectedRow<string>(sender, "Zona");
             string nombre = DataGridResult.GetSelectedRow<string>(sender, "Nombre");
             string hectarea = DataGridResult.GetSelectedRow<string>(sender, "Hectarea");
-            _seletecdRowCode = DataGridResult.GetSelectedRow<string>(sender, "Codigo");
             int currentDatum = (int)CbxSistema.SelectedValue;
+            _seletecdRowCode = DataGridResult.GetSelectedRow<string>(sender, "Codigo");
 
             CbxZona.SelectedValue = zona;
             TbxArea.Text = hectarea;
@@ -97,7 +98,13 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 
             var coordenadas = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
             DataGridDetails.ItemsSource = coordenadas;
-            // GraficarCoordenadas(dmrRecords);    
+            GraphCoordinates(coordenadas);    
+        }
+
+        private void GraphCoordinates()
+        {
+            double canvasWidth = PolygonCanvas.ActualWidth;
+            double canvasHeight = PolygonCanvas.ActualHeight;
         }
 
         private async void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)

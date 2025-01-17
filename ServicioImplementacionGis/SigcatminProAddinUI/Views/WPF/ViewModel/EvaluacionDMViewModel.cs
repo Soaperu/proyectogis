@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
@@ -72,8 +74,13 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
                var checkbox = CheckboxHelper.GenerateChexbox(layerText,false);
                 lisbox.Items.Add(checkbox);
             }
-        
         }
+        public Polygon CreatePolygon(PointCollection points)
+        {
+            MyPolygon = PolygonHelper.GeneratePolygon(points);
+            PolygonLabels = PolygonHelper.GenerateLabelsByPolygon(points);
+        }
+      
 
     }
 }
