@@ -355,14 +355,15 @@ namespace CommonUtilities.ArcgisProUtils
                 CIMTextSymbol textSymbol = CrearSimboloTexto(ColorFromRGB(0, 0, 0), 6.0, "Courier New");
 
                 // Criterios a procesar
-                var criterios = new string[] {"PR", "AR", "PO", "SI", "EX"};
+                var criterios = new string[] {"PR", "RD", "PO", "SI", "EX"};
                 //int contador = 0;
                 foreach (var criterio in criterios)
                 {
                     
                     // Obtener resultados para el criterio actual
                     //var resultados = ObtenerResultadosEval(criterio).Result;
-                    var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
+                    //var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
+                    var resultados = GlobalVariables.resultadoEvaluacion.FiltrarPorEval(criterio);
 
                     //if (resultados.Count > 0)
                     //{
@@ -466,6 +467,81 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             });
             #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+
+            return resultados;
+            //return new List<ResultadoEval>();
+        }
+
+        public async Task<List<ResultadoEval>> ObtenerResultadosEval1()
+        {
+            // Aquí se implementaría la lógica para consultar la FeatureClass
+            // y obtener la lista de resultados según el criterio.
+            List<ResultadoEval> resultados = new List<ResultadoEval>();
+
+            // Ejecutar en el hilo adecuado de ArcGIS Pro
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            await QueuedTask.Run(async () =>
+            {
+
+                Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro);
+
+                var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == GlobalVariables.CurrentShpName);
+                var catastroLayer = (FeatureLayer)zoomNameLayer;
+
+                // Obtener la FeatureClass asociada
+                FeatureClass featureClass = catastroLayer.GetFeatureClass();
+                if (featureClass == null)
+                    throw new Exception("No se pudo obtener la FeatureClass de la capa 'catastro'.");
+
+                // Crear el QueryFilter con la cláusula WHERE
+                QueryFilter queryFilter = new QueryFilter
+                {
+                    WhereClause = $"EVAL IN ('PR', 'RD', 'PO', 'SI', 'EX')"
+                };
+
+                // Buscar los campos necesarios
+                // Suponemos que existen todos los campos: "CONTADOR", "CONCESION", "TIPO_EX", "CODIGOU", "ESTADO", "EVAL"
+                int idxContador = featureClass.GetDefinition().FindField("CONTADOR");
+                int idxConcesion = featureClass.GetDefinition().FindField("CONCESION");
+                int idxTipoEx = featureClass.GetDefinition().FindField("TIPO_EX");
+                int idxCodigoU = featureClass.GetDefinition().FindField("CODIGOU");
+                int idxEstado = featureClass.GetDefinition().FindField("ESTADO");
+                int idxEval = featureClass.GetDefinition().FindField("EVAL");
+
+                if (idxContador < 0 || idxConcesion < 0 || idxTipoEx < 0 || idxCodigoU < 0 || idxEstado < 0 || idxEval < 0)
+                    throw new Exception("No se encontraron todos los campos requeridos en la FeatureClass 'catastro'.");
+
+                // Ejecutar la consulta
+                using (RowCursor cursor = featureClass.Search(queryFilter, false))
+                {
+                    while (cursor.MoveNext())
+                    {
+                        using (Feature feature = (Feature)cursor.Current)
+                        {
+                            // Leer los valores de los campos
+                            string contador = feature[idxContador]?.ToString() ?? string.Empty;
+                            string concesion = feature[idxConcesion]?.ToString() ?? string.Empty;
+                            string tipoEx = feature[idxTipoEx]?.ToString() ?? string.Empty;
+                            string codigoU = feature[idxCodigoU]?.ToString() ?? string.Empty;
+                            string estado = feature[idxEstado]?.ToString() ?? string.Empty;
+                            string eval = feature[idxEval]?.ToString() ?? string.Empty;
+
+                            // Crear un objeto ResultadoEval y agregarlo a la lista
+                            var resultado = new ResultadoEval
+                            {
+                                Contador = contador,
+                                Concesion = concesion,
+                                TipoEx = tipoEx,
+                                CodigoU = codigoU,
+                                Estado = estado,
+                                Eval = eval
+                            };
+                            resultados.Add(resultado);
+                        }
+                    }
+                }
+            });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
 
             return resultados;
             //return new List<ResultadoEval>();
@@ -604,7 +680,9 @@ namespace CommonUtilities.ArcgisProUtils
 
                     // Obtener resultados para el criterio actual
                     //var resultados = ObtenerResultadosEval(criterio).Result;
-                    var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
+                    //var resultados = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio];
+                    var resultados = GlobalVariables.resultadoEvaluacion.FiltrarPorEval(criterio);
+
 
                     if (resultados.Count > 0)
                     {

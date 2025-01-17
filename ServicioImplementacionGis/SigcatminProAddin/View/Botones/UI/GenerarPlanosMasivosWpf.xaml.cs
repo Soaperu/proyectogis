@@ -249,8 +249,9 @@ namespace SigcatminProAddin.View.Botones.UI
                     };
                     await LayoutUtils.DeleteSpecifiedLayoutsAsync(layoutsToDelete);
                     var table = ComplementaryProcessesUtils.SearchCodeValue(value);
-                    await ComplementaryProcessesUtils.EvaluationDmByCode(value, table);
-
+                    System.Data.DataRow row = table.Rows[0];
+                    await ComplementaryProcessesUtils.EvaluationDmByCode(value, row);
+                    
                     await LayoutUtils.DeleteSpecifiedLayoutsAsync(layoutsToDelete);
                     string mapName = GlobalVariables.mapNameCatastro;
                     string nameLayer = GlobalVariables.CurrentShpName;

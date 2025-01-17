@@ -117,16 +117,15 @@ namespace CommonUtilities.ArcgisProUtils
             var dmrRecords = dataBaseHandler.GetUniqueDM(valueCodeDm, 1);
             return dmrRecords;
         }
-        public async static Task EvaluationDmByCode(string valueCodeDm, DataTable dmRecord)
+        public async static Task EvaluationDmByCode(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum=2)
         {
-            if (dmRecord.Rows.Count == 0) { return; }
-            string stateGraphic = dmRecord.Rows[0]["PE_VIGCAT"].ToString();
+            string stateGraphic = dmRow["PE_VIGCAT"].ToString();
             if (stateGraphic != "G") { return; }
-            string zoneDm = dmRecord.Rows[0]["ZONA"].ToString();
+            string zoneDm = dmRow["ZONA"].ToString();
             GlobalVariables.CurrentZoneDm = zoneDm;
-            string areaValue = dmRecord.Rows[0]["HECTAREA"].ToString();
+            string areaValue = dmRow["HECTAREA"].ToString();
             GlobalVariables.CurrentAreaDm = areaValue;
-            string nameDm = dmRecord.Rows[0]["NOMBRE"].ToString();
+            string nameDm = dmRow["NOMBRE"].ToString();
             GlobalVariables.CurrentNameDm = nameDm;
             var sdeHelper = new SdeConnectionGIS();
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
@@ -138,7 +137,7 @@ namespace CommonUtilities.ArcgisProUtils
             };
             GlobalVariables.CurrentCodeDm = valueCodeDm;
             await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
-            int datum=2;
+            //int datum=2;
             int datumwgs84 = 2;
             string datumStr = GlobalVariables.datumWGS;
             DatabaseHandler dataBaseHandler = new DatabaseHandler();
@@ -149,7 +148,7 @@ namespace CommonUtilities.ArcgisProUtils
             GlobalVariables.CurrentShpName = catastroShpName;
             string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
             string dmShpName = "DM" + fechaArchi;
-            string dmShpNamePath = "DM" + fechaArchi + ".shp";
+            GlobalVariables.dmShpNamePath = "DM" + fechaArchi + ".shp";
             await MapUtils.CreateMapAsync(GlobalVariables.mapNameCatastro);
             try
             {
@@ -176,7 +175,7 @@ namespace CommonUtilities.ArcgisProUtils
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
                 }
 
-                var extentDmRadio = MapUtils.ObtenerExtent(valueCodeDm, datum);
+                var extentDmRadio = MapUtils.ObtenerExtent(valueCodeDm, datum, radio);
                 var extentDm = MapUtils.ObtenerExtent(valueCodeDm, datum);
                 GlobalVariables.currentExtentDM = extentDm;
                 // Llamar al método IntersectFeatureClassAsync desde la instancia
@@ -272,12 +271,13 @@ namespace CommonUtilities.ArcgisProUtils
                 GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
 
 
-                var criterios = new string[] { "PR", "AR", "PO", "SI", "EX" };
+                var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
                 //int contador = 0;
                 foreach (var criterio in criterios)
                 {
                     GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio] = await elementsLayoutUtils.ObtenerResultadosEval(criterio);
                 }
+                GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;
 
             }
