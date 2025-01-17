@@ -774,7 +774,7 @@ namespace SigcatminProAddin.View.Modulos
             DataRowView rowView = (DataRowView)DataGridResult.GetRow(focusedRowHandle);
             DataRow row = rowView.Row;
 
-            await ComplementaryProcessesUtils.EvaluationDmByCode(codigoValue, row);
+            await ComplementaryProcessesUtils.EvaluationDmByCode(codigoValue, row, radio, datum);
 
             //try
             //{
@@ -950,7 +950,21 @@ namespace SigcatminProAddin.View.Modulos
             //}
 
 
+            // Insertamos en Base de Datos
+            ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+            Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
+            string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
+            await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
+            GlobalVariables.resultadoEvaluacion.isCompleted = true;
+            GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
+            
 
+            dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
+            foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)
+            {
+                dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval, "", r.Concesion, "");
+            }
+            dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, GlobalVariables.resultadoEvaluacion.codigo, "AD", GlobalVariables.resultadoEvaluacion.areaDisponible, "AREA DISPONIBLE"); 
             // Obtener el mapa Demarcacion Politica//
             try
             {

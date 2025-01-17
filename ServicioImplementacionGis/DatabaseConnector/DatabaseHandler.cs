@@ -1305,12 +1305,26 @@ namespace DatabaseConnector
         {
             string insertQuery = @"INSERT INTO SISGEM.SG_T_EVALTECNICA_DESA(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_SESION, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
                                     VALUES (:codigo, :codigoeva, :indicador, 1111, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
+
+            object hectareaValue;
+            if (string.IsNullOrWhiteSpace(hectarea))
+            {
+                hectareaValue = DBNull.Value;  // Si está vacío, insertar NULL
+            }
+            else if (double.TryParse(hectarea, out double hectareaDouble))
+            {
+                hectareaValue = hectareaDouble;  // Si es válido, insertar el valor numérico
+            }
+            else
+            {
+                throw new ArgumentException("El valor de hectarea no es válido.");
+            }
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
                 new OracleParameter("codigoeva", OracleDbType.Varchar2, 13) { Value = codigoeva },
                 new OracleParameter("indicador", OracleDbType.Varchar2, 1000) { Value = indicador },
-                new OracleParameter("hectarea", OracleDbType.Varchar2, 10) {Value= hectarea},
+                new OracleParameter("hectarea", OracleDbType.Double) { Value = hectareaValue },
                 new OracleParameter("descripcion", OracleDbType.Varchar2, 1000) { Value = descripcion },
                 new OracleParameter("clase", OracleDbType.Varchar2, 1000) { Value = clase }
             };

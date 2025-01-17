@@ -61,7 +61,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                 string distancia = GlobalVariables.resultadoEvaluacion.distanciaFrontera.ToString();
                 TbxFrontera.Text = $"Distancia de la línea de frontera de: {distancia} Km.";
                 DataGridEvaluacion.ItemsSource = null;
-                string currentTag = TcEvaluacion.SelectedItem.ToString();
+                string currentTag = "PR";
                 var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio
                                         .Where(r => r.Eval != null && r.Eval.Equals(currentTag, StringComparison.OrdinalIgnoreCase))
                                         .ToList(); ;
