@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Sigcatmin.pro.Application.Mappings;
 using Sigcatmin.pro.Application.UsesCases;
 
@@ -13,7 +14,8 @@ namespace Sigcatmin.pro.Application
             services.AddScoped<CountRowsGISUseCase>();
             services.AddScoped<GetCoordenadasDMUseCase>();
 
-            services.AddAutoMapper(typeof(CoordinateMappingProfile));
+            //services.AddAutoMapper(typeof(CoordinateMappingProfile));
+            services.AddAutoMapper(Assembly.GetExecutingAssembly());
             //services.AddAutoMapper(typeof(CordinatePsad56MappingProfile));
             //services.AddAutoMapper(typeof(CordinateWgs84MappingProfile));
 

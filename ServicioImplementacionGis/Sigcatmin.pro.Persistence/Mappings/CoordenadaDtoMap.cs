@@ -15,17 +15,20 @@ namespace Sigcatmin.pro.Persistence.Mappings
             Map(p => p.Vertice)
               .ToColumn("CD_NUMVER");
 
-            Map(p => p.NorteWGS84)
+            Map(p => p.NorteEquivalente)
               .ToColumn("CD_CORNOR_E");
 
-            Map(p => p.EsteWGS84)
+            Map(p => p.EsteEquivalente)
               .ToColumn("CD_COREST_E");
 
-            Map(p => p.NortePSAD56)
+            Map(p => p.Norte)
              .ToColumn("CD_CORNOR");
 
-            Map(p => p.EstePSAD56)
+            Map(p => p.Este)
               .ToColumn("CD_COREST");
+
+            Map(p => p.CodigoDatum)
+              .ToColumn("SC_CODDAT");
         }
 
     }
