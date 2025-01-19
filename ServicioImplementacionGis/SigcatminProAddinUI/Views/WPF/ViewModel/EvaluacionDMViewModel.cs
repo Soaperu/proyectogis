@@ -2,17 +2,19 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Sigcatmin.pro.Application.Dtos.Response;
 using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
 using SigcatminProAddinUI.Resourecs.Constants;
+using System.Linq;
+using System;
 
 namespace SigcatminProAddinUI.Views.WPF.ViewModel
 {
     public class EvaluacionDMViewModel
     {
-        public int RadioDefaultValue { get; set; } = 5;
-        private List<string> _layersText = new List<string>()
+        public List<string> LayersText = new List<string>()
         {
             "Caram",
             "Catastro Forestal",
@@ -24,6 +26,8 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
             "Red Hidrografica",
             "Red Vial"
         };
+        public int RadioDefaultValue { get; set; } = 5;
+        public IEnumerable<CoordinatedResponseDto> Coordenates;
         public List<ComboBoxItemGeneric<int>> GetItemsComboTypeConsult()
         {
             return new List<ComboBoxItemGeneric<int>>
@@ -67,19 +71,38 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
 
             return true;
         }
-        public void LoadLayer(ListBox lisbox)
-        {
-            foreach (string layerText in _layersText)
+
+        public List<CoordinateModel> GetCoordinatesByTypeSystem(int typeSystem) {
+            var firstCoordinate = Coordenates.FirstOrDefault();
+            if (typeSystem == Convert.ToInt32(firstCoordinate.CodigoDatum))
             {
-               var checkbox = CheckboxHelper.GenerateChexbox(layerText,false);
-                lisbox.Items.Add(checkbox);
+                return Coordenates.Select(x => new CoordinateModel
+                {
+                    Vertice = x.Vertice,
+                    Norte = x.Norte,
+                    Este = x.Este,
+                }).ToList();
             }
+
+            if(typeSystem != Convert.ToInt32(firstCoordinate.CodigoDatum))
+            {
+                return Coordenates.Select(x => new CoordinateModel
+                {
+                    Vertice = x.Vertice,
+                    Norte = x.NorteEquivalente,
+                    Este = x.EsteEquivalente,
+                }).ToList();
+            }
+
+            return new List<CoordinateModel>();
         }
-        public Polygon CreatePolygon(PointCollection points)
-        {
-            MyPolygon = PolygonHelper.GeneratePolygon(points);
-            PolygonLabels = PolygonHelper.GenerateLabelsByPolygon(points);
-        }
+
+  
+        //public Polygon CreatePolygon(PointCollection points)
+        //{
+        //    MyPolygon = PolygonHelper.GeneratePolygon(points);
+        //    PolygonLabels = PolygonHelper.GenerateLabelsByPolygon(points);
+        //}
       
 
     }

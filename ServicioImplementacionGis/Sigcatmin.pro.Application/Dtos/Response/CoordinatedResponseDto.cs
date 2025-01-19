@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 namespace Sigcatmin.pro.Application.Dtos.Response
 {
     public record struct CoordinatedResponseDto(int Vertice,
-        decimal Norte,
-        decimal Este,
-        decimal NorteEquivalente,
-        decimal EsteEquivalente, 
+        double Norte,
+        double Este,
+        double NorteEquivalente,
+        double EsteEquivalente, 
         string CodigoDatum);
 
 }

@@ -8,5 +8,8 @@ namespace SigcatminProAddinUI.Models
 {
     public class CoordinateModel
     {
+        public int Vertice { get; set; }
+        public double Norte { get; set; }
+        public double Este { get; set; }
     }
 }

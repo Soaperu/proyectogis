@@ -171,7 +171,7 @@
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
-            <ListBox Grid.Column="2" x:Name="LayersListBox" Margin="10,0,-10,0" >
+            <ListBox Grid.Column="2" x:Name="LayersListBox" Margin="10,0,-10,0" Loaded="LayerListBox_Loaded">
                 <ListBox.Template>
                     <ControlTemplate TargetType="ListBox">
                         <Border Background="{TemplateBinding Background}" 

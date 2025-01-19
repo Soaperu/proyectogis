@@ -9,10 +9,10 @@ namespace Sigcatmin.pro.Domain.Dtos
     public class CoordinateDto
     {
         public int Vertice { get; set; }
-        public decimal Norte { get; set; }
-        public decimal Este { get; set; }
-        public decimal NorteEquivalente { get; set; }
-        public decimal EsteEquivalente { get; set; }
+        public double Norte { get; set; }
+        public double Este { get; set; }
+        public double NorteEquivalente { get; set; }
+        public double EsteEquivalente { get; set; }
         public string CodigoDatum { get; set; }
     }
 }

@@ -1,7 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Reflection.Emit;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
+using System.Windows.Media;
+using ArcGIS.Core.Internal.Geometry;
 using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.UsesCases;
 using SigcatminProAddinUI.Models;
@@ -30,7 +35,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             _getDerechoMineroUseCase = Program.GetService<GetDerechoMineroUseCase>();
             _countRowsGISUseCase = Program.GetService<CountRowsGISUseCase>();
             _getCoordenadasDMUseCase = Program.GetService<GetCoordenadasDMUseCase>();
-            _evaluacionDMViewModel.LoadLayer(LayersListBox);
 
             TbxRadio.Text = _evaluacionDMViewModel.RadioDefaultValue.ToString();
         }
@@ -51,6 +55,14 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         {
             var items = _evaluacionDMViewModel.GetItemsComboTypeConsult();
             ComboBoxHelper.LoadComboBox(CbxTypeConsult, items);
+        }
+        private void LayerListBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            foreach (string layerText in _evaluacionDMViewModel.LayersText)
+            {
+                var checkbox = CheckboxHelper.GenerateChexbox(layerText, false);
+                LayersListBox.Items.Add(checkbox);
+            }
         }
 
         private async void BtnSearch_Click(object sender, RoutedEventArgs e)
@@ -96,15 +108,38 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             TbxArea.IsReadOnly = true;
             ClearCanvas();
 
-            var coordenadas = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
-            DataGridDetails.ItemsSource = coordenadas;
-            GraphCoordinates(coordenadas);    
+            _evaluacionDMViewModel.Coordenates = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
+            DataGridDetails.ItemsSource = _evaluacionDMViewModel.GetCoordinatesByTypeSystem(currentDatum);
+            GraphCoordinates();    
         }
 
         private void GraphCoordinates()
         {
-            double canvasWidth = PolygonCanvas.ActualWidth;
-            double canvasHeight = PolygonCanvas.ActualHeight;
+            if (DataGridDetails.ItemsSource is List<CoordinateModel> coordenates)
+            {
+                ImagenPoligono.Visibility = Visibility.Collapsed;
+
+                double canvasWidth = PolygonCanvas.ActualWidth;
+                double canvasHeight = PolygonCanvas.ActualHeight;
+                var points = new PointCollection();
+
+                foreach(var cordinate in coordenates)
+                {
+                    points.Add(new Point(cordinate.Este, cordinate.Norte));
+                }
+
+                var scaledCoordinates = PolygonHelper.ScaleAndCenterCoordinates(points, canvasWidth, canvasHeight);
+                var polygon = PolygonHelper.GeneratePolygon(scaledCoordinates);
+                var labelsPolygon = PolygonHelper.GenerateLabelsByPolygon(scaledCoordinates);
+
+                PolygonCanvas.Children.Add(polygon);
+
+                foreach (var label in labelsPolygon)
+                {
+                    PolygonCanvas.Children.Add(label);
+                } 
+          
+            }
         }
 
         private async void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -113,8 +148,8 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 
             if (CbxSistema.SelectedItem is ComboBoxItemGeneric<int> selectedItem)
             {
-                var coordenadas = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, selectedItem.Id);
-                DataGridDetails.ItemsSource = coordenadas;
+                DataGridDetails.ItemsSource = _evaluacionDMViewModel.GetCoordinatesByTypeSystem(selectedItem.Id);
+                GraphCoordinates();
             }
         }
 

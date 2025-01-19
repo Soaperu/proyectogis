@@ -20,8 +20,6 @@ namespace SigcatminProAddinUI.Resources.Helpers
             checkBox.IsEnabled = isEnabled; 
 
             return checkBox;
-
-
         }
     }
 }
