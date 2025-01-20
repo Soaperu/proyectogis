@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection.Emit;
 using System.Windows;
 using System.Windows.Controls;
@@ -108,41 +109,37 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             TbxArea.IsReadOnly = true;
             ClearCanvas();
 
-            _evaluacionDMViewModel.Coordenates = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
+            _evaluacionDMViewModel.Coordinates = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
             DataGridDetails.ItemsSource = _evaluacionDMViewModel.GetCoordinatesByTypeSystem(currentDatum);
             GraphCoordinates();    
         }
 
         private void GraphCoordinates()
         {
-            if (DataGridDetails.ItemsSource is List<CoordinateModel> coordenates)
+            if (DataGridDetails.ItemsSource is List<CoordinateModel> coordinates)
             {
+                if (coordinates == null || !coordinates.Any())
+                {
+                    MessageBoxHelper.ShowInfo("No se encontraron coordenadas para graficar", "Sin coordenadas");
+                    return;
+                }
+
                 ImagenPoligono.Visibility = Visibility.Collapsed;
 
                 double canvasWidth = PolygonCanvas.ActualWidth;
                 double canvasHeight = PolygonCanvas.ActualHeight;
-                var points = new PointCollection();
 
-                foreach(var cordinate in coordenates)
+                var elements = _evaluacionDMViewModel.GetPolygonElements(coordinates, canvasWidth, canvasHeight);
+
+                PolygonCanvas.Children.Clear();
+                foreach (var element in elements)
                 {
-                    points.Add(new Point(cordinate.Este, cordinate.Norte));
+                    PolygonCanvas.Children.Add(element);
                 }
-
-                var scaledCoordinates = PolygonHelper.ScaleAndCenterCoordinates(points, canvasWidth, canvasHeight);
-                var polygon = PolygonHelper.GeneratePolygon(scaledCoordinates);
-                var labelsPolygon = PolygonHelper.GenerateLabelsByPolygon(scaledCoordinates);
-
-                PolygonCanvas.Children.Add(polygon);
-
-                foreach (var label in labelsPolygon)
-                {
-                    PolygonCanvas.Children.Add(label);
-                } 
-          
             }
         }
 
-        private async void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(_seletecdRowCode)) return;
 

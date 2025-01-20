@@ -9,6 +9,8 @@ using SigcatminProAddinUI.Resources.Helpers;
 using SigcatminProAddinUI.Resourecs.Constants;
 using System.Linq;
 using System;
+using ActiproSoftware.Windows.Extensions;
+using System.Windows;
 
 namespace SigcatminProAddinUI.Views.WPF.ViewModel
 {
@@ -27,7 +29,7 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
             "Red Vial"
         };
         public int RadioDefaultValue { get; set; } = 5;
-        public IEnumerable<CoordinatedResponseDto> Coordenates;
+        public IEnumerable<CoordinatedResponseDto> Coordinates;
         public List<ComboBoxItemGeneric<int>> GetItemsComboTypeConsult()
         {
             return new List<ComboBoxItemGeneric<int>>
@@ -73,10 +75,10 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
         }
 
         public List<CoordinateModel> GetCoordinatesByTypeSystem(int typeSystem) {
-            var firstCoordinate = Coordenates.FirstOrDefault();
+            var firstCoordinate = Coordinates.FirstOrDefault();
             if (typeSystem == Convert.ToInt32(firstCoordinate.CodigoDatum))
             {
-                return Coordenates.Select(x => new CoordinateModel
+                return Coordinates.Select(x => new CoordinateModel
                 {
                     Vertice = x.Vertice,
                     Norte = x.Norte,
@@ -86,7 +88,7 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
 
             if(typeSystem != Convert.ToInt32(firstCoordinate.CodigoDatum))
             {
-                return Coordenates.Select(x => new CoordinateModel
+                return Coordinates.Select(x => new CoordinateModel
                 {
                     Vertice = x.Vertice,
                     Norte = x.NorteEquivalente,
@@ -97,13 +99,23 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
             return new List<CoordinateModel>();
         }
 
-  
-        //public Polygon CreatePolygon(PointCollection points)
-        //{
-        //    MyPolygon = PolygonHelper.GeneratePolygon(points);
-        //    PolygonLabels = PolygonHelper.GenerateLabelsByPolygon(points);
-        //}
-      
+        public IEnumerable<UIElement> GetPolygonElements(List<CoordinateModel> coordinates, double canvasWidth, double canvasHeight)
+        {
+            if (coordinates == null || !coordinates.Any())
+                return Enumerable.Empty<UIElement>();
+
+            var points = new PointCollection(coordinates.Select(c => new Point(c.Este, c.Norte)));
+            var scaledCoordinates = PolygonHelper.ScaleAndCenterCoordinates(points, canvasWidth, canvasHeight);
+
+            var polygon = PolygonHelper.GeneratePolygon(scaledCoordinates);
+            var labels = PolygonHelper.GenerateLabelsByPolygon(scaledCoordinates);
+
+            var elements = new List<UIElement> { polygon };
+            elements.AddRange(labels);
+
+            return elements;
+        }
+
 
     }
 }
