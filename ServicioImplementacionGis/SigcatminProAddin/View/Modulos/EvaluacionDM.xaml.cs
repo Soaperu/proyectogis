@@ -962,7 +962,7 @@ namespace SigcatminProAddin.View.Modulos
             dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
             foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)
             {
-                dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval, "", r.Concesion, "");
+                dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval, r.Hectarea, r.Concesion, r.Clase);
             }
             dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, GlobalVariables.resultadoEvaluacion.codigo, "AD", GlobalVariables.resultadoEvaluacion.areaDisponible, "AREA DISPONIBLE"); 
             // Obtener el mapa Demarcacion Politica//

@@ -9,6 +9,8 @@ arcpy.env.overwriteOutput = True
 
 in_layer = arcpy.GetParameterAsText(0)
 in_codigo = arcpy.GetParameterAsText(1)
+in_datum = arcpy.GetParameterAsText(2).zfill(2,"0")
+in_zona = arcpy.GetParameterAsText(3)
 temp_folder = r"c:/bdgeocatmin/temporal"
 
 out_geom= object()
@@ -22,6 +24,8 @@ _EXTINGUIDO = 'EX'
 _EVALUADO = 'EV'
 _SIMULTANEO = 'SI'
 _REDENUNCIO = 'RD'
+
+listado_objs_evaluacion = []
 
 
 
@@ -339,7 +343,23 @@ def act_geom_info(lyrpath, codigo):
             cursor.updateRow(i)
     return geom_dm
 
-
+def get_criterios(lyrpath, codigo ):
+    oid_fieldname = arcpy.Describe(lyrpath).OIDFieldName
+    campos = [oid_fieldname, "CODIGOU", "SHAPE@", "CONTADOR", "EVAL",  "CONCESION", "TIPO_EX", "ESTADO" ]
+    query = "CODIGOU <> '{}'".format(codigo)
+    query = "EVAL IN ('PR', 'RD', 'PO', 'SI', 'EX')"
+    with arcpy.da.SearchCursor(lyrpath, campos, query) as cursor:
+        for i in cursor:
+            obj = {"codigoDM": codigo,
+                    "codigoU": i[1],
+                    "eval": i[4],
+                    "hectarea": "",
+                    "concesion": i[5],
+                    "clase" : "",
+                    "tipoEx" : i[6],
+                    "estado" : i[7],
+                    "contador": i[3]}
+            listado_objs_evaluacion.append(obj)           
 
 
 def obtener_area_disponible(lyrpath, geom_ini):
@@ -360,19 +380,32 @@ def obtener_area_disponible(lyrpath, geom_ini):
                 codigo_ad = i[1]
 
     areadisponible_ld = round((geometria_ad_ld.area /10000.0) ,4)
+
+    obj = {"codigoDm": in_codigo,
+            "codigoU": in_codigo,
+            "eval": "AD",
+            "hectarea": areadisponible_ld,
+            "concesion": "AREA DISPONIBLE",
+            "clase" : "",
+            "tipoEx":"",
+            "estado": "",
+            "contador": ""}
+    listado_objs_evaluacion.append(obj)
     return areadisponible_ld
 
 if __name__ == '__main__':
     try:
         lyr_path = os.path.join(temp_folder, in_layer)
         out_geom = act_geom_info(lyr_path, in_codigo)
-        response = obtener_area_disponible(lyr_path, out_geom)
+        get_criterios(lyr_path, in_codigo)
+        ad = obtener_area_disponible(lyr_path, out_geom)
+        response = listado_objs_evaluacion
         arcpy.AddMessage("Satisfactorio")
     except Exception as e:
         arcpy.AddError("Error: " + str(e))
         out_geom = None
     finally:
         response = json.dumps(response)
-        arcpy.SetParameterAsText(2, response)
+        arcpy.SetParameterAsText(4, response)
         
     
