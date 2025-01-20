@@ -18,6 +18,7 @@ using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Core.Internal.CIM;
 using System.Windows.Shapes;
 using ArcGIS.Desktop.Core;
+using System.Data;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -332,69 +333,124 @@ namespace CommonUtilities.ArcgisProUtils
                 cimMeasuredGrid.GridLines = new CIMGridLine[] { lineGrid };
                 mapFrameDefinition.Grids = new CIMMapGrid[] { cimMeasuredGrid };
                 mapFrame.SetDefinition(mapFrameDefinition);
-                // Definir el símbolo de la línea de la grilla
-                //new CIMSymbol();
-
-                                
-                //// Configurar propiedades de ticks
-                //cimMeasuredGrid.TickLength = 2;
-
-                //// Definir el símbolo de la línea de ticks
-                //CIMSolidStroke tickStroke = new CIMSolidStroke
-                //{
-                //    Width = 0.0001,
-                //    Style = CIMLineStyle.Solid
-                //};
-                //cimMeasuredGrid.TickLineSymbol = tickStroke;
-
-                //// Definir el símbolo de los marcadores de ticks
-                //CIMMarkerSymbol markerSymbol = new CIMMarkerSymbol
-                //{
-                //    SymbolLayers = new CIMSymbolLayer[]
-                //    {
-                //        new CIMSimpleMarker
-                //        {
-                //            Size = 1.0,
-                //            Color = new CIMRGBColor { R = 235, G = 235, B = 235, A = 255 },
-                //            Style = SimpleMarkerStyle.Circle
-                //        }
-                //    }
-                //};
-                //cimMeasuredGrid.TickMarkerSymbol = markerSymbol;
-
-                //// Configurar visibilidad de ticks y etiquetas
-                //cimMeasuredGrid.TickVisible = true;
-                //cimMeasuredGrid.SubTickVisible = true;
-                //cimMeasuredGrid.LabelVisible = true;
-                //cimMeasuredGrid.SubLabelVisible = true;
-
-                //// Verificar si ya existe una grilla con el mismo nombre y eliminarla
-                //CIMMapFrame cimMapFrame = mapFrame..GetCIMFrame();
-                //if (cimMapFrame.MapGrids == null)
-                //{
-                //    cimMapFrame.MapGrids = new CIMMapGrids();
-                //}
-
-                //var existingGrid = cimMapFrame.MapGrids.FirstOrDefault(g => string.Equals(g.Name, "Coordenadas", StringComparison.OrdinalIgnoreCase));
-                //if (existingGrid != null)
-                //{
-                //    cimMapFrame.MapGrids.Remove(existingGrid);
-                //}
-
-                //// Añadir la nueva grilla al MapFrame
-                //cimMapFrame.MapGrids.Add(cimMeasuredGrid);
-
-                //// Aplicar los cambios al MapFrame
-                //mapFrame.SetCIMFrame(cimMapFrame);
-
-                //// Refrescar la vista del layout
-                //LayoutView.Active?.Invalidate();
-
-                //// Llamar a métodos auxiliares para crear etiquetas y bordes
-                //cls_planos.CreateFormattedGridLabel();
-                //cls_planos.CreateSimpleMapGridBorder();
+                
             });
             #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+        }
+
+        public DataTable ObtenerVertices100Ha(ExtentModel extent)
+        {
+            DataTable lodtbDatos = new DataTable();
+            int k = 0;
+            int step = 1000;
+            int numVer = 1;
+            lodtbDatos.Columns.Add("CG_CODIGO", Type.GetType("System.String"));
+            lodtbDatos.Columns.Add("PE_NOMDER", Type.GetType("System.String"));
+            lodtbDatos.Columns.Add("CD_COREST", Type.GetType("System.Double"));
+            lodtbDatos.Columns.Add("CD_CORNOR", Type.GetType("System.Double"));
+            lodtbDatos.Columns.Add("CD_NUMVER", Type.GetType("System.Double"));
+
+            for (int i = (int)extent.xmin; i <= (int)extent.xmax - 1; i += step)
+            {
+
+
+                for (int j = (int)extent.ymin; j <= (int)extent.ymax - 1; j += step)
+                {
+                    k = k + 1;
+
+                    // Primera fila
+                    DataRow dRow = lodtbDatos.NewRow();
+                    dRow["CG_CODIGO"] = "DM_" + k;
+                    dRow["PE_NOMDER"] = "DM";
+                    dRow["CD_COREST"] = i;
+                    dRow["CD_CORNOR"] = j;
+                    dRow["CD_NUMVER"] = numVer;
+                    lodtbDatos.Rows.Add(dRow);
+
+                    // Segunda fila
+                    dRow = lodtbDatos.NewRow();
+                    dRow["CG_CODIGO"] = "DM_" + k;
+                    dRow["PE_NOMDER"] = "DM";
+                    dRow["CD_COREST"] = i + step;
+                    dRow["CD_CORNOR"] = j;
+                    dRow["CD_NUMVER"] = numVer + 1;
+                    lodtbDatos.Rows.Add(dRow);
+
+                    // Tercera fila
+                    dRow = lodtbDatos.NewRow();
+                    dRow["CG_CODIGO"] = "DM_" + k;
+                    dRow["PE_NOMDER"] = "DM";
+                    dRow["CD_COREST"] = i + step;
+                    dRow["CD_CORNOR"] = j + step;
+                    dRow["CD_NUMVER"] = numVer + 2;
+                    lodtbDatos.Rows.Add(dRow);
+
+                    // Cuarta fila
+                    dRow = lodtbDatos.NewRow();
+                    dRow["CG_CODIGO"] = "DM_" + k;
+                    dRow["PE_NOMDER"] = "DM";
+                    dRow["CD_COREST"] = i;
+                    dRow["CD_CORNOR"] = j + step;
+                    dRow["CD_NUMVER"] = numVer + 3;
+                    lodtbDatos.Rows.Add(dRow);
+                }
+            }
+            return lodtbDatos;
+        }
+
+        public async void Graficarcuadriculas100Ha(DataTable lodtbDatos)
+        {
+            string[] letrasMayusculas = new string[]
+                {
+                    "A","B","C","D","E","F","G",
+                    "H","I","J","K","L","M","N",
+                    "O","P","Q","R","S","T","U",
+                    "V","W","X","Y","Z"
+                };
+
+
+            await QueuedTask.Run(async () =>
+            {
+                // Crear o verificar la existencia de la capa de destino (líneas)
+                //UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                FeatureLayer? mallasLayer = GetOrCreateLayerwithNoRows("Recta", GlobalVariables.CurrentZoneDm);
+                if (mallasLayer == null) throw new Exception("No se pudo crear o acceder a la capa.");
+
+                // Recorre la tabla
+                for (int i = 0; i < lodtbDatos.Rows.Count; i += 4)
+                {
+                    string codigo = lodtbDatos.Rows[i]["CG_CODIGO"].ToString();
+                    int idpolygon = ((i / 4) + 1);
+
+                    var polygon = PolygonBuilder.CreatePolygon(new[]
+                        {
+                        MapPointBuilder.CreateMapPoint(double.Parse(lodtbDatos.Rows[i]["CD_COREST"].ToString()), double.Parse(lodtbDatos.Rows[i]["CD_CORNOR"].ToString())),
+                        MapPointBuilder.CreateMapPoint(double.Parse(lodtbDatos.Rows[i+1]["CD_COREST"].ToString()), double.Parse(lodtbDatos.Rows[i+1]["CD_CORNOR"].ToString())),
+                        MapPointBuilder.CreateMapPoint(double.Parse(lodtbDatos.Rows[i+2]["CD_COREST"].ToString()), double.Parse(lodtbDatos.Rows[i+2]["CD_CORNOR"].ToString())),
+                        MapPointBuilder.CreateMapPoint(double.Parse(lodtbDatos.Rows[i+3]["CD_COREST"].ToString()), double.Parse(lodtbDatos.Rows[i+3]["CD_CORNOR"].ToString())),
+                    });
+
+                    AddFeatureToLayer(mallasLayer, polygon, letrasMayusculas[idpolygon - 1], "PE", idpolygon.ToString(), "100");
+                }
+                string newNameMalla = "Cuadriculas_100HA";
+                mallasLayer.SetName(newNameMalla);
+                await SymbologyUtils.ColorPolygonSimple(mallasLayer);
+            });
+
+        }
+        private void AddFeatureToLayer(FeatureLayer layer, ArcGIS.Core.Geometry.Polygon line, string codigo, string tipo, string idpol, string area)
+        {
+            using (var featureClass = layer.GetFeatureClass())
+            using (var rowBuffer = featureClass.CreateRowBuffer())
+            using (var featureCursor = featureClass.CreateInsertCursor())
+            {
+                rowBuffer["SHAPE"] = line;
+                rowBuffer["CODIGOU"] = codigo;
+                rowBuffer["TIPO"] = tipo;
+                rowBuffer["POLIGONO"] = idpol;
+                rowBuffer["AREA"] = area;
+                featureCursor.Insert(rowBuffer);
+            }
         }
     }
 }

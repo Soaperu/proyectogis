@@ -211,18 +211,18 @@
 				  Plano de Simultaneidad<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
-        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosEvaluacionReduccion" caption="Evaluación y Reduccion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosEvaluacionReduccion" loadOnClick="true" keytip="BDG-20" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosEvaluacionReduccion" caption="Evaluación y Reduccion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosEvaluacionReduccion" loadOnClick="true" keytip="BDG-20" smallImage="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-32x32.png">
           <tooltip heading="Evaluación y Reducción">
 				  Planos de Evaluación y Reducción<disabledText /></tooltip>
           <content version="1.0" group="Planos" />
         </button>
-		<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosDiversosFormatos" caption="Diversos Formatos" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosDiversosFormatos" loadOnClick="true" keytip="BDG-26" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+		<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosDiversosFormatos" caption="Diversos Formatos" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosDiversosFormatos" loadOnClick="true" keytip="BDG-26" smallImage="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-32x32.png">
 			<tooltip heading="Diversos Formatos">
 				Planos de Diversos Formatos<disabledText />
 			</tooltip>
 			<content version="1.0" group="Planos" />
 		</button>
-		<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_SituacionDM" caption="SituacionDM" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.SituacionDM" loadOnClick="true" keytip="BDG-27" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+		<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_SituacionDM" caption="Situación DM" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.SituacionDM" loadOnClick="true" keytip="BDG-27" smallImage="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-32x32.png">
 			<tooltip heading="Situación DM">
 				SituacionDM<disabledText />
 			</tooltip>

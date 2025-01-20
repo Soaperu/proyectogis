@@ -42,6 +42,7 @@ using System.Security.Policy;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Mapping.Events;
 using DevExpress.CodeParser;
+using Newtonsoft.Json;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -723,74 +724,143 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick()
         {
-            double x;
-            double y;
-            string planeEval;
-            string planeDemarca;
-            string planeCarta;
-            string pathLayout;
-            string mapName;
-            string nameLayer;
-            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Derecho Minero");
+            progressBar.Show();
+            //double x;
+            //double y;
+            //string planeEval;
+            //string planeDemarca;
+            //string planeCarta;
+            //string pathLayout;
+            //string mapName;
+            //string nameLayer;
+            //await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
 
-            // Plano Evaluación
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
-            {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval);
-                planeEval = GlobalVariables.planeEval.Split('.')[0];
-            }
-            else
-            {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval56);
-                planeEval = GlobalVariables.planeEval56.Split('.')[0];
-            }
-            
-            mapName = GlobalVariables.mapNameCatastro;
-            nameLayer = GlobalVariables.CurrentShpName;
-            var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
-            ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
-            (x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
-            y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion", layoutItem, y);
-            await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
+            //// Plano Evaluación
+            //if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
+            //{
+            //    pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval);
+            //    planeEval = GlobalVariables.planeEval.Split('.')[0];
+            //}
+            //else
+            //{
+            //    pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEval56);
+            //    planeEval = GlobalVariables.planeEval56.Split('.')[0];
+            //}
+
+            //mapName = GlobalVariables.mapNameCatastro;
+            //nameLayer = GlobalVariables.CurrentShpName;
+            //var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEval);
+            //ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+            //(x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
+            //y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion", layoutItem, y);
+            //await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
 
 
-            // Plano Demarcación
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
-            {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca84);
-                planeDemarca = GlobalVariables.planeDemarca84.Split('.')[0];
-            }
-            else
-            {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca56);
-                planeDemarca = GlobalVariables.planeDemarca56.Split('.')[0];
-            }
-            mapName = GlobalVariables.mapNameDemarcacionPo;
-            mapName = GlobalVariables.CurrentShpName;
-            layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca);
-            DemarcaElementsLayoutUtils demarcaElementsLayoutUtils = new DemarcaElementsLayoutUtils();
-            await demarcaElementsLayoutUtils.AddDemarcaTextAsync("", GlobalVariables.CurrentDistDm, "", "", GlobalVariables.CurrentProvDm, "", GlobalVariables.CurrentDepDm, layoutItem);
+            //// Plano Demarcación
+            //if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
+            //{
+            //    pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca84);
+            //    planeDemarca = GlobalVariables.planeDemarca84.Split('.')[0];
+            //}
+            //else
+            //{
+            //    pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeDemarca56);
+            //    planeDemarca = GlobalVariables.planeDemarca56.Split('.')[0];
+            //}
+            //mapName = GlobalVariables.mapNameDemarcacionPo;
+            //mapName = GlobalVariables.CurrentShpName;
+            //layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca);
+            //DemarcaElementsLayoutUtils demarcaElementsLayoutUtils = new DemarcaElementsLayoutUtils();
+            //await demarcaElementsLayoutUtils.AddDemarcaTextAsync("", GlobalVariables.CurrentDistDm, "", "", GlobalVariables.CurrentProvDm, "", GlobalVariables.CurrentDepDm, layoutItem);
 
-            // Plano Carta IGN
-            if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
+            //// Plano Carta IGN
+            //if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
+            //{
+            //    pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta84);
+            //    planeCarta = GlobalVariables.planeCarta84.Split('.')[0];
+            //}
+            //else
+            //{
+            //    pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta56);
+            //    planeCarta = GlobalVariables.planeCarta56.Split('.')[0];
+            //}
+            //mapName = GlobalVariables.mapNameCartaIgn;
+            //nameLayer = GlobalVariables.CurrentShpName;
+            //layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
+            //CartaIgnElementsLayoutUtils cartaIgnElementsLayoutUtils = new CartaIgnElementsLayoutUtils();
+            //string listDist = GlobalVariables.CurrentDistDm;
+            //string listProv = GlobalVariables.CurrentProvDm;
+            //string listDep = GlobalVariables.CurrentDepDm;
+            //string listHojas = StringProcessorUtils.FormatStringCartaIgnForTitle(GlobalVariables.CurrentPagesDm);
+            //await cartaIgnElementsLayoutUtils.AddCartaIgnTextAsync(layoutItem, listHojas, "", listDist, "", listProv, "", listDep, "", "");
+
+            // Plano de Reduccion
+            try
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta84);
-                planeCarta = GlobalVariables.planeCarta84.Split('.')[0];
+                double x;
+                double y;
+                string planeEvalReducir;
+                string pathLayout;
+                string mapName;
+                string nameLayer;
+                string layerCatName = "Catastro";
+                string layerCuaName = "Cuadriculas_100HA";
+                string folderName = GlobalVariables.pathFileTemp;
+                string id = GlobalVariables.idExport;
+                if (GlobalVariables.CurrentTipoEx == "PE")
+                {
+                    UTMGridGenerator utmGridGenerator = new UTMGridGenerator();
+                    var vertices = utmGridGenerator.ObtenerVertices100Ha(GlobalVariables.currentExtentDM);
+                    utmGridGenerator.Graficarcuadriculas100Ha(vertices);
+                    var Params = Geoprocessing.MakeValueArray(layerCatName, layerCuaName, folderName, id, 1);
+                    var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetAreaDecrese, Params);
+                    var responseJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.ReturnValue);
+                    List<string> layersToRemove = new List<string>() { "Cuadriculas_100HA" };
+                    await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                    var nameDmCuadricula = responseJson["nombreDmCuadricula"];
+                    var nameAreaDecrease = responseJson["nombreInterReducir"];
+                    await LayerUtils.ChangeLayerNameAsync(nameDmCuadricula, "Cuadriculas_100HA");
+                    await LayerUtils.ChangeLayerNameAsync(nameAreaDecrease, "Areainter");
+                    var pFeatureLayer_cua = await LayerUtils.GetFeatureLayerByNameAsync("Cuadriculas_100HA");
+                    await SymbologyUtils.ColorPolygonSimple(pFeatureLayer_cua);
+                    var pFeatureLayer_inter = await LayerUtils.GetFeatureLayerByNameAsync("Areainter");
+                    await SymbologyUtils.ColorPolygonSimple(pFeatureLayer_inter);
+                    await LayerUtils.ChangeLayerNameAsync("Cuadriculas_100HA", "DM_Cuadriculas");
+                    await LayerUtils.ChangeLayerNameAsync("Areainter", "Areainter_Reducir");
+                    await LabelUtils.LabelFeatureLayer(pFeatureLayer_cua, "ETIQUETA", 10) ;
+                    // Layout Plano de Reduccion
+                    if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
+                    {
+                        pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEvalReducir);
+                        planeEvalReducir = GlobalVariables.planeEvalReducir.Split('.')[0];
+                    }
+                    else
+                    {
+                        pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEvalReducir);
+                        planeEvalReducir = GlobalVariables.planeEvalReducir.Split('.')[0];
+                    }
+
+                    mapName = GlobalVariables.mapNameCatastro;
+                    nameLayer = GlobalVariables.CurrentShpName;
+                    var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEvalReducir);
+                    ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+                    (x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
+                    y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Reduccion", layoutItem, y);
+                    
+                }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se puede generar plano de Reducción para este tipo de expediente", "Error",
+                                                                        MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeCarta56);
-                planeCarta = GlobalVariables.planeCarta56.Split('.')[0];
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                progressBar.Dispose();
             }
-            mapName = GlobalVariables.mapNameCartaIgn;
-            nameLayer = GlobalVariables.CurrentShpName;
-            layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
-            CartaIgnElementsLayoutUtils cartaIgnElementsLayoutUtils = new CartaIgnElementsLayoutUtils();
-            string listDist = GlobalVariables.CurrentDistDm;
-            string listProv = GlobalVariables.CurrentProvDm;
-            string listDep = GlobalVariables.CurrentDepDm;
-            string listHojas = StringProcessorUtils.FormatStringCartaIgnForTitle(GlobalVariables.CurrentPagesDm);
-            await cartaIgnElementsLayoutUtils.AddCartaIgnTextAsync(layoutItem, listHojas, "", listDist, "", listProv, "", listDep, "", "");
+            progressBar.Dispose();
         }
     }
     internal class PlanosDiversosFormatos : BDGeocatminButton

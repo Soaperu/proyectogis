@@ -43,6 +43,8 @@ namespace CommonUtilities
         public static string toolGetDepas = "obtenerDepartamento";
         public static string toolGetAreasOverlay = "calculoAreaSupDisp";
         public static string toolGetDemaImage = "exportImageDema";
+        public static string toolGetAreaDecrese = "calculoAreaReducir";
+        
         // Variables obtenidas de Evaluacion DM
 
         public static string dmShpNamePath { get; set; }
@@ -81,6 +83,7 @@ namespace CommonUtilities
         public static string planeDemarca56 = "plantilla_demarca_56.pagx";
         public static string planeCarta84 = "plantilla_cartaign_84.pagx";
         public static string planeCarta56 = "plantilla_cartaign_56.pagx";
+        public static string planeEvalReducir = "Plantilla_ev_reduccion.pagx";
 
         //Contenedor de Plantillas de Reportes
         public static string ContaninerTemplatesReports = @"U:\\Geocatmin\\Reporte";

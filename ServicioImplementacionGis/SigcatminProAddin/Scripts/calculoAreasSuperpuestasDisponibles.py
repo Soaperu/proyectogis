@@ -130,10 +130,12 @@ def calculo_area_superpuestas_y_disponibles(
 
     # 6. Intersección entre las capas EV y PR
     intersect_salida = os.path.join(carpeta_salida, nombre_intersect + fechaArchi)
+    intersect_salida_temp = os.path.join(carpeta_salida, nombre_intersect + fechaArchi + "_temp")#f"in_memory\{nombre_intersect}{fechaArchi}" # + nombre_intersect + fechaArchi
+    arcpy.AddMessage(f"generando: {intersect_salida_temp}")
     arcpy.analysis.Intersect([ev_salida, pr_salida],
-                             intersect_salida,
+                             intersect_salida_temp,
                              "ALL")
-    
+    arcpy.AddMessage(f"generado: {intersect_salida_temp}")
     # 7. Obtener la geometría que NO se intersecta
     #    Para ello, hacemos "Erase" de cada capa usando la intersección como "erase_features".
     # ev_no_intersect = os.path.join(carpeta_salida, "EV_no_intersect")
@@ -152,7 +154,7 @@ def calculo_area_superpuestas_y_disponibles(
     # 9. Calcular el área total de la capa intersectada y de la no intersectada
     #    Suponiendo que los datos tienen proyección adecuada para medir áreas en m2 (o la unidad deseada).
     area_intersectada = 0.0
-    with arcpy.da.SearchCursor(intersect_salida, ["SHAPE@AREA"]) as cursor:
+    with arcpy.da.SearchCursor(intersect_salida_temp, ["SHAPE@AREA"]) as cursor:
         for row in cursor:
             area_intersectada += row[0]
 
@@ -167,11 +169,11 @@ def calculo_area_superpuestas_y_disponibles(
         "area_disponible": round(area_no_intersectada, 4)
     }
 
-    capas_resultantes = [ intersect_salida + ".shp", no_intersect_salida + ".shp"]
+    capas_resultantes = [no_intersect_salida + ".shp"]
     campos_a_conservar = ["CODIGOU",
                             "FEC_DENU",
                             "CODIGOU_1",
-                            "CONCESIO_1"]   
+                            "CONCESIO_1"]
     
     for capa in capas_resultantes:
             # Obtener todos los campos
@@ -190,6 +192,13 @@ def calculo_area_superpuestas_y_disponibles(
                         arcpy.AddMessage("No se eliminaron los campos:" + str(field))
                         pass
 
+    arcpy.analysis.PairwiseDissolve(intersect_salida_temp, intersect_salida, campos_a_conservar, "", 'SINGLE_PART')
+    arcpy.management.AddField(intersect_salida, "AREA_FINAL", "DOUBLE", field_scale=4, field_precision=18)
+    with arcpy.da.UpdateCursor(intersect_salida, ["SHAPE@AREA", "AREA_FINAL"]) as cursor_f:
+        for row in cursor_f:
+            row[1] = row[0]
+            cursor_f.updateRow(row)
+            
     # Mensajes informativos
     #arcpy.AddMessage("Proceso finalizado correctamente.")
     arcpy.AddMessage(f"Capas generadas en: {carpeta_salida}")

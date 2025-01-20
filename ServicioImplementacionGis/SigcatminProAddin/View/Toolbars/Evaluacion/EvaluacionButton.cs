@@ -166,6 +166,8 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
     {
         protected override async void OnClick()
         {
+            ProgressBarUtils progressBar = new ProgressBarUtils("Generando area disponible...");
+            progressBar.Show();
             await FrameworkApplication.SetCurrentToolAsync(ExploreToolName);
             string layerName = "Catastro";
             string folderName = GlobalVariables.pathFileTemp;
@@ -195,6 +197,7 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             catch (Exception ex)
             {
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message, "Error en Calculo Area Disponible", MessageBoxButton.OK, MessageBoxImage.Error);
+                progressBar.Dispose();
             }
             try
             {
@@ -213,9 +216,11 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion
             }
             catch (Exception ex)
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message, "Error en Calculo Area Disponible en distinto datum", MessageBoxButton.OK, MessageBoxImage.Error);
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message, "Error en Calculo Area Disponible en distinto datum", 
+                                                                    MessageBoxButton.OK, MessageBoxImage.Error);
+                progressBar.Dispose();
             }
-            
+            progressBar.Dispose();
         }
     }
     internal class ObservacionesCartaIGN : EvaluacionButton 

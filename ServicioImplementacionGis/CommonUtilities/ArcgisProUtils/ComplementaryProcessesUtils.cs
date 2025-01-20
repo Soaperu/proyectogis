@@ -231,7 +231,7 @@ namespace CommonUtilities.ArcgisProUtils
                 DataTable intersectDm;
                 if (datum == datumwgs84)
                 {
-                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, valueCodeDm);
+                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, valueCodeDm);
                 }
                 else
                 {
@@ -281,6 +281,20 @@ namespace CommonUtilities.ArcgisProUtils
                 }
                 GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
                 GlobalVariables.resultadoEvaluacion.isCompleted = true;
+
+                try
+                {
+                    List<string> LayersListBox = new List<string>() {"Caram", "Catastro Forestal" };
+                    // Itera todos items seleccionados en el ListBox de WPF
+                    foreach (var item in LayersListBox)
+                    {
+                            await LayerUtils.AddLayerCheckedListBox(item, zoneDm, featureClassLoader, datum, extentDmRadio);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
 
             }
             catch (Exception ex)

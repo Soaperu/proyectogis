@@ -9,6 +9,16 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Scripts\aprx\**" />
+    <Compile Remove="Scripts\sde\**" />
+    <EmbeddedResource Remove="Scripts\aprx\**" />
+    <EmbeddedResource Remove="Scripts\sde\**" />
+    <None Remove="Scripts\aprx\**" />
+    <None Remove="Scripts\sde\**" />
+    <Page Remove="Scripts\aprx\**" />
+    <Page Remove="Scripts\sde\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="View\Modulos\ConLimiteInteres.xaml.cs" />
     <Compile Remove="View\Modulos\ConsultaSimulaPetitorio.xaml.cs" />
     <Compile Remove="View\Modulos\ConsultaVariasCartasNac.xaml.cs" />
@@ -64,10 +74,16 @@
     <None Remove="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-32x32.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-16x16.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-32x32.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-16x16.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-32x32.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\plano1.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\plano2.png" />
     <None Remove="Images\Toolbars\BDGeocatmin\planoX16.png" />
@@ -193,10 +209,16 @@
     <Content Include="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png" />
     <Content Include="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" />
     <Content Include="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-32x32.png" />
     <Content Include="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-16x16.png" />
     <Content Include="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-32x32.png" />
     <Content Include="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-16x16.png" />
     <Content Include="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-32x32.png" />
     <Content Include="Images\Toolbars\Evaluacion\01-ver-todos-16x16.png" />
     <Content Include="Images\Toolbars\Evaluacion\01-ver-todos-32x32.png" />
     <Content Include="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-16x16.png" />
@@ -376,8 +398,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\Constants\FeatureClass\" />
-    <Folder Include="Scripts\aprx\" />
-    <Folder Include="Scripts\sde\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
@@ -388,10 +408,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Update="Scripts\aprx\mapas\data_cat.sde">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Scripts\aprx\mapas\mapas.aprx">
+    <None Update="Scripts\areaReduccionDm.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="Scripts\calculoAreasSuperpuestasDisponibles.py">

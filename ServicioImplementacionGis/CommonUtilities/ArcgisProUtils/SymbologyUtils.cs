@@ -125,7 +125,7 @@ namespace CommonUtilities.ArcgisProUtils
                 Map map = MapView.Active?.Map;
                 if (map == null)
                 {
-                    System.Windows.MessageBox.Show("No active map found.");
+                    MessageBox.Show("Mapa Activo no encontrado.");
                     return;
                 }
 
@@ -133,7 +133,7 @@ namespace CommonUtilities.ArcgisProUtils
                 FeatureLayer featureLayer = map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase));
                 if (featureLayer == null)
                 {
-                    System.Windows.MessageBox.Show($"Layer '{layerName}' not found.");
+                    //System.Windows.MessageBox.Show($"Layer '{layerName}' not found.");
                     return;
                 }
                 StyleHelper.AddStyle(Project.Current, styleFilePath);
@@ -933,7 +933,7 @@ namespace CommonUtilities.ArcgisProUtils
             };
 
             // Configuraciones compartidas para capas renurets
-            var renurets = new List<string> { "Malla Cuadricula 10Ha", "Malla Cuadricula 100Ha", "Renuret2", "Renuren2", "Renuret3", "Renuren3", "Renuret4", "Renuren4" };
+            var renurets = new List<string> { "Malla Cuadricula 10Ha", "Malla Cuadricula 100Ha", "DM_Cudriculas", "Renuren2", "Renuret3", "Renuren3", "Renuret4", "Renuren4" };
             var renuretConfig = new SymbolConfiguration
             {
                 FillStyle = SimpleFillStyle.Horizontal,
