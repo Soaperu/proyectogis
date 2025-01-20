@@ -31,6 +31,7 @@ using ArcGIS.Desktop.Framework.Threading.Tasks;
 //using System.Windows.Markup.Localizer;
 //using DevExpress.XtraExport.Helpers;
 using DevExpress.Xpf.Editors.Settings;
+using System.Security.Policy;
 //using System.Collections.ObjectModel;
 //using static DevExpress.Xpo.Helpers.AssociatedCollectionCriteriaHelper;
 //using System.Windows.Media.Imaging;
@@ -71,8 +72,8 @@ namespace SigcatminProAddin.View.Modulos
         private void AddCheckBoxesToListBox()
         {
             string[] items = {
-                                "Caram"
-                                //"Catastro Forestal",
+                                //"Caram"
+                                "Catastro Forestal",
                                 //"Predio Rural",
                                 //"Limite Departamental",
                                 //"Limite Provincial",
@@ -536,6 +537,10 @@ namespace SigcatminProAddin.View.Modulos
 
             var queryClause = "";
             var cod_opcion = cod_rese.Substring(0, 2);
+
+            if (cod_opcion == "U1")
+                cod_opcion = "ZU";
+
             switch (cod_opcion)
             {
                 case "ZU": // Zona Urbana
@@ -544,6 +549,9 @@ namespace SigcatminProAddin.View.Modulos
 
                 default: //Otros Casos
                     var claseRes = "";
+                    var contador = 0;
+                    var claseOne = "";
+
                     if (DataGridResult.ItemsSource is DataView dataView)
                     {
                         foreach (DataRowView row in dataView)
@@ -552,20 +560,24 @@ namespace SigcatminProAddin.View.Modulos
                             var isChecked = row["FLG_SEL"].ToString();
                             if (isChecked == "1")
                             {
+                                contador++;
+                                claseOne = "CODIGO = '" + row["CG_CODIGO"].ToString() + "'";
                                 claseRes = claseRes + "CODIGO = '" + row["CG_CODIGO"].ToString() + "' and CLASE = '" + row["PA_DESCRI"].ToString() + "' OR ";
                             }
                         }
-
                     }
                     else
                     {
                         MessageBox.Show("La fuente de datos no es compatible con DataView.");
                     }
-
-                    claseRes = claseRes.Substring(0, claseRes.Length - 4);
-
-                    //queryClause01 = $"CODIGO = '{cod_rese}' and CLASE = '" + clase_sele + "'";
-                    queryClause = claseRes;
+                    if (contador == 1 && cod_opcion!="AN")
+                    {
+                        queryClause = claseOne;
+                    }
+                    else { 
+                        claseRes = claseRes.Substring(0, claseRes.Length - 4);
+                        queryClause = claseRes;
+                    }
                     break;
             };
 
@@ -607,6 +619,19 @@ namespace SigcatminProAddin.View.Modulos
                     }
                 }
 
+                /*************************************/
+                //caso Caram
+                if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram84 + zoneDm, true, queryClause);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram56 + zoneDm, true, queryClause);
+                }
+
+                /*************************************/
+
                 // Encontrando Distritos superpuestos a DM con
                 ArcGIS.Core.Data.QueryFilter filter =
                    new ArcGIS.Core.Data.QueryFilter()
@@ -619,6 +644,21 @@ namespace SigcatminProAddin.View.Modulos
                     case "ZU":
                         envelope = featureClassLoader.pFeatureLayer_urba.QueryExtent();
                         using (RowCursor rowCursor = featureClassLoader.pFeatureLayer_urba.GetFeatureClass().Search(filter, false))
+                        {
+                            while (rowCursor.MoveNext())
+                            {
+                                using (var row = rowCursor.Current)
+                                {
+                                    ArcGIS.Core.Data.Feature feature = row as ArcGIS.Core.Data.Feature;
+                                    polygon = feature.GetShape();
+                                }
+                            }
+                        }
+
+                        break;
+                    case "AN":
+                        envelope = featureClassLoader.pFeatureLayer_caram.QueryExtent();
+                        using (RowCursor rowCursor = featureClassLoader.pFeatureLayer_caram.GetFeatureClass().Search(filter, false))
                         {
                             while (rowCursor.MoveNext())
                             {
@@ -663,7 +703,7 @@ namespace SigcatminProAddin.View.Modulos
                 string styleCat = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, "");
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
-                List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN" };
+                List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", "Zona Urbana", "Zona Reservada" };
                 //List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", "Zona Urbana", "Zona Reservada" };
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
@@ -675,6 +715,12 @@ namespace SigcatminProAddin.View.Modulos
                 await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
                 string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+
+
+                string layerExportName = "Caram"; /* + GlobalVariables.idExport;*/
+                string styleCaramPath = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCaram);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(layerExportName, styleCaramPath, "ESTILO", StyleItemType.PolygonSymbol);
+                //await ChangeLayerNameAsync(layerExportName, "Caram");
             });
 
             if (string.IsNullOrEmpty(listDms))
