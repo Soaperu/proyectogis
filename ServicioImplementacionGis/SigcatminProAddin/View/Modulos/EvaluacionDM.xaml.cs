@@ -888,6 +888,7 @@ namespace SigcatminProAddin.View.Modulos
                 await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
                 string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+               
                 try
                 {
                     // Itera todos items seleccionados en el ListBox de WPF
@@ -1218,7 +1219,7 @@ namespace SigcatminProAddin.View.Modulos
                                         leyenda = "G5";  // Otros
                                         break;
                                     default:
-                                        row["LEYENDA"] = "";
+                                        row["LEYENDA"] = "G6";
                                         row["EVAL"] = "EV";
                                         row["TIPO_EX"] = "PE";
                                         row["CONCESION"] = "Dm_Simulado";

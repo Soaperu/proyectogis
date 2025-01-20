@@ -157,7 +157,7 @@
                 <TextBlock Text="Radio (km)" FontSize="10" Margin="0,0,0,0"
                            VerticalAlignment="Center" FontWeight="Medium"/>
                 <TextBox Grid.Column="1" Width="100" Height="25" VerticalAlignment="Center"
-                          x:Name="TbxRadio" VerticalContentAlignment="Center" />
+                          x:Name="TbxRadio" VerticalContentAlignment="Center" TextChanged="TbxRadio_TextChanged" />
                 <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
                 <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
                           VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded" SelectionChanged="CbxZona_SelectionChanged" />
@@ -179,11 +179,11 @@
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Top" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
                     VerticalContentAlignment="Center" x:Name="BtnGeneraPoligono" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.Row="3" Grid.Column="1" Margin="0,30,0,0" Grid.RowSpan="2" Click="BtnGeneraPoligono_Click" />
-                <Button Content="Example" Width="51" Height="26" Background="#006DA0" BorderBrush="White"
-                    Foreground="White" HorizontalAlignment="Center"
+                <Button Content="Example" Width="51" Height="26" Background="#006DA0" BorderBrush="White" 
+                    Foreground="White" HorizontalAlignment="Center" 
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                    VerticalContentAlignment="Center" x:Name="BtnExample" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.Row="4" Click="BtnExample_Click"  />
+                    VerticalContentAlignment="Center" x:Name="BtnExample" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.Row="4" Click="BtnExample_Click" Visibility="Hidden"  />
             </Grid>
         </Grid>
 
@@ -217,7 +217,7 @@
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
-            <ListBox Grid.Column="4" x:Name="LayersListBox" Margin="10,0,-10,0" >
+            <ListBox Grid.Column="4" x:Name="LayersListBox" Margin="10,0,-10,0" KeyDown="LayersListBox_KeyDown" >
                 <ListBox.Template>
                     <ControlTemplate TargetType="ListBox">
                         <Border Background="{TemplateBinding Background}" 
