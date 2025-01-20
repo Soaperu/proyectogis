@@ -933,7 +933,7 @@ namespace CommonUtilities.ArcgisProUtils
             };
 
             // Configuraciones compartidas para capas renurets
-            var renurets = new List<string> { "Malla Cuadricula 10Ha", "Malla Cuadricula 100Ha", "Renuret2", "Renuren2", "Renuret3", "Renuren3", "Renuret4", "Renuren4" };
+            var renurets = new List<string> { "Malla Cuadricula 10Ha", "Malla Cuadricula 100Ha", "DM_Cudriculas", "Renuren2", "Renuret3", "Renuren3", "Renuret4", "Renuren4" };
             var renuretConfig = new SymbolConfiguration
             {
                 FillStyle = SimpleFillStyle.Horizontal,

@@ -798,6 +798,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             // Plano de Reduccion
             try
             {
+                double x;
+                double y;
+                string planeEvalReducir;
+                string pathLayout;
+                string mapName;
+                string nameLayer;
                 string layerCatName = "Catastro";
                 string layerCuaName = "Cuadriculas_100HA";
                 string folderName = GlobalVariables.pathFileTemp;
@@ -810,10 +816,42 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                     var Params = Geoprocessing.MakeValueArray(layerCatName, layerCuaName, folderName, id, 1);
                     var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetAreaDecrese, Params);
                     var responseJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.ReturnValue);
+                    List<string> layersToRemove = new List<string>() { "Cuadriculas_100HA" };
+                    await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                    var nameDmCuadricula = responseJson["nombreDmCuadricula"];
+                    var nameAreaDecrease = responseJson["nombreInterReducir"];
+                    await LayerUtils.ChangeLayerNameAsync(nameDmCuadricula, "Cuadriculas_100HA");
+                    await LayerUtils.ChangeLayerNameAsync(nameAreaDecrease, "Areainter");
+                    var pFeatureLayer_cua = await LayerUtils.GetFeatureLayerByNameAsync("Cuadriculas_100HA");
+                    await SymbologyUtils.ColorPolygonSimple(pFeatureLayer_cua);
+                    var pFeatureLayer_inter = await LayerUtils.GetFeatureLayerByNameAsync("Areainter");
+                    await SymbologyUtils.ColorPolygonSimple(pFeatureLayer_inter);
+                    await LayerUtils.ChangeLayerNameAsync("Cuadriculas_100HA", "DM_Cuadriculas");
+                    await LayerUtils.ChangeLayerNameAsync("Areainter", "Areainter_Reducir");
+                    await LabelUtils.LabelFeatureLayer(pFeatureLayer_cua, "ETIQUETA", 10) ;
+                    // Layout Plano de Reduccion
+                    if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
+                    {
+                        pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEvalReducir);
+                        planeEvalReducir = GlobalVariables.planeEvalReducir.Split('.')[0];
+                    }
+                    else
+                    {
+                        pathLayout = Path.Combine(GlobalVariables.ContaninerTemplatesReport, GlobalVariables.planeEvalReducir);
+                        planeEvalReducir = GlobalVariables.planeEvalReducir.Split('.')[0];
+                    }
+
+                    mapName = GlobalVariables.mapNameCatastro;
+                    nameLayer = GlobalVariables.CurrentShpName;
+                    var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeEvalReducir);
+                    ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+                    (x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutItem);
+                    y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Reduccion", layoutItem, y);
+                    
                 }
                 else
                 {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se puede generar malla de cuadriculas para este tipo de expediente", "Error",
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se puede generar plano de Reducción para este tipo de expediente", "Error",
                                                                         MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }

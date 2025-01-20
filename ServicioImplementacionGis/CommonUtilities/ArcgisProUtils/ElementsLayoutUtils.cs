@@ -63,6 +63,16 @@ namespace CommonUtilities.ArcgisProUtils
                         yPre = item.Y;
                     }
                 }
+                else if (seleReporte == "Reduccion")
+                {
+                    var textos = await GetTextDefinitionsForReduction(y);
+                    foreach (var item in textos)
+                    {
+                        CIMTextSymbol textSymbol = CrearSimboloTexto(item.color, item.fontSize, "Tahoma");
+                        CrearTextElement(item.Texto, item.X, item.Y, textSymbol);
+                        yPre = item.Y;
+                    }
+                }
                 return yPre;
             });
             
@@ -329,6 +339,174 @@ namespace CommonUtilities.ArcgisProUtils
             string encabezadoDM = "Nº      NOMBRE                                     CÓDIGO             TE    TP   INCOR  SUST";
             textList.Add((encabezadoDM, 18.2, posY, colorBlue, fontSizeRedBlue));
             posY -= 0.4;
+            return textList.ToArray();
+        }
+
+        private async Task<(string Texto, double X, double Y, CIMColor color, int fontSize)[]> GetTextDefinitionsForReduction(double posY)
+        {
+            // Aquí simplificamos. Ajusta las coordenadas según el codigo anterior.
+            CIMColor colorMagenta = ColorFromRGB(197, 0, 255);
+            int fontSizeMagenta = 8;
+            CIMColor colorRed = ColorFromRGB(230, 0, 0);
+            int fontSizeRedBlue = 7;
+            CIMColor colorBlue = ColorFromRGB(71, 61, 255);
+            CIMColor colorBlack = ColorFromRGB(0, 0, 0);
+            var textList = new List<(string Texto, double X, double Y, CIMColor color, int fontSize)>()
+            {
+            ("Carta: " + v_carta_dm, 9.2, 18.0, colorBlue, fontSizeRedBlue),
+            ("Fecha: " + fecha, 14.8, 18.0, colorBlue, fontSizeRedBlue),
+            ("CÓDIGO DEL DM: " + v_codigo, 18.8, 17.3, colorMagenta, fontSizeMagenta),
+            ("NOMBRE DEL DM: " + v_nombre_dm, 18.8, 16.7, colorMagenta, fontSizeMagenta),
+            ("HECTÁREA: " + Math.Round(double.Parse(v_area_eval),4) + " Ha.", 18.8, 16.1, colorMagenta, fontSizeMagenta),
+                // Agregar aquí el resto de textos con sus posiciones,
+                // tomando como referencia lo que hacía el código original.
+                // Por ejemplo:
+                // ("DERECHOS PRIORITARIOS: (X)", 18.2, 15.5),
+                // ...
+            };
+
+            // contatexto=6: DERECHOS PRIORITARIOS
+            string derechosPriText = (dictCriterios["PR"] == 0)
+                ? "DERECHOS PRIORITARIOS : No Presenta DM Prioritarios"
+                : "DERECHOS PRIORITARIOS : (" + dictCriterios["PR"] + ")";
+            textList.Add((derechosPriText, 18.8, 15.7, colorBlue, fontSizeRedBlue));
+            posY = await TextElementsEvalByCriteroAsync("PR", X: 18.8, Y: 15.3);
+            //posY -= 0.4;
+
+            // contatexto=7: Petitorio RD
+            string petitorioTexto;
+            if (v_tipo_exp == "RD")
+            {
+                if (Cuenta_rd == 0)
+                    petitorioTexto = "Petitorio formulado al amparo del Art.12 de la Ley 26615, sobre el área del derecho extinguido y publicado de libre denunciabilidad";
+                else
+                    petitorioTexto = "Petitorio formulado al amparo del Art.12 de la Ley 26615, sobre el área del derecho extinguido y publicado de libre denunciabilidad (" + Cuenta_rd + ")";
+                textList.Add((petitorioTexto, 18.8, posY, colorBlue, fontSizeRedBlue));
+                posY -= 0.4;
+            }
+            else
+            {
+                //textList.Add(("Petitorio sin RD - coords fijas", 18.2, posY));
+                //posY -= 0.4;
+            }
+
+            // contatexto=8: DERECHOS POSTERIORES/RESPETAR
+            string derechosPostText;
+            if (dictCriterios["PO"] == 0)
+            {
+                if (v_tipo_exp == "RD")
+                    derechosPostText = "DERECHOS QUE DEBEN RESPETAR EL ÁREA PETICIONADA : No Presenta";
+                else
+                    derechosPostText = "DERECHOS POSTERIORES : No Presenta DM Posteriores";
+            }
+            else
+            {
+                if (v_tipo_exp == "RD")
+                    derechosPostText = "DERECHOS QUE DEBEN RESPETAR EL ÁREA PETICIONADA: (" + dictCriterios["PO"] + ")";
+                else
+                    derechosPostText = "DERECHOS POSTERIORES : (" + dictCriterios["PO"] + ")";
+            }
+            textList.Add((derechosPostText, 18.8, posY, colorBlue, fontSizeRedBlue));
+            posY -= 0.4;
+            posY = await TextElementsEvalByCriteroAsync("PO", Y: posY);
+
+            // contatexto=9: DERECHOS SIMULTÁNEOS
+            //string derechosSimText = (dictCriterios["SI"] == 0)
+            //    ? "DERECHOS SIMULTÁNEOS : No Presenta DM Simultáneos"
+            //    : "DERECHOS SIMULTÁNEOS : (" + dictCriterios["SI"] + ")";
+            //textList.Add((derechosSimText, 18.2, posY, colorBlue, fontSizeRedBlue));
+            //posY -= 0.4;
+            //posY = await TextElementsEvalByCriteroAsync("SI", Y: posY);
+
+            // contatexto=10: DERECHOS EXTINGUIDOS
+            //string derechosExText = (dictCriterios["EX"] == 0)
+            //    ? "DERECHOS EXTINGUIDOS : No Presenta DM Extinguidos"
+            //    : "DERECHOS EXTINGUIDOS : (" + dictCriterios["EX"] + ")";
+            //textList.Add((derechosExText, 18.2, posY, colorBlue, fontSizeRedBlue));
+            //posY -= 0.4;
+            //posY = await TextElementsEvalByCriteroAsync("EX", Y: posY);
+
+            // contatexto=11: CATASTRO NO MINERO
+            textList.Add(("CATASTRO NO MINERO", 18.8, posY, colorRed, fontSizeRedBlue));
+            posY -= 0.4;
+            string listaCaramur = GlobalVariables.resultadoEvaluacion.listaCaramUrbana;
+            string listaCaramre = GlobalVariables.resultadoEvaluacion.listaCaramReservada;
+            string listaCforestal = GlobalVariables.resultadoEvaluacion.listaCatastroforestal;
+            // contatexto=12: Zonas Urbanas
+            string zonasUrbanasText;
+            if (string.IsNullOrEmpty(GlobalVariables.resultadoEvaluacion.listaCaramUrbana))
+            {
+                zonasUrbanasText = "Zonas Urbanas : No se encuentra superpuesto a un Área urbana";
+            }
+            else
+            {
+                if (GlobalVariables.resultadoEvaluacion.listaCaramUrbana.Length > 65)
+                {
+                    string posi_x = listaCaramur.Substring(0, 65);
+                    string posi_x1 = listaCaramur.Substring(65);
+                    zonasUrbanasText = "Zonas Urbanas : " + posi_x + "\n" + posi_x1;
+                    posY -= 0.15;
+                }
+                else
+                {
+                    zonasUrbanasText = "Zonas Urbanas : " + listaCaramur;
+                }
+            }
+            textList.Add((zonasUrbanasText, 18.8, posY, colorBlack, 6));
+            posY -= 0.4;
+
+            // contatexto=13: Zonas Reservadas
+            string zonasReservadasText;
+            if (string.IsNullOrEmpty(listaCaramre))
+            {
+                zonasReservadasText = "Zonas Reservadas : No se encuentra superpuesto a un Área de Reserva";
+            }
+            else
+            {
+                if (listaCaramre.Length > 65)
+                {
+                    string posi_x = listaCaramre.Substring(0, 65);
+                    string posi_x1 = listaCaramre.Substring(65);
+                    zonasReservadasText = "Zonas Reservadas : " + posi_x + "\n" + posi_x1;
+                    posY -= 0.15;
+                }
+                else
+                {
+                    zonasReservadasText = "Zonas Reservadas : " + listaCaramre;
+                }
+            }
+            textList.Add((zonasReservadasText, 18.8, posY, colorBlack, 6));
+            posY -= 0.4;
+
+            // contatexto=14: Cobertura temática SERFOR
+            string serforText;
+            if (string.IsNullOrEmpty(listaCforestal))
+            {
+                serforText = "Cobertura temática SERFOR : NO PRESENTA COBERTURAS TEMÁTICAS";
+            }
+            else
+            {
+                if (listaCforestal.Length > 65)
+                {
+                    string posi_x = listaCforestal.Substring(0, 65);
+                    string posi_x1 = listaCforestal.Substring(65);
+                    serforText = "Cobertura temática SERFOR : " + posi_x + "\n" + posi_x1;
+                    posY -= 0.15;
+                }
+                else
+                {
+                    serforText = "Cobertura temática SERFOR : " + listaCforestal.ToLowerInvariant();
+                }
+            }
+            textList.Add((serforText, 18.8, posY, colorBlack, 6));
+            posY -= 0.4;
+
+            // contatexto=15: Límites fronterizos
+            var distanciaFront = GlobalVariables.DistBorder;
+            string limitesFronText = "Límites fronterizos (Fuente IGN): Distancia de la línea de frontera de " + distanciaFront + " (Km.)";
+            textList.Add((limitesFronText, 18.8, posY, colorBlack, 6));
+            posY -= 0.4;
+
             return textList.ToArray();
         }
 
