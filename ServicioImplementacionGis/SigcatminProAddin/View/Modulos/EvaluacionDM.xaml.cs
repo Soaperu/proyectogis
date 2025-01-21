@@ -1257,7 +1257,7 @@ namespace SigcatminProAddin.View.Modulos
                                         leyenda = "G5";  // Otros
                                         break;
                                     default:
-                                        row["LEYENDA"] = "";
+                                        row["LEYENDA"] = "G6";
                                         row["EVAL"] = "EV";
                                         row["TIPO_EX"] = "PE";
                                         row["CONCESION"] = "Dm_Simulado";

@@ -1084,7 +1084,15 @@ namespace CommonUtilities.ArcgisProUtils
                         //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
 
                         // Asignar el FeatureLayer a la variable correspondiente si es necesario
-                        AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
+                        if (featureClassName.Contains("Poligono"))
+                        {
+                            AssignFeatureLayerVariable(featureLayer, "pFeatureLayer_polygon");
+                        }
+                        else
+                        {
+                            AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
+                        }
+
                         return featureLayer;
                     }
                 });
