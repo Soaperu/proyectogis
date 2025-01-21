@@ -956,7 +956,7 @@ namespace SigcatminProAddin.View.Modulos
             string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
             await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
             GlobalVariables.resultadoEvaluacion.isCompleted = true;
-            GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
+            //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
             
 
             dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
@@ -964,7 +964,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval, r.Hectarea, r.Concesion, r.Clase);
             }
-            dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, GlobalVariables.resultadoEvaluacion.codigo, "AD", GlobalVariables.resultadoEvaluacion.areaDisponible, "AREA DISPONIBLE"); 
+            //dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, GlobalVariables.resultadoEvaluacion.codigo, "AD", GlobalVariables.resultadoEvaluacion.areaDisponible, "AREA DISPONIBLE"); 
             // Obtener el mapa Demarcacion Politica//
             try
             {

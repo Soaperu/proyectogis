@@ -400,6 +400,9 @@
     <None Update="Scripts\CMIN_EVAL.atbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\data_cat.sde">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\evaluarPrioritariosLibreDenu.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

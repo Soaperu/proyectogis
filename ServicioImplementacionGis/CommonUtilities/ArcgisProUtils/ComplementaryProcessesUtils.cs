@@ -135,6 +135,8 @@ namespace CommonUtilities.ArcgisProUtils
             List<string> mapsToDelete = new List<string>()
             {
                 GlobalVariables.mapNameCatastro,
+                GlobalVariables.mapNameCartaIgn,
+                GlobalVariables.mapNameDemarcacionPo
             };
             GlobalVariables.CurrentCodeDm = valueCodeDm;
             await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
