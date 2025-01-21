@@ -2,6 +2,7 @@
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Mapping;
+using CommonUtilities.ArcgisProUtils.Models;
 using DatabaseConnector;
 using Newtonsoft.Json;
 using System;
@@ -134,6 +135,8 @@ namespace CommonUtilities.ArcgisProUtils
             List<string> mapsToDelete = new List<string>()
             {
                 GlobalVariables.mapNameCatastro,
+                GlobalVariables.mapNameCartaIgn,
+                GlobalVariables.mapNameDemarcacionPo
             };
             GlobalVariables.CurrentCodeDm = valueCodeDm;
             await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
@@ -249,9 +252,12 @@ namespace CommonUtilities.ArcgisProUtils
                 await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{valueCodeDm}'");
                 string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, valueCodeDm);
-                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, valueCodeDm);
+                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, valueCodeDm, GlobalVariables.CurrentDatumDm, GlobalVariables.CurrentZoneDm);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
-                var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
+                List<ResultadoEval> responseJson = JsonConvert.DeserializeObject<List<ResultadoEval>>(response.ReturnValue);
+                var areaDisponible = responseJson.FirstOrDefault(r => r.CodigoU.Equals(valueCodeDm, StringComparison.OrdinalIgnoreCase)).Hectarea.ToString();
+                GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = responseJson;
+                //var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
                 GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
                 LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
@@ -273,14 +279,14 @@ namespace CommonUtilities.ArcgisProUtils
                 GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
 
 
-                var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
-                //int contador = 0;
-                foreach (var criterio in criterios)
-                {
-                    GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio] = await elementsLayoutUtils.ObtenerResultadosEval(criterio);
-                }
-                GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
-                GlobalVariables.resultadoEvaluacion.isCompleted = true;
+                //var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
+                ////int contador = 0;
+                //foreach (var criterio in criterios)
+                //{
+                //    GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio] = await elementsLayoutUtils.ObtenerResultadosEval(criterio);
+                //}
+                //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
+                //GlobalVariables.resultadoEvaluacion.isCompleted = true;
 
                 try
                 {

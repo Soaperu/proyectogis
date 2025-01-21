@@ -27,6 +27,14 @@ namespace CommonUtilities.ArcgisProUtils.Models
                    .ToList();
         }
 
+        public List<ResultadoEval> FiltrarSoloCriterios()
+        {
+            var evals = new List<string> { "PR", "RD", "PO", "SI", "EX" };
+            return ListaResultadosCriterio
+                   .Where(r => evals.Contains(r.Eval, StringComparer.OrdinalIgnoreCase))
+                   .ToList();
+        }
+
         public bool EliminarporCodigoU(string codigoU)
         {
             var resultado = ListaResultadosCriterio.FirstOrDefault(r => r.CodigoU.Equals(codigoU, StringComparison.OrdinalIgnoreCase));
@@ -55,8 +63,11 @@ namespace CommonUtilities.ArcgisProUtils.Models
         public string Contador { get; set; }
         public string Concesion { get; set; }
         public string TipoEx { get; set; }
+        public string CodigoDM { get; set; }
         public string CodigoU { get; set; }
         public string Estado { get; set; }
         public string Eval { get; set; }
+        public string Hectarea { get; set; }
+        public string Clase { get; set; }
     }
 }

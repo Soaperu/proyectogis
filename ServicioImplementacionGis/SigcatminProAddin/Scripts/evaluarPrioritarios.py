@@ -3,12 +3,16 @@ import json
 import os
 
 # path to log %AppData%\Roaming\Esri\ArcGISPro\ArcToolbox\History.
+
+SCRIPTS_PATH = os.path.dirname(__file__)
 arcpy.SetLogHistory(True)
 
 arcpy.env.overwriteOutput = True
 
 in_layer = arcpy.GetParameterAsText(0)
 in_codigo = arcpy.GetParameterAsText(1)
+in_datum = arcpy.GetParameterAsText(2).zfill(2)
+in_zona = arcpy.GetParameterAsText(3)
 temp_folder = r"c:/bdgeocatmin/temporal"
 
 out_geom= object()
@@ -22,6 +26,9 @@ _EXTINGUIDO = 'EX'
 _EVALUADO = 'EV'
 _SIMULTANEO = 'SI'
 _REDENUNCIO = 'RD'
+SDE_ = os.path.join(SCRIPTS_PATH, 'data_cat.sde')
+
+listado_objs_evaluacion = []
 
 
 
@@ -340,6 +347,150 @@ def act_geom_info(lyrpath, codigo):
     return geom_dm
 
 
+def eval_capasvsdm( shapegeom, codigo, datum, zona):
+    """
+    Evalua el codigo DM y su relacion con las capas de area rese, urba, cata forestal para registrar en la tabla evaltecnica
+    """
+    # Define los sufijos para consultar los feature class apuntando a su datum tyzona correspondiente
+    datumname = '_WGS' if datum =='02' else ''
+    sufijo = "{0}_{1}".format(datumname, zona)
+    capa_rese = 'DATA_GIS.GPO_ARE_AREA_RESERVADA{}'.format(sufijo)
+    capa_urba = 'DATA_GIS.GPO_ZUR_ZONA_URBANA{}'.format(sufijo)
+
+    datumname = 'W' if datum =='02' else 'P'
+    sufijo = "_{0}{1}".format(datumname, zona)
+    # capa_fore = 'DATA_GIS.GPO_CFO_CATASTRO_FORESTAL{}'.format(sufijo)
+    capa_fore = 'DATA_GIS.GPO_SERFOR_CONCESIONES{}'.format(sufijo)
+
+    sentencia = "select * from {}"
+
+    # Comparando con area reservada
+    arcpy.AddWarning(SDE_)
+    mfl_caparese = arcpy.MakeQueryLayer_management(SDE_,'lyrx',sentencia.format(capa_rese), "OBJECTID" ).getOutput(0)
+    arcpy.SelectLayerByLocation_management(mfl_caparese, "INTERSECT", shapegeom, "", "NEW_SELECTION")
+    contador_rese =0
+    last_codigo_rese=0
+    with arcpy.da.SearchCursor(mfl_caparese,["shape@", "NM_RESE", "CODIGO", "CLASE"]) as cursor:
+        
+        for row in cursor:
+            geom_rese = row[0]
+            nm_rese = row[1]
+            codigo_rese = row[2]
+            clase_rese = row[3]
+            geom_isc = object()
+            area_geom = round(shapegeom.area/10000.0, 4)
+            area_isc = 0
+            variable = nm_rese
+            cod_enum = codigo_rese
+            print(nm_rese)
+            if not codigo_rese.startswith('RV'):
+                geom_isc = geom_rese.intersect(shapegeom, 4)
+                area_isc = round(geom_isc.area/10000.0, 4)
+
+            if nm_rese.startswith('PMA'):
+                variable = codigo_rese + nm_rese[3:] 
+            
+            variable_ld = variable
+            if area_geom == area_isc:
+                " Indica que la interseccion es total"
+                variable_ld = "TOTAL "+ variable_ld 
+
+            if codigo_rese == last_codigo_rese:
+                contador_rese += 1
+                cod_enum = codigo_rese+"_"+ str(contador_rese)
+            else:
+                contador_rese = 0
+            last_codigo_rese = codigo_rese
+            
+            obj = {"codigoDM": codigo,
+                    "codigoU": cod_enum,
+                    "eval": "AP",
+                    "hectarea": area_isc,
+                    "concesion": variable_ld,
+                    "clase" : clase_rese,
+                    "tipoEx" : "",
+                    "estado" : "",
+                    "contador": ""}
+            listado_objs_evaluacion.append(obj) 
+            
+    
+    del mfl_caparese
+
+    # Comparando con zona urbana
+    mfl_capaurba = arcpy.MakeQueryLayer_management(SDE_,'lyrx',sentencia.format(capa_urba), "OBJECTID" ).getOutput(0)
+    arcpy.SelectLayerByLocation_management(mfl_capaurba, "INTERSECT", shapegeom, "", "NEW_SELECTION")
+
+    with arcpy.da.SearchCursor(mfl_capaurba,["shape@", "NM_URBA", "CODIGO"]) as cursor:
+        for row in cursor:
+            geom_urba = row[0]
+            nm_urba = row[1]
+            codigo_urba = row[2]
+            geom_isc = geom_urba.intersect(shapegeom, 4)
+            area_geom = round(shapegeom.area/10000.0, 4)
+            area_isc = round(geom_isc.area/10000.0, 4)
+            variable = nm_urba
+            variable_ld =  variable
+            if area_geom == area_isc:
+                " Indica que la interseccion es total"
+                variable_ld = "TOTAL "+ variable_ld 
+            
+            obj = {"codigoDM": codigo,
+                    "codigoU": codigo_urba,
+                    "eval": "ZU",
+                    "hectarea": area_isc,
+                    "concesion": variable_ld,
+                    "clase" : "",
+                    "tipoEx" : "",
+                    "estado" : "",
+                    "contador": ""}
+            listado_objs_evaluacion.append(obj) 
+    
+    del mfl_capaurba
+
+    # Comparando con capa forestal
+    mfl_capafore = arcpy.MakeQueryLayer_management(SDE_,'lyrx',sentencia.format(capa_fore), "OBJECTID" ).getOutput(0)
+    arcpy.SelectLayerByLocation_management(mfl_capafore, "INTERSECT", shapegeom, "", "NEW_SELECTION")
+
+    with arcpy.da.SearchCursor(mfl_capafore,["shape@", "CD_CONCE", "TP_CONCE"]) as cursor:
+        for row in cursor:
+            geom_conce = row[0]
+            codigo_conce = row[1]
+            tp_conce = row[2]
+            geom_isc = geom_conce.intersect(shapegeom, 4)
+            area_isc = round(geom_isc.area/10000.0, 4)
+            variable = codigo_conce
+            
+            pkg.p_ins_evaltecnica_ld(None, codigo, codigo_conce, 'SF', _sesion, area_isc, tp_conce, '', 'IT', _user)
+            obj = {"codigoDM": codigo,
+                    "codigoU": codigo_conce,
+                    "eval": "SF",
+                    "hectarea": area_isc,
+                    "concesion": tp_conce,
+                    "clase" : "",
+                    "tipoEx" : "",
+                    "estado" : "",
+                    "contador": ""}
+            listado_objs_evaluacion.append(obj) 
+    
+    del mfl_capafore
+
+def get_criterios(lyrpath, codigo ):
+    oid_fieldname = arcpy.Describe(lyrpath).OIDFieldName
+    campos = [oid_fieldname, "CODIGOU", "SHAPE@", "CONTADOR", "EVAL",  "CONCESION", "TIPO_EX", "ESTADO" ]
+    query = "CODIGOU <> '{}'".format(codigo)
+    query = "EVAL IN ('PR', 'RD', 'PO', 'SI', 'EX')"
+    with arcpy.da.SearchCursor(lyrpath, campos, query) as cursor:
+        for i in cursor:
+            obj = {"codigoDM": codigo,
+                    "codigoU": i[1],
+                    "eval": i[4],
+                    "hectarea": "",
+                    "concesion": i[5],
+                    "clase" : "",
+                    "tipoEx" : i[6],
+                    "estado" : i[7],
+                    "contador": i[3]}
+            listado_objs_evaluacion.append(obj)           
 
 
 def obtener_area_disponible(lyrpath, geom_ini):
@@ -360,19 +511,33 @@ def obtener_area_disponible(lyrpath, geom_ini):
                 codigo_ad = i[1]
 
     areadisponible_ld = round((geometria_ad_ld.area /10000.0) ,4)
+
+    obj = {"codigoDm": in_codigo,
+            "codigoU": in_codigo,
+            "eval": "AD",
+            "hectarea": areadisponible_ld,
+            "concesion": "AREA DISPONIBLE",
+            "clase" : "",
+            "tipoEx":"",
+            "estado": "",
+            "contador": ""}
+    listado_objs_evaluacion.append(obj)
     return areadisponible_ld
 
 if __name__ == '__main__':
     try:
         lyr_path = os.path.join(temp_folder, in_layer)
         out_geom = act_geom_info(lyr_path, in_codigo)
-        response = obtener_area_disponible(lyr_path, out_geom)
+        get_criterios(lyr_path, in_codigo)
+        ad = obtener_area_disponible(lyr_path, out_geom)
+        eval_capasvsdm(out_geom, in_codigo, in_datum, in_zona)
+        response = listado_objs_evaluacion
         arcpy.AddMessage("Satisfactorio")
     except Exception as e:
         arcpy.AddError("Error: " + str(e))
         out_geom = None
     finally:
         response = json.dumps(response)
-        arcpy.SetParameterAsText(2, response)
+        arcpy.SetParameterAsText(4, response)
         
     
