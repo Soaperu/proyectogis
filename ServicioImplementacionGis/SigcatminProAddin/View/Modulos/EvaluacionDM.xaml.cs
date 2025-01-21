@@ -362,7 +362,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 // Obtener el índice de la fila seleccionada
                 int focusedRowHandle = tableView.FocusedRowHandle;
-                int currentDatum = (int)CbxSistema.SelectedValue;
+                int? currentDatum = (int)CbxSistema.SelectedValue;
 
 
                 if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
@@ -555,7 +555,7 @@ namespace SigcatminProAddin.View.Modulos
             return filteredTable;
         }
 
-        private DataTable ObtenerCoordenadas(string codigoValue, int datum)
+        private DataTable ObtenerCoordenadas(string codigoValue, int? datum)
         {
             DataTable filteredTable = null;
             try { 
@@ -953,11 +953,15 @@ namespace SigcatminProAddin.View.Modulos
             // Insertamos en Base de Datos
             ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
             Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
-            string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
+            string layerNameAcceditario =$"acceditario{zoneDm}";
+            string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"{layerNameAcceditario}.lyr");
             await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
             GlobalVariables.resultadoEvaluacion.isCompleted = true;
+            var pFeatureLayer_acceditario = await LayerUtils.GetFeatureLayerByNameAsync(layerNameAcceditario);
+            await QueuedTask.Run(() => { pFeatureLayer_acceditario.SetVisibility(false); });
+     
             //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
-            
+
 
             dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
             foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)

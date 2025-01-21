@@ -1,21 +1,29 @@
-﻿using ArcGIS.Core.Data;
+﻿using ArcGIS.Core.CIM;
+using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.Analyst3D;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Geometry;
+using ArcGIS.Core.Internal.CIM;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Internal.Core.CommonControls;
 using ArcGIS.Desktop.Internal.Mapping;
+using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using static System.Net.Mime.MediaTypeNames;
+using Envelope = ArcGIS.Core.Geometry.Envelope;
 using MessageBox = ArcGIS.Desktop.Framework.Dialogs.MessageBox;
+using Path = System.IO.Path;
+using QueryFilter = ArcGIS.Core.Data.QueryFilter;
 
 
 namespace CommonUtilities.ArcgisProUtils
@@ -495,5 +503,36 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static async void AddTextListVerticesToLayout(FeatureLayer featureLayer, LayoutProjectItem layoutItem, string filter = "1=1")
+        {
+            double x = 20.7;
+            double y = 8.25;
+            await QueuedTask.Run(async() =>
+            {
+                var layer = featureLayer.GetFeatureClass();
+                if (layer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
+                    return;
+                }
+                // Definir un filtro de consulta (actualmente recupera todas las funciones, ajustar según sea necesario)
+                ArcGIS.Core.Data.QueryFilter queryFilter = new ArcGIS.Core.Data.QueryFilter { WhereClause = filter };
+                // Crear un cursor para iterar sobre las características de la capa
+                using (var rowCursor = layer.Search(queryFilter, false))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        var textList = await LayoutUtils.GeneratorTextListVerticesDecrease(rowCursor);
+                        var color = new CIMRGBColor { R = 0, G = 0, B = 0, Alpha = 100 };
+                        var _layout = layoutItem.GetLayout();
+                        Coordinate2D coord = new Coordinate2D(x, y);
+                        var mapPoint = MapPointBuilderEx.CreateMapPoint(coord);
+                        CIMTextSymbol textSymbol = SymbolFactory.Instance.ConstructTextSymbol(color, 8, "Tahoma", "Regular");
+                        ElementFactory.Instance.CreateTextGraphicElement(_layout, TextType.PointText, mapPoint, textSymbol, textList);
+                        y -= 1.5;
+                    }
+                }
+            });
+        }
     }
 }

@@ -292,6 +292,9 @@ def calculo_area_a_reducir(
             arcpy.AddMessage("OBS: "+ resultado)
             finalcursor.updateRow(i)
 
+    resultado_reducir = os.path.join(carpeta_salida, "Resultado_reducir" + fechaArchi)
+    arcpy.analysis.PairwiseDissolve(dm_cua_salida, resultado_reducir, ["CODIGOU","RESULTADO"], "ETIQUETA CONCATENATE", "SINGLE_PART", ", ")
+    arcpy.edit.Generalize(resultado_reducir)
     resultado_areas = dict()
     # Mensajes informativos
     arcpy.AddMessage("Proceso finalizado correctamente.")
@@ -309,9 +312,11 @@ def calculo_area_a_reducir(
         # Agregamos las capas resultantes
         mapa_activo.addDataFromPath(intersect_salida + ".shp")
         mapa_activo.addDataFromPath(dm_cua_salida + ".shp")
+        mapa_activo.addDataFromPath(resultado_reducir + ".shp")
     
     resultado_areas["nombreDmCuadricula"] = nombre_dm_cua_salida + fechaArchi
     resultado_areas["nombreInterReducir"] = nombre_intersect + fechaArchi
+    resultado_areas["nombreResultadoReducir"] = "Resultado_reducir" + fechaArchi
     resultado_areas["Ruta_Interseccion"] = intersect_salida + ".shp"
     return resultado_areas
 

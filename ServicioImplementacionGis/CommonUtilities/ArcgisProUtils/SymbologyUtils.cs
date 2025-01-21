@@ -926,7 +926,18 @@ namespace CommonUtilities.ArcgisProUtils
                         LineColor = GetRGBColor(56, 168, 0),
                         LineWidth = 0.2
                     }
-                }
+                },
+                {
+                    "Resultado_reducir",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.Null,
+                        FillColor = GetRGBColor(230, 0, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(230, 0, 0),
+                        LineWidth = 0.75
+                    }
+                },
                 // Agrega más configuraciones según sea necesario...
 
                 // Configuraciones compartidas por múltiples capas

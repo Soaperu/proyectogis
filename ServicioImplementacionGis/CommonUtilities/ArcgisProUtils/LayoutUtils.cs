@@ -15,6 +15,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using ArcGIS.Core.Internal.CIM;
+using QueryFilter = ArcGIS.Core.Data.QueryFilter;
+using Path = System.IO.Path;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -70,7 +76,7 @@ namespace CommonUtilities.ArcgisProUtils
                         FeatureClassDefinition fcDef = featureClass.GetDefinition() as FeatureClassDefinition;
                         if (fcDef != null)
                         {
-                            Envelope layerExtent = fcDef.GetExtent();
+                            ArcGIS.Core.Geometry.Envelope layerExtent = fcDef.GetExtent();
                             mfrm.SetCamera(layerExtent);
                             if (scale > 1)
                             {
@@ -603,7 +609,45 @@ namespace CommonUtilities.ArcgisProUtils
 
             return rutaPlantilla;
         }
-       
+
+        public static Task<string> GeneratorTextListVerticesDecrease(RowCursor rowCursor)
+        {
+            string texto = "";
+
+            return QueuedTask.Run(() =>
+            {
+                using (Row row = rowCursor.Current)
+                {
+                    var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                    var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                    texto += $"Nombre = {row["RESULTADO"]} - {row["CONCATENAT"]}\n";
+
+                    texto += "--------------------------------------------------\n";
+                    texto += new string(' ', 3) + " Vert." + new string(' ', 10) + "Norte" + new string(' ', 10) + "Este\n";
+                    texto += "--------------------------------------------------\n";
+                    for (int i = 0; i < polygon.PointCount - 1; i++)
+                        {
+                            var vertex = polygon.Points[i];
+
+                            var este = Math.Round(vertex.X, 3);
+                            var norte = Math.Round(vertex.Y, 3);
+                            var esteFormateado = string.Format("{0:### ###.#0}", este);
+                            var norteFormateado = string.Format("{0:# ### ###.#0}", norte);
+                            texto += new string(' ', 5) + (i + 1).ToString().PadLeft(3, '0');
+                            texto += new string(' ', 5) + esteFormateado;
+                            texto += new string(' ', 5) + norteFormateado + "\n";
+                        }
+                    texto += "--------------------------------------------------\n";
+                    texto += new string(' ', 10) + $"Área UTM = {Math.Round(polygon.Area / 10000,2)} (Ha)\n";
+                    texto += "--------------------------------------------------\n";
+
+                    return texto;
+                }
+                    //}
+                //}
+            });
+        }
+
 
     }
     public class LayoutConfiguration

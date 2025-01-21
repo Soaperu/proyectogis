@@ -1,5 +1,7 @@
 ﻿using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Geometry;
+using ArcGIS.Core.Internal.Geometry;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Mapping;
 using CommonUtilities.ArcgisProUtils.Models;
@@ -12,6 +14,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Xml.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CommonUtilities.ArcgisProUtils
@@ -198,6 +201,8 @@ namespace CommonUtilities.ArcgisProUtils
                 orderUbigeosDM = dataBaseHandler.GetUbigeoData(valueCodeDm);
 
                 //Carga capa Hojas IGN
+                string listHojas;
+                ExtentModel newExtent;
                 if (datum == datumwgs84)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
@@ -206,7 +211,16 @@ namespace CommonUtilities.ArcgisProUtils
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
                 }
-                string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                if (zoneDm == "18")
+                {
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Hojas IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                }
+                else
+                {
+                    newExtent = TransformBoundingBox(extentDm, zoneDm);
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", newExtent.xmin, newExtent.ymin, newExtent.xmax, newExtent.ymax);
+                }
+                
                 //GlobalVariables.CurrentPagesDm = listHojas;
                 // Encontrando Caram superpuestos a DM con
                 DataTable intersectCaram;
@@ -311,6 +325,39 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 geodatabase.Dispose();
             }
+        }
+
+        public static ExtentModel TransformBoundingBox(ExtentModel extentModel, string zoneDm)
+        {
+            ExtentModel extent = null;
+            int epsgOrigen;
+            if (zoneDm == "17") { epsgOrigen = 32717; }
+            else if (zoneDm == "19") { epsgOrigen = 32719; }
+            else { epsgOrigen = 0; }
+            // 1. Construir la referencia espacial de origen y destino
+            SpatialReference srOrigen = SpatialReferenceBuilder.CreateSpatialReference(epsgOrigen);
+            SpatialReference srDestino = SpatialReferenceBuilder.CreateSpatialReference(32718);
+
+            // 2. Crear un Envelope en la SR de origen
+            Envelope envOrigen = EnvelopeBuilder.CreateEnvelope(
+            new Coordinate2D(extentModel.xmin, extentModel.ymin),
+                new Coordinate2D(extentModel.xmax, extentModel.ymax),
+                srOrigen);
+
+            // 3. Proyectar el Envelope a la SR destino
+            var envDestino = GeometryEngine.Instance.Project(envOrigen, srDestino) as Envelope;
+            if (envDestino == null)
+                return extent; // Manejo simple de error
+
+            extent = new ExtentModel
+            {
+                xmin = envDestino.XMin,
+                xmax = envDestino.XMax,
+                ymin = envDestino.YMin,
+                ymax = envDestino.YMax, // Asignar el valor adecuado para ymax
+            };
+            // 4. Retornar las nuevas coordenadas
+            return extent;
         }
     }
 }

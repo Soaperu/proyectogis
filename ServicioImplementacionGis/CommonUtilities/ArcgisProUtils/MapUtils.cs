@@ -126,6 +126,21 @@ namespace CommonUtilities.ArcgisProUtils
         });
         }
 
+        public static void ActivateOrOpenMapPane(string mapName)
+        {
+            var mapProjItem = Project.Current.GetItems<MapProjectItem>().FirstOrDefault(mp => mp.Name == mapName);
+            if (mapProjItem != null)
+            {
+                // is it already open? - check the open panes
+                var mapPane = ProApp.Panes.OfType<IMapPane>().FirstOrDefault(pane => pane.Caption == mapName);
+                if (mapPane != null)
+                {
+                    var pane = mapPane as Pane;
+                    pane.Activate();
+                }
+            }
+        }
+
         public static void AnnotateLayer(FeatureLayer layer, string field, string graphicLayerName, string color = "")
         {
             var featureclass = layer.GetFeatureClass();
