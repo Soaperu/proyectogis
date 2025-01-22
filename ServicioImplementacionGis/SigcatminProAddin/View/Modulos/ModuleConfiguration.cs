@@ -46,16 +46,16 @@ namespace SigcatminProAddin.View.Modulos
                 new Modulo("DM por Demarcación Política", typeof(DMxDemarcacionPolitica)),
                 new Modulo("Simulación de Petitorios", typeof(SimulaPetitorios)),
                 new Modulo("Varias Cartas Nacionales", typeof(VariasCartasNacional)),
-                
 
-                
-                
+
+
 
                 new Modulo("Límite Departamental", typeof(LimiteDepartamental)),
                 new Modulo("Límite Provincial", typeof(LimiteProvincial)),
                 new Modulo("Límite Distrital", typeof(LimiteDistrital)),
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))
+                new Modulo("Estadística de Áreas Restringidas", typeof(EstadisticasAreasRestringidas)),
             }),
             new CategoriaModulo("Planos", new List<Modulo>
             {
