@@ -366,11 +366,7 @@ namespace CommonUtilities.ArcgisProUtils
             var map = MapView.Active.Map;
             var selectedLayers = MapView.Active.GetSelectedLayers();
             var layer = selectedLayers.OfType<FeatureLayer>().FirstOrDefault();
-            var gl_param = new GraphicsLayerCreationParams { Name = "Vertices" };
-            var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
-
-            GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
-                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+            GraphicsLayer? graphicsLayer = null;
 
             QueuedTask.Run(() =>
             {
@@ -380,8 +376,7 @@ namespace CommonUtilities.ArcgisProUtils
                     return;
                 }
                 if (clickedPoint == null) return;
-
-
+                
                 // Crear un cursor para iterar sobre las características de la capa
                 using (var rowCursor = layer.Search(null))
                 {
@@ -392,7 +387,11 @@ namespace CommonUtilities.ArcgisProUtils
                             var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
                             var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
                             //string fieldValue = Convert.ToString(row[field]);
+                            var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {row["CODIGOU"].ToString()}" };
+                            var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
 
+                            graphicsLayer = map.GetLayersAsFlattenedList()
+                                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
                             if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
                             {
                                 int contador = 1;
@@ -403,7 +402,7 @@ namespace CommonUtilities.ArcgisProUtils
                                     textGraphic.Symbol = SymbolFactory.Instance.ConstructTextSymbol
                                                                                 (CIMColor.CreateRGBColor(255, 0, 0), 9, "Arial", "Regular").MakeSymbolReference();
                                     textGraphic.Shape = vertex;
-                                    textGraphic.Text = contador.ToString();
+                                    textGraphic.Text = contador.ToString();                    
                                     graphicsLayer.AddElement(textGraphic, contador.ToString());
                                     contador += 1;
                                 }
