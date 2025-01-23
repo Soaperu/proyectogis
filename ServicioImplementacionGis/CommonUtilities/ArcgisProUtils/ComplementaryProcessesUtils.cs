@@ -77,7 +77,8 @@ namespace CommonUtilities.ArcgisProUtils
                 await FeatureProcessorUtils.UpdateValueAsync(catastroShpName, currentCodeDm);
                 string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, currentCodeDm);
-                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, currentCodeDm);
+                //var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, currentCodeDm);
+                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, currentCodeDm, currentDatum, zoneDm);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
                 List<string> layersToRemove = new List<string>() { layerName, dmShpName };
                 await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);

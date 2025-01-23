@@ -120,20 +120,15 @@ namespace SigcatminProAddin.View.Toolbars.Evaluacion.UI
                 // Obtén el valor del Tag para determinar el filtro
                 string filtro = tabItem.Tag as string;
 
-                if (!string.IsNullOrEmpty(filtro) && GlobalVariables.resultadoEvaluacion.ResultadosCriterio.ContainsKey(filtro))
-                {
-                    //var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[filtro];
-                    var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio
-                                            .Where(r => r.Eval != null && r.Eval.Equals(filtro, StringComparison.OrdinalIgnoreCase))
-                                            .ToList(); ;
-                    DataGridEvaluacion.ItemsSource = null;
-                    DataGridEvaluacion.ItemsSource = resultadosCriterio;
-                }
-                else
-                {
-                    // Maneja el caso donde el filtro no existe o está vacío
-                    DataGridEvaluacion.ItemsSource = null;
-                }
+                
+                //var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ResultadosCriterio[filtro];
+                var resultadosCriterio = GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio
+                                        .Where(r => r.Eval != null && r.Eval.Equals(filtro, StringComparison.OrdinalIgnoreCase))
+                                        .ToList(); ;
+                DataGridEvaluacion.ItemsSource = null;
+                DataGridEvaluacion.ItemsSource = resultadosCriterio;
+
+                
             }
 
 

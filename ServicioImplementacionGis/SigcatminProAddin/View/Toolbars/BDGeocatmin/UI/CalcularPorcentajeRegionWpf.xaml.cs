@@ -36,6 +36,9 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
     public partial class CalcularPorcentajeRegionWpf : Window
     {
         private DatabaseHandler dataBaseHandler;
+        private Geodatabase _geodatabase;
+        private Map _map;
+        public FeatureLayer pFeatureLayer_Dep { get; private set; }
         public CalcularPorcentajeRegionWpf()
         {
             InitializeComponent();
@@ -264,7 +267,16 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             return listaIntersecciones;
         }
 
-        
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+            //_geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+            //                                                                            , AppConfig.userName
+            //                                                                            , AppConfig.password);
+            //var featureClassLoader = new FeatureClassLoader(_geodatabase, MapView.Active.Map, GlobalVariables.CurrentZoneDm, "99");
+
+            //pFeatureLayer_Dep = await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_WGS + GlobalVariables.CurrentZoneDm, false);
+        }
     }
     public class IntersectionResult
     {

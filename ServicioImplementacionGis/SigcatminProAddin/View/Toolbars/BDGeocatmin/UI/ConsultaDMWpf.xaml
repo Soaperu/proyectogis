@@ -106,19 +106,19 @@
                 <Label Grid.Row="2" Grid.Column="2" VerticalAlignment="Bottom" Margin="5,0,0,0" Padding="2,0,0,0">Hora Form.</Label>
                 <Label Grid.Row="3" Grid.Column="2" VerticalAlignment="Bottom" Margin="5,0,0,0" Padding="2,0,0,0">Prioridad</Label>
 
-                <TextBox x:Name="TbxCodigo" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20"></TextBox>
-                <TextBox x:Name="TbxNombre" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" Grid.ColumnSpan="3"></TextBox>
-                <TextBox x:Name="TbxFecha" Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" ></TextBox>
-                <TextBox x:Name="TbxArea" Grid.Row="3" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20"></TextBox>
-                <TextBox x:Name="TbxTitular" Grid.Row="4" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" Grid.ColumnSpan="3"></TextBox>
-                <TextBox x:Name="TbxTipoDM" Grid.Row="5" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" Grid.ColumnSpan="3"></TextBox>
-                <TextBox x:Name="TbxDistrito" Grid.Row="6" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" Grid.ColumnSpan="3"></TextBox>
-                <TextBox x:Name="TbxProvincia" Grid.Row="7" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" Grid.ColumnSpan="3"></TextBox>
-                <TextBox x:Name="TbxDepartamento" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" Grid.ColumnSpan="3"></TextBox>
+                <TextBox x:Name="TbxCodigo" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20"></TextBox>
+                <TextBox x:Name="TbxNombre" Grid.Row="1" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3"></TextBox>
+                <TextBox x:Name="TbxFecha" Grid.Row="2" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" ></TextBox>
+                <TextBox x:Name="TbxArea" Grid.Row="3" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20"></TextBox>
+                <TextBox x:Name="TbxTitular" Grid.Row="4" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3"></TextBox>
+                <TextBox x:Name="TbxTipoDM" Grid.Row="5" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3"></TextBox>
+                <TextBox x:Name="TbxDistrito" Grid.Row="6" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3"></TextBox>
+                <TextBox x:Name="TbxProvincia" Grid.Row="7" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3"></TextBox>
+                <TextBox x:Name="TbxDepartamento" Grid.Row="8" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3"></TextBox>
 
-                <TextBox x:Name="TbxContador" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom" IsEnabled="False" Height="20"></TextBox>
-                <TextBox x:Name="TbxHora" Grid.Row="2" Grid.Column="3" VerticalAlignment="Bottom" IsEnabled="False" Height="20"></TextBox>
-                <TextBox x:Name="TbxPrioridad" Grid.Row="3" Grid.Column="3" VerticalAlignment="Bottom" IsEnabled="False" Height="20"></TextBox>
+                <TextBox x:Name="TbxContador" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom" IsReadOnly="True" Height="20"></TextBox>
+                <TextBox x:Name="TbxHora" Grid.Row="2" Grid.Column="3" VerticalAlignment="Bottom" IsReadOnly= "True" Height="20"></TextBox>
+                <TextBox x:Name="TbxPrioridad" Grid.Row="3" Grid.Column="3" VerticalAlignment="Bottom" IsReadOnly= "True" Height="20"></TextBox>
 
             </Grid>
         </Grid>
