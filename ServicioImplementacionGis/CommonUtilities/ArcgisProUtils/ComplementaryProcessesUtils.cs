@@ -310,6 +310,8 @@ namespace CommonUtilities.ArcgisProUtils
                     {
                             await LayerUtils.AddLayerCheckedListBox(item, zoneDm, featureClassLoader, datum, extentDmRadio);
                     }
+                    MapUtils.AnnotateLayerbyName("Caram", "NOMBRE", "Caram_Anotaciones", "#ff0000", "Arial",7.5);
+
                 }
                 catch (Exception ex)
                 {

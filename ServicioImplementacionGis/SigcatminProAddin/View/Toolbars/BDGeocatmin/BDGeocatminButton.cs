@@ -109,6 +109,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                     }
                 }
             });
+            _listarCoordenadasWindow.Focus();
         }
 
         private async Task DeactivateTool(bool deactivateTool = false)
@@ -162,19 +163,27 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 
         protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
         {
-            base.OnToolMouseDown(args);
-            QueuedTask.Run(async () =>
+            try
             {
-                var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
-                if (_ConsultaDMWpfWindow != null && _ConsultaDMWpfWindow.IsVisible)
+                base.OnToolMouseDown(args);
+                QueuedTask.Run(async () =>
                 {
-                    // Actualiza el contenido según los datos del punto
-                    if (_ConsultaDMWpfWindow is ConsultaDMWpf consultaDMWpfWindow)
+                    var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
+                    if (_ConsultaDMWpfWindow != null && _ConsultaDMWpfWindow.IsVisible)
                     {
-                        await _ConsultaDMWpfWindow.UpdateContent(mapPoint); // Método para actualizar contenido
+                        // Actualiza el contenido según los datos del punto
+                        if (_ConsultaDMWpfWindow is ConsultaDMWpf consultaDMWpfWindow)
+                        {
+                            await _ConsultaDMWpfWindow.UpdateContent(mapPoint); // Método para actualizar contenido
+                        }
                     }
-                }
-            });
+                });
+                _ConsultaDMWpfWindow.Focus();
+            }
+            catch (Exception ex) 
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.Message);
+            }
         }
 
         private async Task DeactivateTool(bool deactivateTool = false)
@@ -522,7 +531,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                                         // Sí es fecha válida
                                         fec_ext = fecExt.ToString("yyyyMMdd");
                                     }
-                                    if (DateTime.TryParse(fec_titu, out DateTime dt_titu) && DateTime.TryParse(fec_ext, out DateTime dt_fec_ext))
+                                    if (DateTime.TryParseExact(fec_titu, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime dt_titu) &&
+                                        DateTime.TryParseExact(fec_ext, "yyyyMMdd", null, System.Globalization.DateTimeStyles.None, out DateTime dt_fec_ext))
                                     {
                                         if (dt_titu > dt_fec_ext)
                                         {
@@ -733,11 +743,29 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick()
         {
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Derecho Minero");
+            progressBar.Show();
             await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
-
-            MapUtils.AnnotateLayerbyName("Departamento", "NM_DEPA", "Anotación Departamento", "#895a44", "Tahoma", 25, "Bold");
-            MapUtils.AnnotateLayerbyName("Provincia", "NM_PROV", "Anotación Provincia", "#007800", "Tahoma", 15, "Bold");
-            MapUtils.AnnotateLayerbyName("Distrito", "NM_DIST", "Antoación Distrito", "#0000ff", "Tahoma", 8, "Bold");
+            var Departamentolayer = await LayerUtils.GetFeatureLayerByNameAsync("Departamento");
+            var ProvinciaLayer = await LayerUtils.GetFeatureLayerByNameAsync("Provincia");
+            var DistritoLayer = await LayerUtils.GetFeatureLayerByNameAsync("Distrito");
+            if (Departamentolayer != null)
+            {
+                MapUtils.AnnotateLayerbyName("Departamento", "NM_DEPA", "Anotación Departamento", "#895a44", "Tahoma", 25, "Bold");
+            }
+            if (ProvinciaLayer != null)
+            {
+                MapUtils.AnnotateLayerbyName("Provincia", "NM_PROV", "Anotación Provincia", "#007800", "Tahoma", 15, "Bold");
+            }
+            if (DistritoLayer!=null)
+            {
+                MapUtils.AnnotateLayerbyName("Distrito", "NM_DIST", "Antoación Distrito", "#0000ff", "Tahoma", 8, "Bold");
+            }
+            if(Departamentolayer==null && ProvinciaLayer ==null && DistritoLayer == null)
+            {
+                System.Windows.MessageBox.Show("No existen capas de Demarcación en el Mapa Actual");
+            }
+            progressBar.Dispose();
         }
            
     }

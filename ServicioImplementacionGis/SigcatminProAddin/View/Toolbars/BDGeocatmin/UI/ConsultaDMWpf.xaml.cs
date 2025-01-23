@@ -165,6 +165,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 if (selectedFeature == null)
                 {
                     MessageBox.Show("No hay ninguna Selección");
+                    return;
                 }
                 else
                 {
