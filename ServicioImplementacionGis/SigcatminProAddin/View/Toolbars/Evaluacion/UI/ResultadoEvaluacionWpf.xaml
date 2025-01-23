@@ -61,8 +61,8 @@
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Padding="10,0,0,0">Código</Label>
                 <Label Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" Padding="10,0,0,0">Nombre</Label>
-                <TextBox x:Name="TbxCodigo" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" IsEnabled="False" Height="20" VerticalContentAlignment="Bottom"></TextBox>
-                <TextBox x:Name="TbxNombre" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom" IsEnabled="False" Height="20" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom"></TextBox>
+                <TextBox x:Name="TbxCodigo" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" VerticalContentAlignment="Bottom"></TextBox>
+                <TextBox x:Name="TbxNombre" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom"></TextBox>
             </Grid>
             <Label x:Name="lblEvaluacion" Grid.Row="2" Content="Datos de Evaluación:" Foreground="#FF696969" Padding="0,0,0,3"
        FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
@@ -137,15 +137,15 @@
                 </Grid.RowDefinitions>
 
                 <Label Grid.ColumnSpan="3" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Padding="5,0,0,0">Límites Fronterizos (Fuente IGN)</Label>
-                <TextBox x:Name="TbxFrontera" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,0" IsEnabled="False" Height="20" VerticalContentAlignment="Bottom"/>
+                <TextBox x:Name="TbxFrontera" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,0" IsReadOnly="True" Height="20" VerticalContentAlignment="Bottom"/>
 
                 <Label Grid.ColumnSpan="4" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" Padding="5,0,0,0">Zona Reservada:</Label>
                 <Label Grid.ColumnSpan="4" Grid.Row="1" Grid.Column="4" VerticalAlignment="Bottom" Padding="10,0,0,0">Zona Urbana:</Label>
                 <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" BorderThickness="1" Margin="0,0,10,0" BorderBrush="Gray">
-                    <TextBlock x:Name="TbxZonaReservada" TextWrapping="Wrap" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Padding="10,0,10,0" IsEnabled="False" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="TbxZonaReservada" TextWrapping="Wrap" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Padding="10,0,10,0"  VerticalAlignment="Top"/>
                 </Border>
                 <Border Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="4" BorderThickness="1" Margin="0,0,10,0" BorderBrush="Gray">
-                    <TextBlock x:Name="TbxZonaUrbana" TextWrapping="Wrap"  Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="4" Padding="10,0,10,0" IsEnabled="False" VerticalAlignment="Top"/>
+                    <TextBlock x:Name="TbxZonaUrbana" TextWrapping="Wrap"  Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="4" Padding="10,0,10,0"  VerticalAlignment="Top"/>
                 </Border>
             </Grid>
 

@@ -235,6 +235,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                     }
                 }
             });
+            _calcularPorcentajeRegionWindow.Focus();
         }
 
         private async Task DeactivateTool(bool deactivateTool = false)

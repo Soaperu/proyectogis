@@ -127,6 +127,22 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 }
                 DataGridSelectedPolygons.ItemsSource = records.DefaultView;
 
+                if (listRows.Count == 0)
+                {
+                    TbxCodigo.Text = "";
+                    TbxNombre.Text = "";
+                    TbxFecha.Text = "";
+                    TbxArea.Text = "";
+                    TbxTitular.Text = "";
+                    TbxTipoDM.Text = "";
+                    TbxContador.Text = "";
+                    TbxHora.Text = "";
+                    TbxPrioridad.Text = "";
+                    TbxDistrito.Text= "";
+                    TbxProvincia.Text= "";
+                    TbxDepartamento.Text = "";
+                }
+
 
                 lblPolygonsFound.Content = $"Se encontraron {records.Rows.Count} registros";
             });
@@ -179,12 +195,12 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 featureInfo.Area = selectedFeature.GetOriginalValue(selectedFeature.FindField("HECTAREA")).ToString();
                 featureInfo.Titular = selectedFeature.GetOriginalValue(selectedFeature.FindField("TIT_CONCES")).ToString();
                 featureInfo.TipoDM = selectedFeature.GetOriginalValue(selectedFeature.FindField("D_ESTADO")).ToString();
-                //featureInfo.TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
-                //featureInfo.TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
-                //featureInfo.TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
                 featureInfo.Contador = selectedFeature.GetOriginalValue(selectedFeature.FindField("CONTADOR")).ToString();
                 featureInfo.Hora = selectedFeature.GetOriginalValue(selectedFeature.FindField("HOR_DENU")).ToString();
                 featureInfo.Prioridad = selectedFeature.GetOriginalValue(selectedFeature.FindField("EVAL")).ToString();
+                featureInfo.Depa = selectedFeature.GetOriginalValue(selectedFeature.FindField("DEPA")).ToString();
+                featureInfo.Provi = selectedFeature.GetOriginalValue(selectedFeature.FindField("PROVI")).ToString();
+                featureInfo.Distri = selectedFeature.GetOriginalValue(selectedFeature.FindField("DISTRI")).ToString();
             });
             
             return featureInfo;
@@ -215,14 +231,14 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                     TbxArea.Text = selectedFeature.Area;
                     TbxTitular.Text = selectedFeature.Titular;
                     TbxTipoDM.Text = selectedFeature.TipoDM;
-                    //TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
-                    //TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
-                    //TbxCodigo.Text = selectedFeature.GetOriginalValue(selectedFeature.FindField("CODIGOU")).ToString();
-
                     TbxContador.Text = selectedFeature.Contador;
                     TbxHora.Text = selectedFeature.Hora;
                     TbxPrioridad.Text = selectedFeature.Prioridad;
-                }
+
+                    TbxDistrito.Text = selectedFeature.Distri;
+                    TbxProvincia.Text = selectedFeature.Provi;
+                    TbxDepartamento.Text = selectedFeature.Depa;
+                }                
             }
 
         }
@@ -254,5 +270,9 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
         public string Contador { get; set; }
         public string Hora { get; set; }
         public string Prioridad {  get; set; }
+
+        public string Depa { get; set; }
+        public string Provi { get; set; }
+        public string Distri { get; set; }
     }
 }
