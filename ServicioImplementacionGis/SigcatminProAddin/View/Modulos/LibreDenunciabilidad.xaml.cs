@@ -1,5 +1,9 @@
-﻿using CommonUtilities;
+﻿using ArcGIS.Desktop.Core.Geoprocessing;
+using CommonUtilities;
+using CommonUtilities.ArcgisProUtils;
+using CommonUtilities.ArcgisProUtils.Models;
 using DatabaseConnector;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -15,6 +19,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static ArcGIS.Desktop.Internal.Mapping.Views.PropertyPages.Map.TransformationViewModel;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -60,12 +65,22 @@ namespace SigcatminProAddin.View.Modulos
             GlobalVariables.CurrentDatumDm = "0";
         }
 
-        private  void BtnReporte_Click(object sender, RoutedEventArgs e)
+        private async void BtnReporte_Click(object sender, RoutedEventArgs e)
         {
             DataTable dtRecords =  _dataBaseHandler.GetCodigosLibreDenu();
 
             foreach (DataRow dtRecord in dtRecords.Rows)
             {
+                var codigo = dtRecord["CODIGO"].ToString();
+                string datum = dtRecord["DATUM"].ToString();
+
+                DataTable dmrRecords = _dataBaseHandler.GetUniqueDM(codigo, 1);
+                DataRow row = dmrRecords.Rows[0];
+                string zona = row["ZONA"].ToString();
+                //List<ResultadoEvaluacionModel> res = new List<ResultadoEvaluacionModel>();
+                var Params = Geoprocessing.MakeValueArray(codigo, datum, zona);
+                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEvalLibreDenu, Params);
+                List<ResultadoEval> responseJson = JsonConvert.DeserializeObject<List<ResultadoEval>>(response.ReturnValue);
 
             }
         }

@@ -18,6 +18,8 @@ using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework.Dialogs;
 using CommonUtilities;
 using CommonUtilities.ArcgisProUtils;
+using CommonUtilities.ArcgisProUtils.Models;
+
 
 //using ClosedXML.Excel;
 using DevExpress.ClipboardSource.SpreadsheetML;
@@ -250,8 +252,16 @@ namespace SigcatminProAddin.View.Botones.UI
                     await LayoutUtils.DeleteSpecifiedLayoutsAsync(layoutsToDelete);
                     var table = ComplementaryProcessesUtils.SearchCodeValue(value);
                     System.Data.DataRow row = table.Rows[0];
-                    await ComplementaryProcessesUtils.EvaluationDmByCode(value, row);
-                    
+
+                    ResultadoEvaluacionModel res = new ResultadoEvaluacionModel();
+                    res = await  ComplementaryProcessesUtils.EvaluationDmByCode(value, row);
+                    GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = res.ListaResultadosCriterio;
+                    GlobalVariables.resultadoEvaluacion.areaDisponible = res.areaDisponible;
+                    GlobalVariables.resultadoEvaluacion.codigo = res.codigo;
+                    GlobalVariables.resultadoEvaluacion.nombre = res.nombre;
+                    GlobalVariables.resultadoEvaluacion.distanciaFrontera = res.distanciaFrontera;
+                    GlobalVariables.resultadoEvaluacion.isCompleted = res.isCompleted;
+
                     await LayoutUtils.DeleteSpecifiedLayoutsAsync(layoutsToDelete);
                     string mapName = GlobalVariables.mapNameCatastro;
                     string nameLayer = GlobalVariables.CurrentShpName;

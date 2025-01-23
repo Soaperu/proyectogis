@@ -118,10 +118,10 @@ namespace CommonUtilities.ArcgisProUtils
             var dmrRecords = dataBaseHandler.GetUniqueDM(valueCodeDm, 1);
             return dmrRecords;
         }
-        public async static Task EvaluationDmByCode(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum=2)
+        public async static Task<ResultadoEvaluacionModel> EvaluationDmByCode(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum=2)
         {
             string stateGraphic = dmRow["PE_VIGCAT"].ToString();
-            if (stateGraphic != "G") { return; }
+            if (stateGraphic != "G") { return null; }
             string zoneDm = dmRow["ZONA"].ToString();
             GlobalVariables.CurrentZoneDm = zoneDm;
             string areaValue = dmRow["HECTAREA"].ToString();
@@ -256,9 +256,7 @@ namespace CommonUtilities.ArcgisProUtils
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
                 List<ResultadoEval> responseJson = JsonConvert.DeserializeObject<List<ResultadoEval>>(response.ReturnValue);
                 var areaDisponible = responseJson.FirstOrDefault(r => r.CodigoU.Equals(valueCodeDm, StringComparison.OrdinalIgnoreCase)).Hectarea.ToString();
-                GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = responseJson;
                 //var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
-                GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
                 LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
                 await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
@@ -274,9 +272,20 @@ namespace CommonUtilities.ArcgisProUtils
 
                 ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
 
-                GlobalVariables.resultadoEvaluacion.codigo = valueCodeDm;
-                GlobalVariables.resultadoEvaluacion.nombre = GlobalVariables.CurrentNameDm;
-                GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
+                ResultadoEvaluacionModel resultadoEvaluacionModel = new ResultadoEvaluacionModel();
+                //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = responseJson;
+                //GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
+                //GlobalVariables.resultadoEvaluacion.codigo = valueCodeDm;
+                //GlobalVariables.resultadoEvaluacion.nombre = GlobalVariables.CurrentNameDm;
+                //GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
+                //GlobalVariables.resultadoEvaluacion.isCompleted = true;
+
+                resultadoEvaluacionModel.ListaResultadosCriterio = responseJson;
+                resultadoEvaluacionModel.areaDisponible = areaDisponible;
+                resultadoEvaluacionModel.codigo = valueCodeDm;
+                resultadoEvaluacionModel.nombre = GlobalVariables.CurrentNameDm;
+                resultadoEvaluacionModel.distanciaFrontera = GlobalVariables.DistBorder.ToString();
+                resultadoEvaluacionModel.isCompleted = true;
 
 
                 //var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
@@ -296,16 +305,21 @@ namespace CommonUtilities.ArcgisProUtils
                     {
                             await LayerUtils.AddLayerCheckedListBox(item, zoneDm, featureClassLoader, datum, extentDmRadio);
                     }
+
+                    
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
+                return resultadoEvaluacionModel;
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                return null;
             }
             finally
             {

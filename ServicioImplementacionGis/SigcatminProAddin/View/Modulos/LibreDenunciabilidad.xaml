@@ -64,7 +64,7 @@ HorizontalAlignment="Stretch" Padding="20,0,0,3" x:Name="LblNumRegistros"/>
                 <ColumnDefinition Width="260"/>
                 <ColumnDefinition Width="80"/>
             </Grid.ColumnDefinitions>
-            <ComboBox  Grid.Column="1" Width="100" Height="25"  HorizontalAlignment="Left"
+            <ComboBox  Grid.Column="1" Width="150" Height="25"  HorizontalAlignment="Left"
        VerticalAlignment="Center" x:Name="CbxSistema" SelectionChanged="CbxSistema_SelectionChanged" Loaded="CbxSistema_Loaded" />
 
 

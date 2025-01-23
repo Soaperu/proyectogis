@@ -78,10 +78,10 @@
                      Grid.Column="3" Width="230" VerticalContentAlignment="Center" HorizontalAlignment="Center"
                      x:Name="TbxValue" FontSize="10" Padding="5,0,0,0" KeyDown="TbxValue_KeyDown"/>
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
-                    Foreground="White" Grid.Column="4" HorizontalAlignment="Left" FontFamily="Roboto"
+                    Foreground="White" Grid.Column="4" HorizontalAlignment="Center" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" Click="BtnSearch_Click" Margin="0,0,5,0" />
+                    VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" Click="BtnSearch_Click" />
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
