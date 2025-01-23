@@ -79,7 +79,7 @@ namespace SigcatminProAddin.View.Modulos
             dataBaseHandler = new DatabaseHandler();
             //CbxTypeConsult.SelectedIndex = 0;
             TbxRadio.Text = "5";
-            BtnGraficar.IsEnabled = true;
+            BtnGraficar.IsEnabled = false;
 
 
         }
@@ -410,11 +410,12 @@ namespace SigcatminProAddin.View.Modulos
             int zona1 = (int)CbxZona.SelectedValue;
             if (zona1 == 0)
             {
+                BtnGraficar.IsEnabled = false;
                 string message = "Por favor ingrese Zona (17, 18, 19)";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
-                BtnGraficar.IsEnabled = true;
+                
                 return;
             }
 
@@ -468,7 +469,8 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-            
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Simulación de Petitorios");
+            progressBar.Show();
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
             string zoneDm = CbxZona.SelectedValue.ToString();
@@ -629,7 +631,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 /********/
                 // Se debe ejecutar dentro de un QueuedTask para tareas de edición en ArcGIS Pro
-          
+
                 await QueuedTask.Run(() =>
                 {
                     try
@@ -878,11 +880,12 @@ namespace SigcatminProAddin.View.Modulos
             }
             catch (Exception ex)
             {
-
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
             }
             finally
             {
-
+                progressBar.Dispose();
             }
 
 

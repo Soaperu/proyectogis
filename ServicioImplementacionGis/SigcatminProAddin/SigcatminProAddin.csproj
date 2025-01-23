@@ -158,6 +158,7 @@
     <None Remove="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-32x32.png" />
     <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
     <None Remove="View\Modulos\AreaRestringida.PNG" />
+    <None Remove="View\Modulos\CodCartaNacional.png" />
     <None Remove="View\Modulos\Diseño100.png" />
     <None Remove="View\Modulos\CooPuntoCentral.PNG" />
     <None Remove="View\Modulos\images.jpg" />
@@ -392,6 +393,7 @@
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
     <Resource Include="View\Modulos\AreaRestringida.PNG" />
+    <Resource Include="View\Modulos\CodCartaNacional.png" />
     <Resource Include="View\Modulos\CooPuntoCentral.PNG" />
     <Resource Include="View\Modulos\LimiteAreas.PNG" />
     <Resource Include="View\Modulos\VariasHojas.PNG" />

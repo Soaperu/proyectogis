@@ -184,6 +184,8 @@ namespace SigcatminProAddin.View.Modulos
                 BtnGraficar.IsEnabled = true;
                 return;
             }
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando - Límites de Area de Interés");
+            progressBar.Show();
 
             if (ChkGraficarDmY.IsChecked == true)
             {
@@ -314,9 +316,14 @@ namespace SigcatminProAddin.View.Modulos
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                    progressBar.Dispose();
                 }
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                progressBar.Dispose();
+            }
+            progressBar.Dispose();
             BtnGraficar.IsEnabled = true;
 
 

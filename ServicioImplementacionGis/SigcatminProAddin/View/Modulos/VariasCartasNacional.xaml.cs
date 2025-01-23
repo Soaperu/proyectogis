@@ -684,6 +684,8 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Varias Cartas Nacionales");
+            progressBar.Show();
             if (ChkGraficarDmY.IsChecked == true)
             {
                 GlobalVariables.stateDmY = true;
@@ -830,9 +832,16 @@ namespace SigcatminProAddin.View.Modulos
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                    progressBar.Dispose();
                 }
+                progressBar.Dispose();
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
+            }
+            progressBar.Dispose();
             BtnGraficar.IsEnabled = true;
 
 

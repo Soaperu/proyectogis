@@ -101,7 +101,7 @@ namespace CommonUtilities.ArcgisProUtils
             catch (Exception ex)
             {
                 throw ex;
-            }  
+            }
         }
 
         public static DataTable SearchCodeValue(string valueCodeDm)
@@ -117,7 +117,7 @@ namespace CommonUtilities.ArcgisProUtils
                                                                 MessageBoxButton.OK, MessageBoxImage.Warning);
                 return null;
             }
-            
+
             var dmrRecords = dataBaseHandler.GetUniqueDM(valueCodeDm, 1);
             return dmrRecords;
         }
@@ -373,5 +373,187 @@ namespace CommonUtilities.ArcgisProUtils
             // 4. Retornar las nuevas coordenadas
             return extent;
         }
+        public async static Task EvaluationDmByCodeHistorico(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum = 2)
+        {
+            string stateGraphic = dmRow["PE_VIGCAT"].ToString();
+            //if (stateGraphic != "G") { return; }
+            string zoneDm = dmRow["ZONA"].ToString();
+            GlobalVariables.CurrentZoneDm = zoneDm;
+            string areaValue = dmRow["HECTAREA"].ToString();
+            GlobalVariables.CurrentAreaDm = areaValue;
+            string nameDm = dmRow["NOMBRE"].ToString();
+            GlobalVariables.CurrentNameDm = nameDm;
+            var sdeHelper = new SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+            List<string> mapsToDelete = new List<string>()
+            {
+                GlobalVariables.mapNameCatastro,
+            };
+            GlobalVariables.CurrentCodeDm = valueCodeDm;
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+            //int datum=2;
+            int datumwgs84 = 2;
+            string datumStr = GlobalVariables.datumWGS;
+            DatabaseHandler dataBaseHandler = new DatabaseHandler();
+            var v_zona_dm = dataBaseHandler.VerifyDatumDM(valueCodeDm);
+            string fechaArchi = DateTime.Now.Ticks.ToString();
+            GlobalVariables.idExport = fechaArchi;
+            string catastroShpName = "Catastro" + fechaArchi;
+            GlobalVariables.CurrentShpName = catastroShpName;
+            string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
+            string dmShpName = "DM" + fechaArchi;
+            GlobalVariables.dmShpNamePath = "DM" + fechaArchi + ".shp";
+            await MapUtils.CreateMapAsync(GlobalVariables.mapNameCatastro);
+            try
+            {
+                // Obtener el mapa Catastro//
+                Map map = await MapUtils.EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
+                // Crear instancia de FeatureClassLoader y cargar las capas necesarias
+                var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+                //Carga capa Catastro
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroHistoricoWGS84 + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
+                }
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
+                }
+
+                var extentDmRadio = MapUtils.ObtenerExtent(valueCodeDm, datum, radio);
+                var extentDm = MapUtils.ObtenerExtent(valueCodeDm, datum);
+                GlobalVariables.currentExtentDM = extentDm;
+                // Llamar al método IntersectFeatureClassAsync desde la instancia
+                string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+                // Encontrando Distritos superpuestos a DM con
+                //DataTable intersectDist;
+                //if (datum == datumwgs84)
+                //{
+                //    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroHistoricoWGS84 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, valueCodeDm);
+                //}
+                //else
+                //{
+                //    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, valueCodeDm);
+                //}
+                //DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
+                DataTable orderUbigeosDM;
+                orderUbigeosDM = dataBaseHandler.GetUbigeoData(valueCodeDm);
+
+                //Carga capa Hojas IGN
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
+                }
+                string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                //GlobalVariables.CurrentPagesDm = listHojas;
+                // Encontrando Caram superpuestos a DM con
+                //DataTable intersectCaram;
+                //if (datum == datumwgs84)
+                //{
+                //    intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroHistoricoWGS84 + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, valueCodeDm);
+                //}
+                //else
+                //{
+                //    intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, valueCodeDm);
+                //}
+                //DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
+
+                //DataTable intersectCForestal;
+                //if (datum == datumwgs84)
+                //{
+                //    intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroHistoricoWGS84 + zoneDm, FeatureClassConstants.gstrFC_Cforestal + zoneDm, valueCodeDm);
+                //}
+                //else
+                //{
+                //    intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, valueCodeDm);
+                //}
+                //DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
+
+                //DataTable intersectDm;
+                //if (datum == datumwgs84)
+                //{
+                //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroHistoricoWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, valueCodeDm);
+                //}
+                //else
+                //{
+                //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, valueCodeDm);
+                //}
+                
+                //DataTable distBorder;
+                //var distBorder = dataBaseHandler.CalculateDistanceToBorder(valueCodeDm, zoneDm, datumStr);
+                //if (distBorder != null)
+                //{
+                //    GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
+                //}
+
+                //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
+                //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
+                await FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+                await FeatureProcessorUtils.UpdateValueAsync(catastroShpName, valueCodeDm);
+                //FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
+                //await FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
+                await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{valueCodeDm}'");
+                string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, valueCodeDm);
+                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, valueCodeDm);
+                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
+                //GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
+                LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
+                List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
+                await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                await LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+                GlobalVariables.CurrentShpName = "Catastro";
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
+                
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+                await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
+                string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+
+                //ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+
+                //GlobalVariables.resultadoEvaluacion.codigo = valueCodeDm;
+                //GlobalVariables.resultadoEvaluacion.nombre = GlobalVariables.CurrentNameDm;
+                //GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
+
+
+                //var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
+                ////int contador = 0;
+                //foreach (var criterio in criterios)
+                //{
+                //    GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio] = await elementsLayoutUtils.ObtenerResultadosEval(criterio);
+                //}
+                //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
+                //GlobalVariables.resultadoEvaluacion.isCompleted = true;
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            finally
+            {
+                geodatabase.Dispose();
+            }
+        }
+
     }
 }

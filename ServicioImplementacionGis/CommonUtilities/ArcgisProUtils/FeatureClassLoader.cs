@@ -55,6 +55,7 @@ namespace CommonUtilities.ArcgisProUtils
         public FeatureLayer pFeatureLayer_vias { get; private set; }
         public FeatureLayer pFeatureLayer_ccpp { get; private set; }
         public FeatureLayer pFeatureLayer_polygon { get; private set; }
+        public FeatureLayer pFeatureLayer_catH { get; private set; }
 
         public FeatureClassLoader(Geodatabase geodatabase, Map map, string zonaDm, string regionSele)
         {
@@ -230,6 +231,11 @@ namespace CommonUtilities.ArcgisProUtils
                 case "pFeatureLayer_polygon":
                     pFeatureLayer_polygon = featureLayer;
                     loFeature = "Poligono";
+                    break;
+
+                case "pFeatureLayer_catH":
+                    pFeatureLayer_catH = featureLayer;
+                    loFeature = "Catastro";
                     break;
 
 
@@ -578,7 +584,27 @@ namespace CommonUtilities.ArcgisProUtils
                 FeatureClassName = "Poligono",
                 LayerName = "Poligono",
                 VariableName = "pFeatureLayer_polygon"
+            },
+
+            //*******
+             // Catastro Minero Histórico WGS84
+            new FeatureClassInfo
+            {
+                //FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_WGS_",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_CatastroHistoricoWGS84 + v_zona_dm,
+                LayerName = "Catastro",
+                VariableName = "pFeatureLayer_catH"
+            },
+
+            // Catastro Minero Histórico PSAD56
+            new FeatureClassInfo
+            {
+                //FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_PSAD_",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_CatastroHistoricoPSAD56 + v_zona_dm,
+                LayerName = "Catastro",
+                VariableName = "pFeatureLayer_catH"
             }
+            //********
 
         };
 
@@ -1225,6 +1251,10 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrRT_IngMosaic84 = "DATA_GIS.MD_IGN_CARTA_84";
 
         // Agregar más constantes según sea necesario
+        // Catastro Histórico
+        public const string gstrFC_CatastroHistoricoPSAD56 = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_PSAD_";
+        //public const string gstrFC_CatastroHistoricoWGS84 = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_WGS_";
+        public const string gstrFC_CatastroHistoricoWGS84 = "WURB0904.GPO_CMI_CATASTRO_HISTO_WGS_";
     }
 
 }

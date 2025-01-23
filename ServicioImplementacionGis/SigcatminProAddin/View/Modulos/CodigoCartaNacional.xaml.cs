@@ -371,17 +371,24 @@ namespace SigcatminProAddin.View.Modulos
                                                                    MessageBoxImage.Warning);
                 return;
             }
+
+            string valuec = (string)CbxTypeConsult.SelectedValue.ToString();
             //Contiene caracter -
-            if (TbxValue.Text.Contains('-'))
-            { }
-            else
+            if (valuec == "1")
             {
-                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Ejemplo. Código de Hoja con guión '- ' ==> 32-m",
-                                                                   MessageConstants.Titles.Error,
-                                                                   MessageBoxButton.OK,
-                                                                   MessageBoxImage.Warning);
-                return;
+                if (TbxValue.Text.Contains('-'))
+                { }
+                else
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Ejemplo. Código de Hoja con guión '- ' ==> 32-m",
+                                                                       MessageConstants.Titles.Error,
+                                                                       MessageBoxButton.OK,
+                                                                       MessageBoxImage.Warning);
+                    return;
+                }
+
             }
+
 
             string valor = TbxValue.Text.TrimEnd().ToUpper();
             //listBoxVertices.Items.Add(valor);
@@ -390,6 +397,7 @@ namespace SigcatminProAddin.View.Modulos
 
             try
             {
+
                 QueryCarta = valor;
                 string value = (string)CbxTypeConsult.SelectedValue.ToString();
                 if (value == "1")
@@ -402,7 +410,7 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 string datumStr = CbxSistema.Text;
                 var dmrRecords = dataBaseHandler.GetOfficialCarta(value, QueryCarta, datumStr);
-                if (dmrRecords.Rows.Count==0)
+                if (dmrRecords.Rows.Count == 0)
                 {
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No existe la Carta: " + TbxValue.Text.ToString(),
                                                               MessageConstants.Titles.Error,
@@ -457,17 +465,16 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.stateDmY = false;
             };
 
-
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Código de Carta Nacional");
+            progressBar.Show();
+            
             List<string> mapsToDelete = new List<string>()
              {
             GlobalVariables.mapNameCatastro,
             //GlobalVariables.mapNameDemarcacionPo,
             //GlobalVariables.mapNameCartaIgn
             };
-
             await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
-
-
 
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
@@ -476,7 +483,14 @@ namespace SigcatminProAddin.View.Modulos
 
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
 
-            string zoneDm = CbxZona.SelectedValue.ToString();
+            string zoneDm = "";            
+            int focusedRowHandler = DataGridResult.GetSelectedRowHandles()[0];
+            zoneDm = DataGridResult.GetCellValue(focusedRowHandler, "ZONA")?.ToString();
+            QueryCarta = DataGridResult.GetCellValue(focusedRowHandler, "CODIGO")?.ToString();
+            CbxZona.SelectedValue = zoneDm;
+
+
+
             GlobalVariables.CurrentZoneDm = zoneDm;
             var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
@@ -490,6 +504,7 @@ namespace SigcatminProAddin.View.Modulos
             string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
             string dmShpName = "DM" + fechaArchi;
             string dmShpNamePath = "DM" + fechaArchi + ".shp";
+            
             try
             {
                 // Obtener el mapa Catastro//
@@ -522,6 +537,7 @@ namespace SigcatminProAddin.View.Modulos
                 int norte_min = 0;
                 int este_max = 0;
                 int norte_max = 0;
+
                 DataTable coordenadasTable = dataBaseHandler.GetOfficialCarta("CODIGO", QueryCarta, datumStr);
                 //DataTable coordenadasTable = dataBaseHandler.GetOfficialCartaLimite("CODIGO", QueryCarta, datumStr);
 
@@ -620,14 +636,13 @@ namespace SigcatminProAddin.View.Modulos
                 await CommonUtilities.ArcgisProUtils.RasterUtils.AddRasterCartaIGNLayerAsync(mosaicLayer, geodatabase, map, queryListCartaIGN);
 
             }
-            catch (Exception ex) { }
-
-
+            catch (Exception ex)
+            {
+                progressBar.Dispose();
+            }
+            progressBar.Dispose();
 
             BtnGraficar.IsEnabled = true;
-
-
-
         }
 
         private ExtentModel ObtenerExtent(int XMin, int YMin, int XMax, int YMax, int datum, int radioKm = 0)
