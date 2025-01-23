@@ -674,6 +674,8 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+          
+
             BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
@@ -695,6 +697,9 @@ namespace SigcatminProAddin.View.Modulos
             }
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
+
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando - DM Demarcación Política");
+            progressBar.Show();
 
             List<string> mapsToDelete = new List<string>()
              {
@@ -806,19 +811,20 @@ namespace SigcatminProAddin.View.Modulos
                     await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");
 
                 }
-                catch (Exception ex) { }
-
+                catch (Exception ex) {
+                    MessageBox.Show(ex.Message);
+                    progressBar.Dispose();
+                }
+                progressBar.Dispose();
             }
-            catch (Exception ex) { }
-
-
-
-            // Obtener el mapa Demarcacion Politica//
-
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
+            }
 
             BtnGraficar.IsEnabled = true;
-
+            progressBar.Dispose();
         }
 
 
@@ -863,5 +869,22 @@ namespace SigcatminProAddin.View.Modulos
             return extent;
         }
 
+        private void TbxValue_KeyDown_1(object sender, KeyEventArgs e)
+        {
+
+        }
+
+        private void TbxValue_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == System.Windows.Input.Key.Enter)
+            {
+                // Evitar que se procese la tecla Enter (si se desea)
+                e.Handled = true;
+
+                // Llamar a la acción que deseas ejecutar cuando se presiona Enter
+                //MessageBox.Show("Enter");
+                BtnSearch_Click(sender, e);
+            }
+        }
     }
 }

@@ -864,6 +864,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            
             BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
@@ -883,6 +884,8 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.stateDmY = false;
             }
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Código DM");
+            progressBar.Show();
 
             List<string> mapsToDelete = new List<string>()
              {
@@ -1064,8 +1067,12 @@ namespace SigcatminProAddin.View.Modulos
                     MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             }
-            catch (Exception ex) { }
-
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
+            }
+            progressBar.Dispose();
 
 
 

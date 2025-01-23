@@ -133,7 +133,7 @@ namespace CommonUtilities.ArcgisProUtils
                 FeatureLayer featureLayer = map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase));
                 if (featureLayer == null)
                 {
-                    System.Windows.MessageBox.Show($"Layer '{layerName}' not found.");
+                    //System.Windows.MessageBox.Show($"Layer '{layerName}' not found.");
                     return;
                 }
                 StyleHelper.AddStyle(Project.Current, styleFilePath);

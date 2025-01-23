@@ -675,6 +675,8 @@ namespace SigcatminProAddin.View.Modulos
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
             BtnGraficar.IsEnabled = false;
+           
+
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -695,6 +697,9 @@ namespace SigcatminProAddin.View.Modulos
             }
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
+
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando DM Carta IGN");
+            progressBar.Show();
 
             List<string> mapsToDelete = new List<string>()
              {
@@ -828,19 +833,23 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 catch (Exception ex)
                 {
-
+                    MessageBox.Show(ex.Message);
+                    progressBar.Dispose();
                 }
                 finally
                 {
-
+                    progressBar.Dispose();
                 }
                 BtnGraficar.IsEnabled = true;
 
             }
             catch (Exception ex)
             {
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
 
             }
+            progressBar.Dispose();
         }
 
         private void TbxValue_PreviewKeyDown(object sender, KeyEventArgs e)

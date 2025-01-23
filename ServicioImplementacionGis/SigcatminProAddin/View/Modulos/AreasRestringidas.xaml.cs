@@ -439,6 +439,8 @@ namespace SigcatminProAddin.View.Modulos
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
             string listDms = "";
+            
+
             if (string.IsNullOrEmpty(TbxValue.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -449,6 +451,8 @@ namespace SigcatminProAddin.View.Modulos
                 BtnGraficar.IsEnabled = true;
                 return;
             }
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando por Áreas Restringidas");
+            progressBar.Show();
             if (ChkGraficarDmY.IsChecked == true)
             {
                 GlobalVariables.stateDmY = true;
@@ -457,8 +461,8 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.stateDmY = false;
             }
-            /**/
-
+            
+            
             var verificaCodigo = "";
             string previousCodigo = null; // Variable para almacenar el código anterior
             if (DataGridResult.ItemsSource is DataView dataView1)
@@ -490,6 +494,7 @@ namespace SigcatminProAddin.View.Modulos
                             ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                              "Advertencia",
                                                                              MessageBoxButton.OK, MessageBoxImage.Warning);
+                            progressBar.Dispose();
                             return;
                         }
 
@@ -501,6 +506,8 @@ namespace SigcatminProAddin.View.Modulos
             else
             {
                 MessageBox.Show("La fuente de datos no es compatible con DataView.");
+                progressBar.Dispose();
+                return;
             }
 
             /**/
@@ -745,8 +752,9 @@ namespace SigcatminProAddin.View.Modulos
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                progressBar.Dispose();
             }
-
+            progressBar.Dispose();
             // string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCaram);
             // await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync("Zona Reservada", styleGrid, "CLASE", StyleItemType.LineSymbol);
         }

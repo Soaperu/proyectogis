@@ -435,14 +435,6 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-            if (ChkGraficarDmY.IsChecked == true)
-            {
-                GlobalVariables.stateDmY = true;
-            }
-            else
-            {
-                GlobalVariables.stateDmY = false;
-            };
 
 
             List<string> mapsToDelete = new List<string>()
@@ -485,7 +477,6 @@ namespace SigcatminProAddin.View.Modulos
                 return;
             }
 
-
             if (ChkGraficarDmY.IsChecked == true)
             {
                 GlobalVariables.stateDmY = true;
@@ -494,6 +485,8 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.stateDmY = false;
             }
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Coordenadas por Punto Central");
+            progressBar.Show();
 
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
@@ -564,9 +557,21 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
 
+                /*************************************/
+                //caso Caram
+                //if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
+                //{
+                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram84 + zoneDm, true);
+                //}
+                //else
+                //{
+                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Caram56 + zoneDm, true);
+                //}
+
+
                 //if (File.Exists(catastroShpName))
                 //{
-                    await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+                await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                     await UpdateValueAsync(catastroShpName, "");
 
                     string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
@@ -615,14 +620,11 @@ namespace SigcatminProAddin.View.Modulos
                 //}
 
             }
-            catch (Exception ex) { }
-            
-
-
-
-
-
-
+            catch (Exception ex) {
+                MessageBox.Show(ex.Message);
+                progressBar.Dispose();
+            }
+            progressBar.Dispose();
         }
 
         private void CbxZona_SelectionChanged(object sender, SelectionChangedEventArgs e)
