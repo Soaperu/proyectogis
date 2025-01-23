@@ -387,13 +387,14 @@ namespace CommonUtilities.ArcgisProUtils
                             var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
                             var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
                             //string fieldValue = Convert.ToString(row[field]);
-                            var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {row["CODIGOU"].ToString()}" };
-                            var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
-
-                            graphicsLayer = map.GetLayersAsFlattenedList()
-                                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+                            
                             if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
                             {
+                                var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {row["CODIGOU"].ToString()}" };
+                                var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
+
+                                graphicsLayer = map.GetLayersAsFlattenedList()
+                                    .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
                                 int contador = 1;
                                     for(int i = 0; i < polygon.PointCount - 1; i++)
                                     {
@@ -413,7 +414,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 }
             });
-            graphicsLayer.ClearSelection();
+            if(graphicsLayer is not null) graphicsLayer.ClearSelection();
 
         }
 

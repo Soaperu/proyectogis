@@ -41,6 +41,7 @@ using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Mapping.Events;
 using DevExpress.CodeParser;
 using Newtonsoft.Json;
+using System.Windows.Input;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
 {
@@ -97,6 +98,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
         {
             base.OnToolMouseDown(args);
+            if (args.ChangedButton != MouseButton.Left) { return; }
             QueuedTask.Run(async () =>
             {
                 var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
@@ -223,6 +225,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
         {
             base.OnToolMouseDown(args);
+            if (args.ChangedButton != MouseButton.Left) { return; }
             QueuedTask.Run(async () =>
             {
                 var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
@@ -348,7 +351,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 }
                 string mapName = GlobalVariables.mapNameDemarcacionPo;
                 string nameLayer = GlobalVariables.CurrentShpName;
-                var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca);
+                var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca,50000);
                 DemarcaElementsLayoutUtils demarcaElementsLayoutUtils = new DemarcaElementsLayoutUtils();
                 await demarcaElementsLayoutUtils.AddDemarcaTextAsync("", GlobalVariables.CurrentDistDm, "", "", GlobalVariables.CurrentProvDm, "", GlobalVariables.CurrentDepDm, layoutItem);
             }
@@ -381,7 +384,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 }
                 string mapName = GlobalVariables.mapNameCartaIgn;
                 string nameLayer = GlobalVariables.CurrentShpName;
-                var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
+                var layoutItem = await CommonUtilities.ArcgisProUtils.LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta, 50000);
                 CartaIgnElementsLayoutUtils cartaIgnElementsLayoutUtils = new CartaIgnElementsLayoutUtils();
                 string listDist = GlobalVariables.CurrentDistDm;
                 string listProv = GlobalVariables.CurrentProvDm;
@@ -584,6 +587,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
         protected override void OnToolMouseDown(MapViewMouseButtonEventArgs args)
         {
             base.OnToolMouseDown(args);
+            if (args.ChangedButton != MouseButton.Left) { return; }
             QueuedTask.Run(() =>
             {
                 var mapPoint = MapView.Active.ClientToMap(args.ClientPoint);
@@ -788,6 +792,11 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
             await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
             ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
             // Plano Evaluación
+            List<string> deleteLayouts = new List<string>() { "Plantilla_evd_84",
+                                                                "plantilla_demarca_84",
+                                                                "plantilla_cartaign_84",
+                                                                "Plantilla_ev_reduccion"};
+            await LayoutUtils.DeleteSpecifiedLayoutsAsync(deleteLayouts);
             try
             {
                 if (GlobalVariables.CurrentDatumDm == GlobalVariables.valueDatumWGS)
@@ -829,7 +838,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 }
                 mapName = GlobalVariables.mapNameDemarcacionPo;
                 nameLayer = GlobalVariables.CurrentShpName;
-                var layoutItemDemarca = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca);
+                var layoutItemDemarca = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeDemarca, 50000);
                 DemarcaElementsLayoutUtils demarcaElementsLayoutUtils = new DemarcaElementsLayoutUtils();
                 await demarcaElementsLayoutUtils.AddDemarcaTextAsync("", GlobalVariables.CurrentDistDm, "", "", GlobalVariables.CurrentProvDm, "", GlobalVariables.CurrentDepDm, layoutItemDemarca);
             }
@@ -852,7 +861,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
                 }
                 mapName = GlobalVariables.mapNameCartaIgn;
                 nameLayer = GlobalVariables.CurrentShpName;
-                var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta);
+                var layoutItem = await LayoutUtils.AddLayoutPath(pathLayout, nameLayer, mapName, planeCarta, 50000);
                 CartaIgnElementsLayoutUtils cartaIgnElementsLayoutUtils = new CartaIgnElementsLayoutUtils();
                 string listDist = GlobalVariables.CurrentDistDm;
                 string listProv = GlobalVariables.CurrentProvDm;
