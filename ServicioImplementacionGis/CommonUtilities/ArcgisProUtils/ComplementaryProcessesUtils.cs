@@ -213,7 +213,7 @@ namespace CommonUtilities.ArcgisProUtils
                 }
                 if (zoneDm == "18")
                 {
-                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Hojas IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
                 }
                 else
                 {

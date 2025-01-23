@@ -28,6 +28,7 @@ using DevExpress.Xpf.Grid.GroupRowLayout;
 using DevExpress.DataAccess.Native.Web;
 using Newtonsoft.Json;
 using CommonUtilities.ArcgisProUtils.Models;
+//using System.Drawing;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -258,7 +259,7 @@ namespace SigcatminProAddin.View.Modulos
                 var dmrRecords = dataBaseHandler.GetUniqueDM(TbxValue.Text, (int)CbxTypeConsult.SelectedValue);
                 calculatedIndex(DataGridResult, records, DatagridResultConstantsDM.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
-                BtnGraficar.IsEnabled = true;
+                //BtnGraficar.IsEnabled = true;
             }
             catch (Exception ex)
             {
@@ -664,6 +665,13 @@ namespace SigcatminProAddin.View.Modulos
                     DataGridDetails.ItemsSource = dmrRecords.DefaultView;
                     GraficarCoordenadas(dmrRecords);
                     GlobalVariables.CurrentTipoEx = DataGridResult.GetCellValue(focusedRowHandle, "TIPO")?.ToString();
+                    string grafica = DataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
+                    BtnGraficar.IsEnabled = false;
+                    if (grafica.ToUpper() == "G")
+                    {
+                        BtnGraficar.IsEnabled = true;
+                    }
+
                 }
             }
         }
@@ -749,7 +757,6 @@ namespace SigcatminProAddin.View.Modulos
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
             GlobalVariables.CurrentRadioDm= radio;
-            await MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
             string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
             GlobalVariables.CurrentCodeDm = codigoValue;
@@ -776,6 +783,7 @@ namespace SigcatminProAddin.View.Modulos
 
             await ComplementaryProcessesUtils.EvaluationDmByCode(codigoValue, row, radio, datum);
 
+            #region antiguo eval
             //try
             //{
             //    // Obtener el mapa Catastro//
@@ -948,11 +956,12 @@ namespace SigcatminProAddin.View.Modulos
             //catch (Exception ex) {
             //    MessageBox.Show("Error");
             //}
+            #endregion
 
 
             // Insertamos en Base de Datos
             ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
-            Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
+            Map map =  MapUtils.GetActiveMapAsync(); // "CATASTRO MINERO"
             string layerNameAcceditario =$"acceditario{zoneDm}";
             string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"{layerNameAcceditario}.lyr");
             await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
