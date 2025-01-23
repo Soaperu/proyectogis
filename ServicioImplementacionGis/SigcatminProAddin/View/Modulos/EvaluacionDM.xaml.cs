@@ -781,7 +781,17 @@ namespace SigcatminProAddin.View.Modulos
             DataRowView rowView = (DataRowView)DataGridResult.GetRow(focusedRowHandle);
             DataRow row = rowView.Row;
 
-            await ComplementaryProcessesUtils.EvaluationDmByCode(codigoValue, row, radio, datum);
+            ResultadoEvaluacionModel res = new ResultadoEvaluacionModel();
+            res = await ComplementaryProcessesUtils.EvaluationDmByCode(codigoValue, row, radio, datum);
+
+            GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = res.ListaResultadosCriterio;
+            GlobalVariables.resultadoEvaluacion.areaDisponible = res.areaDisponible;
+            GlobalVariables.resultadoEvaluacion.codigo = res.codigo;
+            GlobalVariables.resultadoEvaluacion.nombre = res.nombre;
+            GlobalVariables.resultadoEvaluacion.distanciaFrontera = res.distanciaFrontera;
+            GlobalVariables.resultadoEvaluacion.isCompleted = res.isCompleted;
+
+
 
             #region antiguo eval
             //try

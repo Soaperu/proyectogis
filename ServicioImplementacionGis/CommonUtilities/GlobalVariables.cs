@@ -39,6 +39,7 @@ namespace CommonUtilities
 
         //Nombre de herramientas del atbx _toolboxPath//
         public static string toolGetEval = "evalCriterios";
+        public static string toolGetEvalLibreDenu = "evalLibreDenu";
         public static string toolGetKMLodDM = "exportarDmKmz";
         public static string toolGetDepas = "obtenerDepartamento";
         public static string toolGetAreasOverlay = "calculoAreaSupDisp";

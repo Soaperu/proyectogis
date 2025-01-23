@@ -1388,6 +1388,17 @@ namespace DatabaseConnector
             };
             ExecuteNonQuery(deleteQuery, parameters);
         }
+
+        public DataTable GetCodigosLibreDenu()
+        {
+            string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_COD_LIBDENU";
+            var parameters = new OracleParameter[]
+            {
+             
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
     }
 
 }
