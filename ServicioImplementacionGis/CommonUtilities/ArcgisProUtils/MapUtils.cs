@@ -323,11 +323,7 @@ namespace CommonUtilities.ArcgisProUtils
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
                     return;
                 }
-                if (layer.Name.ToLower() != "catastro")
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona la capa de Catastro.", "Advertencia");
-                    return;
-                }
+
 
                 using (var rowCursor = layer.Search(null))
                 {
@@ -341,13 +337,27 @@ namespace CommonUtilities.ArcgisProUtils
 
                             if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
                             {
-                                var customRow = new ListarCoordenadasModel
+                                var customRow = new ListarCoordenadasModel();
+
+                                if (layer.Name.ToLower() == "catastro")
                                 {
-                                    nombre = row["CONCESION"].ToString(),
-                                    numero = row["CONTADOR"].ToString(),
-                                    codigo = row["CODIGOU"].ToString(),
-                                    area = row["HECTAGIS"].ToString()
-                                };
+                                     customRow = new ListarCoordenadasModel
+                                    {
+                                        nombre = row["CONCESION"]?.ToString(),
+                                        numero = row["CONTADOR"]?.ToString(),
+                                        codigo = row["CODIGOU"]?.ToString(),
+                                        area = row["HECTAGIS"]?.ToString(),
+                                        geom = geometry
+                                    };
+                                }
+                                else
+                                {
+                                    customRow = new ListarCoordenadasModel
+                                    {
+                                        geom = geometry
+                                    };
+                                }
+                                
 
                                 listRows.Add(customRow);
                             }
