@@ -637,6 +637,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
+            ClearCanvas();
             //var tableView = sender as TableView;
             var tableView = sender as DevExpress.Xpf.Grid.TableView;
             if (tableView != null && tableView.Grid.VisibleRowCount>0)
@@ -718,6 +719,17 @@ namespace SigcatminProAddin.View.Modulos
         private void CbxTypeConsult_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
             TbxValue.Clear();
+            DataGridResult.SelectedItem = null;
+            DataGridResult.ItemsSource = null;
+
+            ClearCanvas();
+
+            DataGridDetails.SelectedItem = null;
+            DataGridDetails.ItemsSource = null;
+            LblCountRecords.Content = $"Resultados de Búsqueda: 0";
+
+
+
         }
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
