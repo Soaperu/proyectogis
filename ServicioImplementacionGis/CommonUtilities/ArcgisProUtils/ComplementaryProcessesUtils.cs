@@ -122,8 +122,12 @@ namespace CommonUtilities.ArcgisProUtils
             var dmrRecords = dataBaseHandler.GetUniqueDM(valueCodeDm, 1);
             return dmrRecords;
         }
-        public async static Task<ResultadoEvaluacionModel> EvaluationDmByCode(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum=2)
+        public async static Task<ResultadoEvaluacionModel> EvaluationDmByCode(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum=2, List<string>? LayersListBox = null)
         {
+            if(LayersListBox is null)
+            {
+                LayersListBox = new List<string>() { "Caram", "Catastro Forestal" };
+            }
             string stateGraphic = dmRow["PE_VIGCAT"].ToString();
             if (stateGraphic != "G") { return null; }
             string zoneDm = dmRow["ZONA"].ToString();
@@ -314,7 +318,6 @@ namespace CommonUtilities.ArcgisProUtils
 
                 try
                 {
-                    List<string> LayersListBox = new List<string>() {"Caram", "Catastro Forestal" };
                     // Itera todos items seleccionados en el ListBox de WPF
                     foreach (var item in LayersListBox)
                     {

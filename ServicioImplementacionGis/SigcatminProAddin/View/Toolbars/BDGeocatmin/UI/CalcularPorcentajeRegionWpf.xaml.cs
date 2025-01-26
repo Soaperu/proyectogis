@@ -38,7 +38,8 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
         private DatabaseHandler dataBaseHandler;
         private Geodatabase _geodatabase;
         private Map _map;
-        public FeatureLayer pFeatureLayer_Dep { get; private set; }
+        private FeatureLayer pFeatureLayer_Dep { get; set; }
+        private FeatureClass _featureClass_Dep { get; set; }
         public CalcularPorcentajeRegionWpf()
         {
             InitializeComponent();
@@ -246,19 +247,19 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                     layer.Select(queryFilter);
                 };
 
-                var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
-                Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
-                                                                                            , AppConfig.userName
-                                                                                            , AppConfig.password);
-                var featureClassLoader = new FeatureClassLoader(geodatabase, MapView.Active.Map, GlobalVariables.CurrentZoneDm, "99");
+                //var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+                //Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                //                                                                            , AppConfig.userName
+                //                                                                            , AppConfig.password);
+                //var featureClassLoader = new FeatureClassLoader(geodatabase, MapView.Active.Map, GlobalVariables.CurrentZoneDm, "99");
 
-                var featureclassDepartamento = await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_WGS + GlobalVariables.CurrentZoneDm, false);
+                //var featureclassDepartamento = await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_WGS + GlobalVariables.CurrentZoneDm, false);
 
-                var Params = Geoprocessing.MakeValueArray(codigo);
-                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetDepas, Params);
+                //var Params = Geoprocessing.MakeValueArray(codigo, _featureClass_Dep);
+                //var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetDepas, Params);
 
-                string jsonString = response.ReturnValue;
-                listaIntersecciones = JsonConvert.DeserializeObject<List<IntersectionResult>>(jsonString);
+                //string jsonString = response.ReturnValue;
+                listaIntersecciones = await ObtenerDepartamentosAsync(codigo, _featureClass_Dep);//JsonConvert.DeserializeObject<List<IntersectionResult>>(jsonString);
 
 
 
@@ -267,15 +268,130 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             return listaIntersecciones;
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            //var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
-            //_geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
-            //                                                                            , AppConfig.userName
-            //                                                                            , AppConfig.password);
-            //var featureClassLoader = new FeatureClassLoader(_geodatabase, MapView.Active.Map, GlobalVariables.CurrentZoneDm, "99");
+            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+            _geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                            , AppConfig.userName
+                                                                            , AppConfig.password);
+            var featureClassLoader = new FeatureClassLoader(_geodatabase, MapView.Active.Map, GlobalVariables.CurrentZoneDm, "99");
 
             //pFeatureLayer_Dep = await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_WGS + GlobalVariables.CurrentZoneDm, false);
+             await QueuedTask.Run(() =>
+            {
+                _featureClass_Dep = _geodatabase.OpenDataset<FeatureClass>(FeatureClassConstants.gstrFC_Departamento_WGS + GlobalVariables.CurrentZoneDm);
+            });
+
+        }
+
+        /// <summary>
+        /// Emula la lógica de tu función "obtenerDepartamentos" de Python/arcpy,
+        /// pero en C# usando ArcGIS Pro SDK.
+        /// </summary>
+        /// <param name="codigo">Valor para filtrar la capa 'Catastro' (campo CODIGOU)</param>
+        /// <param name="flDepartamento">FeatureLayer que representa departamentos</param>
+        /// <returns>Lista de DepartmentInfo con nombre, área y porcentaje</returns>
+        public static async Task<List<IntersectionResult>> ObtenerDepartamentosAsync(string codigo, FeatureClass featureClass)
+        {
+            return await QueuedTask.Run(() =>
+            {
+                // 1) Buscar la capa "Catastro" en el mapa activo
+                var map = MapView.Active?.Map;
+                if (map == null)
+                    throw new Exception("No hay un mapa activo.");
+
+                // Suponiendo que la capa se llama "Catastro"
+                var catastroLayer = map.Layers.FirstOrDefault(l => l.Name.Equals("Catastro", StringComparison.OrdinalIgnoreCase)) as FeatureLayer;
+                if (catastroLayer == null)
+                    throw new Exception("No se encontró la capa 'Catastro' en el mapa.");
+
+                // 2) Obtener FeatureClass de Catastro y Departamentos
+                FeatureClass catastroFC = catastroLayer.GetFeatureClass();
+                FeatureClass depFC = featureClass;//flDepartamento.GetFeatureClass();
+
+                // 3) Crear QueryFilter para filtrar CODIGOU = {codigo}
+                var qf = new QueryFilter
+                {
+                    WhereClause = $"CODIGOU = '{codigo}'"
+                };
+
+                // 4) Buscar la entidad en "Catastro" y extraer área y geometría
+                double areaDM = 0.0;    // HECTAGIS
+                ArcGIS.Core.Geometry.Geometry geomDM = null; // Geometry del catastro
+                using (RowCursor catCursor = catastroFC.Search(qf, false))
+                {
+                    if (catCursor.MoveNext())
+                    {
+                        using (Feature catRow = catCursor.Current as Feature)
+                        {
+                            // Campo HECTAGIS (área en hectáreas) 
+                            areaDM = Convert.ToDouble(catRow["HECTAGIS"]);
+                            // SHAPE
+                            geomDM = catRow.GetShape();
+                        }
+                    }
+                    else
+                    {
+                        // Si no encontró ninguna entidad con ese CODIGOU
+                        throw new Exception($"No se encontró la entidad en Catastro con CODIGOU = {codigo}");
+                    }
+                }
+
+                // 5) Iterar sobre todos los departamentos para intersectar con la geom del catastro
+                List<IntersectionResult> listado = new List<IntersectionResult>();
+                var spqf = new SpatialQueryFilter
+                {
+                    FilterGeometry = geomDM,
+                    SpatialRelationship = SpatialRelationship.Intersects,
+                };
+                using (RowCursor depCursor = depFC.Search(spqf, false))
+                {
+                    while (depCursor.MoveNext())
+                    {
+                        using (Feature depRow = depCursor.Current as Feature)
+                        {
+                            // Campo con nombre de departamento, p.ej. "NM_DEPA"
+                            string nombreDep = depRow["NM_DEPA"]?.ToString();
+                            ArcGIS.Core.Geometry.Geometry depGeom = depRow.GetShape();
+
+                            // Intersección
+                            ArcGIS.Core.Geometry.Geometry intersection = GeometryEngine.Instance.Intersection(geomDM, depGeom);
+
+                            double intersHectareas = 0.0;
+                            if (intersection != null && !intersection.IsEmpty)
+                            {
+                                // El método .Area calcula el área según la proyección de la geometría
+                                // Retorna m^2, por lo tanto / 10_000 para hectáreas
+                                double areaM2 = GeometryEngine.Instance.Area(intersection);
+                                intersHectareas = Math.Round(areaM2 / 10000.0, 2);
+                            }
+
+                            // 6) Calcular porcentaje en relación al área original "areaDM"
+                            double porcentaje = 0.0;
+                            if (areaDM > 0.0)
+                                porcentaje = Math.Round((intersHectareas / areaDM) * 100.0, 2);
+
+                            // 7) Agregar resultado a la lista
+                            listado.Add(new IntersectionResult
+                            {
+                                Nombre = nombreDep,
+                                area = intersHectareas,
+                                Porcentaje = porcentaje
+                            });
+                        }
+                    }
+                }
+
+                return listado;
+            });
+        }
+
+        public class DepartmentInfo
+        {
+            public string Nombre { get; set; }
+            public double Area { get; set; }         // Área de intersección
+            public double Porcentaje { get; set; }   // Porcentaje respecto al área original
         }
     }
     public class IntersectionResult

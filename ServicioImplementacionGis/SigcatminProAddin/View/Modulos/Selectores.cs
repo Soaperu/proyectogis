@@ -173,6 +173,7 @@ namespace SigcatminProAddin.View.Modulos
                         {
                             contenedor.Show();
                         }
+                        contenedor.Focus();
                     }
                     else
                     {

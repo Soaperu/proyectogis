@@ -563,7 +563,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false, queryClause);
                 }
-
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
                 if (datum == 2)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
@@ -600,7 +600,7 @@ namespace SigcatminProAddin.View.Modulos
             await UpdateValueAsync(catastroShpName, " ");
             string styleCat = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
             await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, "");
-
+            GlobalVariables.currentExtentDM = new ExtentModel {xmin= envelope.XMin, ymin = envelope.YMin, xmax=envelope.XMax, ymax= envelope.YMax };
             CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
             List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", "Zona Urbana" };
             await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);

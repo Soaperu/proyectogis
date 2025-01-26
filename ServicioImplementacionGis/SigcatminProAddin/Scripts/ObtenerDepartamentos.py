@@ -3,7 +3,7 @@ import os
 import json
 
 response = dict()
-def obtenerDepartamentos(codigo):
+def obtenerDepartamentos(codigo, fl_departamento):
     """
     Return a list of dictionarys of intersections between certain feture of lyr_catastro and lyr_departamentos
     properties of returned object: nombre, area de interseccion, porcentaje
@@ -17,12 +17,12 @@ def obtenerDepartamentos(codigo):
     map_view = aprx.activeMap
     layer_catastro = map_view.listLayers(f'{lyr_catastro_name}')[0]
 
-    lyr_departamento_name = "Departamento"
-    busqueda = map_view.listLayers(f'{lyr_departamento_name}')
-    if not busqueda:
-        raise Exception(f"Capa {lyr_departamento_name} no encontrada")
+    # lyr_departamento_name = "Departamento"
+    # busqueda = map_view.listLayers(f'{lyr_departamento_name}')
+    # if not busqueda:
+    #     raise Exception(f"Capa {lyr_departamento_name} no encontrada")
     
-    lyr_departamentos = busqueda[0]
+    lyr_departamentos = fl_departamento#busqueda[0]
 
     # Select features from lyr_catastro based on codigo
     catastro_fields = ["CODIGOU", "HECTAGIS","SHAPE@"]
@@ -49,7 +49,7 @@ def obtenerDepartamentos(codigo):
     # Clean Selection
     arcpy.management.SelectLayerByAttribute(lyr_departamentos, "CLEAR_SELECTION")
 
-    removeLayerfromMapbyName(lyr_departamentos)
+    #removeLayerfromMapbyName(lyr_departamentos)
 
     return listado
 
@@ -59,9 +59,12 @@ def obtenerDepartamentos(codigo):
 
 
 def removeLayerfromMapbyName(layer):
-    aprx = arcpy.mp.ArcGISProject("CURRENT")
-    map_view = aprx.activeMap
-    map_view.removeLayer(layer)
+    try:
+        aprx = arcpy.mp.ArcGISProject("CURRENT")
+        map_view = aprx.activeMap
+        map_view.removeLayer(layer)
+    except:
+        pass
 
 
 
@@ -69,12 +72,14 @@ def removeLayerfromMapbyName(layer):
 if __name__ == '__main__':
     try:
         codigo = arcpy.GetParameterAsText(0)
-        response = obtenerDepartamentos(codigo)
+        fl_departamento = arcpy.GetParameter(1) #  *
+        response = obtenerDepartamentos(codigo, fl_departamento)
 
         arcpy.AddMessage("Satisfactorio")
     except Exception as e:
+        arcpy.AddMessage("Error")
         arcpy.AddError("Error: " + str(e))
-        out_geom = None
+        response = {"Error": str(e)}
     finally:
         response = json.dumps(response)
-        arcpy.SetParameterAsText(1, response)
+        arcpy.SetParameterAsText(2, response)

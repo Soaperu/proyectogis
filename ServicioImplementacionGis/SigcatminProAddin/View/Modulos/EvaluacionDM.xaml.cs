@@ -794,211 +794,237 @@ namespace SigcatminProAddin.View.Modulos
             DataRow row = rowView.Row;
 
             ResultadoEvaluacionModel res = new ResultadoEvaluacionModel();
-            res = await ComplementaryProcessesUtils.EvaluationDmByCode(codigoValue, row, radio, datum);
 
-            GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = res.ListaResultadosCriterio;
-            GlobalVariables.resultadoEvaluacion.areaDisponible = res.areaDisponible;
-            GlobalVariables.resultadoEvaluacion.codigo = res.codigo;
-            GlobalVariables.resultadoEvaluacion.nombre = res.nombre;
-            GlobalVariables.resultadoEvaluacion.distanciaFrontera = res.distanciaFrontera;
-            GlobalVariables.resultadoEvaluacion.isCompleted = res.isCompleted;
-
-
-
-            #region antiguo eval
-            //try
-            //{
-            //    // Obtener el mapa Catastro//
-
-            //    Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
-            //    // Crear instancia de FeatureClassLoader y cargar las capas necesarias
-            //    var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
-
-            //    //Carga capa Catastro
-            //    if (datum == datumwgs84)
-            //    {
-            //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
-            //    }
-            //    else
-            //    {
-            //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
-            //    }
-
-            //    ////Carga capa Distrito
-            //    //if (datum == datumwgs84)
-            //    //{
-            //    //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
-            //    //}
-            //    //else
-            //    //{
-            //    //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zoneDm, false);
-            //    //}
-            //    //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-            //    //Carga capa Zona Urbana
-            //    if (datum == datumwgs84)
-            //    {
-            //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
-            //    }
-            //    else
-            //    {
-            //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
-            //    }
-
-            //    var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
-            //    var extentDm = ObtenerExtent(codigoValue, datum);
-            //    GlobalVariables.currentExtentDM = extentDm;
-            //    // Llamar al método IntersectFeatureClassAsync desde la instancia
-            //    string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
-            //    // Encontrando Distritos superpuestos a DM con
-            //    DataTable intersectDist;
-            //    if (datum == datumwgs84)
-            //    {
-            //        intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
-            //    }
-            //    else
-            //    {
-            //        intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
-            //    }
-            //    CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
-            //    DataTable orderUbigeosDM;
-            //    orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
-
-            //    //Carga capa Hojas IGN
-            //    if (datum == datumwgs84)
-            //    {
-            //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
-            //    }
-            //    else
-            //    {
-            //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
-            //    }
-            //    string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
-            //    //GlobalVariables.CurrentPagesDm = listHojas;
-            //    // Encontrando Caram superpuestos a DM con
-            //    DataTable intersectCaram;
-            //    if (datum == datumwgs84)
-            //    {
-            //        intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
-            //    }
-            //    else
-            //    {
-            //        intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
-            //    }
-            //    CommonUtilities.DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
-
-            //    DataTable intersectCForestal;
-            //    if (datum == datumwgs84)
-            //    {
-            //        intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Cforestal + zoneDm, codigoValue);
-            //    }
-            //    else
-            //    {
-            //        intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
-            //    }
-            //    CommonUtilities.DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
-
-            //    DataTable intersectDm;
-            //    if (datum == datumwgs84)
-            //    {
-            //        intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
-            //    }
-            //    else
-            //    {
-            //        intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
-            //    }
-            //    //DataTable distBorder;
-            //    var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
-            //    GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
-            //    //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
-            //    //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
-            //    await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-            //    await UpdateValueAsync(catastroShpName, codigoValue);
-            //    CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
-            //    await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
-            //    await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
-            //    string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
-            //    await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol,codigoValue);
-            //    var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
-            //    var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
-            //    var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
-            //    CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName,false);
-            //    List<string> layersToRemove = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
-            //    await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
-            //    await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
-            //    GlobalVariables.CurrentShpName = "Catastro";
-            //    MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
-            //    UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
-            //    var (gridLayer, pointLayer ) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
-            //    await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
-            //    await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
-            //    string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
-            //    await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
-            //    try
-            //    {
-            //        // Itera todos items seleccionados en el ListBox de WPF
-            //        foreach (var item in LayersListBox.Items)
-            //        {
-            //            if (item is CheckBox checkBox && checkBox.IsChecked == true)
-            //            {
-            //                string capaSeleccionada = checkBox.Content.ToString();
-            //                await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
-            //            }
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
-            //    }
-
-            //    ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
-
-            //    GlobalVariables.resultadoEvaluacion.codigo = codigoValue;
-            //    GlobalVariables.resultadoEvaluacion.nombre = GlobalVariables.CurrentNameDm;
-            //    GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
-
-
-            //    var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
-            //    //int contador = 0;
-            //    foreach (var criterio in criterios)
-            //    {
-            //        GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio]= await elementsLayoutUtils.ObtenerResultadosEval(criterio);
-            //    }
-            //    GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
-            //    GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
-            //    string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
-            //    await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
-            //    GlobalVariables.resultadoEvaluacion.isCompleted = true;
-
-            //    dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
-            //    foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)
-            //    {
-            //        dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval ,"",r.Concesion,"");
-            //    }
-            //}
-            //catch (Exception ex) {
-            //    MessageBox.Show("Error");
-            //}
-            #endregion
-
-
-            // Insertamos en Base de Datos
-            ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
-            Map map =  MapUtils.GetActiveMapAsync(); // "CATASTRO MINERO"
-            string layerNameAcceditario =$"acceditario{zoneDm}";
-            string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"{layerNameAcceditario}.lyr");
-            await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
-            GlobalVariables.resultadoEvaluacion.isCompleted = true;
-            var pFeatureLayer_acceditario = await LayerUtils.GetFeatureLayerByNameAsync(layerNameAcceditario);
-            await QueuedTask.Run(() => { pFeatureLayer_acceditario.SetVisibility(false); });
-     
-            //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
-
-
-            dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
-            foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)
+            List<string> layersChecked = new List<string>();
+            try
             {
-                dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval, r.Hectarea, r.Concesion, r.Clase);
+                // Itera todos items seleccionados en el ListBox de WPF
+                foreach (var item in LayersListBox.Items)
+                {
+                    if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                    {
+                        string capaSeleccionada = checkBox.Content.ToString();
+                        layersChecked.Add(capaSeleccionada);
+                        //await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+
+            try
+            {
+                res = await ComplementaryProcessesUtils.EvaluationDmByCode(codigoValue, row, radio, datum, layersChecked);
+
+                GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = res.ListaResultadosCriterio;
+                GlobalVariables.resultadoEvaluacion.areaDisponible = res.areaDisponible;
+                GlobalVariables.resultadoEvaluacion.codigo = res.codigo;
+                GlobalVariables.resultadoEvaluacion.nombre = res.nombre;
+                GlobalVariables.resultadoEvaluacion.distanciaFrontera = res.distanciaFrontera;
+                GlobalVariables.resultadoEvaluacion.isCompleted = res.isCompleted;
+
+                #region antiguo eval
+                //try
+                //{
+                //    // Obtener el mapa Catastro//
+
+                //    Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
+                //    // Crear instancia de FeatureClassLoader y cargar las capas necesarias
+                //    var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+                //    //Carga capa Catastro
+                //    if (datum == datumwgs84)
+                //    {
+                //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
+                //    }
+                //    else
+                //    {
+                //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
+                //    }
+
+                //    ////Carga capa Distrito
+                //    //if (datum == datumwgs84)
+                //    //{
+                //    //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
+                //    //}
+                //    //else
+                //    //{
+                //    //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zoneDm, false);
+                //    //}
+                //    //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
+                //    //Carga capa Zona Urbana
+                //    if (datum == datumwgs84)
+                //    {
+                //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
+                //    }
+                //    else
+                //    {
+                //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
+                //    }
+
+                //    var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
+                //    var extentDm = ObtenerExtent(codigoValue, datum);
+                //    GlobalVariables.currentExtentDM = extentDm;
+                //    // Llamar al método IntersectFeatureClassAsync desde la instancia
+                //    string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+                //    // Encontrando Distritos superpuestos a DM con
+                //    DataTable intersectDist;
+                //    if (datum == datumwgs84)
+                //    {
+                //        intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
+                //    }
+                //    else
+                //    {
+                //        intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
+                //    }
+                //    CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
+                //    DataTable orderUbigeosDM;
+                //    orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
+
+                //    //Carga capa Hojas IGN
+                //    if (datum == datumwgs84)
+                //    {
+                //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                //    }
+                //    else
+                //    {
+                //        await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
+                //    }
+                //    string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                //    //GlobalVariables.CurrentPagesDm = listHojas;
+                //    // Encontrando Caram superpuestos a DM con
+                //    DataTable intersectCaram;
+                //    if (datum == datumwgs84)
+                //    {
+                //        intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
+                //    }
+                //    else
+                //    {
+                //        intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
+                //    }
+                //    CommonUtilities.DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
+
+                //    DataTable intersectCForestal;
+                //    if (datum == datumwgs84)
+                //    {
+                //        intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Cforestal + zoneDm, codigoValue);
+                //    }
+                //    else
+                //    {
+                //        intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
+                //    }
+                //    CommonUtilities.DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
+
+                //    DataTable intersectDm;
+                //    if (datum == datumwgs84)
+                //    {
+                //        intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
+                //    }
+                //    else
+                //    {
+                //        intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
+                //    }
+                //    //DataTable distBorder;
+                //    var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
+                //    GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
+                //    //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
+                //    //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
+                //    await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+                //    await UpdateValueAsync(catastroShpName, codigoValue);
+                //    CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
+                //    await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
+                //    await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
+                //    string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                //    await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol,codigoValue);
+                //    var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
+                //    var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                //    var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
+                //    CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName,false);
+                //    List<string> layersToRemove = new List<string>() { "Catastro","Carta IGN", dmShpName, "Zona Urbana" };
+                //    await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                //    await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+                //    GlobalVariables.CurrentShpName = "Catastro";
+                //    MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
+                //    UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                //    var (gridLayer, pointLayer ) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                //    await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+                //    await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
+                //    string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+                //    await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+                //    try
+                //    {
+                //        // Itera todos items seleccionados en el ListBox de WPF
+                //        foreach (var item in LayersListBox.Items)
+                //        {
+                //            if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                //            {
+                //                string capaSeleccionada = checkBox.Content.ToString();
+                //                await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                //    }
+
+                //    ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+
+                //    GlobalVariables.resultadoEvaluacion.codigo = codigoValue;
+                //    GlobalVariables.resultadoEvaluacion.nombre = GlobalVariables.CurrentNameDm;
+                //    GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
+
+
+                //    var criterios = new string[] { "PR", "RD", "PO", "SI", "EX" };
+                //    //int contador = 0;
+                //    foreach (var criterio in criterios)
+                //    {
+                //        GlobalVariables.resultadoEvaluacion.ResultadosCriterio[criterio]= await elementsLayoutUtils.ObtenerResultadosEval(criterio);
+                //    }
+                //    GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
+                //    GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
+                //    string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"acceditario{zoneDm}.lyr");
+                //    await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
+                //    GlobalVariables.resultadoEvaluacion.isCompleted = true;
+
+                //    dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
+                //    foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)
+                //    {
+                //        dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval ,"",r.Concesion,"");
+                //    }
+                //}
+                //catch (Exception ex) {
+                //    MessageBox.Show("Error");
+                //}
+                #endregion
+
+
+                // Insertamos en Base de Datos
+                ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+                Map map = MapUtils.GetActiveMapAsync(); // "CATASTRO MINERO"
+                string layerNameAcceditario = $"acceditario{zoneDm}";
+                string layerPathAcceditarios = Path.Combine(GlobalVariables.ContaninerFixedLayers, $"{layerNameAcceditario}.lyr");
+                await LayerUtils.AddLayerAsync(map, layerPathAcceditarios);
+                GlobalVariables.resultadoEvaluacion.isCompleted = true;
+                var pFeatureLayer_acceditario = await LayerUtils.GetFeatureLayerByNameAsync(layerNameAcceditario);
+                await QueuedTask.Run(() => { pFeatureLayer_acceditario.SetVisibility(false); });
+
+                //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = await elementsLayoutUtils.ObtenerResultadosEval1();
+
+
+                dataBaseHandler.MoveraHistoricoEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo);
+                foreach (ResultadoEval r in GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio)
+                {
+                    dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, r.CodigoU, r.Eval, r.Hectarea, r.Concesion, r.Clase);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error");
+            }
+            
             //dataBaseHandler.InsertarEvaluacionTecnica(GlobalVariables.resultadoEvaluacion.codigo, GlobalVariables.resultadoEvaluacion.codigo, "AD", GlobalVariables.resultadoEvaluacion.areaDisponible, "AREA DISPONIBLE"); 
             // Obtener el mapa Demarcacion Politica//
             try

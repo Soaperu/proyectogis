@@ -273,7 +273,9 @@ namespace CommonUtilities.ArcgisProUtils
                             if (geometry != null && !string.IsNullOrEmpty(fieldValue))
                             {
                                 // Convertir la geometría a un punto (en este caso, tomamos el centroide de la geometría)
-                                var point = geometry.Extent.Center;
+                                //var point = geometry.Extent.Center;
+                                
+                                var point = GeometryEngine.Instance.LabelPoint(geometry);
                                 var textGraphic = new CIMTextGraphic();
                                 CIMColor rgbColor = ColorUtils.HexToCimColorRGB(color);
                                 var textSymbol = SymbolFactory.Instance.ConstructTextSymbol

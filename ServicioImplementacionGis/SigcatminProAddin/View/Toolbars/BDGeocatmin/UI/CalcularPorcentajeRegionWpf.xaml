@@ -10,7 +10,7 @@
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen" Background="#F3F3F3"
         Title="Listar Coordenadas" Height="400" Width="360" FontSize="10"
-        ResizeMode="NoResize" WindowStyle="None">
+        ResizeMode="NoResize" WindowStyle="None" Loaded="Window_Loaded">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -18,7 +18,7 @@
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-    <Grid Margin="0,0,0,0" Loaded="Grid_Loaded">
+    <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>            
             <RowDefinition Height="350"/>

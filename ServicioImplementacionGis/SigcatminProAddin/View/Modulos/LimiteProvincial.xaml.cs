@@ -539,15 +539,12 @@ namespace SigcatminProAddin.View.Modulos
 
             ArcGIS.Core.Geometry.Geometry polygon = null;
             ArcGIS.Core.Geometry.Envelope envelope = null;
+            await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
+            Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
+            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+            var queryClause = $"CD_PROV = '{coddema}'";
             await QueuedTask.Run(async () =>
             {
-
-
-                await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
-                Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
-                var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
-                var queryClause = $"CD_PROV = '{coddema}'";
-
                 if (datum == 2)
                 {
                     await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false, queryClause);
@@ -556,7 +553,7 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false, queryClause);
                 }
-
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
                 if (datum == 2)
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
@@ -595,7 +592,7 @@ namespace SigcatminProAddin.View.Modulos
             await UpdateValueAsync(catastroShpName, " ");
             string styleCat = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
             await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, "");
-
+            GlobalVariables.currentExtentDM = new ExtentModel { xmin = envelope.XMin, ymin = envelope.YMin, xmax = envelope.XMax, ymax = envelope.YMax };
             CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
             List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", "Zona Urbana" };
             await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
@@ -608,6 +605,23 @@ namespace SigcatminProAddin.View.Modulos
             await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
             string styleGrid = System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
             await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+
+            try
+            {
+                // Itera todos items seleccionados en el ListBox de WPF
+                foreach (var item in LayersListBox.Items)
+                {
+                    if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                    {
+                        string capaSeleccionada = checkBox.Content.ToString();
+                        await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, GlobalVariables.currentExtentDM);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
 
         }
 

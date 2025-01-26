@@ -748,27 +748,50 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin
     {
         protected override async void OnClick()
         {
-            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Derecho Minero");
+            ProgressBarUtils progressBar = new ProgressBarUtils("Generando Rotulado de Demarcacion Territorial");
             progressBar.Show();
-            await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
-            var Departamentolayer = await LayerUtils.GetFeatureLayerByNameAsync("Departamento");
-            var ProvinciaLayer = await LayerUtils.GetFeatureLayerByNameAsync("Provincia");
-            var DistritoLayer = await LayerUtils.GetFeatureLayerByNameAsync("Distrito");
-            if (Departamentolayer != null)
+            try
             {
-                MapUtils.AnnotateLayerbyName("Departamento", "NM_DEPA", "Anotación Departamento", "#895a44", "Tahoma", 25, "Bold");
+                string nameFieldDepa = "CD_DEPA";
+                await FrameworkApplication.SetCurrentToolAsync("esri_mapping_exploreTool");
+                var departamentoLayer = await LayerUtils.GetFeatureLayerByNameAsync("Departamento");
+                var provinciaLayer = await LayerUtils.GetFeatureLayerByNameAsync("Provincia");
+                var distritoLayer = await LayerUtils.GetFeatureLayerByNameAsync("Distrito");
+                string stringListLimits;
+                List<string> listLimits;
+                string queryLimit;
+                if (departamentoLayer != null)
+                {
+                    stringListLimits = await FeatureProcessorUtils.IntersectFeatureLayerWithEnvelope(departamentoLayer, GlobalVariables.currentExtentDM, nameFieldDepa);
+                    listLimits = stringListLimits.Split(',').ToList();
+                    queryLimit = $"{nameFieldDepa} IN ('{string.Join("','", listLimits)}')";
+                    await QueuedTask.Run(() => { departamentoLayer.SetDefinitionQuery(queryLimit); });
+                    MapUtils.AnnotateLayerbyName("Departamento", "NM_DEPA", "Anotación Departamento", "#895a44", "Tahoma", 25, "Bold");
+                }
+                if (provinciaLayer != null)
+                {
+                    stringListLimits = await FeatureProcessorUtils.IntersectFeatureLayerWithEnvelope(provinciaLayer, GlobalVariables.currentExtentDM, "CD_PROV");
+                    listLimits = stringListLimits.Split(',').ToList();
+                    queryLimit = $"{"CD_PROV"} IN ('{string.Join("','", listLimits)}')";
+                    await QueuedTask.Run(() => { provinciaLayer.SetDefinitionQuery(queryLimit); });
+                    MapUtils.AnnotateLayerbyName("Provincia", "NM_PROV", "Anotación Provincia", "#007800", "Tahoma", 15, "Bold");
+                }
+                if (distritoLayer != null)
+                {
+                    stringListLimits = await FeatureProcessorUtils.IntersectFeatureLayerWithEnvelope(distritoLayer, GlobalVariables.currentExtentDM, "CD_DIST");
+                    listLimits = stringListLimits.Split(',').ToList();
+                    queryLimit = $"{"CD_DIST"} IN ('{string.Join("','", listLimits)}')";
+                    await QueuedTask.Run(() => { distritoLayer.SetDefinitionQuery(queryLimit); });
+                    MapUtils.AnnotateLayerbyName("Distrito", "NM_DIST", "Antoación Distrito", "#0000ff", "Tahoma", 8, "Bold");
+                }
+                if (departamentoLayer == null && provinciaLayer == null && distritoLayer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No existen capas de Demarcación en el Mapa Actual");
+                }
             }
-            if (ProvinciaLayer != null)
+            catch (Exception ex)
             {
-                MapUtils.AnnotateLayerbyName("Provincia", "NM_PROV", "Anotación Provincia", "#007800", "Tahoma", 15, "Bold");
-            }
-            if (DistritoLayer!=null)
-            {
-                MapUtils.AnnotateLayerbyName("Distrito", "NM_DIST", "Antoación Distrito", "#0000ff", "Tahoma", 8, "Bold");
-            }
-            if(Departamentolayer==null && ProvinciaLayer ==null && DistritoLayer == null)
-            {
-                System.Windows.MessageBox.Show("No existen capas de Demarcación en el Mapa Actual");
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(ex.ToString());
             }
             progressBar.Dispose();
         }

@@ -1,7 +1,9 @@
 ﻿using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.DDL;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Core.Internal.CIM;
+using ArcGIS.Core.Internal.Geometry;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
@@ -1030,6 +1032,58 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             });
 
+        }
+        public async static Task<string> IntersectFeatureLayerWithEnvelope(FeatureLayer featureLayer, ExtentModel extent, string fieldName)
+        {
+            // Cadena de texto para almacenar los resultados
+            string result = string.Empty;
+
+            await QueuedTask.Run(() =>
+            {
+                // Obtén la capa de características (FeatureLayer)
+                var layer = featureLayer;
+                // Crear el envolvente
+                ArcGIS.Core.Geometry.Envelope envelope = EnvelopeBuilder.CreateEnvelope(extent.xmin, extent.ymin, extent.xmax, extent.ymax, featureLayer.GetSpatialReference());
+                // Crea un filtro espacial usando la geometría Envelope
+                var queryFilter = new ArcGIS.Core.Data.SpatialQueryFilter
+                {
+                    WhereClause = "", // Si no hay filtro de atributos, se puede dejar vacío
+                    FilterGeometry= envelope, // Establece la geometría de la intersección
+                    SpatialRelationship = SpatialRelationship.Intersects
+                };
+
+                // Realiza la consulta espacial en la capa
+                var rowCursor = layer.Search(queryFilter);
+
+                // Lista para almacenar los valores del campo 'ubigeo'
+                var valuesField = new List<string>();
+
+                // Itera sobre los resultados
+                while (rowCursor.MoveNext())
+                {
+                    var row = rowCursor.Current;
+
+                    // Obtén el valor del campo 'ubigeo'
+                    if (row != null )
+                    {
+                        string ubigeoValue = row[fieldName] as string;
+                        if (!string.IsNullOrEmpty(ubigeoValue))
+                        {
+                            // Añade el valor a la lista
+                            valuesField.Add(ubigeoValue);
+                        }
+                    }
+                }
+
+                // Si hay valores en la lista, une todos los elementos con comas
+                if (valuesField.Count > 0)
+                {
+                    result = string.Join(",", valuesField.Distinct().ToList());
+                }
+            });
+
+            // Devuelve el resultado como una cadena separada por comas
+            return result;
         }
     }
 }
