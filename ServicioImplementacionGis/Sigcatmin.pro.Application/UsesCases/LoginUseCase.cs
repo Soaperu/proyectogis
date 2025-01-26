@@ -24,7 +24,6 @@ namespace Sigcatmin.pro.Application.UsesCases
         {
             try
             {
-                _loggerService.LogInfo("hola");
                 bool isValid = await _authRepository.Authenticate(user.UserName, user.Password);
                 if (isValid)
                 {

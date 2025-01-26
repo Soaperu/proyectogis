@@ -4,9 +4,14 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using ArcGIS.Desktop.Framework;
 using Sigcatmin.pro.Application.Dtos.Request;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Application.UsesCases;
+using SigcatminProAddinUI.Resources.Constants;
+using SigcatminProAddinUI.Resources.Helpers;
+using SigcatminProAddinUI.Resourecs.Constants;
+using SigcatminProAddinUI.Services.Interfaces;
 
 namespace SigcatminProAddinUI.Views.WPF.Views.Login
 {
@@ -17,31 +22,41 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Login
     {
         private readonly LoginUseCase _loginUseCase;
         private readonly ILoggerService _loggerService;
+        private readonly IUIStateService _uIStateService;
         public LoginView()
         {
             InitializeComponent();
             _loginUseCase = Program.GetService<LoginUseCase>();
             _loggerService = Program.GetService<ILoggerService>();
+            _uIStateService = Program.GetService<IUIStateService>();
         }
         private void btnCancel_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
         }
 
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
+        private async void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-      
             try
             {
                 string username = tbxUser.Text;
                 string password = pwdPassword.Password;
+                bool isValid =  await _loginUseCase.Execute(new LoginRequestDto() { 
+                    UserName = username,
+                    Password = password
+                });
+                if (isValid)
+                {
+                    _uIStateService.ActivateState(UIStateConstants.IsLoggedIn);
+                    this.Close();
+                }
             }
             catch (Exception ex)
             {
-           
+                MessageBoxHelper.ShowError(ErrorMessage.UnexpectedError, TitlesMessage.Error);
+                _loggerService.LogError(ex);
             }
-            //var loginService = Program.GetService<LoginUseCase>();
-            _loginUseCase.Execute(new LoginRequestDto() { UserName = "pava2778", Password = "ingemmet" });
+           
         }
 
         private void tbxUser_TextChanged(object sender, TextChangedEventArgs e)

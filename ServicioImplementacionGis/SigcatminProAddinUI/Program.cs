@@ -6,13 +6,17 @@ using System;
 using System.IO;
 using Sigcatmin.pro.IoC;
 using SigcatminProAddinUI.Resourecs.Helpers;
+using SigcatminProAddinUI.Services.Interfaces;
 
 namespace SigcatminProAddinUI
 {
     internal class Program : Module
     {
         private static Program _this = null;
+        public static Program Current => _this ??= (Program)FrameworkApplication.FindModule("SigcatminProAddinUI_Module");
+
         private static IServiceProvider _serviceProvider;
+        private readonly IUIStateService _UIStateService;
         //private static IConfiguration _configuration;
         public Program()
         {
@@ -28,9 +32,10 @@ namespace SigcatminProAddinUI
             }
 
             services.AddIoC(pathSettings);
-            //services.AddSingleton<IUser, User>();
+            services.AddPresentation();
             // Construir el proveedor de servicios
             _serviceProvider = services.BuildServiceProvider();
+            _UIStateService = GetService<IUIStateService>();
 
         }
         public static T GetService<T>()
@@ -40,13 +45,15 @@ namespace SigcatminProAddinUI
 
         protected override bool Initialize()
         {
+            _UIStateService.InitializeStates();
             return base.Initialize();
         }
+
 
         /// <summary>
         /// Retrieve the singleton instance to this module here
         /// </summary>
-        public static Program Current => _this ??= (Program)FrameworkApplication.FindModule("SigcatminProAddinUI_Module");
+       
 
         #region Overrides
         /// <summary>

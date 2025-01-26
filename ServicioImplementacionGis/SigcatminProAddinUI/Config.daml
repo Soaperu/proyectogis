@@ -11,7 +11,7 @@
                     Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
   </AddInInfo>
   <modules>
-    <insertModule id="SigcatminProAddinUI_Module" className="Program" autoLoad="false" caption="Program">
+    <insertModule id="SigcatminProAddinUI_Module" className="Program" autoLoad="true" caption="Program">
       <!-- uncomment to have the control hosted on a separate tab-->
       <tabs>
         <tab id="SigcatminProAddinUI_Tab1" caption="Sigcatmin3" keytip="t0">
@@ -44,7 +44,7 @@
 		</subgroups>
       <controls>
         <!-- add your controls here -->
-        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" caption="Iniciar Session" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LoginButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a1">
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" caption="Iniciar Session" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LoginButton" loadOnClick="true" smallImage="GenericButtonBlue16"  largeImage="GenericButtonBlue32" keytip="a1">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </button>
         <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" condition="Logged_condition" caption="Cerrar Sesión" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a2">
@@ -63,4 +63,9 @@
       </controls>
     </insertModule>
   </modules>
+	<conditions>
+		<insertCondition id="Logged_condition" caption="Example state">
+			<state id="isLoggedIn"></state>
+		</insertCondition>
+	</conditions>
 </ArcGIS>

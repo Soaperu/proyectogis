@@ -22,9 +22,10 @@ namespace Sigcatmin.pro.Shared
             services.AddSingleton<IOptions<JWTSettings>>(x => new Options<JWTSettings>(pathSettings, nameof(JWTSettings)));
             services.AddSingleton<IOptions<DdConnectionSettings>>(x => new Options<DdConnectionSettings>(pathSettings, "DdConnection"));
 
+            services.AddSingleton<IAuthService, AuthService>();
+
             services.AddTransient<ILoggerService, LoggerService>();
 
-            services.AddTransient<IAuthService, AuthService>();
             services.AddTransient<IUserSessionService, UserSessionService>();
 
             return services;

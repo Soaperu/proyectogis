@@ -6,12 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sigcatmin.prop.Domain.Interfaces.Services
+namespace Sigcatmin.pro.Application.Interfaces
 {
     public interface IAuthService
     {
+        bool IsLoggedIn { get; }
+        event Action SessionChanged;
         void SaveSession(string username, string password);
-        UserSessionDto? GetSession();
+        UserSessionDto GetSession();
         void EndSession();
 
     }
