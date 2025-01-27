@@ -20,6 +20,8 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.Buttons
 
             try
             {
+                throw new Exception("xd");
+
                 var moduleType = _moduleFactory.CreateModule(categorName, ModuleName);
 
                 MainView mainView = new MainView();

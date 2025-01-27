@@ -145,5 +145,8 @@
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\Utils\" />
+  </ItemGroup>
    <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
 </Project>
