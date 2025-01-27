@@ -38,8 +38,8 @@
           <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GenerarPlanoMasivoButton" size="middle" />
         </subgroup>
         <subgroup id="SigcatminProAddinUI_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
-          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoriaCombo" />
-          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuloCombo" />
+          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoryComboBox" />
+          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuleComboBox" />
           <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_ConfirmModuleButton" size="large" />
         </subgroup>
       </subgroups>
@@ -61,11 +61,11 @@
 				  Generar Planos Masivos<disabledText /></tooltip>
         </button>
         <!--Controles Selector de Modulos-->
-        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoriaCombo" condition="Logged_condition" caption="Tipos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.CategoriaCombo" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoryComboBox" condition="Logged_condition" caption="Tipos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.CategoryComboBox" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
           <tooltip heading="Tipo">
 				  Seleccione el tipo de Modulo<disabledText /></tooltip>
         </comboBox>
-        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuloCombo" condition="Logged_condition" caption="Modulos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.ModuloCombo" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuleComboBox" condition="Logged_condition" caption="Modulos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.ModuleComboBox" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
           <tooltip heading="Modulos">
 				  Seleccione el Modulo<disabledText /></tooltip>
         </comboBox>

@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using ArcGIS.Desktop.Framework.Contracts;
+using ArcGIS.Desktop.Internal.KnowledgeGraph.FFP;
 using SigcatminProAddinUI.Services.Interfaces;
 
 namespace SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs
@@ -7,18 +8,23 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs
     /// <summary>
     /// Represents the ComboBox
     /// </summary>
-    internal class ModuloCombo : ComboBox
+    internal class ModuleComboBox : ComboBox
     {
         private readonly IModuleFactory _moduleFactory;
+        private readonly INotifyComboBoxService _notifyComboBoxService;
+        public static ModuleComboBox Intance;
 
         private bool _isInitialized;
 
         /// <summary>
         /// Combo Box constructor
         /// </summary>
-        public ModuloCombo()
+        public ModuleComboBox()
         {
             _moduleFactory = Program.GetService<IModuleFactory>();
+            _notifyComboBoxService = Program.GetService<INotifyComboBoxService>();
+            _notifyComboBoxService.ComboBoxAChanged += UpdateModules;
+            Intance = this;
             UpdateCombo();
         }
 
@@ -29,27 +35,8 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs
         private void UpdateCombo()
         {
             // TODO – customize this method to populate the combobox with your desired items  
-            if (_isInitialized)
-                SelectedItem = ItemCollection.FirstOrDefault(); //set the default item in the comboBox
-
-
-            if (!_isInitialized)
-            {
-                Clear();
-
-                //Add 6 items to the combobox
-                for (int i = 0; i < 6; i++)
-                {
-                    string name = string.Format("Item {0}", i);
-                    Add(new ComboBoxItem(name));
-                }
-                _isInitialized = true;
-            }
-
-
-            Enabled = true; //enables the ComboBox
-            SelectedItem = ItemCollection.FirstOrDefault(); //set the default item in the comboBox
-
+            Enabled = false; //enables the ComboBo
+            _isInitialized = true;
         }
 
         public void UpdateModules(string typeName)
@@ -58,14 +45,24 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs
             {
                 Clear();
                 var categories = _moduleFactory.Categories.FirstOrDefault(x => x.Name == typeName);
+                var moduleNames = categories.Modules?.Select(x => x.Name).ToList();
 
+                Add(new ComboBoxItem("seleccione"));
+                if (moduleNames is null) return;
                 //Add 6 items to the combobox
-                foreach (var module in categories.Modules)
-                {
-                    Add(new ComboBoxItem(module.Name));
-                }
+                foreach (var moduleName in moduleNames)
+                 {
+                     Add(new ComboBoxItem(moduleName));
+                 } 
+                SelectedItem = ItemCollection.FirstOrDefault();
+                Enabled = true;
             }
 
+        }
+        protected override void OnUpdate()
+        {
+            // Habilita o deshabilita el ComboBox dependiendo de si hay elementos
+            Enabled = ItemCollection.Any();
         }
 
         /// <summary>

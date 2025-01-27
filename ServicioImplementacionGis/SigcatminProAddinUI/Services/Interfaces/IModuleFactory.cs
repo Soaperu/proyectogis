@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.DirectoryServices.Protocols;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace SigcatminProAddinUI.Services.Interfaces
     {
         List<CategoryModuleModel> Categories { get; set; }
 
-        void RegisterModule(string categoryName, ModuleModel module);
+        void RegisterModule(string categoryName, ModuleModel module = null);
 
         public Type CreateModule(string categoryName, string moduleName);
 

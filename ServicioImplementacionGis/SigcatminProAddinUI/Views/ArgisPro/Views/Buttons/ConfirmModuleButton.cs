@@ -1,29 +1,36 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using ArcGIS.Core.CIM;
-using ArcGIS.Core.Data;
-using ArcGIS.Core.Geometry;
-using ArcGIS.Desktop.Catalog;
-using ArcGIS.Desktop.Core;
-using ArcGIS.Desktop.Editing;
-using ArcGIS.Desktop.Extensions;
-using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
-using ArcGIS.Desktop.Framework.Dialogs;
-using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Desktop.KnowledgeGraph;
-using ArcGIS.Desktop.Layouts;
-using ArcGIS.Desktop.Mapping;
+using SigcatminProAddinUI.Services.Interfaces;
+using SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs;
+using SigcatminProAddinUI.Views.WPF.Views.Layout;
 
 namespace SigcatminProAddinUI.Views.ArgisPro.Views.Buttons
 {
     internal class ConfirmModuleButton : Button
     {
+        private readonly IModuleFactory _moduleFactory;
+        public ConfirmModuleButton()
+        {
+            _moduleFactory = Program.GetService<IModuleFactory>();
+        }
         protected override void OnClick()
         {
+           string categorName =  CategoryComboBox.Intance.SelectedItem.ToString();
+           string ModuleName = ModuleComboBox.Intance.SelectedItem.ToString();
+
+            try
+            {
+                var moduleType = _moduleFactory.CreateModule(categorName, ModuleName);
+
+                MainView mainView = new MainView();
+                mainView.frameContainer.Navigate(Activator.CreateInstance(moduleType));
+                mainView.Show();
+            }
+            catch (Exception ex) { 
+            
+
+            }
+       
         }
     }
 }

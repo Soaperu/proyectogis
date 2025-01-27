@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using ArcGIS.Desktop.Internal.KnowledgeGraph.FFP;
 using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Services.Interfaces;
@@ -24,32 +25,31 @@ namespace SigcatminProAddinUI.Services.Implements
                 throw new ArgumentNullException(nameof(moduleName));
             }
 
-            var categories = Categories.Where(x => x.Name == categoryName);
-            if (categories.Any())
+            var category = Categories.FirstOrDefault(x => x.Name == categoryName);
+            if (category is null)
             {
                 throw new InvalidOperationException("no se encontro ninguna categoria con este nombre");
             }
 
-            var module = Categories.SelectMany(x => x.Modules)
-                .FirstOrDefault(x => x.Name == moduleName);
+            var module = category.Modules.FirstOrDefault(x => x.Name == moduleName);
 
-            return (Type)Activator.CreateInstance(module.Module);
+            return module.Module;
         }
 
-        public void RegisterModule(string categoryName, ModuleModel module)
+        public void RegisterModule(string categoryName, ModuleModel module = null)
         {
             if (string.IsNullOrEmpty(categoryName))
             {
                 throw new ArgumentNullException(nameof(categoryName));
             }
-            if (Categories.Any(x => x.Name == categoryName))
-            {
-               var categoria = Categories.FirstOrDefault(x => x.Name == categoryName);
+            var category = Categories.FirstOrDefault(x => x.Name == categoryName);
 
-                categoria.Modules.Add(module);
+            if (category != null)
+            {
+                category.Modules.Add(module);
+                return;
             
             }
-
             var modules = new List<ModuleModel>() { module };
 
             Categories.Add(new CategoryModuleModel {

@@ -2,28 +2,33 @@
 using ArcGIS.Desktop.Framework.Contracts;
 using SigcatminProAddinUI.Services.Interfaces;
 using SigcatminProAddinUI.Views.WPF.Views.Modulos;
+using SigcatminProAddinUI.Models;
+using System.Windows.Documents;
+using ArcGIS.Desktop.Internal.KnowledgeGraph.FFP;
 
 namespace SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs
 {
     /// <summary>
     /// Represents the ComboBox
     /// </summary>
-    internal class CategoriaCombo : ComboBox
+    internal class CategoryComboBox : ComboBox
     {
         private readonly IModuleFactory _moduleFactory;
-        private readonly ModuloCombo _moduleComboBox;
+        private readonly INotifyComboBoxService _notifyComboBoxService;
+        public static CategoryComboBox Intance;
+
         private bool _isInitialized;
 
         /// <summary>
         /// Combo Box constructor
         /// </summary>
-        public CategoriaCombo(ModuloCombo moduloCombo)
+        public CategoryComboBox()
         {
             _moduleFactory = Program.GetService<IModuleFactory>();
-            _moduleComboBox = moduloCombo;
-            _moduleFactory.RegisterModule("Evaluacion", new Models.ModuleModel { Name = "Evalucion DM",Module = typeof(EvaluacionDMView) });
-            _moduleFactory.RegisterModule("Evaluacion 2", new Models.ModuleModel { Name = "Evalucion DM", Module = typeof(EvaluacionDMView) });
+            _notifyComboBoxService = Program.GetService<INotifyComboBoxService>();
+            Intance = this;
 
+            LoadCategories();
             UpdateCombo();
         }
 
@@ -37,20 +42,19 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs
             if (_isInitialized)
                 SelectedItem = ItemCollection.FirstOrDefault(); //set the default item in the comboBox
 
-
             if (!_isInitialized)
             {
                 Clear();
 
                 var categories = _moduleFactory.Categories;
-                //Add 6 items to the combobox
+
+                Add(new ComboBoxItem("seleccione"));
                 foreach (var category in categories)
                 {        
                     Add(new ComboBoxItem(category.Name));
                 }
                 _isInitialized = true;
             }
-
 
             Enabled = true; //enables the ComboBox
             SelectedItem = ItemCollection.FirstOrDefault(); //set the default item in the comboBox
@@ -63,16 +67,24 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs
         /// <param name="item">The newly selected combo box item</param>
         protected override void OnSelectionChange(ComboBoxItem item)
         {
-
+            base.OnSelectionChange(item);
             if (item == null)
                 return;
 
             if (string.IsNullOrEmpty(item.Text))
                 return;
-
+           
             // TODO  Code behavior when selection changes.
             // 
-            _moduleComboBox.UpdateModules(item.Text);
+            _notifyComboBoxService.NotifyComboBoxAChanged(item.Text);
+        }
+
+        private void LoadCategories()
+        {
+            _moduleFactory.RegisterModule("Consultas");
+            _moduleFactory.RegisterModule("Planos");
+            _moduleFactory.RegisterModule("Evaluación", new ModuleModel { Name = "Evalucion DM", Module = typeof(EvaluacionDMView) });
+            _moduleFactory.RegisterModule("Evaluación", new ModuleModel { Name = "Carta Nacional", Module = typeof(CartaNacionalView) });
         }
 
     }

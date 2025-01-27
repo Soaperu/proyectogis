@@ -12,8 +12,8 @@ namespace SigcatminProAddinUI
 
             services.AddScoped<IUIStateService, UIStateService>();
             services.AddSingleton<IModuleFactory, ModuleFactory>();
-            services.AddSingleton<CategoriaCombo>();
-            services.AddSingleton<ModuloCombo>();
+            services.AddScoped<INotifyComboBoxService, NotifyComboBoxService>();
+
 
             return services;
         }
