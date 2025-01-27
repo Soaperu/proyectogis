@@ -67,12 +67,12 @@
                HorizontalAlignment="Left" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
               x:Name="CbxTypeConsult" Width="240" FontSize="10"
-               Height="20" Padding="0,0,0,0"/>
+               Height="20" Padding="0,0,0,0" Loaded="CbxTypeConsult_Loaded" SelectionChanged="CbxTypeConsult_SelectionChanged"/>
             <TextBlock Text="Selecciona Datum" VerticalAlignment="Bottom" FontSize="10" Margin="0,0,10,10" 
                Grid.Column="2" HorizontalAlignment="Right" FontWeight="Medium"/>
             <ComboBox Height="20" Margin="0,0,0,0"  VerticalAlignment="Center" 
              Grid.Column="3" Width="100" VerticalContentAlignment="Center" HorizontalAlignment="Right"
-             x:Name="CbxDatum" FontSize="10" Padding="0,0,0,0" />
+             x:Name="CbxDatum" FontSize="10" Padding="0,0,0,0" Loaded="CbxDatum_Loaded" SelectionChanged="CbxDatum_SelectionChanged" />
         </Grid>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
               Grid.Column="0" Grid.Row="3" HorizontalAlignment="Stretch">
@@ -144,8 +144,8 @@
                         Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
                         Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" Margin="10,0,0,0"
                         HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
-                        VerticalContentAlignment="Center" x:Name="BtnClose" FontSize="10" />
-                <Button Content="Cargar información" Height="25" Background="White" BorderBrush="#006DA0"
+                        VerticalContentAlignment="Center" x:Name="BtnClose" FontSize="10" Click="BtnClose_Click" />
+                <Button Content="Cargar Información" Height="25" Background="White" BorderBrush="#006DA0"
                         Foreground="#006DA0" Grid.Column="1" HorizontalAlignment="Center"
                         Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" Margin="0,0,0,0"
                         HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
@@ -211,7 +211,7 @@
             <Button Content="Ver Capas" Height="25" Background="#006DA0" BorderBrush="White"
                     Foreground="White" Grid.Column="6" HorizontalAlignment="Center" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold" Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                    VerticalContentAlignment="Center" x:Name="BtnVerCapas" Margin="15,0,0,0"/>    
+                    VerticalContentAlignment="Center" x:Name="BtnVerCapas" Margin="15,0,0,0"/>
         </Grid>
     </Grid>
     

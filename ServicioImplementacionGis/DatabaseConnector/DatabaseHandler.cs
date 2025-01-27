@@ -1388,6 +1388,29 @@ namespace DatabaseConnector
             };
             ExecuteNonQuery(deleteQuery, parameters);
         }
+
+        public DataTable GetRestrictedAreaType() // F_Obtiene_Tipo_AreaRestringida
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CATNOMIN_TIPO";
+            var parameters = new OracleParameter[] { };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetStatisticalIntersection(string type, string layer1, string layer2, string departmentCode, string areaType) // FT_Int_tiporesexdepa
+        {
+            string storedProcedure = "PACK_DBA_GIS.P_INT_ESTADISTICA_CARAM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("v_Tipo", OracleDbType.Varchar2, 2) { Value = type },
+                new OracleParameter("v_layer_1", OracleDbType.Varchar2, 50) { Value = layer1 },
+                new OracleParameter("v_layer_2", OracleDbType.Varchar2, 50) { Value = layer2 },
+                new OracleParameter("v_cddepa", OracleDbType.Varchar2, 20) { Value = departmentCode },
+                new OracleParameter("v_tprese", OracleDbType.Varchar2, 50) { Value = areaType }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
     }
 
 }
