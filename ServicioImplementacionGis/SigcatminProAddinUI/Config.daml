@@ -16,6 +16,7 @@
       <tabs>
         <tab id="SigcatminProAddinUI_Tab1" caption="Sigcatmin3" keytip="t0">
           <group refID="SigcatminProAddinUI_Group1" />
+          <!--<group refID="SigcatminProAddinUI_Group2" />-->
         </tab>
       </tabs>
       <groups>
@@ -23,28 +24,28 @@
               an empty group-->
         <group id="SigcatminProAddinUI_Group1" caption="Sigcatmin" appearsOnAddInTab="true" keytip="gr1">
           <!-- host controls within groups -->
-			<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" size="large" />
-			<subgroup refID="SigcatminProAddinUI_Subgroup1" />
-			<!--<subgroup refID="SigcatminProAddin_Subgroup2" />-->
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" size="large" />
+          <subgroup refID="SigcatminProAddinUI_Subgroup1" />
+          <subgroup refID="SigcatminProAddinUI_Subgroup2" />
+          <!--<subgroup refID="SigcatminProAddin_Subgroup2" />-->
 
-         
         </group>
       </groups>
-		<subgroups>
-			<subgroup id="SigcatminProAddinUI_Subgroup1" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
-				<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" size="middle" />
-				<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GraficarExcelButton" size="middle" />
-				<button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GenerarPlanoMasivoButton" size="middle" />
-			</subgroup>
-			<!--<subgroup id="SigcatminProAddin_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
-				<comboBox refID="SigcatminProAddin_View_Modulos_SelectorCategorias" />
-				<comboBox refID="SigcatminProAddin_View_Modulos_SelectorModulos" />
-				<button refID="SigcatminProAddin_View_Modulos_ConfirmationModule" size="large"/>
-			</subgroup>-->
-		</subgroups>
+      <subgroups>
+        <subgroup id="SigcatminProAddinUI_Subgroup1" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" size="middle" />
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GraficarExcelButton" size="middle" />
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GenerarPlanoMasivoButton" size="middle" />
+        </subgroup>
+        <subgroup id="SigcatminProAddinUI_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoriaCombo" />
+          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuloCombo" />
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_ConfirmModuleButton" size="large" />
+        </subgroup>
+      </subgroups>
       <controls>
         <!-- add your controls here -->
-        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" caption="Iniciar Session" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LoginButton" loadOnClick="true" smallImage="GenericButtonBlue16"  largeImage="GenericButtonBlue32" keytip="a1">
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" caption="Iniciar Session" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LoginButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a1">
           <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
         </button>
         <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" condition="Logged_condition" caption="Cerrar Sesión" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a2">
@@ -59,13 +60,25 @@
           <tooltip heading="Tooltip Heading">
 				  Generar Planos Masivos<disabledText /></tooltip>
         </button>
-        
+        <!--Controles Selector de Modulos-->
+        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoriaCombo" condition="Logged_condition" caption="Tipos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.CategoriaCombo" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+          <tooltip heading="Tipo">
+				  Seleccione el tipo de Modulo<disabledText /></tooltip>
+        </comboBox>
+        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuloCombo" condition="Logged_condition" caption="Modulos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.ModuloCombo" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+          <tooltip heading="Modulos">
+				  Seleccione el Modulo<disabledText /></tooltip>
+        </comboBox>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_ConfirmModuleButton" condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.ConfirmModuleButton" extendedCaption="Extended Caption" keytip="ConfirmarModule">
+          <tooltip heading="Confirmar">
+				  Confirmar Modulo<disabledText /></tooltip>
+        </button>
       </controls>
     </insertModule>
   </modules>
-	<conditions>
-		<insertCondition id="Logged_condition" caption="Example state">
-			<state id="isLoggedIn"></state>
-		</insertCondition>
-	</conditions>
+  <conditions>
+    <insertCondition id="Logged_condition" caption="Example state">
+      <state id="isLoggedIn"></state>
+    </insertCondition>
+  </conditions>
 </ArcGIS>
