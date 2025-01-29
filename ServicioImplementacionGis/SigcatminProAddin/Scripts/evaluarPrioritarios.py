@@ -460,7 +460,6 @@ def eval_capasvsdm( shapegeom, codigo, datum, zona):
             area_isc = round(geom_isc.area/10000.0, 4)
             variable = codigo_conce
             
-            pkg.p_ins_evaltecnica_ld(None, codigo, codigo_conce, 'SF', _sesion, area_isc, tp_conce, '', 'IT', _user)
             obj = {"codigoDM": codigo,
                     "codigoU": codigo_conce,
                     "eval": "SF",
