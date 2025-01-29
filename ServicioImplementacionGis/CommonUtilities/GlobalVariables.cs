@@ -44,7 +44,11 @@ namespace CommonUtilities
         public static string toolGetAreasOverlay = "calculoAreaSupDisp";
         public static string toolGetDemaImage = "exportImageDema";
         public static string toolGetAreaDecrese = "calculoAreaReducir";
-        
+        public static string toolGetMineNoZa = "calculoMineriaNoZa";
+        public static string toolGetMineNoRd = "calculoMineriaNoRd";
+
+
+
         // Variables obtenidas de Evaluacion DM
 
         public static string dmShpNamePath { get; set; }

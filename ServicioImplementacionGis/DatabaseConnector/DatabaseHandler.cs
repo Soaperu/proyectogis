@@ -1411,6 +1411,17 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public DataTable GetRestrictedAreaType(string type) // FT_OBTIENE_TIPORESE
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_TIPORESE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 80) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
     }
 
 }

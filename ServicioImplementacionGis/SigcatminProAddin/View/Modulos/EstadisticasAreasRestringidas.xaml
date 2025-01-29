@@ -119,7 +119,7 @@
                 <Button Content="Mineria NO" Width="90" Height="25" Background="#006DA0" BorderBrush="White"
                         Foreground="White" Grid.Column="0" HorizontalAlignment="Center" FontFamily="Roboto"
                         FontSize="10" FontWeight="bold" Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                        VerticalContentAlignment="Center" x:Name="BtnMineNo" />
+                        VerticalContentAlignment="Center" x:Name="BtnMineNo" Click="BtnMineNo_Click" />
                 <Button Content="Mineria SI" Width="90" Height="25" Background="#006DA0" BorderBrush="White"
                         Foreground="White" Grid.Column="1" HorizontalAlignment="Center" FontFamily="Roboto"
                         FontSize="10" FontWeight="bold" Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
