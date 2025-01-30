@@ -1,6 +1,7 @@
 import arcpy
 import json
 import os
+import traceback
 
 # path to log %AppData%\Roaming\Esri\ArcGISPro\ArcToolbox\History.
 

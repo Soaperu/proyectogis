@@ -422,6 +422,9 @@
     <None Update="Scripts\data_cat.sde">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\ProcessLibreDenuCode.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\evaluarPrioritariosLibreDenu.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
