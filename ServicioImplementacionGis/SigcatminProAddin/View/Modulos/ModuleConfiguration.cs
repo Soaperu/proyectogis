@@ -46,8 +46,8 @@ namespace SigcatminProAddin.View.Modulos
                 new Modulo("Límites de Áreas de Interés", typeof(LimiteAreaInteres)),
                 new Modulo("Simulación de Petitorios", typeof(SimulaPetitorios)),
                 new Modulo("Varias Cartas Nacionales", typeof(VariasCartasNacional)),
-
-
+                new Modulo("Generación Histórica DM", typeof(GeneracionHistoricaDM)),
+                new Modulo("Renuncia DM", typeof(Renuncia)),
 
 
                 new Modulo("Límite Departamental", typeof(LimiteDepartamental)),

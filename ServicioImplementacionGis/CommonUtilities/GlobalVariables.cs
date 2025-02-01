@@ -52,6 +52,7 @@ namespace CommonUtilities
         public static string CurrentNameDm { get; set; }
         public static string CurrentCodeDm { get; set; }
         public static string CurrentAreaDm { get; set; }
+        public static string CurrentTipoAreaDm { get; set; }
         public static string CurrentDatumDm { get; set; }
         public static int CurrentRadioDm { get; set; }
         public static string CurrentDepDm { get; set; }
@@ -63,6 +64,7 @@ namespace CommonUtilities
         public static string CurrentAvaiableAreDm { get; set; } // Almacena el area disponible del DM evaluado
         public static string CurrentOverlayAreDm { get; set; } // Almacena el area superpuesta del DM evaluado
         public static string CurrentTipoEx { get; set; }
+        public static string CurrentVigCat { get; set; }
         // Intersecciones con DM
         public static string listaCaramUrbana { get; set; }
         public static string listaCaramReservada { get; set; }

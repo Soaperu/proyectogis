@@ -478,7 +478,8 @@ namespace SigcatminProAddin.View.Modulos
 
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
-            int radio = int.Parse(TbxRadio.Text);
+            //int radio = int.Parse(TbxRadio.Text);
+            int radio = 0;
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
 
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");

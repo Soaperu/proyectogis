@@ -366,11 +366,20 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxZona_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            zona = CbxZona.SelectedItem.ToString();
-            if (listBoxVertices.Items.Count >= 4 && zona != null)
+            try
             {
-                BtnGraficar.IsEnabled = true;
+                zona = CbxZona.SelectedItem.ToString();
+                if (listBoxVertices.Items.Count >= 4 && zona != null)
+                {
+                    BtnGraficar.IsEnabled = true;
+                }
             }
+            catch (Exception)
+            {
+
+                //throw;
+            }
+
         }
 
         private async Task<Map> EnsureMapViewIsActiveAsync(string mapName)
@@ -415,7 +424,7 @@ namespace SigcatminProAddin.View.Modulos
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
-                
+
                 return;
             }
 
@@ -469,9 +478,14 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            if (poligonoGen == "")
+            {
+                return;
+            }
             ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Simulación de Petitorios");
             progressBar.Show();
             int datum = (int)CbxSistema.SelectedValue;
+            int radio = int.Parse(TbxRadio.Text);
             string datumStr = CbxSistema.Text;
             string zoneDm = CbxZona.SelectedValue.ToString();
             var codigoValue = "000000001";
@@ -485,6 +499,8 @@ namespace SigcatminProAddin.View.Modulos
 
             GlobalVariables.idExport = fechaArchi;
             string catastroShpName = "Catastro" + fechaArchi;
+            string catastroTouchesShpName = "CatastroTouches" + fechaArchi;
+            string catastroInterseShpName = "CatastroInterse" + fechaArchi;
             GlobalVariables.CurrentShpName = catastroShpName;
             string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
             string dmShpName = "DM" + fechaArchi;
@@ -501,7 +517,8 @@ namespace SigcatminProAddin.View.Modulos
             double maxX_Carta = 0;
             double maxY_Carta = 0;
 
-
+            DataTable dtTouches = new DataTable();
+            DataTable dtIntersec = new DataTable();
             await QueuedTask.Run(async () =>
             {
                 if (datum == 2)
@@ -603,19 +620,46 @@ namespace SigcatminProAddin.View.Modulos
                 }
 
 
-                int radio = 5;
+
                 var extentDmRadio = ObtenerExtent(minX, minY, maxX, maxY, datum, radio);
                 var extentDm = ObtenerExtent(minX, minY, maxX, maxY, datum);
                 GlobalVariables.currentExtentDM = extentDm;
 
                 string listDms = "";
+                string listDmsTouches = "";
+                string listDmsInter = "";
                 if (radio == 0)
                 {
                     listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);
+                    listDmsTouches = await featureClassLoader.IntersectFeatureClassbyGeometryTouchesAsync("Catastro", polygon, catastroTouchesShpName);
                 }
                 else
                 {
+
+
                     listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+                    //listDmsTouches = await featureClassLoader.IntersectFeatureClassbyGeometryTouchesAsync("Catastro", polygon, catastroTouchesShpName);
+                    //listDmsInter = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroInterseShpName);
+
+                    dtTouches = await featureClassLoader.IntersectFeatureClassbyGeometryTouchesDTAsync("Catastro", polygon, catastroTouchesShpName);
+                    dtIntersec = await featureClassLoader.IntersectFeatureClassbyGeometryDTAsync("Catastro", polygon, catastroTouchesShpName);
+
+                    // Eliminar filas en dt1 que tengan el mismo CODIGOU en dt2
+                   foreach (DataRow row1 in dtIntersec.Rows.Cast<DataRow>().ToList())
+                    {
+                        // Buscar si existe alguna fila en dt2 con el mismo CODIGOU
+                        bool existsInDt2 = dtTouches.AsEnumerable().Any(row2 => row2.Field<string>("CODIGO_SP") == row1.Field<string>("CODIGO_SP"));
+
+                        // Si existe, eliminar la fila de dt1
+                        if (existsInDt2)
+                        {
+                            dtIntersec.Rows.Remove(row1);
+                        }
+                    }
+
+
+
+
                 }
 
 
@@ -653,14 +697,42 @@ namespace SigcatminProAddin.View.Modulos
 
                 /*******/
                 DataTable intersectDm;
-                if (datum == datumwgs84)
-                {
-                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
-                }
-                else
-                {
-                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
-                }
+                //if (datum == datumwgs84)
+                //{
+                //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
+                //}
+                //else
+                //{
+                //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
+                //}
+                ///*INTERSECTAR*/
+                //DataTable dataTable = new DataTable();
+                //dataTable.Columns.Add("CODIGOU", typeof(string));
+                //dataTable.Columns.Add("CODIGO_SP", typeof(string));
+                //dataTable.Columns.Add("CONCESION", typeof(string));
+                //dataTable.Columns.Add("ZONA", typeof(string));
+                //dataTable.Columns.Add("TIPO_EX", typeof(string));
+                //dataTable.Columns.Add("AREASUP", typeof(decimal));
+                //DataRow dataRow = dataTable.NewRow();
+                //string codigo;
+                //string codigosp;
+                //string concesion;
+                //string zona;
+                //string tipoex;
+                //decimal areasup;
+
+                //codigo = "700005820";
+                //codigosp = "030016408";
+                //concesion = "JUAN DIEGO 2008";
+                //zona = "17";
+                //tipoex = "PE";
+                //areasup = Convert.ToDecimal(27.4439);
+                //dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
+
+                intersectDm = dtIntersec;
+
+
+                /*      */
 
                 //var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
                 //GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
@@ -689,7 +761,7 @@ namespace SigcatminProAddin.View.Modulos
 
             });
 
-            int radio = 5;
+
             var extentDmRadio = ObtenerExtent(minX, minY, maxX, maxY, datum, radio);
             try
             {
@@ -709,7 +781,6 @@ namespace SigcatminProAddin.View.Modulos
             }
 
             // Obtener el mapa Demarcacion Politica//
-
             try
             {
                 var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
@@ -764,7 +835,6 @@ namespace SigcatminProAddin.View.Modulos
 
             }
             catch (Exception ex) { }
-
 
             try
             {
@@ -887,8 +957,6 @@ namespace SigcatminProAddin.View.Modulos
             {
                 progressBar.Dispose();
             }
-
-
 
         }
 
@@ -1111,14 +1179,14 @@ namespace SigcatminProAddin.View.Modulos
 
         private void AddCoordListBox()
         {
-            string[] items = {
-                                "Punto 1: 550000; 9455000",
-                                "Punto 2: 550000; 9465000",
-                                "Punto 3: 560000; 9465000",
-                                "Punto 4: 560000; 9460000",
-                                "Punto 5: 555000; 9460000",
-                                "Punto 6: 555000; 9455000"
-                            };
+            //string[] items = {
+            //                    "Punto 1: 550000; 9455000",
+            //                    "Punto 2: 550000; 9465000",
+            //                    "Punto 3: 560000; 9465000",
+            //                    "Punto 4: 560000; 9460000",
+            //                    "Punto 5: 555000; 9460000",
+            //                    "Punto 6: 555000; 9455000"
+            //                };
 
             //string[] items = {
             //                    "Punto 1: 449000; 8597000",
@@ -1128,6 +1196,16 @@ namespace SigcatminProAddin.View.Modulos
             //                    "Punto 5: 452000; 8594000",
             //                    "Punto 6: 452000; 8597000"
             //                };
+
+            string[] items = {
+                                "Punto 1: 505000; 9408000",
+                                "Punto 2: 505000; 9404000",
+                                "Punto 3: 501000; 9404000",
+                                "Punto 4: 501000; 9405000",
+                                "Punto 5: 504000; 9405000",
+                                "Punto 6: 504000; 9408000"
+            };
+
 
             //string[] items = {
             //                    "Punto 1: 504000; 8380000",
@@ -1378,6 +1456,9 @@ namespace SigcatminProAddin.View.Modulos
         {
 
         }
+
+
+
     }
 }
 
