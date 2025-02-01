@@ -87,11 +87,34 @@ namespace SigcatminProAddin.Models.Constants
             public const int NorteMin = 70;
             public const int EsteMax = 70;
             public const int NorteMax = 70;
-            //public const int Naturaleza = 80;
-            //public const int Carta = 80;
-            //public const int Hectarea = 80;
         }
 
+        //
+        public static class ColumNamesRenuncia
+        {
+            public const string Nombre = "NOMBRE";
+            public const string Codigo = "CODIGO";
+            public const string Hectarea = "HECTAREA";
+            public const string TipoArea = "TIPO_AREA";
+            public const string FechaReg = "FECHA_REG";
+        }
 
+        public static class HeadersRenuncia
+        {
+            public const string Nombre = "Nombre";
+            public const string Codigo = "Código";
+            public const string Hectarea = "Hectárea";
+            public const string TipoArea = "Tipo Area";
+            public const string FechaReg = "Fecha Reg.";
+        }
+
+        public static class WidthsRenuncia
+        {
+            public const int Nombre = 200;
+            public const int Codigo = 100;
+            public const int Hectarea = 100;
+            public const int TipoArea = 100;
+            public const int FechaReg = 150;
+        }
     }
 }

@@ -28,13 +28,17 @@ using DevExpress.Xpf.Grid.GroupRowLayout;
 using DevExpress.DataAccess.Native.Web;
 using Newtonsoft.Json;
 using CommonUtilities.ArcgisProUtils.Models;
+using System.Security.Policy;
+
+
+
 
 namespace SigcatminProAddin.View.Modulos
 {
     /// <summary>
-    /// Lógica de interacción para GeneracionHistoricaDM.xaml
+    /// Lógica de interacción para Renuncia.xaml
     /// </summary>
-    public partial class GeneracionHistoricaDM : Page
+    public partial class Renuncia : Page
     {
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
@@ -42,8 +46,9 @@ namespace SigcatminProAddin.View.Modulos
         int datumwgs84 = 2;
         int datumpsad56 = 1;
 
-        public GeneracionHistoricaDM()
+        public Renuncia()
         {
+            InitializeComponent();
             InitializeComponent();
             AddCheckBoxesToListBox();
             CurrentUser();
@@ -52,8 +57,9 @@ namespace SigcatminProAddin.View.Modulos
             dataBaseHandler = new DatabaseHandler();
             CbxTypeConsult.SelectedIndex = 0;
             TbxRadio.Text = "5";
-
         }
+
+
 
         private void AddCheckBoxesToListBox()
         {
@@ -257,7 +263,7 @@ namespace SigcatminProAddin.View.Modulos
                     return;
                 }
                 LblCountRecords.Content = $"Resultados de Búsqueda: {countRecords.ToString()}";
-                var dmrRecords = dataBaseHandler.GetUniqueDM_H(TbxValue.Text, (int)CbxTypeConsult.SelectedValue);
+                var dmrRecords = dataBaseHandler.GetDatosDMRenuncia(TbxValue.Text, TbxValue.Text, (string)CbxTypeConsult.SelectedValue.ToString(), "");
                 calculatedIndex(DataGridResult, records, DatagridResultConstantsDM.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
                 BtnGraficar.IsEnabled = true;
@@ -268,6 +274,7 @@ namespace SigcatminProAddin.View.Modulos
                                                                     MessageConstants.Titles.Error,
                                                                     MessageBoxButton.OK,
                                                                     MessageBoxImage.Error);
+                BtnGraficar.IsEnabled = false;
                 return;
             }
 
@@ -364,7 +371,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 // Obtener el índice de la fila seleccionada
                 int focusedRowHandle = tableView.FocusedRowHandle;
-                int currentDatum = (int)CbxSistema.SelectedValue;
+                int? currentDatum = (int)CbxSistema.SelectedValue;
 
 
                 if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
@@ -443,86 +450,55 @@ namespace SigcatminProAddin.View.Modulos
             // Crear y configurar columnas
 
             // Columna de índice (número de fila)
-            GridColumn indexColumn = new GridColumn
+            //GridColumn indexColumn = new GridColumn
+            //{
+            //    Header = DatagridResultConstantsDM.Headers.Index, // Encabezado
+            //    FieldName = DatagridResultConstantsDM.ColumNames.Index,
+            //    UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
+            //    AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
+            //    VisibleIndex = 0, // Mostrar como la primera columna
+            //    Width = DatagridResultConstantsDM.Widths.Index
+            //};
+            GridColumn nombreColumn = new GridColumn
             {
-                Header = DatagridResultConstantsDM.Headers.Index, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNames.Index,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.Widths.Index
+                FieldName = DatagridResultConstantsDM.ColumNamesRenuncia.Nombre,
+                Header = DatagridResultConstantsDM.HeadersRenuncia.Nombre,
+                Width = DatagridResultConstantsDM.WidthsRenuncia.Nombre
             };
 
             GridColumn codigoColumn = new GridColumn
             {
-                FieldName = DatagridResultConstantsDM.ColumNames.Codigo, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.Headers.Codigo,    // Encabezado visible
-                Width = DatagridResultConstantsDM.Widths.Codigo            // Ancho de la columna
+                FieldName = DatagridResultConstantsDM.ColumNamesRenuncia.Codigo, // Nombre del campo en el DataTable
+                Header = DatagridResultConstantsDM.HeadersRenuncia.Codigo,    // Encabezado visible
+                Width = DatagridResultConstantsDM.WidthsRenuncia.Codigo            // Ancho de la columna
             };
 
-            GridColumn nombreColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNames.Nombre,
-                Header = DatagridResultConstantsDM.Headers.Nombre,
-                Width = DatagridResultConstantsDM.Widths.Nombre
-            };
-
-            GridColumn pe_vigcatColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNames.PeVigCat,
-                Header = DatagridResultConstantsDM.Headers.PeVigCat,
-                Width = DatagridResultConstantsDM.Widths.PeVigCat
-            };
-
-            GridColumn zonaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNames.Zona,
-                Header = DatagridResultConstantsDM.Headers.Zona,
-                Width = DatagridResultConstantsDM.Widths.Zona
-            };
-            GridColumn tipoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNames.Tipo,
-                Header = DatagridResultConstantsDM.Headers.Tipo,
-                Width = DatagridResultConstantsDM.Widths.Tipo
-            };
-            GridColumn estadoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNames.Estado,
-                Header = DatagridResultConstantsDM.Headers.Estado,
-                Width = DatagridResultConstantsDM.Widths.Estado
-            };
-            GridColumn naturalezaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNames.Naturaleza,
-                Header = DatagridResultConstantsDM.Headers.Naturaleza,
-                Width = DatagridResultConstantsDM.Widths.Naturaleza
-            };
-            GridColumn cartaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNames.Carta,
-                Header = DatagridResultConstantsDM.Headers.Carta,
-                Width = DatagridResultConstantsDM.Widths.Carta
-            };
             GridColumn hectareaColumn = new GridColumn
             {
-                FieldName = DatagridResultConstantsDM.ColumNames.Hectarea,
-                Header = DatagridResultConstantsDM.Headers.Hectarea,
-                Width = DatagridResultConstantsDM.Widths.Hectarea
+                FieldName = DatagridResultConstantsDM.ColumNamesRenuncia.Hectarea,
+                Header = DatagridResultConstantsDM.HeadersRenuncia.Hectarea,
+                Width = DatagridResultConstantsDM.WidthsRenuncia.Hectarea
+            };
+
+            GridColumn tipoareaColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesRenuncia.TipoArea,
+                Header = DatagridResultConstantsDM.HeadersRenuncia.TipoArea,
+                Width = DatagridResultConstantsDM.WidthsRenuncia.TipoArea
+            };
+            GridColumn fecharegColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesRenuncia.FechaReg,
+                Header = DatagridResultConstantsDM.HeadersRenuncia.FechaReg,
+                Width = DatagridResultConstantsDM.WidthsRenuncia.FechaReg
             };
 
             // Agregar columnas al GridControl
-            DataGridResult.Columns.Add(indexColumn);
-            DataGridResult.Columns.Add(codigoColumn);
             DataGridResult.Columns.Add(nombreColumn);
-            DataGridResult.Columns.Add(pe_vigcatColumn);
-            DataGridResult.Columns.Add(zonaColumn);
-            DataGridResult.Columns.Add(tipoColumn);
-            DataGridResult.Columns.Add(estadoColumn);
-            DataGridResult.Columns.Add(naturalezaColumn);
-            DataGridResult.Columns.Add(cartaColumn);
+            DataGridResult.Columns.Add(codigoColumn);
             DataGridResult.Columns.Add(hectareaColumn);
-
+            DataGridResult.Columns.Add(tipoareaColumn);
+            DataGridResult.Columns.Add(fecharegColumn);
         }
 
         public DataTable FilterColumns(DataTable originalTable, params string[] columnNames)
@@ -557,8 +533,9 @@ namespace SigcatminProAddin.View.Modulos
             return filteredTable;
         }
 
-        private DataTable ObtenerCoordenadas(string codigoValue, int datum)
+        private DataTable ObtenerCoordenadas(string codigoValue, int? datum)
         {
+
             DataTable filteredTable = null;
             try
             {
@@ -568,17 +545,34 @@ namespace SigcatminProAddin.View.Modulos
                         DatagridDetailsConstants.RawColumNames.CoorEsteE,
                         DatagridDetailsConstants.RawColumNames.CoorNorteE };
 
-                var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+                //var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+
+                var dmrRecords = dataBaseHandler.GetDatosDMRenuncia(codigoValue, GlobalVariables.CurrentNameDm, "4", GlobalVariables.CurrentTipoAreaDm);
+
+
                 if (dmrRecords.Rows.Count > 0)
                 {
-                    var originalDatumDm = dmrRecords.Rows[0]["SC_CODDAT"];
-                    if (datum == int.Parse(originalDatumDm.ToString()))
+                    //var originalDatumDm = dmrRecords.Rows[0]["SC_CODDAT"];
+                    if (datum == int.Parse(GlobalVariables.CurrentZoneDm.ToString()))
                     {
-                        requiredColumns = new string[] {
+
+                    }
+
+
+                    //{
+                    int zona = int.Parse(dmrRecords.Rows[0]["PE_ZONCAT"].ToString());
+                    string vigcat = dmrRecords.Rows[0]["PE_VIGCAT"].ToString();
+                    string tipoex = dmrRecords.Rows[0]["TE_TIPOEX"].ToString();
+                    CbxZona.SelectedValue = zona;
+                    GlobalVariables.CurrentZoneDm = zona.ToString();
+                    GlobalVariables.CurrentTipoEx = tipoex;
+                    GlobalVariables.CurrentVigCat = vigcat;
+
+                    requiredColumns = new string[] {
                         DatagridDetailsConstants.RawColumNames.Vertice,
                         DatagridDetailsConstants.RawColumNames.CoorEste,
                         DatagridDetailsConstants.RawColumNames.CoorNorte };
-                    }
+                    //}
                 }
 
                 filteredTable = FilterColumns(dmrRecords, requiredColumns);
@@ -652,12 +646,14 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
                     string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-                    int.TryParse(DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
-                    CbxZona.SelectedValue = zona;
+                    //int.TryParse(DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString(), out int zona);
+                    //CbxZona.SelectedValue = zona;
                     GlobalVariables.CurrentNameDm = DataGridResult.GetCellValue(focusedRowHandle, "NOMBRE")?.ToString();
                     // Mostrar el valor obtenido
 
                     string areaValue = DataGridResult.GetCellValue(focusedRowHandle, "HECTAREA")?.ToString();
+                    string tipoArea = DataGridResult.GetCellValue(focusedRowHandle, "TIPO_AREA")?.ToString();
+                    GlobalVariables.CurrentTipoAreaDm = tipoArea;
                     GlobalVariables.CurrentAreaDm = areaValue;
                     TbxArea.Text = areaValue;
                     TbxArea.IsReadOnly = true;
@@ -666,7 +662,22 @@ namespace SigcatminProAddin.View.Modulos
                     var dmrRecords = ObtenerCoordenadas(codigoValue, currentDatum);
                     DataGridDetails.ItemsSource = dmrRecords.DefaultView;
                     GraficarCoordenadas(dmrRecords);
-                    GlobalVariables.CurrentTipoEx = DataGridResult.GetCellValue(focusedRowHandle, "TIPO")?.ToString();
+
+                    //GlobalVariables.CurrentTipoEx = DataGridResult.GetCellValue(focusedRowHandle, "TIPO")?.ToString();
+                    string grafica = GlobalVariables.CurrentVigCat;
+                    //int.TryParse(DataGridResult.GetCellValue(focusedRowHandle, "PE_ZONCAT")?.ToString(), out int zona);
+                    CbxZona.SelectedValue = GlobalVariables.CurrentZoneDm;
+
+                    if (grafica == null)
+                    {
+                        BtnGraficar.IsEnabled = false;
+                    }
+                    else
+                    if (grafica.ToUpper() == "G")
+                    {
+                        BtnGraficar.IsEnabled = true;
+                    }
+
                 }
             }
         }
@@ -717,12 +728,13 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-           
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Renuncia DM");
+            progressBar.Show();
             BtnGraficar.IsEnabled = false;
             if (string.IsNullOrEmpty(TbxRadio.Text))
             {
                 //MessageBox.Show("Por favor ingrese el usuario y la contraseña.", "Error de Inicio de Sesión", MessageBoxButton.OK, MessageBoxImage.Warning);
-                string message = "Por favor, ingrese un valor de radio";
+                string message = "Por favor, ingrese un Código DM";
                 ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                  "Advertencia",
                                                                  MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -737,36 +749,30 @@ namespace SigcatminProAddin.View.Modulos
             {
                 GlobalVariables.stateDmY = false;
             }
-
-            List<string> mapsToDelete = new List<string>()
-            {
-                GlobalVariables.mapNameCatastro,
-                GlobalVariables.mapNameDemarcacionPo,
-                GlobalVariables.mapNameCartaIgn
-            };
-            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
-            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Generación Histórica DM.");
-            progressBar.Show();
+            //List<string> mapsToDelete = new List<string>()
+            //{
+            //    GlobalVariables.mapNameCatastro,
+            //    GlobalVariables.mapNameDemarcacionPo,
+            //    GlobalVariables.mapNameCartaIgn
+            //};
 
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);
             string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
-            GlobalVariables.CurrentRadioDm = radio;
+
             await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync("CATASTRO MINERO");
             int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
             string codigoValue = DataGridResult.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
             GlobalVariables.CurrentCodeDm = codigoValue;
-            string stateGraphic = DataGridResult.GetCellValue(focusedRowHandle, "PE_VIGCAT")?.ToString();
-            string zoneDm = DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
-            GlobalVariables.CurrentZoneDm = zoneDm;
+            string stateGraphic = GlobalVariables.CurrentVigCat;
+            string zoneDm = GlobalVariables.CurrentZoneDm;
+            //GlobalVariables.CurrentZoneDm = zoneDm;
             var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
-
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
                                                                                         , AppConfig.userName
                                                                                         , AppConfig.password);
-            //var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
-            //var v_zona_dm = "18";
+            var v_zona_dm = dataBaseHandler.VerifyDatumDM(codigoValue);
             string fechaArchi = DateTime.Now.Ticks.ToString();
             GlobalVariables.idExport = fechaArchi;
             string catastroShpName = "Catastro" + fechaArchi;
@@ -774,148 +780,151 @@ namespace SigcatminProAddin.View.Modulos
             string catastroShpNamePath = "Catastro" + fechaArchi + ".shp";
             string dmShpName = "DM" + fechaArchi;
             string dmShpNamePath = "DM" + fechaArchi + ".shp";
-
-
-            DataRowView rowView = (DataRowView)DataGridResult.GetRow(focusedRowHandle);
-            DataRow row = rowView.Row;
-
-            var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
-
-            await ComplementaryProcessesUtils.EvaluationDmByCodeHistorico(codigoValue, row, radio, datum);
-
-
-
-            Map map = await MapUtils.EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
-                                                                                                  // Crear instancia de FeatureClassLoader y cargar las capas necesarias
-            var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
             try
             {
-                // Itera todos items seleccionados en el ListBox de WPF
-                foreach (var item in LayersListBox.Items)
+                // Obtener el mapa Catastro//
+                zoneDm = GlobalVariables.CurrentZoneDm;
+                Map map = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
+                // Crear instancia de FeatureClassLoader y cargar las capas necesarias
+                var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+                //Carga capa Catastro
+                if (datum == datumwgs84)
                 {
-                    if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
+                }
+
+                ////Carga capa Distrito
+                //if (datum == datumwgs84)
+                //{
+                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_WGS + zoneDm, false);
+                //}
+                //else
+                //{
+                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zoneDm, false);
+                //}
+                //await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
+                //Carga capa Zona Urbana
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false); //"DATA_GIS.GPO_ZUR_ZONA_URBANA_WGS_"
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
+                }
+
+                var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
+                var extentDm = ObtenerExtent(codigoValue, datum);
+                GlobalVariables.currentExtentDM = extentDm;
+                // Llamar al método IntersectFeatureClassAsync desde la instancia
+                string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+                // Encontrando Distritos superpuestos a DM con
+                DataTable intersectDist;
+                if (datum == datumwgs84)
+                {
+                    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, codigoValue);
+                }
+                else
+                {
+                    intersectDist = dataBaseHandler.IntersectOracleFeatureClass("4", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, "DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, codigoValue);
+                }
+                CommonUtilities.DataProcessorUtils.ProcessorDataAreaAdminstrative(intersectDist);
+                DataTable orderUbigeosDM;
+                orderUbigeosDM = dataBaseHandler.GetUbigeoData(codigoValue);
+
+                //Carga capa Hojas IGN
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
+                }
+                string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                //GlobalVariables.CurrentPagesDm = listHojas;
+                // Encontrando Caram superpuestos a DM con
+                DataTable intersectCaram;
+                if (datum == datumwgs84)
+                {
+                    intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Caram84 + zoneDm, codigoValue);
+                }
+                else
+                {
+                    intersectCaram = dataBaseHandler.IntersectOracleFeatureClass("81", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_Caram56 + zoneDm, codigoValue);
+                }
+                CommonUtilities.DataProcessorUtils.ProcessorDataCaramIntersect(intersectCaram);
+
+                DataTable intersectCForestal;
+                if (datum == datumwgs84)
+                {
+                    intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_Cforestal + zoneDm, codigoValue);
+                }
+                else
+                {
+                    intersectCForestal = dataBaseHandler.IntersectOracleFeatureClass("93", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_forestal + zoneDm, codigoValue);
+                }
+                CommonUtilities.DataProcessorUtils.ProcessorDataCforestalIntersect(intersectCForestal);
+
+                DataTable intersectDm;
+                if (datum == datumwgs84)
+                {
+                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
+                }
+                else
+                {
+                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
+                }
+                //DataTable distBorder;
+                var distBorder = dataBaseHandler.CalculateDistanceToBorder(codigoValue, zoneDm, datumStr);
+                if (GlobalVariables.DistBorder != 0)
+                {
+                    GlobalVariables.DistBorder = Math.Round(Convert.ToDouble(distBorder.Rows[0][0]) / 1000.0, 3);
+                }
+                //CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listCodigoColin, out string listCodigoSup, out List<string> colectionsAreaSup);
+                //await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(map,Path.Combine(outputFolder, catastroShpNamePath));
+                await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
+                await UpdateValueAsync(catastroShpName, codigoValue);
+                CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
+                await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
+                await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
+                string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, codigoValue);
+                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
+                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
+                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
+                List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };
+                await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
+                GlobalVariables.CurrentShpName = "Catastro";
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+                await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
+                string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+                await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+                try
+                {
+                    // Itera todos items seleccionados en el ListBox de WPF
+                    foreach (var item in LayersListBox.Items)
                     {
-                        string capaSeleccionada = checkBox.Content.ToString();
-                        await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
+                        if (item is CheckBox checkBox && checkBox.IsChecked == true)
+                        {
+                            string capaSeleccionada = checkBox.Content.ToString();
+                            await LayerUtils.AddLayerCheckedListBox(capaSeleccionada, zoneDm, featureClassLoader, datum, extentDmRadio);
+                        }
                     }
                 }
-            }
-
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
-                progressBar.Dispose();
-            }
-
-            /*DEMARCACION*/
-
-            try
-            {
-                await MapUtils.CreateMapAsync(GlobalVariables.mapNameDemarcacionPo); //"DEMARCACION POLITICA"
-                Map mapD = await EnsureMapViewIsActiveAsync("DEMARCACION POLITICA");
-                featureClassLoader = new FeatureClassLoader(geodatabase, mapD, zoneDm, "99");
-                var fl = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapD, Path.Combine(outputFolder, GlobalVariables.dmShpNamePath));
-                //Carga capa Distrito
-                if (datum == datumwgs84)
+                catch (Exception ex)
                 {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
+                    MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
-                }
-                await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-                await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
-                //Carga capa Provincia
-                if (datum == datumwgs84)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
-                }
-                await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
-                await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
-                //Carga capa Departamento
-                if (datum == datumwgs84)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
-                }
-                await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
-                await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
-                //var mapView = MapView.Active as MapView;
-                SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
-                await LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Catastro");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-                progressBar.Dispose();
-            }
-
-            /*MAPA IGN*/
-            // Obtener el mapa Carta IGN//
-            try
-            {
-                await MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
-                Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCartaIgn);
-                featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
-                var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, GlobalVariables.dmShpNamePath));
-                //Carga capa Distrito
-                if (datum == datumwgs84)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DIS_DISTRITO_" + zoneDm, false);
-                }
-                await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_dist);
-                await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_dist, "NM_DIST", 7, "#4e4e4e", "Bold");
-                //Carga capa Provincia
-                if (datum == datumwgs84)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_PRO_PROVINCIA_" + zoneDm, false);
-                }
-                await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_prov);
-                await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_prov, "NM_PROV", 9, "#343434");
-
-                //Carga capa Departamento
-                if (datum == datumwgs84)
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_" + zoneDm, false);
-                }
-                else
-                {
-                    await featureClassLoader.LoadFeatureClassAsync("DATA_GIS.GPO_DEP_DEPARTAMENTO_" + zoneDm, false);
-                }
-                await SymbologyUtils.ColorPolygonSimple(featureClassLoader.pFeatureLayer_depa);
-                await LabelUtils.LabelFeatureLayer(featureClassLoader.pFeatureLayer_depa, "NM_DEPA", 12, "#000000", "Bold");
-
-                SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl1, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(255, 0, 0, 0), CIMColor.CreateRGBColor(255, 0, 0));
-                await LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl1, "Catastro");
-                string mosaicLayer;
-                if (datum == datumwgs84)
-                {
-                    mosaicLayer = FeatureClassConstants.gstrRT_IngMosaic84;
-                }
-                else
-                {
-                    mosaicLayer = FeatureClassConstants.gstrRT_IngMosaic56;
-                }
-                string queryListCartaIGN = CommonUtilities.StringProcessorUtils.FormatStringCartaIgnForSql(GlobalVariables.CurrentPagesDm);
-                await RasterUtils.AddRasterCartaIGNLayerAsync(mosaicLayer, geodatabase, mapC, queryListCartaIGN);
-                //await MapView.Active.ZoomToAsync(fl1);
-
             }
             catch (Exception ex)
             {
@@ -923,8 +932,11 @@ namespace SigcatminProAddin.View.Modulos
                 progressBar.Dispose();
             }
             progressBar.Dispose();
-            BtnGraficar.IsEnabled = true;
 
+
+
+            BtnGraficar.IsEnabled = true;
+            progressBar.Dispose();
         }
 
         private SubscriptionToken _eventToken = null;
@@ -940,8 +952,8 @@ namespace SigcatminProAddin.View.Modulos
                 // MapView.Active está disponible, llamar directamente al método
                 //_ = AddLayersBase(lyrBase, lyrCartaIGN);
                 //EnableRadioButtonsStartingWithRbtn();
-                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
-                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+                Map map = await MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+                await MapUtils.ActivateMapAsync(map);
             }
         }
         private async void OnDrawComplete(MapViewEventArgs args)
@@ -953,8 +965,8 @@ namespace SigcatminProAddin.View.Modulos
                 _eventToken = null;
             }
             // Llamar al método para agregar capas una vez que MapView.Active está disponible
-            Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync("CATASTRO MINERO");
-            await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+            Map map = await MapUtils.FindMapByNameAsync("CATASTRO MINERO");
+            await MapUtils.ActivateMapAsync(map);
 
         }
 
@@ -1164,8 +1176,8 @@ namespace SigcatminProAddin.View.Modulos
                     DrawCompleteEvent.Unsubscribe(eventToken);
                 }
                 // Activar el mapa "CATASTRO MINERO"
-                Map map = await CommonUtilities.ArcgisProUtils.MapUtils.FindMapByNameAsync(mapName);
-                await CommonUtilities.ArcgisProUtils.MapUtils.ActivateMapAsync(map);
+                Map map = await MapUtils.FindMapByNameAsync(mapName);
+                await MapUtils.ActivateMapAsync(map);
 
                 // Completar la tarea con el mapa activo
                 //tcs.SetResult(MapView.Active.Map);
@@ -1216,3 +1228,5 @@ namespace SigcatminProAddin.View.Modulos
         }
     }
 }
+
+

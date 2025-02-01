@@ -512,7 +512,7 @@ namespace CommonUtilities.ArcgisProUtils
                 await SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, valueCodeDm);
                 var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, valueCodeDm);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
-                var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
+                //var areaDisponible = JsonConvert.DeserializeObject<string>(response.ReturnValue);
                 //GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
                 LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana" };

@@ -114,6 +114,7 @@ namespace SigcatminProAddin.View.Modulos
 
             cbp.Add(new ComboBoxPairs("Por Código", 1));
             cbp.Add(new ComboBoxPairs("Por Nombre", 2));
+            cbp.Add(new ComboBoxPairs("Por Titular", 3));
 
             // Asignar la lista al ComboBox
             CbxTypeConsult.DisplayMemberPath = "_Key";

@@ -183,7 +183,7 @@
                     Foreground="White" HorizontalAlignment="Center" 
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     HorizontalContentAlignment="Center" FontFamily="Roboto"
-                    VerticalContentAlignment="Center" x:Name="BtnExample" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.Row="4" Click="BtnExample_Click" Visibility="Hidden"  />
+                    VerticalContentAlignment="Center" x:Name="BtnExample" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.Row="4" Click="BtnExample_Click" />
             </Grid>
         </Grid>
 

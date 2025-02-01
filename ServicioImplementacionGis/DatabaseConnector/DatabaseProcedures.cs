@@ -61,6 +61,8 @@ namespace DatabaseConnector
         public const string Procedure_SeleccionListaUbigeo = "PACK_DBA_SG_D_EVALGIS.P_SEL_LISTA_UBIGEO";
         public const string Procedure_ObtieneZonaporUbigeo = "PACK_DBA_SG_D_EVALGIS.P_SEL_UBIGEO_ZONA";
         public const string Procedure_ObtenerDatosdeAreasRestringida = "PACK_DBA_SG_D_EVALGIS.P_CUENTA_AREA_RESERVA";
+        public const string Procedure_ObtieneDatoRenuncia = "PACK_DBA_SIGCATMIN.P_SEL_DATOS_DM_RENUNCIA";
+
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;

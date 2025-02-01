@@ -1155,7 +1155,20 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetUniqueDM_H(string code, int type) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DM_UNIQUE_H";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         //*----------------------*
+
 
 
 
@@ -1266,6 +1279,22 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public DataTable GetDatosDMRenuncia(string vcodigo, string vnombre, string vtipo, string vtipoarea) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneDatoRenuncia;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CG_CODIGO", OracleDbType.Varchar2, 13) { Value = vcodigo },
+                new OracleParameter("PD_NOMARE", OracleDbType.Varchar2, 50) { Value = vnombre },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 2) { Value = vtipo },
+                new OracleParameter("PD_ESTADO", OracleDbType.Varchar2, 2) { Value = vtipoarea }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+
 
         public string CountRecordsAreaRestringida(string type, string search) // FT_Cuenta_Registro
         {
