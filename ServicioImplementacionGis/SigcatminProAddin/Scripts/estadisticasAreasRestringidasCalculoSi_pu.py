@@ -96,7 +96,7 @@ if __name__ == '__main__':
         DATA_GIS_GPO_DEP_NACIONAL_WGS_18 = arcpy.GetParameterAsText(0) #r"Database Connections\Connection to 10.102.0.66.sde\DESA_GIS.CATASTRO_MINERO_WGS84_18\DESA_GIS.GPO_DEP_NACIONAL_WGS_18"
         DATA_GIS_GPO_CAR_CARAM_W_18_T = arcpy.GetParameterAsText(1) #r"Database Connections\Connection to 10.102.0.66.sde\DATA_GIS.DS_CATASTRO_MINERO_WGS84_18\DATA_GIS.GPO_CAR_CARAM_WGS_18"
         Posible_1_shp = "C:\\BDGEOCATMIN\\Temporal\\Posible_1.shp"
-        Posible_2_shp = "C:\\BDGEOCATMIN\\Temporal\\Poisble_2.shp"
+        Posible_2_shp = "C:\\BDGEOCATMIN\\Temporal\\Posible_2.shp"
         pu_shp = "C:\\bdgeocatmin\\Temporal\\pu.shp"
         response = procesarZonas(DATA_GIS_GPO_DEP_NACIONAL_WGS_18, DATA_GIS_GPO_CAR_CARAM_W_18_T)
 
