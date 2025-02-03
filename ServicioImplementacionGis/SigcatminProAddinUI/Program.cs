@@ -1,14 +1,12 @@
-﻿using ArcGIS.Desktop.Framework;
-using ArcGIS.Desktop.Framework.Contracts;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System;
+﻿using System;
 using System.IO;
+using ArcGIS.Desktop.Framework;
+using ArcGIS.Desktop.Framework.Contracts;
+using Microsoft.Extensions.DependencyInjection;
 using Sigcatmin.pro.IoC;
+using SigcatminProAddinUI.Handlers;
 using SigcatminProAddinUI.Resourecs.Helpers;
 using SigcatminProAddinUI.Services.Interfaces;
-using System.Windows;
-using System.Threading.Tasks;
 
 namespace SigcatminProAddinUI
 {
@@ -19,6 +17,7 @@ namespace SigcatminProAddinUI
 
         private static IServiceProvider _serviceProvider;
         private readonly IUIStateService _UIStateService;
+        private readonly ErrorHandler _errorHandler;
         //private static IConfiguration _configuration;
         public Program()
         {
@@ -38,6 +37,7 @@ namespace SigcatminProAddinUI
             // Construir el proveedor de servicios
             _serviceProvider = services.BuildServiceProvider();
             _UIStateService = GetService<IUIStateService>();
+            _errorHandler = GetService<ErrorHandler>();
 
         }
         public static T GetService<T>()
@@ -48,39 +48,14 @@ namespace SigcatminProAddinUI
         protected override bool Initialize()
         {
             _UIStateService.InitializeStates();
-
-            // Manejo de excepciones no controladas en el hilo principal (UI Thread)
-            Application.Current.DispatcherUnhandledException += OnDispatcherUnhandledException;
-
-            AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
-
-            //TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+            _errorHandler.RegisterGlobalException();
 
             return base.Initialize();
         }
 
-        private void OnUnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            var exception = e.ExceptionObject as Exception;
-            MessageBox.Show($"{exception?.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            //HandleException(exception, "Excepción no controlada (UI Thread)");
-        }
-        private void OnDispatcherUnhandledException(object sender, System.Windows.Threading.DispatcherUnhandledExceptionEventArgs e)
-        {
-            var exception = e.Exception;
-            // Muestra el mensaje de error
-            MessageBox.Show("Ocurrio un error no controlado, vuelva a intentarlo mas tarde.", "Error no controlado", MessageBoxButton.OK, MessageBoxImage.Error);
-
-            // Evita que la aplicación se cierre
-            e.Handled = true;
-        }
-
         protected override void Uninitialize()
         {
-            // Desregistrar los eventos
-            AppDomain.CurrentDomain.UnhandledException -= OnUnhandledException;
-            //TaskScheduler.UnobservedTaskException -= OnUnobservedTaskException;
+            _errorHandler.ClearGlobalException();
             base.Uninitialize();
         }
 

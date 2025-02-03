@@ -58,6 +58,8 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+    
+    
 
     <!--<Style TargetType="{x:Type TextBox}">
      <Setter Property="SnapsToDevicePixels" Value="True"/>

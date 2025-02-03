@@ -8,6 +8,8 @@
         mc:Ignorable="d"
        WindowStartupLocation="CenterScreen" Background="#F3F3F3"
        Title="LoginView" Height="320" Width="550" ResizeMode="NoResize" WindowStyle="None" Loaded="Window_Loaded">
+
+
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,10 +27,10 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="230"/>
-            <ColumnDefinition Width="320"/>
+            <ColumnDefinition Width="auto"/>
         </Grid.ColumnDefinitions>
         <Grid Background="#006DA0" Height="80" VerticalAlignment="Top"
-            Grid.ColumnSpan="2" x:Name="gridHeader" MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
+            Grid.ColumnSpan="2" x:Name="gridHeader">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="170"/>
@@ -44,21 +46,22 @@
         </Grid>
         <Label x:Name="lblIniSesion" Content="Iniciar sesión" Grid.Row="1"
              Grid.Column="1"  VerticalAlignment="Center" 
-             Margin="8,0,0,0" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold"
+             Margin="96,0,0,0" HorizontalAlignment="Left" FontSize="16" FontWeight="Bold"
              Foreground="#FF565353"/>
-        <Image Grid.Column="0" Grid.Row="2" Width="200" HorizontalAlignment="Right"
+        <Image Grid.Row="2" Width="200" HorizontalAlignment="Center"
           Source="/SigcatminProAddinUI;component/Images/Login/logoINGEMMET.png" />
 
-        <Grid Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,0,0" Cursor="">
+        <Grid Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,0,16,0" Cursor="">
             <Grid.RowDefinitions>
                 <RowDefinition Height="30"/>
                 <RowDefinition Height="25"/>
+                <RowDefinition Height="30"/>
                 <RowDefinition Height="30"/>
                 <!--<RowDefinition Height="10"/>-->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="30"/>
-                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="220"/>
             </Grid.ColumnDefinitions>
             <Border Grid.Row="0"  Grid.ColumnSpan="2"
                   BorderBrush="#006DA0" BorderThickness="0,0,0,1.5"/>
@@ -73,18 +76,37 @@
                   Width="18"
                   Grid.Column="0"
                   Grid.Row="2"/>
+
+
             <TextBox x:Name="tbxUser"
                    Grid.Column="1" 
                    HorizontalAlignment="Stretch"
                    TextWrapping="Wrap"
-                   Text="" Style="{DynamicResource Triggers}"
+                 
+                   Text="{Binding Username, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}" 
+                   LostFocus="UsernameTextBox_LostFocus"
                    VerticalAlignment="Center"
                    Height="25"
                    TextAlignment="Center" 
                    VerticalContentAlignment="Center"
                    BorderBrush="White" BorderThickness="0" Background="#F3F3F3"
-                   Cursor="IBeam" TextChanged="tbxUser_TextChanged" KeyDown="tbxUser_KeyDown" SelectionBrush="#FFF3F3F3">
+                   Cursor="IBeam"  SelectionBrush="#FFF3F3F3" TextChanged="tbxUser_TextChanged" >
+
+                <TextBox.Resources>
+                    <Style TargetType="TextBox">
+                        <Setter Property="Validation.ErrorTemplate">
+                            <Setter.Value>
+                                <!-- Plantilla vacía para eliminar el borde rojo -->
+                                <ControlTemplate>
+                                    <AdornedElementPlaceholder/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TextBox.Resources>
             </TextBox>
+
+
 
             <!--TextChanged="passwordView_TextChanged"/>-->
             <TextBlock Grid.Column="1" Grid.Row="0"
@@ -95,24 +117,34 @@
                   IsHitTestVisible="False" 
                   Foreground="#FFA09B9B" />
 
+            <TextBlock Grid.Row="1" x:Name="ErrorUserNameBlock" Grid.Column="1" Foreground="Red" VerticalAlignment="Top" Margin="0" />
+
+
+
             <TextBox x:Name="tbxPasswordView"
                    Grid.Column="1" Grid.Row="2"
                    Cursor="" Height="25"
-                   VerticalAlignment="Center"
+                HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
                    Text="" BorderThickness="0"
                    HorizontalContentAlignment="Center"
-                   HorizontalAlignment="Stretch"
                    IsHitTestVisible="False" Background="#F3F3F3"
-                   BorderBrush="White" TextChanged="tbxPasswordView_TextChanged"/>
+                   BorderBrush="White"  />
 
-            <PasswordBox Grid.Column="1" Grid.Row="2"
-                    BorderBrush="White" Background="#F3F3F3"
+            <PasswordBox Grid.Row="2"  Grid.Column="1" 
+                     BorderBrush="White" BorderThickness="0" Background="Transparent"
                     Cursor="IBeam" Height="25" 
                     VerticalContentAlignment="Center"
                     HorizontalContentAlignment="Center"
-                    x:Name="pwdPassword" BorderThickness="0"
-                    HorizontalAlignment="Stretch" KeyDown="pwdPassword_KeyDown" 
-                               PasswordChanged="pwdPassword_PasswordChanged" GotFocus="pwdPassword_GotFocus">
+                    Tag="{Binding Password, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True}"
+                    x:Name="pwdPassword" 
+                    PasswordChanged="pwdPassword_PasswordChanged"   
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch"
+                      LostFocus="PasswordTextBox_LostFocus">
+
+
+
                 <PasswordBox.ToolTip >
                     <ToolTip x:Name="ttipMayusculas"
                               IsOpen="False" Background="White">
@@ -133,29 +165,49 @@
                         </StackPanel>
                     </ToolTip>
                 </PasswordBox.ToolTip>
+
+
+                <PasswordBox.Resources>
+                    <Style TargetType="PasswordBox">
+                        <Setter Property="Validation.ErrorTemplate">
+                            <Setter.Value>
+                                <!-- Plantilla vacía para eliminar el borde rojo -->
+                                <ControlTemplate>
+                                    <AdornedElementPlaceholder/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </PasswordBox.Resources>
             </PasswordBox>
+
+            <TextBlock Grid.Row="3" Grid.Column="1" x:Name="ErrorPasswordBlock" Foreground="Red"  TextWrapping="Wrap" VerticalAlignment="Top"  Margin="0"/>
+
             <TextBlock Grid.Column="1" Grid.Row="2"
-          x:Name="waterMarkPass" 
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          Text="Contraseña"
-          IsHitTestVisible="False" 
-          Foreground="#FFA09B9B" />
+              x:Name="waterMarkPass" 
+              HorizontalAlignment="Center"
+              VerticalAlignment="Center"
+              Text="Contraseña"
+              IsHitTestVisible="False" 
+              Foreground="#FFA09B9B" />
 
             <TextBlock x:Name="btnViewPassword"
-          Grid.Column="2" Grid.Row="2"                
-          HorizontalAlignment="Right"
-          Margin="0,0,3,4" VerticalAlignment="Bottom"
-          Width="20" Height="20" 
-          MouseLeftButtonDown="btnViewPassword_MouseLeftButtonDown" 
-          MouseLeftButtonUp="btnViewPassword_MouseLeftButtonUp" 
-          MouseLeave="btnViewPassword_MouseLeave" 
-          MouseEnter="btnViewPassword_MouseEnter" Cursor="">
+              Grid.Column="2" Grid.Row="2"                
+              HorizontalAlignment="Right"
+              Margin="0,0,3,4" VerticalAlignment="Bottom"
+              Width="20" Height="20" 
+                MouseLeftButtonDown="btnViewPassword_MouseLeftButtonDown" 
+                MouseLeftButtonUp="btnViewPassword_MouseLeftButtonUp" 
+                MouseLeave="btnViewPassword_MouseLeave" 
+                MouseEnter="btnViewPassword_MouseEnter" Cursor="">
               
-          <Image x:Name="ImgViewpassword"
-                  Source="/SigcatminProAddinUI;component/Images/Login/visible16_blue.png"/>
+              <Image x:Name="ImgViewpassword"
+                      Source="/SigcatminProAddinUI;component/Images/Login/visible16_blue.png"/>
 
             </TextBlock>
+
+
+
         </Grid>
         <Grid Grid.Row="3" Grid.Column="1" VerticalAlignment="Top" HorizontalAlignment="Center" Margin="0,0,0,0">
             <Grid.RowDefinitions>
@@ -170,7 +222,9 @@
                Grid.Column="1" HorizontalAlignment="Left" Height="30" 
                Background="#006DA0" BorderBrush="White" Foreground="White" 
                Style="{DynamicResource Esri_Button}" Cursor="Hand"
-               Click="btnLogin_Click" Margin="15,5,0,0" VerticalAlignment="Top"/>
+               Click="btnLogin_Click" Margin="15,5,0,0" VerticalAlignment="Top"
+                     Command="{Binding LoginCommand}"/>
+
             <Button x:Name="btnCancel" Content="Cancelar" Width="100" Grid.Row="0"
                Grid.Column="0" HorizontalAlignment="Left" Height="30"
                Background="White" BorderBrush="#006DA0" Foreground="#006DA0" 

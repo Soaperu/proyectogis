@@ -21,6 +21,9 @@
     <None Remove="Images\Login\warningblue32.png" />
   </ItemGroup>
   <ItemGroup>
+    <Page Remove="Views\WPF\Styles\Styles.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Config.daml" />    
     <Content Include="Images\AddInDesktop16.png" />
     <Content Include="Images\AddInDesktop32.png" />
@@ -144,6 +147,7 @@
     <Resource Include="Images\Login\visible16_blue.png" />
     <Resource Include="Images\Login\visible16_white.png" />
     <Resource Include="Images\Login\warningblue32.png" />
+    <Resource Include="Views\WPF\Styles\Styles.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\Utils\" />

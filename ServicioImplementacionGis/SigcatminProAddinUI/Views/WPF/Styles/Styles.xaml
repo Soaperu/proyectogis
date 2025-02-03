@@ -1,0 +1,19 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <!--<Style x:Key="NoValidationBorderStyle">
+        <Setter Property="Validation.ErrorTemplate">
+            <Setter.Value>
+                <ControlTemplate>
+                    <AdornedElementPlaceholder/>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    --><!-- Aplicar el estilo base a PasswordBox --><!--
+    <Style TargetType="PasswordBox" BasedOn="{StaticResource NoValidationBorderStyle}"/>-->
+
+    <!-- Aplicar el estilo base a TextBox -->
+   
+
+</ResourceDictionary>
