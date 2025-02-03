@@ -17,9 +17,9 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="35"/>
             <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
-            <RowDefinition Height="25"/>
             <RowDefinition Height="270"/>
+            <RowDefinition Height="40"/>
+            <RowDefinition Height="10"/>
             <RowDefinition Height="35"/>
         </Grid.RowDefinitions>
         <Grid Margin="0,0,0,0" VerticalAlignment="Center"
@@ -59,20 +59,28 @@ HorizontalAlignment="Stretch" Padding="20,0,0,3" x:Name="LblNumRegistros"/>
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
            Grid.Column="0" Grid.Row="2" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
                 <ColumnDefinition Width="260"/>
                 <ColumnDefinition Width="260"/>
-                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="160"/>
             </Grid.ColumnDefinitions>
-            <ComboBox  Grid.Column="1" Width="150" Height="25"  HorizontalAlignment="Left"
-       VerticalAlignment="Center" x:Name="CbxSistema" SelectionChanged="CbxSistema_SelectionChanged" Loaded="CbxSistema_Loaded" />
-
-
+            <ComboBox  Grid.Column="0" Width="200" Height="25"  HorizontalAlignment="Left"
+             VerticalAlignment="Center" x:Name="CbxSistema" SelectionChanged="CbxSistema_SelectionChanged" Loaded="CbxSistema_Loaded" />
         </Grid>
-        
 
+        <dxg:GridControl  Grid.Column="0" Grid.Row="4" Grid.RowSpan="2" FontSize="10" Margin="0,0,0,0" x:Name="DataGridRecordsToProcess"
+                          CustomUnboundColumnData="DataGridRecordsToProcess_CustomUnboundColumnData">
+            <dxg:GridControl.Columns>
+                <dxg:GridColumn Header="Nº" UnboundType="Integer" FieldName="RowNumber" ReadOnly="True" Width="40"/>
+                <dxg:GridColumn Header="Código" Binding="{Binding CODIGO}" Width="*"/>
+                <dxg:GridColumn Header="Datum" Binding="{Binding DATUM}" Width="*"/>
 
-
+            </dxg:GridControl.Columns>
+            <dxg:GridControl.View>
+                <dxg:TableView  x:Name="DataGridRecordsToProcessTableView" ShowAutoFilterRow="False"
+                AllowColumnFiltering="False"
+                ShowGroupPanel="False"  />  
+            </dxg:GridControl.View>
+        </dxg:GridControl>
 
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
            Grid.Column="0" Grid.Row="7">
@@ -111,12 +119,13 @@ HorizontalAlignment="Stretch" Padding="20,0,0,3" x:Name="LblNumRegistros"/>
 
 
             
-            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" IsEnabled="False"
+            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" IsEnabled="True"
              Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
              Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                  HorizontalContentAlignment="Center" FontFamily="Roboto"
              VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="BtnGraficar_Click" />
         </Grid>
+
 
     </Grid>
 </Page>

@@ -122,6 +122,39 @@ namespace CommonUtilities.ArcgisProUtils
             var dmrRecords = dataBaseHandler.GetUniqueDM(valueCodeDm, 1);
             return dmrRecords;
         }
+
+        public async static Task CreateLibreDenuMap(string valueCodeDM)
+        {
+            string lyrPath = $"cata_{valueCodeDM}.shp";
+            List<string> LayersListBox = new List<string>() { "Caram", "Catastro Forestal" };
+
+            var sdeHelper = new SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+            List<string> mapsToDelete = new List<string>()
+            {
+                "Libre Denunciabilidad"
+            };
+
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
+            string zoneDm = "18";
+            string datum = "02";
+            await MapUtils.CreateMapAsync("Libre Denunciabilidad");
+            try
+            {
+                Map map = await MapUtils.EnsureMapViewIsActiveAsync("Libre Denunciabilidad");
+            }
+            catch
+            {
+
+            }
+
+
+
+        }
+
         public async static Task<ResultadoEvaluacionModel> EvaluationDmByCode(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum=2, List<string>? LayersListBox = null)
         {
             if(LayersListBox is null)

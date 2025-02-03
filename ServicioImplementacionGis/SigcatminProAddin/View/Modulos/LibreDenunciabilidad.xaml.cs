@@ -1,4 +1,5 @@
 ﻿using ArcGIS.Desktop.Core.Geoprocessing;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 using CommonUtilities;
 using CommonUtilities.ArcgisProUtils;
 using CommonUtilities.ArcgisProUtils.Models;
@@ -22,6 +23,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static ArcGIS.Desktop.Internal.Mapping.Views.PropertyPages.Map.TransformationViewModel;
+using ArcGIS.Desktop.Core;
+using DevExpress.Xpf.Grid;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -78,6 +81,15 @@ namespace SigcatminProAddin.View.Modulos
             dtTotalOfDms = _dataBaseHandler.GetCodigosLibreDenu();
         }
 
+        private void DataGridRecordsToProcess_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
+        {
+            if (e.Column.FieldName == "RowNumber" && e.IsGetData)
+            {
+                // Obtén el índice de la fila y asígnalo como número de registro
+                e.Value = e.ListSourceRowIndex + 1;
+            }
+        }
+
 
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
@@ -89,11 +101,18 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
+        public static async Task<string> GetDefaultScratchPath()
+        {
+            return await QueuedTask.Run(() =>
+            {
+                return Project.Current.HomeFolderPath ;
+            });
+        }
+
         private async void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
-            DataTable dtRecords = _dataBaseHandler.GetCodigosLibreDenu();
 
-            foreach (DataRow dtRecord in dtRecords.Rows)
+            foreach (DataRow dtRecord in dtDMsToProcess.Rows)
             {
                 var codigo = dtRecord["CODIGO"].ToString();
                 string datum = dtRecord["DATUM"].ToString();
@@ -116,9 +135,10 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-        private void BtnGraficar_Click(object sender, RoutedEventArgs e)
+        private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-
+            string scratch = await GetDefaultScratchPath();
+            System.Windows.MessageBox.Show(scratch);
         }
 
         private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -151,8 +171,24 @@ namespace SigcatminProAddin.View.Modulos
                     // Si es "Ambos", tomamos todos los datos
                     dtDMsToProcess = dtTotalOfDms.Copy();
                 }
-                
-                
+                else
+                {
+                    dtDMsToProcess = null;
+
+                }
+                if (dtDMsToProcess != null)
+                {
+                    LblNumRegistros.Content = dtDMsToProcess.Rows.Count.ToString();
+                    DataGridRecordsToProcess.ItemsSource = dtDMsToProcess;
+                }
+                else
+                {
+                    LblNumRegistros.Content = "0";
+                    DataGridRecordsToProcess.ItemsSource = null;
+                }
+
+
+
             }
             else
             {
@@ -213,5 +249,7 @@ namespace SigcatminProAddin.View.Modulos
                 _reportesLibreDenunciabilidad.ExportXLSReporte(dataTable, filePath);
             }
         }
+
+       
     }
 }

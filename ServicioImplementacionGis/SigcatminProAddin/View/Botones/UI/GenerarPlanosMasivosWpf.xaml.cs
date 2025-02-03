@@ -143,33 +143,7 @@ namespace SigcatminProAddin.View.Botones.UI
             return headers;
         }
 
-        //private Dictionary<string, List<string>> GetColumnData(string filePath, List<string> columnHeaders)
-        //{
-
-        //    using (var workbook = new XLWorkbook(filePath))
-        //    {
-        //        var worksheet = workbook.Worksheet(1); // Leer la primera hoja
-
-        //        foreach (var header in columnHeaders)
-        //        {
-        //            columnData[header] = new List<string>();
-        //        }
-
-        //        // Leer las filas comenzando desde la segunda fila
-        //        foreach (var row in worksheet.RowsUsed().Skip(1))
-        //        {
-        //            int columnIndex = 1;
-        //            foreach (var header in columnHeaders)
-        //            {
-        //                var cellValue = row.Cell(columnIndex).GetValue<string>();
-        //                columnData[header].Add(cellValue);
-        //                columnIndex++;
-        //            }
-        //        }
-        //    }
-        //    return columnData;
-        //}
-
+        
         private Dictionary<string, List<string>> GetColumnDataWithEPPlus(string filePath, List<string> columnHeaders)
         {
             //var columnData = new Dictionary<string, List<string>>();
