@@ -1154,6 +1154,18 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable SelectByUbigeo(string type, string data) // FT_Selecciona_x_Ubigeo
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_LISTA_UBIGEO";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 100) { Value = data }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         //*----------------------*
 
 
@@ -1412,7 +1424,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public DataTable GetRestrictedAreaType(string type) // FT_OBTIENE_TIPORESE
+        public DataTable GetRestrictedAreaTypeArg(string type) // FT_OBTIENE_TIPORESE
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_TIPORESE";
             var parameters = new OracleParameter[]
@@ -1422,6 +1434,7 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
     }
 
 }

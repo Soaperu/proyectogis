@@ -426,6 +426,9 @@
     <None Update="Scripts\estadisticasAreasRestringidasCalculoNo_za.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\estadisticasAreasRestringidasCalculoSi_pu.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\evaluarPrioritariosLibreDenu.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

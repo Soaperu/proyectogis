@@ -46,7 +46,7 @@ namespace CommonUtilities
         public static string toolGetAreaDecrese = "calculoAreaReducir";
         public static string toolGetMineNoZa = "calculoMineriaNoZa";
         public static string toolGetMineNoRd = "calculoMineriaNoRd";
-
+        public static string toolGetMineSiPu = "calculoMineriaSiPu";
 
 
         // Variables obtenidas de Evaluacion DM

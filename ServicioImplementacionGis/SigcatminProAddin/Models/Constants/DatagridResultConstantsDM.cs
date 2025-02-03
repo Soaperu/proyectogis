@@ -87,11 +87,44 @@ namespace SigcatminProAddin.Models.Constants
             public const int NorteMin = 70;
             public const int EsteMax = 70;
             public const int NorteMax = 70;
-            //public const int Naturaleza = 80;
+            public const int Naturaleza = 80;
             //public const int Carta = 80;
             //public const int Hectarea = 80;
         }
 
+        public static class ColumNamesEstadisticasAR
+        {
+            public const string Select = "SELEC";
+            public const string TpReset = "TP_RESE";
+            public const string NmTprese = "NM_TPRESE";
+            public const string Area = "AREA";
+            public const string Canti = "CANTI";
+            public const string AreaNeta = "AREA_NETA";
+            public const string Porcen = "PORCEN";
+        }
+
+        public static class HeadersEstadisticasAR
+        {
+            public const string Select = "Select";
+            public const string TpReset = "TP_RESE";
+            public const string NmTprese = "NM_TPRESE";
+            public const string Area = "AREA";
+            public const string Canti = "CANTI";
+            public const string AreaNeta = "AREA_NETA";
+            public const string Porcen = "PORCEN (%)";
+        }
+
+        public static class WidthsEstadisticasAR
+        {
+            public const int Select = 30;
+            public const int TpReset = 150;
+            public const int NmTprese = 50;
+            public const int Area = 50;
+            public const int Canti = 80;
+            public const int AreaNeta = 80;
+            public const int Porcen = 80;
+
+        }
 
     }
 }

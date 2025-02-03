@@ -73,7 +73,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+                #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -1174,7 +1174,19 @@ namespace CommonUtilities.ArcgisProUtils
                         elementoParaConsulta = "PROYECTO ESPECIAL";
                     }
                     break;
-
+                case "AREA NATURAL - USO DIRECTO":
+                    code = "30";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
                 case "AREA NATURAL - USO INDIRECTO":
                     code = "31";
                     if (v_sistema == "2")
@@ -1182,6 +1194,32 @@ namespace CommonUtilities.ArcgisProUtils
                         table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
                         table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
                         elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA NATURAL - AMORTIGUAMIENTO":
+                    code = "32";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "PROYECTO ESPECIAL (no hidráulicos)":
+                    code = "37";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "PROYECTO ESPECIAL";
                     }
                     else
                     {
@@ -1198,7 +1236,19 @@ namespace CommonUtilities.ArcgisProUtils
                         elementoParaConsulta = "OTRA AREA RESTRINGIDA";
                     }
                     break;
-
+                case "PROPUESTA DE AREA NATURAL":
+                    code = "38";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "PROPUESTA DE AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
                 case "SITIO RAMSAR":
                 case "AREA DE DEFENSA NACIONAL":
                 case "ANAP":
@@ -1228,19 +1278,58 @@ namespace CommonUtilities.ArcgisProUtils
 
                     break;
                 case "ZONA ARQUEOLOGICA":
+                case "RED VIAL NACIONAL":
+                case "POSIBLE ZONA URBANA":
                     // Podrías asignar un code distinto, si tu original lo pide
                     code = "14";
                     if (v_sistema == "2")
                     {
-                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table1 = " "; //FeatureClassConstants.gstrFC_DepNacional + v_zona;
                         table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
                         //elementoParaConsulta = "OTRA AREA RESTRINGIDA";
                         v_codigo = " ";
                     }
                     break;
-
+                case "AREA DE CONSERVACION PRIVADA":
+                    code = "42";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA DE CONSERVACION MUNICIPAL Y OTROS":
+                    code = "43.0";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
                 // Y así sucesivamente para cada caso...
-
+                case "AREA DE EXPANSION URBANA":
+                    code = "31";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "ZONA URBANA";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
                 default:
                     // Si no coincide con ninguno, podrías retornar un DataTable vacío
                     // o lanzar una excepción controlada:
