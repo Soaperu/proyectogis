@@ -251,7 +251,7 @@ namespace SigcatminProAddin.View.Modulos
                 Width = 50,
                 EditSettings = new CheckEditSettings
                 {
-
+                    
                     //TrueValue = true,        // Valor asignado cuando está marcado
                     //FalseValue = false,      // Valor asignado cuando está desmarcado
                     IsThreeState = true,     // Permite un estado indeterminado (null)
@@ -640,8 +640,8 @@ namespace SigcatminProAddin.View.Modulos
                 /*************************************/
 
                 // Encontrando Distritos superpuestos a DM con
-                ArcGIS.Core.Data.QueryFilter filter =
-                   new ArcGIS.Core.Data.QueryFilter()
+                QueryFilter filter =
+                   new QueryFilter()
                    {
                        WhereClause = queryClause
                    };

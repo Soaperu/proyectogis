@@ -1155,6 +1155,18 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable SelectByUbigeo(string type, string data) // FT_Selecciona_x_Ubigeo
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_LISTA_UBIGEO";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 100) { Value = data }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         //*----------------------*
 
 
@@ -1390,16 +1402,46 @@ namespace DatabaseConnector
             ExecuteNonQuery(deleteQuery, parameters);
         }
 
-        public DataTable GetCodigosLibreDenu()
+        // public DataTable GetCodigosLibreDenu()
+        // {
+        //     string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_COD_LIBDENU";
+        //     var parameters = new OracleParameter[]
+        //     {
+             
+        public DataTable GetRestrictedAreaType() // F_Obtiene_Tipo_AreaRestringida
         {
-            string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_COD_LIBDENU";
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CATNOMIN_TIPO";
+            var parameters = new OracleParameter[] { };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetStatisticalIntersection(string type, string layer1, string layer2, string departmentCode, string areaType) // FT_Int_tiporesexdepa
+        {
+            string storedProcedure = "PACK_DBA_GIS.P_INT_ESTADISTICA_CARAM";
             var parameters = new OracleParameter[]
             {
-             
+                new OracleParameter("v_Tipo", OracleDbType.Varchar2, 2) { Value = type },
+                new OracleParameter("v_layer_1", OracleDbType.Varchar2, 50) { Value = layer1 },
+                new OracleParameter("v_layer_2", OracleDbType.Varchar2, 50) { Value = layer2 },
+                new OracleParameter("v_cddepa", OracleDbType.Varchar2, 20) { Value = departmentCode },
+                new OracleParameter("v_tprese", OracleDbType.Varchar2, 50) { Value = areaType }
             };
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public DataTable GetRestrictedAreaTypeArg(string type) // FT_OBTIENE_TIPORESE
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_TIPORESE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 80) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
     }
 
 }

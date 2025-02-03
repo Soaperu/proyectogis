@@ -13,6 +13,8 @@ using ArcGIS.Desktop.Core.Geoprocessing;
 using System.Windows;
 using ArcGIS.Desktop.Internal.Catalog.Wizards.CreateFeatureClass;
 using ArcGIS.Desktop.Core;
+using System.Data;
+using DatabaseConnector;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -28,6 +30,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         // Variables para almacenar los FeatureLayers específicos
         public FeatureLayer pFeatureLayer_dm { get; private set; }
+        public FeatureLayer pFeatureLayer_depaNac { get; private set; }
         public FeatureLayer pFeatureLayer_depa { get; private set; }
         public FeatureLayer pFeatureLayer_prov { get; private set; }
         public FeatureLayer pFeatureLayer_dist { get; private set; }
@@ -71,7 +74,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+                #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -252,6 +255,13 @@ namespace CommonUtilities.ArcgisProUtils
 
         public static List<FeatureClassInfo> FeatureClassMappings = new List<FeatureClassInfo>
         {
+            // Dep. Nacional
+            new FeatureClassInfo
+            {
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_DepNacional + v_zona_dm,
+                LayerName = "Departamento_Nacional",
+                VariableName = "pFeatureLayer_depaNac"
+            },
             // Departamento
             new FeatureClassInfo
             {
@@ -1132,6 +1142,239 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
+        public static DataTable GetDataForElemento(
+                                                string sele_elemento,
+                                                string v_sistema,
+                                                string v_zona,
+                                                string v_codigo
+                                            )
+        {
+            // Este DataTable será el que devuelva cls_Oracle
+            DataTable result = new DataTable();
+
+            // Ajusta según tu lógica real
+            // code = primer parámetro de FT_Int_tiporesexdepa
+            // table1, table2 = segundo y tercer parámetro
+            string code = "";
+            string table1 = string.Empty;
+            string table2 = string.Empty;
+            string elementoParaConsulta = sele_elemento;
+
+            
+            // Sólo un ejemplo de switch para "sele_elemento".
+            // Ajusta según tus necesidades reales:
+            switch (sele_elemento)
+            {
+                case "ZONA URBANA":
+                    // De tu VB original se ve que usabas code=34 (ejemplo),
+                    // y las tablas "DESA_GIS.GPO_DEP_NACIONAL_WGS_18" y
+                    // "DATA_GIS.GPO_CAR_CARAM_WGS_18" si v_sistema=="2"
+                    code = "34";
+                    if (v_sistema == "2") //WGS_84
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;//$"DATA_GIS.GPO_DEP_NACIONAL_WGS_{v_zona}";
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;//$"DATA_GIS.GPO_CAR_CARAM_WGS_{v_zona}";
+                    }
+                    else
+                    {
+                        // Ajusta en caso no sea WGS_84
+                        table1 = $"DATA_GIS.GPO_DEP_NACIONAL_{v_zona}";
+                        table2 = $"DATA_GIS.GPO_CAR_CARAM_{v_zona}";
+                    }
+                    break;
+
+                case "PROYECTO ESPECIAL - HIDRAULICOS":
+                    code = "36";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona; ;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        // A veces en tu código original enviabas "PROYECTO ESPECIAL" 
+                        // como último parámetro, en lugar de sele_elemento:
+                        elementoParaConsulta = "PROYECTO ESPECIAL";
+                    }
+                    else
+                    {
+                        table1 = $"DATA_GIS.GPO_DEP_NACIONAL_{v_zona}";
+                        table2 = $"DATA_GIS.GPO_CAR_CARAM_{v_zona}";
+                        elementoParaConsulta = "PROYECTO ESPECIAL";
+                    }
+                    break;
+                case "AREA NATURAL - USO DIRECTO":
+                    code = "30";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA NATURAL - USO INDIRECTO":
+                    code = "31";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA NATURAL - AMORTIGUAMIENTO":
+                    code = "32";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "PROYECTO ESPECIAL (no hidráulicos)":
+                    code = "37";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "PROYECTO ESPECIAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+
+                case "CLASIFICACION DIVERSA":
+                    code = "39";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "OTRA AREA RESTRINGIDA";
+                    }
+                    break;
+                case "PROPUESTA DE AREA NATURAL":
+                    code = "38";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "PROPUESTA DE AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "SITIO RAMSAR":
+                case "AREA DE DEFENSA NACIONAL":
+                case "ANAP":
+                case "ANAP INGEMMET":
+                case "SITIO HISTORICO DE BATALLA":
+                case "PAISAJE CULTURAL":
+                case "ZONA DE RIESGO NO MITIGABLE":
+                case "ECOSISTEMA FRAGIL":
+                case "RESERVA INDIGENA":
+                case "RESERVA TERRITORIAL":
+                case "CONCESION FORESTAL":
+                    code = "39";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                    }
+
+                    break;
+                case "PUERTO Y/O AEROPUERTOS":
+                    code = "40";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                    }
+
+                    break;
+                case "ZONA ARQUEOLOGICA":
+                case "RED VIAL NACIONAL":
+                case "POSIBLE ZONA URBANA":
+                    // Podrías asignar un code distinto, si tu original lo pide
+                    code = "14";
+                    if (v_sistema == "2")
+                    {
+                        table1 = " "; //FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        //elementoParaConsulta = "OTRA AREA RESTRINGIDA";
+                        v_codigo = " ";
+                    }
+                    break;
+                case "AREA DE CONSERVACION PRIVADA":
+                    code = "42";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA DE CONSERVACION MUNICIPAL Y OTROS":
+                    code = "43.0";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                // Y así sucesivamente para cada caso...
+                case "AREA DE EXPANSION URBANA":
+                    code = "31";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "ZONA URBANA";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                default:
+                    // Si no coincide con ninguno, podrías retornar un DataTable vacío
+                    // o lanzar una excepción controlada:
+                    // throw new Exception($"Elemento '{sele_elemento}' no manejado en switch.");
+                    break;
+            }
+
+            // Llamada real a la librería (ajusta nombres de parámetros y return):
+            if (code != "" && !string.IsNullOrEmpty(table1) && !string.IsNullOrEmpty(table2))
+            {
+                // Suponiendo que cls_Oracle.FT_Int_tiporesexdepa tiene la firma:
+                //   DataTable FT_Int_tiporesexdepa(int code, string table1, string table2, string codigo, string elemento)
+                DatabaseHandler dataBaseHandler = new DatabaseHandler();
+                result = dataBaseHandler.GetStatisticalIntersection(code, table1, table2, v_codigo, elementoParaConsulta);
+            }
+
+            return result;
+        }
+
 
     }
     public class FeatureClassInfo
@@ -1249,6 +1492,7 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_IgnRaster84 = "DATA_GIS.DS_IGN_CARTA_NACIONAL_2016_W84";
         public const string gstrRT_IngMosaic56 = "DATA_GIS.MD_IGN_CARTA_56";
         public const string gstrRT_IngMosaic84 = "DATA_GIS.MD_IGN_CARTA_84";
+        public const string gstrFC_DepNacional = "DATA_GIS.GPO_DEP_NACIONAL_WGS_";
 
         // Agregar más constantes según sea necesario
         // Catastro Histórico

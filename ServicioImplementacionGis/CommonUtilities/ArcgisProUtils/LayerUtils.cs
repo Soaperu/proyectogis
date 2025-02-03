@@ -534,5 +534,24 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             });
         }
+
+        public async static Task<FeatureClass> GetFeatureClass(Geodatabase geodatabase, string featureClassName)
+        {
+            if (geodatabase == null)
+                throw new ArgumentNullException(nameof(geodatabase));
+
+            if (string.IsNullOrEmpty(featureClassName))
+                throw new ArgumentException("El nombre de la feature class no puede ser nulo o vacío.", nameof(featureClassName));
+            return await QueuedTask.Run(() =>
+            {
+                // Abre el dataset (FeatureClass) dentro de la geodatabase
+                FeatureClass featureClass = geodatabase.OpenDataset<FeatureClass>(featureClassName);
+                if (featureClass == null)
+                    throw new InvalidOperationException($"No se encontró la FeatureClass '{featureClassName}' en la geodatabase.");
+                return featureClass;
+            });
+
+
+        }
     }
 }
