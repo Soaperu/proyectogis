@@ -1509,6 +1509,33 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetDMOverlapByDay(string fechaInicio, string fechaFin)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMSUPERPUESTOXDIA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("FECREPO", OracleDbType.Varchar2, 80) { Value = "" },
+                new OracleParameter("FECREPO_INICIO", OracleDbType.Varchar2, 80) { Value = fechaInicio},
+                new OracleParameter("FECREPO_FIN", OracleDbType.Varchar2, 80) { Value = fechaFin },
+                new OracleParameter("TIPOCON", OracleDbType.Varchar2, 80) { Value = "2" },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDetailsofDMOverlapByDay(string fechaInicio, string fechaFin)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMSUPERPUESTOXDIA_DET";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("FECREPO", OracleDbType.Varchar2, 80) { Value = "" },
+                new OracleParameter("FECREPO_INICIO", OracleDbType.Varchar2, 80) { Value = fechaInicio},
+                new OracleParameter("FECREPO_FIN", OracleDbType.Varchar2, 80) { Value = fechaFin },
+                new OracleParameter("TIPOCON", OracleDbType.Varchar2, 80) { Value = "2" },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
     }
 
 }

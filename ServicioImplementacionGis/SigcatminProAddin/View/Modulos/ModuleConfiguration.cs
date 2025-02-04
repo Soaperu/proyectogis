@@ -56,6 +56,7 @@ namespace SigcatminProAddin.View.Modulos
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))
                 new Modulo("Estadística de Áreas Restringidas", typeof(EstadisticasAreasRestringidas)),
+                new Modulo("Superpuesto Por día", typeof(SuperpuestoPorDia)),
             }),
             new CategoriaModulo("Planos", new List<Modulo>
             {
