@@ -1078,7 +1078,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // Si hay valores en la lista, une todos los elementos con comas
                 if (valuesField.Count > 0)
                 {
-                    result = string.Join(",", valuesField.Distinct().ToList());
+                    result = string.Join(", ", valuesField.Distinct().ToList());
                 }
             });
 
@@ -1128,7 +1128,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // Si hay valores en la lista, une todos los elementos con comas
                 if (valuesField.Count > 0)
                 {
-                    result = string.Join(",", valuesField.Distinct().ToList()); // Sin elementos duplicados
+                    result = string.Join(", ", valuesField.Distinct().ToList()); // Sin elementos duplicados
                 }
             });
 

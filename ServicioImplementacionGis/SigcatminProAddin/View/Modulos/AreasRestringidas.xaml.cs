@@ -710,8 +710,8 @@ namespace SigcatminProAddin.View.Modulos
 
                             break;
                         default:
-                            envelope = featureClassLoader.pFeatureLayer_rese.QueryExtent();
-                            using (RowCursor rowCursor = featureClassLoader.pFeatureLayer_rese.GetFeatureClass().Search(filter, false))
+                            envelope = featureClassLoader.pFeatureLayer_caram.QueryExtent();
+                            using (RowCursor rowCursor = featureClassLoader.pFeatureLayer_caram.GetFeatureClass().Search(filter, false))
                             {
                                 while (rowCursor.MoveNext())
                                 {
