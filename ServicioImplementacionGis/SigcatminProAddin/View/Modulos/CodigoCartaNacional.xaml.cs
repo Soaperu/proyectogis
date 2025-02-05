@@ -65,7 +65,7 @@ namespace SigcatminProAddin.View.Modulos
             AddCheckBoxesToListBox();
             CurrentUser();
             ConfigureDataGridResultColumns();
-            ConfigureDataGridDetailsColumns();
+            //ConfigureDataGridDetailsColumns();
             dataBaseHandler = new DatabaseHandler();
             CbxTypeConsult.SelectedIndex = 0;
             TbxRadio.Text = "5";
@@ -81,7 +81,7 @@ namespace SigcatminProAddin.View.Modulos
             TbxValue.ToolTip = toolTip;
         }
 
-        private void ConfigureDataGridDetailsColumns()
+        /*private void ConfigureDataGridDetailsColumns()
         {
             var tableView = DataGridDetails.View as DevExpress.Xpf.Grid.TableView;
             DataGridDetails.Columns.Clear();
@@ -116,7 +116,7 @@ namespace SigcatminProAddin.View.Modulos
             DataGridDetails.Columns.Add(esteColumn);
             DataGridDetails.Columns.Add(norteColumn);
 
-        }
+        }*/
         private void ConfigureDataGridResultColumns()
         {
             // Obtener la vista principal del GridControl
@@ -318,7 +318,7 @@ namespace SigcatminProAddin.View.Modulos
         private void ClearDatagrids()
         {
             //DataGridResult.ItemsSource = null;
-            DataGridDetails.ItemsSource = null;
+            //DataGridDetails.ItemsSource = null;
         }
 
         public void ClearControls()
@@ -352,7 +352,23 @@ namespace SigcatminProAddin.View.Modulos
 
         private void DataGridResultTableView_FocusedRowChanged(object sender, DevExpress.Xpf.Grid.FocusedRowChangedEventArgs e)
         {
+            if (e.NewRow != null)
+            {
+                var selectedRow = (DataRowView)e.NewRow;
 
+                string zoneDm = selectedRow["ZONA"]?.ToString();
+                string esteMinCarta = selectedRow["XMIN"]?.ToString();
+                string norteMinCarta = selectedRow["YMIN"]?.ToString();
+                string esteMaxCarta = selectedRow["XMAX"]?.ToString();
+                string norteMaxCarta = selectedRow["YMAX"]?.ToString();
+
+                TextBoxEsteMinimo.Text = esteMinCarta;
+                TextBoxNorteMinimo.Text = norteMinCarta;
+                TextBoxEsteMaximo.Text = esteMaxCarta;
+                TextBoxNorteMaximo.Text = norteMaxCarta;
+                CbxZona.SelectedValue = zoneDm;
+                DataGridDetailsBoundary.IsEnabled = true;
+            }
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, DevExpress.Xpf.Grid.GridColumnDataEventArgs e)
@@ -420,9 +436,8 @@ namespace SigcatminProAddin.View.Modulos
                 }
                 //calculatedIndex(DataGridResult, dmrRecords, DatagridResultConstants.ColumNames.Index);
                 DataGridResult.ItemsSource = dmrRecords.DefaultView;
-                int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
-                string zoneDm = DataGridResult.GetCellValue(focusedRowHandle, "ZONA")?.ToString();
-                CbxZona.SelectedValue = zoneDm;
+
+
             }
             catch (Exception ex)
             {
@@ -455,6 +470,48 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            bool isValid = true;
+            int este_min = 0;
+            int norte_min = 0;
+            int este_max = 0;
+            int norte_max = 0;
+
+            if (!int.TryParse(TextBoxEsteMinimo.Text, out este_min))
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "El valor de 'Este Mínimo' debe ser un número.", "Error de Validación",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                isValid = false;
+            }
+
+            if (!int.TryParse(TextBoxNorteMinimo.Text, out norte_min))
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "El valor de 'Norte Mínimo' debe ser un número.", "Error de Validación",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                isValid = false;
+            }
+
+            if (!int.TryParse(TextBoxEsteMaximo.Text, out este_max))
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "El valor de 'Este Máximo' debe ser un número.", "Error de Validación",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                isValid = false;
+            }
+
+            if (!int.TryParse(TextBoxNorteMaximo.Text, out norte_max))
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "El valor de 'Norte Máximo' debe ser un número.", "Error de Validación",
+                    MessageBoxButton.OK, MessageBoxImage.Error);
+                isValid = false;
+            }
+
+            if (!isValid)
+            {
+                return;
+            }
 
             if (ChkGraficarDmY.IsChecked == true)
             {
@@ -533,28 +590,7 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
                 }
 
-                int este_min = 0;
-                int norte_min = 0;
-                int este_max = 0;
-                int norte_max = 0;
-
-                DataTable coordenadasTable = dataBaseHandler.GetOfficialCarta("CODIGO", QueryCarta, datumStr);
-                //DataTable coordenadasTable = dataBaseHandler.GetOfficialCartaLimite("CODIGO", QueryCarta, datumStr);
-
-                if (coordenadasTable.Rows.Count == 0)
-                {
-                    return;
-                }
-                else
-                {
-                    foreach (DataRow row in coordenadasTable.Rows)
-                    {
-                        este_min = Convert.ToInt32(row["XMIN"]);
-                        norte_min = Convert.ToInt32(row["YMIN"]);
-                        este_max = Convert.ToInt32(row["XMAX"]);
-                        norte_max = Convert.ToInt32(row["YMAX"]);
-                    }
-                };
+                // -----------------
 
                 int Tbx_EsteMin = este_min * 1000;// int.Parse(TbxEsteMin.Text);
                 int Tbx_EsteMax = este_max * 1000; // int.Parse(TbxEsteMax.Text);
@@ -567,6 +603,15 @@ namespace SigcatminProAddin.View.Modulos
 
                 // Llamar al método IntersectFeatureClassAsync desde la instancia
                 string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
+
+                if (listDms == "" )
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(
+                    "No existen Derechos Mineros en esta Hoja.", "Observación",
+                    MessageBoxButton.OK, MessageBoxImage.Warning);
+                    await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+                    return;
+                }
 
                 //Carga capa Hojas IGN
                 if (datum == datumwgs84)
