@@ -11,7 +11,9 @@ using ArcGIS.Desktop.Framework.Dialogs;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
 using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
+using CommonUtilities;
 using SigcatminProAddin.View.Contenedor;
+using SigcatminProAddin.View.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -155,7 +157,7 @@ namespace SigcatminProAddin.View.Modulos
                 // Obtener la instancia del SelectorModulos
                 //var modulosComboBox = FrameworkApplication.GetPlugInWrapper("SigcatminProAddin_View_Modulos_SelectorModulos") as SelectorModulos;
                 var selectedModuleName = ModuleSelectionService.SelectedModule;
-
+                GlobalVariables.currentModule = selectedModuleName;
                 if (!string.IsNullOrEmpty(selectedModuleName))
                 {
                     // Buscar el módulo seleccionado en la configuración
@@ -167,6 +169,10 @@ namespace SigcatminProAddin.View.Modulos
                     {
                         // Cargar la página asociada al módulo en el contenedor
                         var page = PageManager.GetOrCreatePage(moduloSeleccionado.Pagina);
+                        if (page is ITitledPage titledPage)
+                        {
+                            titledPage.SetPageTitle(moduloSeleccionado.TituloPagina);
+                        }
                         var contenedor = MainContainer.Instance;
                         contenedor.LoadModule(moduloSeleccionado.Nombre, page);
                         if (!contenedor.IsVisible)

@@ -9,6 +9,7 @@ namespace CommonUtilities
     public class GlobalVariables
     {
         public static string currentUser = "";
+        public static string currentModule = "";
         public static string pathFileContainerOut = @"C:\bdgeocatmin";
         public static string fileTemp = "Temporal";
         public static string pathFileTemp = Path.Combine(pathFileContainerOut, fileTemp);
@@ -57,6 +58,8 @@ namespace CommonUtilities
         public static string CurrentCodeDm { get; set; }
         public static string CurrentAreaDm { get; set; }
         public static string CurrentDatumDm { get; set; }
+        public static string CurrentDatumStrDm { get; set; }
+
         public static int CurrentRadioDm { get; set; }
         public static string CurrentDepDm { get; set; }
         public static string CurrentProvDm { get; set; }
@@ -115,6 +118,7 @@ namespace CommonUtilities
         // Tablas Generales
         public static double DistBorder { get; set; }
         public static ResultadoEvaluacionModel resultadoEvaluacion = new ResultadoEvaluacionModel();
+        public static ListarLimitesAdministrativosModel listadoLimitesAdministrativos = new ListarLimitesAdministrativosModel();
 
         public static string ToTitleCase(string input)
         {

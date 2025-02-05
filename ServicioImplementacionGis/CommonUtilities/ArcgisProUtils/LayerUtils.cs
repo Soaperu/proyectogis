@@ -256,7 +256,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Departamento_Z + zone, false);
                         }
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_depa);
+                        await SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_depa);
                         break;
                     case "Limite Provincial":
                         if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
@@ -267,7 +267,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Provincia_Z + zone, false);
                         }
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_prov);
+                        await SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_prov);
                         break;
                     case "Limite Distrital":
                         if (datum == int.Parse(GlobalVariables.CurrentDatumDm))
@@ -278,7 +278,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Distrito_Z + zone, false);
                         }
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_dist);
+                        await SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_dist);
                         break;
 
                     case "Capitales Distritales":
@@ -290,7 +290,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             await function.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CDistrito56, false);
                         }
-                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_capdist);
+                        await SymbologyUtils.ColorPolygonSimple(function.pFeatureLayer_capdist);
                         break;
 
                     //        case "Predio Rural":

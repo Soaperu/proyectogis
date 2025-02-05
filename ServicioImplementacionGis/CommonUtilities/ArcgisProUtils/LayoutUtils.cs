@@ -42,7 +42,6 @@ namespace CommonUtilities.ArcgisProUtils
             }
 
             // Ejecutar la tarea en el hilo principal de CIM
-            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
             return await QueuedTask.Run(async () =>
             {
@@ -50,7 +49,7 @@ namespace CommonUtilities.ArcgisProUtils
                 {
                     // Obtener la lista actual de mapas antes de agregar el layout
                     var mapsBefore = Project.Current.GetItems<MapProjectItem>().Select(m => m.Name).ToList();
-
+                    mapsBefore.Add("MAPA UBICACION");
                     var addItem = ItemFactory.Instance.Create(layoutFilePath, ItemFactory.ItemType.PathItem) as IProjectItem;
                     // Agregar el layout al proyecto actual
                     Project.Current.AddItem(addItem);
@@ -120,7 +119,6 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             });
             #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
-            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async Task ActivateLayoutAsync(Layout layout)

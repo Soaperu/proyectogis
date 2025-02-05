@@ -41,7 +41,7 @@
                 <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Consulta | Areas Restringidas" Grid.Row="0" Grid.Column="0"
-                   FontSize="16" FontWeight="Bold" Margin="0,0,0,0"
+                   FontSize="16" FontWeight="Bold" Margin="0,0,0,0" x:Name="CurrentTittleModule"
                    VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center"
                         Grid.Column="1" HorizontalAlignment="Right">
