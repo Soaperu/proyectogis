@@ -137,8 +137,10 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-            string scratch = await GetDefaultScratchPath();
-            System.Windows.MessageBox.Show(scratch);
+            //string scratch = await GetDefaultScratchPath();
+            //string scratchPath = @$"{scratch}\scratch";
+            //System.Windows.MessageBox.Show(scratchPath);
+            await ComplementaryProcessesUtils.CreateLibreDenuMap("010000117");
         }
 
         private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)

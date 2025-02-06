@@ -2,7 +2,10 @@
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Core.Internal.Geometry;
+using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Core.Geoprocessing;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
 using CommonUtilities.ArcgisProUtils.Models;
 using DatabaseConnector;
@@ -123,10 +126,23 @@ namespace CommonUtilities.ArcgisProUtils
             return dmrRecords;
         }
 
+        public static async Task<string> GetDefaultScratchPath()
+        {
+            return await QueuedTask.Run(() =>
+            {
+                return Project.Current.HomeFolderPath;
+            });
+        }
+
         public async static Task CreateLibreDenuMap(string valueCodeDM)
         {
-            string lyrPath = $"cata_{valueCodeDM}.shp";
-            List<string> LayersListBox = new List<string>() { "Caram", "Catastro Forestal" };
+            string scratchDir = await GetDefaultScratchPath();
+            string scratchPath = @$"{scratchDir}\scratch";
+            int datumwgs84 = 2;
+            string lyrPath = @$"{scratchPath}\cata_{valueCodeDM}.shp";
+            List<string> LayersListBox = new List<string>() { "Caram"};
+            string fechaArchi = DateTime.Now.Ticks.ToString();
+            GlobalVariables.idExport = fechaArchi;
 
             var sdeHelper = new SdeConnectionGIS();
             Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
@@ -134,17 +150,85 @@ namespace CommonUtilities.ArcgisProUtils
                                                                                         , AppConfig.password);
             List<string> mapsToDelete = new List<string>()
             {
-                "Libre Denunciabilidad"
+                "CATASTRO MINERO"
             };
 
             await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
 
             string zoneDm = "18";
-            string datum = "02";
-            await MapUtils.CreateMapAsync("Libre Denunciabilidad");
+            int datum = 2;
+            await MapUtils.CreateMapAsync("CATASTRO MINERO");
             try
             {
-                Map map = await MapUtils.EnsureMapViewIsActiveAsync("Libre Denunciabilidad");
+                Map map = await MapUtils.EnsureMapViewIsActiveAsync("CATASTRO MINERO");
+
+                var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+                var layer = await LayerUtils.AddLayerAsync(map, lyrPath);
+                await LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)layer, "Catastro");
+               
+                //if (datum == datumwgs84)
+                //{
+                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false);
+                //}
+                //else
+                //{
+                //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
+                //}
+
+                ArcGIS.Core.Geometry.Geometry polygon = null;
+                ArcGIS.Core.Geometry.Envelope envelope = null;
+
+                await QueuedTask.Run(() => { envelope = layer.QueryExtent(); });
+                
+                ExtentModel extentDmRadio = new ExtentModel { xmin = envelope.XMin, ymin = envelope.YMin, xmax = envelope.XMax, ymax = envelope.YMax };
+                string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync("Catastro", styleCat, "LEYENDA", StyleItemType.PolygonSymbol, valueCodeDM);
+                LayerUtils.SelectSetAndZoomByNameAsync("Catastro", false);
+
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+                await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
+                string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+
+                try
+                {
+                    // Itera todos items seleccionados en el ListBox de WPF
+                    foreach (var item in LayersListBox)
+                    {
+                        await LayerUtils.AddLayerCheckedListBox(item, zoneDm, featureClassLoader, datum, extentDmRadio);
+                    }
+                    MapUtils.AnnotateLayerbyName("Caram", "NOMBRE", "Caram_Anotaciones", "#ff0000", "Arial", 7.5);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+
+
+
+                ////////////////////////////
+                /// Layout
+                var layoutConfiguration = new LayoutConfiguration();
+                layoutConfiguration.BasePath = GlobalVariables.ContaninerTemplatesReport;
+                //layoutConfiguration.SeleccionPlanoSi = "Plano Catastral Publico";
+                //layoutConfiguration.ValidaUrbShp = "NO";
+                //layoutConfiguration.SelePlano = SelectedFormato;
+                var layoutUtils = new LayoutUtils(layoutConfiguration);
+                var layoutPath = layoutUtils.DeterminarRutaPlantilla("Plano Libredenu");
+                string nameWithoutExtention = Path.GetFileNameWithoutExtension(layoutPath);
+                //int scale = (int)StringProcessorUtils.GetScaleFromFormatsString(SelectedEscala);
+                var layoutProjectItem = await LayoutUtils.AddLayoutPath(layoutPath, "Catastro", "CATASTRO MINERO", nameWithoutExtention);
+                ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+                var (x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutProjectItem);
+                y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion", layoutProjectItem, 15.2);
+                await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
+
             }
             catch
             {
