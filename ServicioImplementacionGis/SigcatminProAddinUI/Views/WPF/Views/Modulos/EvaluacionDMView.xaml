@@ -42,7 +42,7 @@
                 <ColumnDefinition Width="70*"/>
                 <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Evaluación | Carta Nacional" Grid.Row="0" Grid.Column="0"
+            <TextBlock Text="Evaluación | Evaluación D.M." Grid.Row="0" Grid.Column="0"
                FontSize="16" FontWeight="Bold" Margin="0,0,0,0"
                VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center"
@@ -248,7 +248,7 @@
                   Grid.Column="4"  VerticalAlignment="Center" IsChecked="True"
                   Margin="0,0,0,0" FontFamily="Roboto" FontSize="10"
                   Style="{DynamicResource Esri_CheckboxToggleSwitch}"/>
-            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
+            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" IsEnabled="False"
             Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                 HorizontalContentAlignment="Center" FontFamily="Roboto"

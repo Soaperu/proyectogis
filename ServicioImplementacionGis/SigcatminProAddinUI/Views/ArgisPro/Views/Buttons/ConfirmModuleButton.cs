@@ -15,24 +15,16 @@ namespace SigcatminProAddinUI.Views.ArgisPro.Views.Buttons
         }
         protected override void OnClick()
         {
-           string categorName =  CategoryComboBox.Intance.SelectedItem.ToString();
-           string ModuleName = ModuleComboBox.Intance.SelectedItem.ToString();
+            string categorName = CategoryComboBox.Intance.SelectedItem.ToString();
+            string ModuleName = ModuleComboBox.Intance.SelectedItem.ToString();
 
-            try
-            {
-                throw new Exception("xd");
+            var moduleType = _moduleFactory.CreateModule(categorName, ModuleName);
 
-                var moduleType = _moduleFactory.CreateModule(categorName, ModuleName);
+            MainView mainView = new MainView();
+            mainView.frameContainer.Navigate(Activator.CreateInstance(moduleType));
+            mainView.Show();
 
-                MainView mainView = new MainView();
-                mainView.frameContainer.Navigate(Activator.CreateInstance(moduleType));
-                mainView.Show();
-            }
-            catch (Exception ex) { 
-            
 
-            }
-       
         }
     }
 }

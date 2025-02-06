@@ -589,6 +589,7 @@ namespace SigcatminProAddin.View.Modulos
         private void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
             //var tableView = sender as TableView;
+            
             var tableView = sender as DevExpress.Xpf.Grid.TableView;
             if (tableView != null && tableView.Grid.VisibleRowCount>0)
             {

@@ -1,13 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Emit;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
-using System.Windows.Media;
-using ArcGIS.Core.Internal.Geometry;
 using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.UsesCases;
 using SigcatminProAddinUI.Models;
@@ -44,7 +40,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 
             TbxValue.Clear();
         }
-      
         private void TbxValue_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
@@ -65,7 +60,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                 LayersListBox.Items.Add(checkbox);
             }
         }
-
         private async void BtnSearch_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(TbxValue.Text))
@@ -88,7 +82,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 
                 DataGridResult.ItemsSource = derechosMineros;
                 DataGridResult.CustomUnboundColumnData += DataGridResult_CustomUnboundColumnData;
-                BtnGraficar.IsEnabled = true;
+               
             }
             catch(Exception ex)
             {
@@ -97,23 +91,39 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         }
         private async void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
-         
+            int currentDatum = (int)CbxSistema.SelectedValue;
+            UpdateFromSelectedRow(sender);
+
+            ClearCanvas();
+
+            _evaluacionDMViewModel.Coordinates = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
+            var coordinates = _evaluacionDMViewModel.GetCoordinatesByTypeSystem(currentDatum);
+
+            DataGridDetails.ItemsSource = coordinates;
+
+            if (coordinates == null || !coordinates.Any())
+            {  
+                ToggleGraphButton(false);
+                return;
+            }
+            ToggleGraphButton(true);
+            GraphCoordinates();    
+        }
+        private void UpdateFromSelectedRow(object sender)
+        {
+            _seletecdRowCode = DataGridResult.GetSelectedRow<string>(sender, "Codigo");
             string zona = DataGridResult.GetSelectedRow<string>(sender, "Zona");
             string nombre = DataGridResult.GetSelectedRow<string>(sender, "Nombre");
             string hectarea = DataGridResult.GetSelectedRow<string>(sender, "Hectarea");
-            int currentDatum = (int)CbxSistema.SelectedValue;
-            _seletecdRowCode = DataGridResult.GetSelectedRow<string>(sender, "Codigo");
 
             CbxZona.SelectedValue = zona;
             TbxArea.Text = hectarea;
             TbxArea.IsReadOnly = true;
-            ClearCanvas();
-
-            _evaluacionDMViewModel.Coordinates = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
-            DataGridDetails.ItemsSource = _evaluacionDMViewModel.GetCoordinatesByTypeSystem(currentDatum);
-            GraphCoordinates();    
         }
-
+        private void ToggleGraphButton(bool isEnable)
+        {
+            BtnGraficar.IsEnabled = isEnable;
+        }
         private void GraphCoordinates()
         {
             if (DataGridDetails.ItemsSource is List<CoordinateModel> coordinates)
@@ -138,7 +148,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                 }
             }
         }
-
         private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (string.IsNullOrEmpty(_seletecdRowCode)) return;
@@ -149,7 +158,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                 GraphCoordinates();
             }
         }
-
         private void DataGridResult_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
         {
             // Verificar si la columna es la columna de índice
@@ -159,7 +167,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                 e.Value = e.ListSourceRowIndex + 1; // Los índices son base 0, así que sumamos 1
             }
         }
-
         private void TbxRadio_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             // Agregar el nuevo texto al existente en el TextBox
@@ -170,13 +177,11 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             // Validar si el texto es un número válido
             //e.Handled = !NumberRegex.IsMatch(newText);
         }
-
         private void CbxZona_Loaded(object sender, RoutedEventArgs e)
         {
             var items = _evaluacionDMViewModel.GetItemsComboZona();
             ComboBoxHelper.LoadComboBox(CbxZona, items, 1);
         }
-
         private void CbxSistema_Loaded(object sender, RoutedEventArgs e)
         {
             var items = _evaluacionDMViewModel.GetItemsComboSistema();
@@ -189,12 +194,10 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             //CbxTypeConsult.SelectedIndex = 0;
             //CbxZona.SelectedIndex = 1;
         }
-
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
 
         }
-
         private void TbxRadio_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             // Permitir teclas específicas (como Backspace, Delete, flechas, etc.)
@@ -208,7 +211,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         {
             PolygonCanvas.Children.Clear();
         }
-
         private void BtnSalir_Click(object sender, RoutedEventArgs e)
         {
             // Obtener la ventana contenedora y cerrarla
