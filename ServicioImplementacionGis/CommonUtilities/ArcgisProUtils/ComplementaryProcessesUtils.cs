@@ -2,11 +2,15 @@
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Core.Internal.Geometry;
+using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Core.Geoprocessing;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Desktop.Layouts;
 using ArcGIS.Desktop.Mapping;
 using CommonUtilities.ArcgisProUtils.Models;
 using DatabaseConnector;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -21,6 +25,8 @@ namespace CommonUtilities.ArcgisProUtils
 {
     public class ComplementaryProcessesUtils
     {
+        private static DatabaseHandler _dataBaseHandler = new DatabaseHandler();
+
         public static async void GenerateAvailableAreaDm(string layerName, string folderName)
         {
             try
@@ -75,7 +81,7 @@ namespace CommonUtilities.ArcgisProUtils
                 await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{currentCodeDm}'");
                 await FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
                 await FeatureProcessorUtils.UpdateValueAsync(catastroShpName, currentCodeDm);
-                string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                string styleCat =System.IO.Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, currentCodeDm);
                 //var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, currentCodeDm);
                 var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, currentCodeDm, currentDatum, zoneDm);
@@ -122,6 +128,180 @@ namespace CommonUtilities.ArcgisProUtils
             var dmrRecords = dataBaseHandler.GetUniqueDM(valueCodeDm, 1);
             return dmrRecords;
         }
+
+        public static async Task<string> GetDefaultScratchPath()
+        {
+            return await QueuedTask.Run(() =>
+            {
+                return Project.Current.HomeFolderPath;
+            });
+        }
+
+        public static Dictionary<string, string> GetRowofCatastrobyCodigo( Layer layer, string codigo)
+        {
+            FeatureLayer featureLayer = (FeatureLayer)layer;
+            string campoCodigo = "CODIGOU";
+            QueryFilter queryFilter = new QueryFilter
+            {
+                WhereClause = $"{campoCodigo} = '{codigo}'"
+            };
+
+            using (RowCursor rowCursor = featureLayer.GetTable().Search(queryFilter, false))
+            {
+                if (rowCursor.MoveNext())
+                {
+                    using( Row row = rowCursor.Current)
+                    {
+                        return new Dictionary<string, string>
+                {
+                    { "CONCESION", row["CONCESION"]?.ToString() ?? "" },
+                    { "HECTAREA", row["HECTAREA"]?.ToString() ?? "" },
+                    { "ZONA", row["ZONA"]?.ToString() ?? "" }
+                };
+                    }
+                }
+            }
+            return null;
+        }
+
+        public async static Task CreateLibreDenuMap(string valueCodeDM, int datum )
+        {
+            string scratchDir = await GetDefaultScratchPath();
+            string scratchPath = @$"{scratchDir}\scratch";
+            int datumwgs84 = 2;
+            string lyrPath = @$"{scratchPath}\cata_{valueCodeDM}.shp";
+            List<string> LayersListBox = new List<string>() { "Caram"};
+            string fechaArchi = DateTime.Now.Ticks.ToString();
+            GlobalVariables.idExport = fechaArchi;
+
+            var sdeHelper = new SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+            List<string> mapsToDelete = new List<string>()
+            {
+                "CATASTRO MINERO"
+            };
+
+            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+
+            await MapUtils.CreateMapAsync("CATASTRO MINERO");
+            try
+            {
+                Map map = await MapUtils.EnsureMapViewIsActiveAsync("CATASTRO MINERO");
+
+
+                var layer = await LayerUtils.AddLayerAsync(map, lyrPath);
+                string zoneDm = "18";
+
+                await QueuedTask.Run(() => {
+                    var valores = GetRowofCatastrobyCodigo(layer, valueCodeDM);
+                    GlobalVariables.CurrentNameDm = valores["CONCESION"].ToString();
+                    GlobalVariables.CurrentAreaDm = valores["HECTAREA"].ToString();
+                    GlobalVariables.CurrentCodeDm = valueCodeDM;
+                    zoneDm = valores["ZONA"].ToString();
+
+                });
+
+                var featureClassLoader = new FeatureClassLoader(geodatabase, map, zoneDm, "99");
+
+                await LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)layer, "Catastro");
+                GlobalVariables.CurrentShpName = "Catastro";
+
+                ArcGIS.Core.Geometry.Geometry polygon = null;
+                ArcGIS.Core.Geometry.Envelope envelope = null;
+
+                await QueuedTask.Run(() => { envelope = layer.QueryExtent(); });
+
+                ExtentModel extentDmRadio = new ExtentModel { xmin = envelope.XMin, ymin = envelope.YMin, xmax = envelope.XMax, ymax = envelope.YMax };
+                string listHojas;
+                ExtentModel newExtent;
+                var extentDm = MapUtils.ObtenerExtent(valueCodeDM, datum);
+                GlobalVariables.currentExtentDM = extentDm;
+
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
+                }
+                if (zoneDm == "18")
+                {
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                }
+                else
+                {
+                    newExtent = TransformBoundingBox(extentDm, zoneDm);
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", newExtent.xmin, newExtent.ymin, newExtent.xmax, newExtent.ymax);
+                }
+
+
+                
+                string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync("Catastro", styleCat, "LEYENDA", StyleItemType.PolygonSymbol, valueCodeDM);
+                LayerUtils.SelectSetAndZoomByNameAsync("Catastro", false);
+
+                MapUtils.AnnotateLayerbyName("Catastro", "CONTADOR", "DM_Anotaciones");
+                UTMGridGenerator uTMGridGenerator = new UTMGridGenerator();
+                var (gridLayer, pointLayer) = await uTMGridGenerator.GenerateUTMGridAsync(extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, "Malla", zoneDm);
+                await uTMGridGenerator.AnnotateGridLayer(pointLayer, "VALOR");
+                await uTMGridGenerator.RemoveGridLayer("Malla", zoneDm);
+                string styleGrid = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleMalla);
+                await SymbologyUtils.ApplySymbologyFromStyleAsync(gridLayer.Name, styleGrid, "CLASE", StyleItemType.LineSymbol);
+
+                try
+                {
+                    // Itera todos items seleccionados en el ListBox de WPF
+                    foreach (var item in LayersListBox)
+                    {
+                        await LayerUtils.AddLayerCheckedListBox(item, zoneDm, featureClassLoader, datum, extentDmRadio);
+                    }
+                    MapUtils.AnnotateLayerbyName("Caram", "NOMBRE", "Caram_Anotaciones", "#ff0000", "Arial", 7.5);
+
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error en capa de listado", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+
+                ////////////////////////////
+                /// Layout
+                var layoutConfiguration = new LayoutConfiguration();
+                layoutConfiguration.BasePath = GlobalVariables.ContaninerTemplatesReport;
+                //layoutConfiguration.SeleccionPlanoSi = "Plano Catastral Publico";
+                //layoutConfiguration.ValidaUrbShp = "NO";
+                //layoutConfiguration.SelePlano = SelectedFormato;
+                var layoutUtils = new LayoutUtils(layoutConfiguration);
+                var layoutPath = layoutUtils.DeterminarRutaPlantilla("Plano Libredenu");
+                string nameWithoutExtention = Path.GetFileNameWithoutExtension(layoutPath);
+                //int scale = (int)StringProcessorUtils.GetScaleFromFormatsString(SelectedEscala);
+                var layoutProjectItem = await LayoutUtils.AddLayoutPath(layoutPath, "Catastro", "CATASTRO MINERO", nameWithoutExtention);
+                ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+                var (x, y) = await elementsLayoutUtils.TextElementsEvalAsync(layoutProjectItem);
+                y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Evaluacion", layoutProjectItem, 15.2);
+                await elementsLayoutUtils.GeneralistaDmPlanoEvaAsync(y);
+
+                string filePath = @"C:\bdgeocatmin\Temporal\Libredenu\PSAD_56";
+                if(datum == 2)
+                {
+                    filePath = @"C:\bdgeocatmin\Temporal\Libredenu\WGS_84";
+                }
+                string outPathPdf = System.IO.Path.Combine(filePath, valueCodeDM + ".pdf");
+                await LayoutUtils.ExportLayoutToPdfAsync(nameWithoutExtention, outPathPdf);
+
+            }
+            catch
+            {
+
+            }
+
+
+
+        }
+
         public async static Task<ResultadoEvaluacionModel> EvaluationDmByCode(string valueCodeDm, System.Data.DataRow dmRow, int radio = 0, int datum=2, List<string>? LayersListBox = null)
         {
             if(LayersListBox is null)
@@ -292,12 +472,7 @@ namespace CommonUtilities.ArcgisProUtils
                 ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
 
                 ResultadoEvaluacionModel resultadoEvaluacionModel = new ResultadoEvaluacionModel();
-                //GlobalVariables.resultadoEvaluacion.ListaResultadosCriterio = responseJson;
-                //GlobalVariables.resultadoEvaluacion.areaDisponible = areaDisponible;
-                //GlobalVariables.resultadoEvaluacion.codigo = valueCodeDm;
-                //GlobalVariables.resultadoEvaluacion.nombre = GlobalVariables.CurrentNameDm;
-                //GlobalVariables.resultadoEvaluacion.distanciaFrontera = GlobalVariables.DistBorder.ToString();
-                //GlobalVariables.resultadoEvaluacion.isCompleted = true;
+
 
                 resultadoEvaluacionModel.ListaResultadosCriterio = responseJson;
                 resultadoEvaluacionModel.areaDisponible = areaDisponible;

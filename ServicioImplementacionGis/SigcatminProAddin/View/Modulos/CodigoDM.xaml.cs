@@ -1016,7 +1016,7 @@ namespace SigcatminProAddin.View.Modulos
                 DataTable intersectDm;
                 if (datum == datumwgs84)
                 {
-                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
+                    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
                 }
                 else
                 {

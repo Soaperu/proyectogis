@@ -97,33 +97,11 @@ namespace SigcatminProAddin.View.Botones.UI
             this.Close();
         }
 
-        //private List<string> GetColumnHeaders(string filePath)
-        //{
-        //    var columnHeaders = new List<string>();
 
-        //    using (var workbook = new XLWorkbook(filePath))
-        //    {
-        //        var worksheet = workbook.Worksheet(1); // Leer la primera hoja
-        //        var firstRow = worksheet.Row(1); // Leer la primera fila
-
-        //        foreach (var cell in firstRow.CellsUsed())
-        //        {
-        //            columnHeaders.Add(cell.GetValue<string>()); // Agregar el valor de la celda a la lista
-        //        }
-        //    }
-
-        //    return columnHeaders;
-        //}
 
         private void cbxField_DropDownOpened(object sender, EventArgs e)
         {
-            //cbxField.Items.Clear();
-            ////var columnHeaders = GetColumnHeaders(excelFilePath);
-            //var columnHeaders = GetColumnHeadersWithEPPlus(excelFilePath);
-            //foreach (var header in columnHeaders)
-            //{
-            //    cbxField.Items.Add(header);
-            //}
+
         }
 
         public List<string> GetColumnHeadersWithEPPlus(string filePath)
@@ -143,33 +121,7 @@ namespace SigcatminProAddin.View.Botones.UI
             return headers;
         }
 
-        //private Dictionary<string, List<string>> GetColumnData(string filePath, List<string> columnHeaders)
-        //{
-
-        //    using (var workbook = new XLWorkbook(filePath))
-        //    {
-        //        var worksheet = workbook.Worksheet(1); // Leer la primera hoja
-
-        //        foreach (var header in columnHeaders)
-        //        {
-        //            columnData[header] = new List<string>();
-        //        }
-
-        //        // Leer las filas comenzando desde la segunda fila
-        //        foreach (var row in worksheet.RowsUsed().Skip(1))
-        //        {
-        //            int columnIndex = 1;
-        //            foreach (var header in columnHeaders)
-        //            {
-        //                var cellValue = row.Cell(columnIndex).GetValue<string>();
-        //                columnData[header].Add(cellValue);
-        //                columnIndex++;
-        //            }
-        //        }
-        //    }
-        //    return columnData;
-        //}
-
+        
         private Dictionary<string, List<string>> GetColumnDataWithEPPlus(string filePath, List<string> columnHeaders)
         {
             //var columnData = new Dictionary<string, List<string>>();

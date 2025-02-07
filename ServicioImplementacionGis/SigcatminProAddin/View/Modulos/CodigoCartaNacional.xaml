@@ -128,7 +128,7 @@
                 <ColumnDefinition Width="530"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <Label Grid.Column="0" Content="Detalle de Búsqueda" Foreground="#FF696969" HorizontalContentAlignment="Left" IsEnabled="False"
+            <Label Grid.Column="0" Content="Límites de la Carta" Foreground="#FF696969" HorizontalContentAlignment="Left" IsEnabled="False"
                    FontFamily="Roboto" FontWeight="Bold" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch"
                    Padding="0,0,0,3"/>
             <Label Grid.Column="1" Content="Listado de Capas" Foreground="#FF696969" FontFamily="Roboto"
@@ -143,13 +143,31 @@
                 <ColumnDefinition Width="170"/>
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
-            <dxg:GridControl FontSize="10" Margin="0,0,10,0" x:Name="DataGridDetails" IsEnabled="False" Grid.Column="0" Grid.ColumnSpan="2">
-                <dxg:GridControl.View>
-                    <dxg:TableView x:Name="DataGridDetailsTableView" ShowAutoFilterRow="False"
-                           AllowColumnFiltering="False"
-                           ShowGroupPanel="False" />
-                </dxg:GridControl.View>
-            </dxg:GridControl>
+            <Grid Grid.Column="0"  Margin="0,5,10,0" Grid.ColumnSpan="2" x:Name="DataGridDetailsBoundary" IsEnabled="False">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                    <RowDefinition Height="30" />
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="100" />
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Row="0" Grid.Column="0" FontSize="10" Text="Este Mínimo:" Margin="5" />
+                <TextBox Grid.Row="0" Grid.Column="1" FontSize="10" Text="Por calcular" Margin="5" x:Name="TextBoxEsteMinimo"/>
+
+                <TextBlock Grid.Row="1" Grid.Column="0" FontSize="10" Text="Norte Mínimo:" Margin="5" />
+                <TextBox Grid.Row="1" Grid.Column="1" FontSize="10" Text="Por calcular" Margin="5" x:Name="TextBoxNorteMinimo"/>
+
+                <TextBlock Grid.Row="2" Grid.Column="0" FontSize="10" Text="Este Máximo:" Margin="5" />
+                <TextBox Grid.Row="2" Grid.Column="1" FontSize="10" Text="Por calcular" Margin="5" x:Name="TextBoxEsteMaximo"/>
+
+                <TextBlock Grid.Row="3" Grid.Column="0" FontSize="10" Text="Norte Máximo:" Margin="5" />
+                <TextBox Grid.Row="3" Grid.Column="1" FontSize="10" Text="Por calcular" Margin="5" x:Name="TextBoxNorteMaximo"/>
+            </Grid>
+
 
             <ListBox Grid.Column="3" x:Name="LayersListBox" Margin="10,0,-10,0" >
                 <ListBox.Template>

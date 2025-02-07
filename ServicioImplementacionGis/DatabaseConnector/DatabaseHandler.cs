@@ -1166,6 +1166,18 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+        
+        public DataTable SelectByUbigeo(string type, string data) // FT_Selecciona_x_Ubigeo
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_LISTA_UBIGEO";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 100) { Value = data }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
         //*----------------------*
 
@@ -1331,9 +1343,62 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetAvisoRetiroXLSValues()
+        {
+            string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_AVISO_RETIRO_XLS";
+            var parameters = new OracleParameter[]
+            {
+                
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetLibreDenunciabilidadXLSValues()
+        {
+            string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_LIBRE_DENU_XLS";
+            var parameters = new OracleParameter[]
+            {
+
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public void InsertarEvaluacionTecnica(string codigo, string codigoeva, string indicador, string hectarea, string descripcion, string clase="")
         {
             string insertQuery = @"INSERT INTO SISGEM.SG_T_EVALTECNICA_DESA(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_SESION, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
+                                    VALUES (:codigo, :codigoeva, :indicador, 1111, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
+
+            object hectareaValue;
+            if (string.IsNullOrWhiteSpace(hectarea))
+            {
+                hectareaValue = DBNull.Value;  // Si está vacío, insertar NULL
+            }
+            else if (double.TryParse(hectarea, out double hectareaDouble))
+            {
+                hectareaValue = hectareaDouble;  // Si es válido, insertar el valor numérico
+            }
+            else
+            {
+                throw new ArgumentException("El valor de hectarea no es válido.");
+            }
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoeva", OracleDbType.Varchar2, 13) { Value = codigoeva },
+                new OracleParameter("indicador", OracleDbType.Varchar2, 1000) { Value = indicador },
+                new OracleParameter("hectarea", OracleDbType.Double) { Value = hectareaValue },
+                new OracleParameter("descripcion", OracleDbType.Varchar2, 1000) { Value = descripcion },
+                new OracleParameter("clase", OracleDbType.Varchar2, 1000) { Value = clase }
+            };
+
+            ExecuteNonQuery(insertQuery, parameters);
+        }
+
+        public void InsertarEvaluacionTecnicaLD(string codigo, string codigoeva, string indicador, string hectarea, string descripcion, string clase = "")
+        {
+            string insertQuery = @"INSERT INTO SISGEM.SG_T_EVALTECNICA_LD(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_SESION, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
                                     VALUES (:codigo, :codigoeva, :indicador, 1111, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
 
             object hectareaValue;
@@ -1423,8 +1488,79 @@ namespace DatabaseConnector
         {
             string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_COD_LIBDENU";
             var parameters = new OracleParameter[]
-            {
+            {};
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
              
+        public DataTable GetRestrictedAreaType() // F_Obtiene_Tipo_AreaRestringida
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CATNOMIN_TIPO";
+            var parameters = new OracleParameter[] { };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public void EliminarRegistroEvaluacionTecnicaLD(string codigo)
+        {
+            string deleteQuery = @"DELETE FROM SISGEM.SG_T_EVALTECNICA_LD WHERE CG_CODIGO = :codigo";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+            };
+            ExecuteNonQuery(deleteQuery, parameters);
+        }
+        
+
+        public DataTable GetStatisticalIntersection(string type, string layer1, string layer2, string departmentCode, string areaType) // FT_Int_tiporesexdepa
+        {
+            string storedProcedure = "PACK_DBA_GIS.P_INT_ESTADISTICA_CARAM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("v_Tipo", OracleDbType.Varchar2, 2) { Value = type },
+                new OracleParameter("v_layer_1", OracleDbType.Varchar2, 50) { Value = layer1 },
+                new OracleParameter("v_layer_2", OracleDbType.Varchar2, 50) { Value = layer2 },
+                new OracleParameter("v_cddepa", OracleDbType.Varchar2, 20) { Value = departmentCode },
+                new OracleParameter("v_tprese", OracleDbType.Varchar2, 50) { Value = areaType }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetRestrictedAreaTypeArg(string type) // FT_OBTIENE_TIPORESE
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_TIPORESE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 80) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDMOverlapByDay(string fechaInicio, string fechaFin)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMSUPERPUESTOXDIA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("FECREPO", OracleDbType.Varchar2, 80) { Value = "" },
+                new OracleParameter("FECREPO_INICIO", OracleDbType.Varchar2, 80) { Value = fechaInicio},
+                new OracleParameter("FECREPO_FIN", OracleDbType.Varchar2, 80) { Value = fechaFin },
+                new OracleParameter("TIPOCON", OracleDbType.Varchar2, 80) { Value = "2" },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDetailsofDMOverlapByDay(string fechaInicio, string fechaFin)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMSUPERPUESTOXDIA_DET";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("FECREPO", OracleDbType.Varchar2, 80) { Value = "" },
+                new OracleParameter("FECREPO_INICIO", OracleDbType.Varchar2, 80) { Value = fechaInicio},
+                new OracleParameter("FECREPO_FIN", OracleDbType.Varchar2, 80) { Value = fechaFin },
+                new OracleParameter("TIPOCON", OracleDbType.Varchar2, 80) { Value = "2" },
             };
 
             return ExecuteDataTable(storedProcedure, parameters);

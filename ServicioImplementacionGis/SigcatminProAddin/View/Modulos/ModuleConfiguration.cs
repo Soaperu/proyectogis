@@ -13,11 +13,12 @@ namespace SigcatminProAddin.View.Modulos
         {
             public string Nombre { get; set; }
             public Type Pagina { get; set; } // Tipo de página asociado
-
-            public Modulo(string nombre, Type pagina)
+            public string TituloPagina { get; set; }
+            public Modulo(string nombre, Type pagina, string tituloPagina=null)
             {
                 Nombre = nombre;
                 Pagina = pagina;
+                TituloPagina =tituloPagina;
             }
         }
 
@@ -37,7 +38,7 @@ namespace SigcatminProAddin.View.Modulos
         {
             new CategoriaModulo("Consultas", new List<Modulo>
             {
-                new Modulo("Áreas Restringidas", typeof(AreasRestringidas)),
+                new Modulo("Áreas Restringidas", typeof(AreasRestringidas), "Áreas Restringidas"),
                 new Modulo("Código Carta Nacional", typeof(CodigoCartaNacional)),
                 new Modulo("Código de DM", typeof(CodigoDM)),
                 new Modulo("Coordenadas del Punto Central", typeof(Coordenadas_Punto_Central)),
@@ -56,10 +57,11 @@ namespace SigcatminProAddin.View.Modulos
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))
                 new Modulo("Estadística de Áreas Restringidas", typeof(EstadisticasAreasRestringidas)),
+                new Modulo("Superpuesto Por día", typeof(SuperpuestoPorDia)),
             }),
             new CategoriaModulo("Planos", new List<Modulo>
             {
-                //new Modulo("Plano Demarcación", typeof(PlanoDemarcacion)),
+                new Modulo("Plano Áreas Restringidas", typeof(AreasRestringidas), "Áreas Restringidas"),
                 //new Modulo("Plano área Restringida", typeof(PlanoAreaRestringida)),
                 //new Modulo("Plano Evaluación", typeof(PlanoEvaluacion))
             }),

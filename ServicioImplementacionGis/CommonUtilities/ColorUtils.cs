@@ -31,5 +31,10 @@ namespace CommonUtilities
             CIMColor resultColor = CIMColor.CreateRGBColor(r, g, b);
             return resultColor;
         }
+
+        public static CIMColor ColorFromRGB(byte r, byte g, byte b)
+        {
+            return new CIMRGBColor { R = r, G = g, B = b, Alpha = 100 };
+        }
     }
 }
