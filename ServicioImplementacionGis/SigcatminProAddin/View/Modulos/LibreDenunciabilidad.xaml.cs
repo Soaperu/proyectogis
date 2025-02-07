@@ -25,6 +25,7 @@ using System.Windows.Shapes;
 using static ArcGIS.Desktop.Internal.Mapping.Views.PropertyPages.Map.TransformationViewModel;
 using ArcGIS.Desktop.Core;
 using DevExpress.Xpf.Grid;
+using DevExpress.Utils.Serializing;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -37,6 +38,7 @@ namespace SigcatminProAddin.View.Modulos
         private ReportesLibreDenunciabilidad _reportesLibreDenunciabilidad = new ReportesLibreDenunciabilidad();
         private DataTable dtTotalOfDms;
         private DataTable dtDMsToProcess;
+        private Dictionary<string, ResultadoEvaluacionModel> diccionarioEvaluacion = new Dictionary<string, ResultadoEvaluacionModel>();
         public LibreDenunciabilidad()
         {
             InitializeComponent();
@@ -114,23 +116,44 @@ namespace SigcatminProAddin.View.Modulos
 
             foreach (DataRow dtRecord in dtDMsToProcess.Rows)
             {
-                var codigo = dtRecord["CODIGO"].ToString();
-                string datum = dtRecord["DATUM"].ToString();
-
-                DataTable dmrRecords = _dataBaseHandler.GetUniqueDM(codigo, 1);
-                DataRow row = dmrRecords.Rows[0];
-                string zona = row["ZONA"].ToString();
-                //List<ResultadoEvaluacionModel> res = new List<ResultadoEvaluacionModel>();
-                var Params = Geoprocessing.MakeValueArray(codigo, datum, zona);
-                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEvalLibreDenu, Params);
-                List<ResultadoEval> resultadoEvalDenu = JsonConvert.DeserializeObject<List<ResultadoEval>>(response.ReturnValue);
-
-                // Insertamos en Base De Datos
-                _dataBaseHandler.EliminarRegistroEvaluacionTecnicaLD(codigo);
-                foreach (ResultadoEval r in resultadoEvalDenu)
+                try
                 {
-                    _dataBaseHandler.InsertarEvaluacionTecnicaLD(codigo, r.CodigoU, r.Eval, r.Hectarea, r.Concesion, r.Clase);
+                    var codigo = dtRecord["CODIGO"].ToString();
+                    string datum = dtRecord["DATUM"].ToString();
+
+                    DataTable dmrRecords = _dataBaseHandler.GetUniqueDM(codigo, 1);
+                    DataRow row = dmrRecords.Rows[0];
+                    string zona = row["ZONA"].ToString();
+                    //List<ResultadoEvaluacionModel> res = new List<ResultadoEvaluacionModel>();
+                    var Params = Geoprocessing.MakeValueArray(codigo, datum, zona);
+                    var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEvalLibreDenu, Params);
+                    List<ResultadoEval> resultadoEvalDenu = JsonConvert.DeserializeObject<List<ResultadoEval>>(response.ReturnValue);
+                    var areaDisponible = resultadoEvalDenu.FirstOrDefault(r => r.CodigoU.Equals(codigo, StringComparison.OrdinalIgnoreCase)).Hectarea.ToString();
+
+                    ResultadoEvaluacionModel resultadoEvaluacionModel = new ResultadoEvaluacionModel();
+
+
+                    resultadoEvaluacionModel.ListaResultadosCriterio = resultadoEvalDenu;
+                    resultadoEvaluacionModel.areaDisponible = areaDisponible;
+                    resultadoEvaluacionModel.codigo = codigo;
+                    resultadoEvaluacionModel.nombre = GlobalVariables.CurrentNameDm;
+                    resultadoEvaluacionModel.distanciaFrontera = GlobalVariables.DistBorder.ToString();
+                    resultadoEvaluacionModel.isCompleted = true;
+
+                    diccionarioEvaluacion[codigo] = resultadoEvaluacionModel;
+
+                    // Insertamos en Base De Datos
+                    _dataBaseHandler.EliminarRegistroEvaluacionTecnicaLD(codigo);
+                    foreach (ResultadoEval r in resultadoEvalDenu)
+                    {
+                        _dataBaseHandler.InsertarEvaluacionTecnicaLD(codigo, r.CodigoU, r.Eval, r.Hectarea, r.Concesion, r.Clase);
+                    }
                 }
+                catch
+                {
+
+                }
+                
 
             }
         }
@@ -140,7 +163,24 @@ namespace SigcatminProAddin.View.Modulos
             //string scratch = await GetDefaultScratchPath();
             //string scratchPath = @$"{scratch}\scratch";
             //System.Windows.MessageBox.Show(scratchPath);
-            await ComplementaryProcessesUtils.CreateLibreDenuMap("010000117");
+            foreach (DataRow dtRecord in dtDMsToProcess.Rows)
+            {
+                try
+                {
+                    var codigo = dtRecord["CODIGO"].ToString();
+                    string datum = dtRecord["DATUM"].ToString();
+                    int datumAsInt = Int32.Parse(datum);
+                    GlobalVariables.resultadoEvaluacion = diccionarioEvaluacion[codigo];
+                    await ComplementaryProcessesUtils.CreateLibreDenuMap(codigo, datumAsInt);
+                }
+                catch
+                {
+
+                }
+                
+            }
+            
+            
         }
 
         private void CbxSistema_SelectionChanged(object sender, SelectionChangedEventArgs e)
