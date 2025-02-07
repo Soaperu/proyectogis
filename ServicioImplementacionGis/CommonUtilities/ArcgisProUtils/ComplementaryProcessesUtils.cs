@@ -599,7 +599,7 @@ namespace CommonUtilities.ArcgisProUtils
                 }
                 else
                 {
-                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroHistoricoPSAD56 + zoneDm, false);
                 }
                 if (datum == datumwgs84)
                 {

@@ -627,7 +627,7 @@ namespace SigcatminProAddin.View.Modulos
 
                 string listDms = "";
                 string listDmsTouches = "";
-                string listDmsInter = "";
+                //string listDmsInter = "";
                 if (radio == 0)
                 {
                     listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);

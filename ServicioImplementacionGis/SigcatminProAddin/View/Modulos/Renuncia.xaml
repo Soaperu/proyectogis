@@ -150,6 +150,8 @@
                 </dxg:GridControl.View>
             </dxg:GridControl>
 
+            <ListBox x:Name="listBoxVertices" Margin="1,0,60,0" FontSize="10" FontFamily="Roboto" Visibility="Hidden"></ListBox>
+
             <ListBox Grid.Column="2" x:Name="LayersListBox" Margin="10,0,-10,0" >
                 <ListBox.Template>
                     <ControlTemplate TargetType="ListBox">

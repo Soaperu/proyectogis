@@ -1058,7 +1058,7 @@ namespace CommonUtilities.ArcgisProUtils
                     {
                         await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
                     }
-                    
+
                     using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
                     {
                         while (rowCursor.MoveNext())
@@ -1079,13 +1079,13 @@ namespace CommonUtilities.ArcgisProUtils
                                 codigosp = row[row.FindField("CODIGOU")].ToString();
                                 concesion = row[row.FindField("CONCESION")].ToString();
                                 zona = row[row.FindField("ZONA")].ToString();
-                                tipoex= row[row.FindField("TIPO_EX")].ToString();
+                                tipoex = row[row.FindField("TIPO_EX")].ToString();
                                 areasup = Convert.ToDecimal(row[row.FindField("AREA")]);
-                                dataTable.Rows.Add(codigo,codigosp,concesion,zona,tipoex,areasup);
+                                dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
 
                                 // Obtener el índice del campo de geometría
                                 //int shapeFieldIndex = row.FindField(pFLayer.GetDefinition().GetShapeField());
-                                
+
 
 
 
@@ -1126,7 +1126,7 @@ namespace CommonUtilities.ArcgisProUtils
             }
 
         }
-        
+
         public async Task<DataTable> IntersectFeatureClassbyGeometryDTAsync(string loFeature, ArcGIS.Core.Geometry.Geometry geometry, string shapeFileOut = "")
         {
             try
@@ -1266,7 +1266,7 @@ namespace CommonUtilities.ArcgisProUtils
                     // Ejecuta seleccion
                     pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
 
-                    
+
 
                     // Obtener el número de entidades seleccionadas
                     int selectionCount = pFLayer.SelectionCount;
@@ -1336,7 +1336,194 @@ namespace CommonUtilities.ArcgisProUtils
 
         }
 
+        public async Task<DataTable> IntersectFeatureClassbyGeometryDTQueryIntersecAsync(string loFeature, ArcGIS.Core.Geometry.Geometry geometry,
+            string locodigoNo, string shapeFileOut = "")
+        {
+            try
+            {
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("CODIGOU", typeof(string));
+                dataTable.Columns.Add("CODIGO_SP", typeof(string));
+                dataTable.Columns.Add("CONCESION", typeof(string));
+                dataTable.Columns.Add("ZONA", typeof(string));
+                dataTable.Columns.Add("TIPO_EX", typeof(string));
+                dataTable.Columns.Add("AREASUP", typeof(decimal));
 
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return null;
+                }
+                // Ejecutar la selección y obtener los resultados
+                string lostrJoinCodigos = "";
+                await QueuedTask.Run(async () =>
+                {
+                    // Crear el filtro espacial
+                    DataRow dataRow = dataTable.NewRow();
+
+                    SpatialQueryFilter spatialFilter = new SpatialQueryFilter
+                    {
+                        WhereClause = "CODIGOU <> '" + locodigoNo + "'",
+                        FilterGeometry = geometry,
+                        SpatialRelationship = SpatialRelationship.Intersects
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
+
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+                    // Buscar las entidades con ambos filtros: espacial y de atributo
+                    using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
+                    {
+                        while (rowCursor.MoveNext())
+                        {
+                            using (Row row = rowCursor.Current)
+                            {
+
+                                // Obtener la geometría del registro (por ejemplo, el campo "SHAPE")
+                                ArcGIS.Core.Geometry.Geometry rowGeometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+
+                                // Calcular la intersección entre la geometría de la fila y la geometría proporcionada
+                                ArcGIS.Core.Geometry.Geometry intersectedGeometry = GeometryEngine.Instance.Intersection(rowGeometry, geometry);
+                                // Calcular el área de la geometría interceptada
+                                double area = GeometryEngine.Instance.Area(intersectedGeometry);
+
+                                // Convertir el área de metros cuadrados a hectáreas (1 hectárea = 10,000 m²)
+                                //decimal areasup = Convert.ToDecimal(area / 10000);
+
+
+                                string codigo = "000000001";
+                                string codigosp = row[row.FindField("CODIGOU")].ToString();
+                                string  concesion = row[row.FindField("CONCESION")].ToString();
+                                string zona = row[row.FindField("ZONA")].ToString();
+                                string  tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                decimal areasup = Convert.ToDecimal(area / 10000);/// Convert.ToDecimal(row[row.FindField("AREA")]);
+                                dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
+
+                            }
+                        }
+                    }
+                });
+                if (loFeature == "Carta IGN")
+                {
+                    GlobalVariables.CurrentPagesDm = lostrJoinCodigos;
+                }
+                // Construir la cláusula WHERE final
+                // ... código para construir la cláusula WHERE ...
+                //if (!string.IsNullOrEmpty(lostrJoinCodigos))
+                //{
+                //    lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
+
+                //    try
+                //    {
+                //        string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
+                //        //Console.WriteLine(joinCondition);
+                //        lostrJoinCodigos = joinCondition;
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        //Console.WriteLine($"Error: {ex.Message}");
+                //    }
+                //}
+
+                return dataTable;
+
+
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<DataTable> IntersectFeatureClassbyGeometryDTQueryTouchesAsync(string loFeature, ArcGIS.Core.Geometry.Geometry geometry,
+          string locodigoNo, string shapeFileOut = "")
+        {
+            try
+            {
+                DataTable dataTable = new DataTable();
+                dataTable.Columns.Add("CODIGOU", typeof(string));
+                dataTable.Columns.Add("CODIGO_SP", typeof(string));
+                dataTable.Columns.Add("CONCESION", typeof(string));
+                dataTable.Columns.Add("ZONA", typeof(string));
+                dataTable.Columns.Add("TIPO_EX", typeof(string));
+                dataTable.Columns.Add("AREASUP", typeof(decimal));
+
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return null;
+                }
+                // Ejecutar la selección y obtener los resultados
+                string lostrJoinCodigos = "";
+                await QueuedTask.Run(async () =>
+                {
+                    // Crear el filtro espacial
+                    DataRow dataRow = dataTable.NewRow();
+
+                    SpatialQueryFilter spatialFilter = new SpatialQueryFilter
+                    {
+                        WhereClause = "CODIGOU <> '" + locodigoNo + "'",
+                        FilterGeometry = geometry,
+                        SpatialRelationship = SpatialRelationship.Touches
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
+
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+                    // Buscar las entidades con ambos filtros: espacial y de atributo
+                    using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
+                    {
+                        while (rowCursor.MoveNext())
+                        {
+                            using (Row row = rowCursor.Current)
+                            {
+                                string codigo = "000000001";
+                                string codigosp = row[row.FindField("CODIGOU")].ToString();
+                                string concesion = row[row.FindField("CONCESION")].ToString();
+                                string zona = row[row.FindField("ZONA")].ToString();
+                                string tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                decimal areasup = Convert.ToDecimal(row[row.FindField("AREA")]);
+                                dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
+
+                            }
+                        }
+                    }
+                });
+                if (loFeature == "Carta IGN")
+                {
+                    GlobalVariables.CurrentPagesDm = lostrJoinCodigos;
+                }
+                return dataTable;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
 
         public async Task QueryFeatureClassAsync(string loFeature, string queryClause, string shapeFileOut = "")
         {
@@ -1921,8 +2108,8 @@ namespace CommonUtilities.ArcgisProUtils
         // Agregar más constantes según sea necesario
         // Catastro Histórico
         public const string gstrFC_CatastroHistoricoPSAD56 = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_PSAD_";
-        //public const string gstrFC_CatastroHistoricoWGS84 = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_WGS_";
-        public const string gstrFC_CatastroHistoricoWGS84 = "WURB0904.GPO_CMI_CATASTRO_HISTO_WGS_";
+        public const string gstrFC_CatastroHistoricoWGS84 = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_WGS_";
+        //public const string gstrFC_CatastroHistoricoWGS84 = "WURB0904.GPO_CMI_CATASTRO_HISTO_WGS_";
     }
 
 }

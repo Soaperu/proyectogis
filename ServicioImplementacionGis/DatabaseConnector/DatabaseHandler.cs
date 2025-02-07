@@ -1306,8 +1306,6 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-
-
         public string CountRecordsAreaRestringida(string type, string search) // FT_Cuenta_Registro
         {
             string storedProcedure = DatabaseProcedures.Procedure_ObtenerDatosdeAreasRestringida;
@@ -1565,6 +1563,119 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public DataTable GetProGisFiltro(string vopcion, string vusuario) 
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneDatoProGisFiltro;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("VO_OPCION", OracleDbType.Varchar2, 3) { Value = vopcion },
+                new OracleParameter("USUARIO", OracleDbType.Varchar2, 10) { Value = vusuario },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetOpcionCBox(string idGroup)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneOpcionCBox;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("IDGRUP", OracleDbType.Varchar2, 3) { Value = idGroup },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneFiltroFeatures(int env, int tipo)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneFiltroFeatures;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("ENV", OracleDbType.Int32, 2) { Value = env },
+                new OracleParameter("TIPO", OracleDbType.Int32, 2) { Value = tipo }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneNumRegReseProd()
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneNumRegReseProd;
+            var parameters = new OracleParameter[] { };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneNumRegReseTemp()
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneNumRegReseTemp;
+            var parameters = new OracleParameter[] { };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneNumRegUrbaProd()
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneNumRegUrbaProd;
+            var parameters = new OracleParameter[] { };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneNumRegUrbaTemp()
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneNumRegUrbaTemp;
+            var parameters = new OracleParameter[] { };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneReseDifreg(string feature)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneReseDifreg;
+            var parameters = new OracleParameter[] {
+                new OracleParameter("FEATURE", OracleDbType.Varchar2,100) { Value = feature },
+            };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneUrbaDifreg(string feature)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneUrbaDifreg;
+            var parameters = new OracleParameter[] {
+                new OracleParameter("FEATURE", OracleDbType.Varchar2,100) { Value = feature },
+            };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+
+
+
+        public DataTable GetFiltroUsuario()
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneFiltroUsuario;
+            var parameters = new OracleParameter[]
+            {};
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+
+
+        public string GetDetalleReg(string idreg)
+        {
+            // Stored procedure name to be executed
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneDetalleReg;
+            // Configure parameters
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("IDREG", OracleDbType.Varchar2, 20) { Value = idreg },
+                
+            };
+            return ExecuteScalar(storedProcedure, parameters);
+            //return ExecuteStoredProcedureWithReturnValue(storedProcedure, parameters);
+        }
+
+
+
+
     }
 
 }

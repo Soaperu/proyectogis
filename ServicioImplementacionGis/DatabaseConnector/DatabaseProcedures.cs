@@ -62,6 +62,17 @@ namespace DatabaseConnector
         public const string Procedure_ObtieneZonaporUbigeo = "PACK_DBA_SG_D_EVALGIS.P_SEL_UBIGEO_ZONA";
         public const string Procedure_ObtenerDatosdeAreasRestringida = "PACK_DBA_SG_D_EVALGIS.P_CUENTA_AREA_RESERVA";
         public const string Procedure_ObtieneDatoRenuncia = "PACK_DBA_SIGCATMIN.P_SEL_DATOS_DM_RENUNCIA";
+        public const string Procedure_ObtieneDatoProGisFiltro = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_PROGIS_FILTRO";
+        public const string Procedure_ObtieneDetalleReg = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_DETALLE_REG";
+        public const string Procedure_ObtieneOpcionCBox = "PACK_DBA_SG_D_EVALGIS.P_SEL_OPCIONES_CBOX";
+        public const string Procedure_ObtieneFiltroUsuario = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_FILTRO_USUARIO";
+        public const string Procedure_ObtieneFiltroFeatures = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_FILTRO_FEATURES";
+        public const string Procedure_ObtieneNumRegReseProd = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_NUMREG_RESE_PROD";
+        public const string Procedure_ObtieneNumRegReseTemp = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_NUMREG_RESE_TEMP";
+        public const string Procedure_ObtieneNumRegUrbaProd = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_NUMREG_URBA_PROD";
+        public const string Procedure_ObtieneNumRegUrbaTemp = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_NUMREG_URBA_TEMP";
+        public const string Procedure_ObtieneReseDifreg = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_RESE_DIFREG";
+        public const string Procedure_ObtieneUrbaDifreg = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_URBA_DIFREG";
 
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;
