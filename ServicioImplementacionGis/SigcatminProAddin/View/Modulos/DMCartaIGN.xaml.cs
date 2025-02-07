@@ -749,31 +749,45 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, false);
                 }
 
-                int radio = 0;
+                //Carga capa Hojas Cartográficas
+                if (datum == datumwgs84)
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta84, false);
+                }
+                else
+                {
+                    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
+                }
 
-                var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
+                //int radio = 0;
+                //var extentDmRadio = ObtenerExtent(codigoValue, datum, radio);
                 var extentDm = ObtenerExtent(codigoValue, datum);
                 GlobalVariables.currentExtentDM = extentDm;
-                // Llamar al método IntersectFeatureClassAsync desde la instancia
-                string listDms = await featureClassLoader.IntersectFeatureClassAsync("Catastro", extentDmRadio.xmin, extentDmRadio.ymin, extentDmRadio.xmax, extentDmRadio.ymax, catastroShpName);
 
-                await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(catastroShpName, "Catastro");
-
-                //await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
-                await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
+                // Cargando feature class Catastro con filtro
+                await featureClassLoader.ExportAttributesTemaAsync("Catastro", GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
                 var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
-                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(dmShpName, false);
 
+                //Intersección con Carta IGN 
+                string listHojas;
+                ExtentModel newExtent;
+                if (zoneDm == "18")
+                {
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentDm.xmin, extentDm.ymin, extentDm.xmax, extentDm.ymax);
+                }
+                else
+                {
+                    newExtent = ComplementaryProcessesUtils.TransformBoundingBox(extentDm, zoneDm);
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", newExtent.xmin, newExtent.ymin, newExtent.xmax, newExtent.ymax);
+                }
+
+                CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(dmShpName, false);
 
                 List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, catastroShpName, "Zona Urbana" };
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
 
                 try
                 {
-                    //await CommonUtilities.ArcgisProUtils.MapUtils.CreateMapAsync(GlobalVariables.mapNameCartaIgn); //"CARTA IGN"
-                    //Map mapC = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCartaIgn);
-                    //featureClassLoader = new FeatureClassLoader(geodatabase, mapC, zoneDm, "99");
-
                     fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapC, Path.Combine(outputFolder, dmShpNamePath));
                     //Carga capa Distrito
                     if (datum == datumwgs84)
@@ -814,8 +828,8 @@ namespace SigcatminProAddin.View.Modulos
                     await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl1, "Catastro");
 
 
-                    string listHojas = DataGridResult.GetCellValue(focusedRowHandle, "CARTA")?.ToString();
-                    GlobalVariables.CurrentPagesDm = "'" + listHojas.Replace("-", "").ToLower() + "'";
+                    //listHojas = DataGridResult.GetCellValue(focusedRowHandle, "CARTA")?.ToString();
+                    //GlobalVariables.CurrentPagesDm = listHojas.Replace("-", "").ToLower();
 
                     string mosaicLayer;
                     if (datum == datumwgs84)

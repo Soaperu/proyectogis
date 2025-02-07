@@ -81,42 +81,6 @@ namespace SigcatminProAddin.View.Modulos
             TbxValue.ToolTip = toolTip;
         }
 
-        /*private void ConfigureDataGridDetailsColumns()
-        {
-            var tableView = DataGridDetails.View as DevExpress.Xpf.Grid.TableView;
-            DataGridDetails.Columns.Clear();
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            GridColumn verticeColumn = new GridColumn
-            {
-                FieldName = DatagridDetailsConstants.ColumnNames.Vertice,
-                Header = DatagridDetailsConstants.Headers.Vertice,
-                Width = DatagridDetailsConstants.Widths.VerticeWidth
-            };
-
-            GridColumn esteColumn = new GridColumn
-            {
-                FieldName = DatagridDetailsConstants.ColumnNames.Este,
-                Header = DatagridDetailsConstants.Headers.Este,
-                Width = new GridColumnWidth(DatagridDetailsConstants.Widths.StarWidthRatio, GridColumnUnitType.Star)
-            };
-
-            GridColumn norteColumn = new GridColumn
-            {
-                FieldName = DatagridDetailsConstants.ColumnNames.Norte,
-                Header = DatagridDetailsConstants.Headers.Norte,
-                Width = new GridColumnWidth(DatagridDetailsConstants.Widths.StarWidthRatio, GridColumnUnitType.Star)
-            };
-
-            // Agregar columnas al GridControl
-            DataGridDetails.Columns.Add(verticeColumn);
-            DataGridDetails.Columns.Add(esteColumn);
-            DataGridDetails.Columns.Add(norteColumn);
-
-        }*/
         private void ConfigureDataGridResultColumns()
         {
             // Obtener la vista principal del GridControl
@@ -589,8 +553,6 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
                 }
-
-                // -----------------
 
                 int Tbx_EsteMin = este_min * 1000;// int.Parse(TbxEsteMin.Text);
                 int Tbx_EsteMax = este_max * 1000; // int.Parse(TbxEsteMax.Text);
