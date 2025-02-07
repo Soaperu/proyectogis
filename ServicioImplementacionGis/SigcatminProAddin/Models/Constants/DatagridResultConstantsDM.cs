@@ -116,5 +116,122 @@ namespace SigcatminProAddin.Models.Constants
             public const int TipoArea = 100;
             public const int FechaReg = 150;
         }
+
+        //Mantenimiento de Areas Restringidas
+        public static class ColumNamesMantoAR
+        {
+            public const string Id = "ID";
+            public const string Codigo = "CODIGO";
+            public const string Zona = "ZONA";
+            public const string Clase = "CLASE";
+            public const string Archivo = "ARCHIVO";
+            public const string ModReg = "MODREG";
+            public const string Usuario = "USUARIO";
+            public const string FecReg = "FECREG";
+            public const string CodEst = "CODEST";
+            public const string Mineria = "MINERIA";
+            public const string Proc = "PROC";
+        }
+        public static class HeadersMantoAR
+        {
+            public const string Id = "ID";
+            public const string Codigo = "CODIGO";
+            public const string Zona = "ZONA";
+            public const string Clase = "CLASE";
+            public const string Archivo = "ARCHIVO";
+            public const string ModReg = "MODREG";
+            public const string Usuario = "USUARIO";
+            public const string FecReg = "FECREG";
+            public const string CodEst = "CODEST";
+            public const string Mineria = "MINERIA";
+            public const string Proc = "PROC";
+        }
+
+        public static class WidthsMantoAR
+        {
+            public const int Id = 40;
+            public const int Codigo = 70;
+            public const int Zona = 50;
+            public const int Clase = 50;
+            public const int Archivo = 100;
+            public const int ModReg = 100;
+            public const int Usuario = 100;
+            public const int FecReg = 80;
+            public const int CodEst = 80;
+            public const int Mineria = 100;
+            public const int Proc = 50;
+        }
+
+        public static class ColumNamesClassTemporales
+        {
+            public const string Total = "TOTAL";
+            public const string PSad17 = "PSAD_17";
+            public const string PSad18 = "PSAD_18";
+            public const string PSad19 = "PSAD_19";
+            public const string Wgs17= "WGS_17";
+            public const string Wgs18 = "WGS_18";
+            public const string Wgs19 = "WGS_19";
+            public const string G56 = "G56";
+            public const string G84 = "G84";
+        }
+
+        public static class HeadersClassTemporales
+        {
+            public const string Total = "TOTAL";
+            public const string PSad17 = "PSAD_17";
+            public const string PSad18 = "PSAD_18";
+            public const string PSad19 = "PSAD_19";
+            public const string Wgs17 = "WGS_17";
+            public const string Wgs18 = "WGS_18";
+            public const string Wgs19 = "WGS_19";
+            public const string G56 = "G56";
+            public const string G84 = "G84";
+        }
+
+        public static class WidthsClassTemporales
+        {
+            public const int Total = 50;
+            public const int PSad17 = 60;
+            public const int PSad18 = 60;
+            public const int PSad19 = 60;
+            public const int Wgs17 = 60;
+            public const int Wgs18 = 60;
+            public const int Wgs19 = 60;
+            public const int G56 = 60;
+            public const int G84 = 60;
+        }
+
+        public static class ColumNamesReseDifReg
+        {
+            public const string Codigo = "CODIGO";
+            public const string Clase = "CLASE";
+            public const string RegDB = "REGISTROS EN DB";
+            public const string RegGDB = "REGISTROS EN GDB";
+            public const string Observacion = "OBSERVACION";
+        }
+
+        public static class HeadersReseDifReg
+        {
+            public const string Codigo = "CODIGO";
+            public const string Clase = "CLASE";
+            public const string RegDB = "REGISTROS EN DB";
+            public const string RegGDB = "REGISTROS EN GDB";
+            public const string Observacion = "OBSERVACION";
+        }
+
+        public static class WidthsReseDifReg
+        {
+            public const int Codigo = 100;
+            public const int Clase = 80;
+            public const int RegDB = 80;
+            public const int RegGDB = 80;
+            public const int Observacion = 300;
+            
+        }
+
+
+
+
+
     }
 }
