@@ -31,33 +31,8 @@ out_geom= object()
 response = None
 listado_objs_evaluacion =[]
 
+_temp_folder = _SCRATCH
 
-def  create_temp_folder():
-    """
-    Crea la carpeta correspondiente al dia de ejecucion y elimina las carpetas creadas con anterioridad a esta fecha
-    """
-    global _temp_folder
-
-    tiempo = datetime.datetime.now()
-    fecha = tiempo.strftime("%Y%m%d")
-    fecha_datetime = datetime.datetime.strptime(fecha,"%Y%m%d")
-    fecha_name = "Fecha_%s"%fecha
-    ruta_carpeta = os.path.join(_SCRATCH, fecha_name)
-
-    if not os.path.exists(ruta_carpeta):
-        os.mkdir(ruta_carpeta)
-    
-    for root, dirs, files in os.walk(_SCRATCH):
-        for dir in dirs:
-            if root == _SCRATCH:
-                if str(dir).startswith('Fecha'):
-                    fecha_folder = datetime.datetime.strptime(str(dir).split('_')[1], "%Y%m%d")
-                    # Elimina las carpetas creadas con fecha anterior a la actual
-                    if fecha_folder<fecha_datetime:
-                        carpeta = os.path.join(root, dir)
-                        shutil.rmtree(carpeta)
-                    
-    _temp_folder = ruta_carpeta
 
 
 def act_geom_info(lyrpath, codigo):
@@ -413,7 +388,7 @@ def obtener_layer_shape(codigou, datum, zona, distancia):
         se_situex situ_ex,
         sisgem.pack_dba_sg_d_petitorio.coddatum@gamma(a.cg_codigo) datum,
         data_cat.pack_dba_gis_formatos.f_get_evalestado_from_codigou(a.cg_codigo, '{1}') eval,
-        data_cat.pack_dba_gis_formatos.f_get_leye_from_codigou(a.cg_codigo, '{1}') leye,
+        data_cat.pack_dba_gis_formatos.f_get_leye_from_codigou(a.cg_codigo, '{1}') leyenda,
         data_cat.pack_dba_gis_formatos.f_get_vestado_from_codigou(a.cg_codigo) d_estado,
         sp.shape
         from 
@@ -622,7 +597,6 @@ def obtener_area_disponible(lyrpath, geom_ini):
 
 if __name__ == '__main__':
     try:
-        create_temp_folder()
         lyr_path = obtener_layer_shape(in_codigo, in_datum, in_zona, 4000)
         out_geom = act_geom_info(lyr_path, in_codigo)
         get_criterios(lyr_path, in_codigo)
