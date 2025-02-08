@@ -68,6 +68,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 new Modulo("Evaluación DM", typeof(EvaluacionDM)),
                 new Modulo("Libre Denunciabilidad", typeof(LibreDenunciabilidad)),
+                new Modulo("Simultaneidad de Petitorios", typeof(SimultaneidadPetitorios)),
             })
         };
       }

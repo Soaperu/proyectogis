@@ -3,6 +3,7 @@
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors"
       xmlns:sys="clr-namespace:System;assembly=mscorlib"
       xmlns:local="clr-namespace:SigcatminProAddin.View.Modulos"
       mc:Ignorable="d" 
@@ -75,23 +76,33 @@
             Foreground="White" Grid.Column="3" HorizontalAlignment="Left"
             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                 HorizontalContentAlignment="Center" FontFamily="Roboto"
-            VerticalContentAlignment="Center" x:Name="BtnProcesar" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" />
+            VerticalContentAlignment="Center" x:Name="BtnProcesar" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="BtnProcesar_Click" />
 
         </Grid>
 
-        <dxg:GridControl  Grid.Column="0" Grid.Row="4"  FontSize="10" Margin="0,0,0,0" 
-                         x:Name="DataGridSuperpuestos">
+        <dxg:GridControl  Grid.Column="0" Grid.Row="4"  FontSize="10" Margin="0,0,0,0"  Grid.RowSpan="3"
+                         x:Name="DataGridSimultaneidad">
             <dxg:GridControl.Columns>
-                <dxg:GridColumn Header="Código" Binding="{Binding CODIGO}" Width="*"/>
-                <dxg:GridColumn Header="Concesión" Binding="{Binding CONCESION}" Width="*"/>
-                <dxg:GridColumn Header="Zona" Binding="{Binding ZONA}" Width="*"/>
-                <dxg:GridColumn Header="Fecha Ingreso" Binding="{Binding CG_FECING}" Width="*"/>
-                <dxg:GridColumn Header="Sustancia" Binding="{Binding TIPO_SUSTANCIA}" Width="*"/>
-                <dxg:GridColumn Header="Superpuesto" Binding="{Binding SUPERPUESTO}" Width="*"/>
+                <dxg:GridColumn Header="FLG_SEL" Width="60">
+                    <dxg:GridColumn.EditSettings>
+                        <dxe:CheckEditSettings IsThreeState="False"/>
+                    </dxg:GridColumn.EditSettings>
+                    <dxg:GridColumn.Binding>
+                        <Binding Path="FLG_SEL" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
+                    </dxg:GridColumn.Binding>
+                </dxg:GridColumn>
+                <dxg:GridColumn Header="Grupo" Binding="{Binding GRUPO}" Width="*"/>
+                <dxg:GridColumn Header="SUB_GRUPO" Binding="{Binding SUB_GRUPO}" Width="*"/>
+                <dxg:GridColumn Header="COD_REMATE" Binding="{Binding COD_REMATE}" Width="*"/>
+                <dxg:GridColumn Header="NUM_DM" Binding="{Binding NUM_DM}" Width="*"/>
+                <dxg:GridColumn Header="ZONA" Binding="{Binding ZONA}" Width="*"/>
+                <dxg:GridColumn Header="GRUPOF" Binding="{Binding GRUPOF}" Width="*"/>
+
+
 
             </dxg:GridControl.Columns>
             <dxg:GridControl.View>
-                <dxg:TableView  x:Name="DataGridSuperpuestosTableView" ShowAutoFilterRow="False"
+                <dxg:TableView  x:Name="DataGridSimultaneidadTableView" ShowAutoFilterRow="False"
                AllowColumnFiltering="False"
                ShowGroupPanel="False"  />
             </dxg:GridControl.View>
@@ -117,7 +128,13 @@
             Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                 HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
-            VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0"   />
+            VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0" Click="BtnSalir_Click"   />
+
+            <Button Content="Graficar" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
+            Foreground="White" Grid.Column="6" HorizontalAlignment="Left"
+            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                HorizontalContentAlignment="Center" FontFamily="Roboto"
+            VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" />
 
         </Grid>
 

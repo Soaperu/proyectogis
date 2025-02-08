@@ -111,6 +111,49 @@ namespace DatabaseConnector
                 }
             }
         }
+
+        public object ExecuteFunction(string functionName, OracleParameter[] parameters)
+        {
+            var connectionString = GetConnectionStringByPackage(functionName);
+            object response = null;
+
+
+            using (var connection = new OracleConnection(connectionString))
+            using (var command = new OracleCommand(functionName, connection))
+            {
+                try
+                {
+                    connection.Open();
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Parámetro de retorno (el valor devuelto por la función)
+                    var returnValue = new OracleParameter("RETURN_VALUE", OracleDbType.Varchar2, 100)
+                    {
+                        Direction = ParameterDirection.ReturnValue
+                    };
+                    command.Parameters.Add(returnValue);
+
+                    // Agregar los parámetros de entrada
+                    if (parameters != null)
+                    {
+                        command.Parameters.AddRange(parameters);
+                    }
+
+                    command.ExecuteNonQuery();
+                    response =  returnValue.Value;
+                }
+                catch (OracleException oracleEx)
+                {
+                    throw new ApplicationException($"Error de Oracle: {oracleEx.Message}", oracleEx);
+                }
+                catch (Exception ex)
+                {
+                    throw new ApplicationException("Error al ejecutar la función almacenada.", ex);
+                }
+                return response;
+            }
+        }
+
         public string ExecuteScalar(string storedProcedure, OracleParameter[] parameters)
         {
             var connectionString = GetConnectionStringByPackage(storedProcedure);
@@ -1536,6 +1579,71 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public string VerificaSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_VERIFICA_SIMU";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("V_FECHA", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            var resultado = ExecuteScalar(storedProcedure, parameters);
+            return resultado.ToString();
+        }
+
+        public DataTable ObtenerGruposSimultaneidad(string tipo, string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_REPO_GRUPO_DM_SIMUL_LD";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("TIPO", OracleDbType.Varchar2, 20) { Value = tipo },
+                    new OracleParameter("IDENTI", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerDMyGruposSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMXGRSIMUL_LD";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("V_FECHA", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerConcesionesyGruposSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_CONCESIONXGRSIMUL_LD";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("V_FECHA", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public string UpdateDMSimultaneidad(string fecha) // FT_UPD_CM_LIBREDEN
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_UPD_SG_D_DMXGRSIMUL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_FECHA", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string InsertarDMxHaGRSimultaneidad(string fecha) // FT_UPD_CM_LIBREDEN
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_INS_DMXHAGRSIMUL_TOT";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("SI_FECSIM", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
     }
 
 }
