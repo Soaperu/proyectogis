@@ -1644,6 +1644,42 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
+        public string DeletePesicuSimultaneidad(string fecha) // FT_DEL_LIBREDEN
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_DEL_PESICU_POR_LD";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public DataTable GetCodigouSimultaneidad(string fecha) // FT_DEL_LIBREDEN
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.F_SEL_CODIGOU_FROM_DATE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetCodigoQuadsSimultaneidad(string sql, string zona, string date) // FT_DEL_LIBREDEN
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.F_GET_RLS_CODIGOU_QUADS";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_SQL", OracleDbType.Varchar2, 10) { Value = sql },
+                new OracleParameter("V_ZONE", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = date }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+
     }
 
 }
