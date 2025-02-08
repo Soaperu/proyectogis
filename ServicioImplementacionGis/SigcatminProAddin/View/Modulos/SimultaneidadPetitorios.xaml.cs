@@ -13,9 +13,15 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using ArcGIS.Core.CIM;
+using ArcGIS.Core.Data;
+using ArcGIS.Core.Data.DDL;
+using ArcGIS.Desktop.Core;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 using CommonUtilities;
 using CommonUtilities.ArcgisProUtils;
 using DatabaseConnector;
+using DevExpress.XtraRichEdit.Tables.Native;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -94,7 +100,7 @@ namespace SigcatminProAddin.View.Modulos
 
             //Codigo de Remate
 
-            DataTable grupoccodigoRemate = databaseHandler.ObtenerGruposSimultaneidad(v_tipo, fechaSimultaneidadAsString);
+            DataTable grupoCodigoRemate = databaseHandler.ObtenerGruposSimultaneidad(v_tipo, fechaSimultaneidadAsString);
             DataTable dmxgrupo = databaseHandler.ObtenerDMyGruposSimultaneidad(fechaSimultaneidadAsString);
             DataTable ConcesionxGrupo = databaseHandler.ObtenerConcesionesyGruposSimultaneidad(fechaSimultaneidadAsString);
 
@@ -112,8 +118,89 @@ namespace SigcatminProAddin.View.Modulos
             string TablaDMSimultaneidad = "DMSimul" + fechaArchi;
 
             // Creamos tabla  DBf
+            CrearTablaSimultaneidad(ConcesionxGrupo, TablaDMSimultaneidad);
 
-            DataGridSimultaneidad.ItemsSource = grupoccodigoRemate;
+            DataGridSimultaneidad.ItemsSource = grupoCodigoRemate;
+        }
+
+        private async void CrearTablaSimultaneidad(DataTable datos, string nombreTabla)
+        {
+            string glo_pathSIM = @"C:/bdgeocatmin/BDGEOCATMINPRO_84.gdb";
+
+            try
+            {
+                await QueuedTask.Run(() =>
+                {
+                    using (Geodatabase geodatabase = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(glo_pathSIM))))
+                    {
+                        SchemaBuilder schemaBuilder = new SchemaBuilder(geodatabase);
+                        IReadOnlyList<TableDefinition> definitions = geodatabase.GetDefinitions<TableDefinition>();
+
+                        foreach(TableDefinition definition in definitions)
+                        {
+                            if(definition.GetName().ToString().StartsWith("DMSimul"))
+                            {
+                                TableDescription table = new TableDescription(definition);
+                                schemaBuilder.Delete(table);
+                            }
+                        }
+
+                        // Definir campos
+                        var fieldDescriptions =
+                            new FieldDescription[]
+                            {
+                                new FieldDescription("CODIGO", FieldType.String) { Length = 13 },
+                                new FieldDescription("NOMBRE", FieldType.String) { Length = 50 },
+                                new FieldDescription("GRUPO", FieldType.String) { Length = 4 },
+                                new FieldDescription("COD_REMATE", FieldType.String) { Length = 20 },
+                                new FieldDescription("ZONA", FieldType.String) { Length = 2 },
+                                new FieldDescription("FEC_SIM", FieldType.Date),
+                                new FieldDescription("SUBGRUPO", FieldType.String) { Length = 5 }
+                            };
+                            var tableDescription = new TableDescription(nombreTabla, fieldDescriptions);
+                            
+                            schemaBuilder.Create(tableDescription);
+                            bool success = schemaBuilder.Build();
+                    }
+                });
+
+                // Llenar la tabla con datos del DataTable
+                await QueuedTask.Run( async() =>
+                {
+                    using (Geodatabase geodatabase = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(glo_pathSIM))))
+                    using (ArcGIS.Core.Data.Table table = geodatabase.OpenDataset<ArcGIS.Core.Data.Table>(nombreTabla))
+                    using (RowBuffer rowBuffer = table.CreateRowBuffer())
+                    {
+                        foreach (DataRow row in datos.Rows)
+                        {
+                            using (Row newRow = table.CreateRow(rowBuffer))
+                            {
+                                newRow["NOMBRE"] = row["CONCESION"].ToString();
+                                newRow["FEC_SIM"] = Convert.ToDateTime(row["FEC_SIM"]);
+                                newRow["GRUPO"] = row["GRUPO"].ToString();
+                                newRow["SUBGRUPO"] = row["PS_SGRUPO"].ToString();
+                                newRow["CODIGO"] = row["CODIGOU"].ToString();
+                                newRow["ZONA"] = row["ZONA"].ToString();
+                                newRow["COD_REMATE"] = row["COD_REMATE"].ToString();
+                                newRow.Store();
+                            }
+                        }
+                        ArcGIS.Desktop.Mapping.Map map = await MapUtils.EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
+                        ArcGIS.Desktop.Mapping.IStandaloneTableFactory tableFactory = ArcGIS.Desktop.Mapping.StandaloneTableFactory.Instance;
+                        tableFactory.CreateStandaloneTable(new ArcGIS.Desktop.Mapping.StandaloneTableCreationParams(table), map);
+                    }
+
+                    
+                });
+
+              
+
+                System.Windows.MessageBox.Show("Tabla generada y datos insertados correctamente.", "Éxito", System.Windows.MessageBoxButton.OK);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show($"Error en generar tabla: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
         }
     }
 }
