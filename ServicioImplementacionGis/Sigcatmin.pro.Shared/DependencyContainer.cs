@@ -27,6 +27,8 @@ namespace Sigcatmin.pro.Shared
             services.AddTransient<ILoggerService, LoggerService>();
 
             services.AddTransient<IUserSessionService, UserSessionService>();
+            services.AddTransient<IMapService, MapService>();
+            
 
             return services;
         }

@@ -25,4 +25,13 @@
     <ProjectReference Include="..\Sigcatmin.prop.Domain\Sigcatmin.pro.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Reference Include="ArcGIS.Core">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Mapping">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
 </Project>

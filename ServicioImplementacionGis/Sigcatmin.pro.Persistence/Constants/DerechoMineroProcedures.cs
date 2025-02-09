@@ -6,9 +6,8 @@ using System.Threading.Tasks;
 
 namespace Sigcatmin.pro.Persistence.Constants
 {
-    public class LibreDProcedures
+    public class DerechoMineroProcedures
     {
         public const string VerifyDatum = "PACK_DBA_SIGCATMIN.P_verifica_datumdm";
-
     }
 }

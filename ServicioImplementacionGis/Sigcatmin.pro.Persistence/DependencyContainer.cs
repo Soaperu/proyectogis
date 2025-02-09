@@ -18,7 +18,9 @@ namespace Sigcatmin.pro.Persistence
             //services.AddScoped<IDbManagerFactory, DbManagerFactory>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IEvaluacionGISRepository, EvaluacionGISRepository>();
-
+            services.AddScoped<IGeodatabaseRepository, GeodatabaseRepository>();
+            services.AddScoped<IDerechoMineroRepository, DerechoMineroRepository>();
+            
 
 
             FluentMapper.Initialize(config =>
