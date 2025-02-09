@@ -34,6 +34,9 @@ using CommonUtilities.ArcgisProUtils.Models;
 //using DevExpress.XtraCharts.Native;
 using ArcGIS.Desktop.Core.Utilities;
 using DevExpress.XtraCharts.Native;
+using DevExpress.Charts.Native;
+using DevExpress.Utils.CommonDialogs;
+
 
 
 namespace SigcatminProAddin.View.Modulos
@@ -108,9 +111,38 @@ namespace SigcatminProAddin.View.Modulos
             ConfigureDataGridClassTemporales();
             ConfigureDataGridClassProduccion();
             ConfigureDataGridReseDifReg();
+            ConfigureDataGridResHistorico();
+            ConfigureDataGridAreaReservada();
+            ConfigureDataGridDemarca();
+            ConfigureDataGridCartaIGN();
+
             dataBaseHandler = new DatabaseHandler();
             cargar_combo();
         }
+
+        //private void btnResePath_Click(object sender, RoutedEventArgs e)
+        //{
+        //    // Crear una nueva instancia del FolderBrowserDialog
+        //    using (IFolderBrowserDialog folderDialog = new FolderBrowserDialog())
+        //    {
+        //        // Establecer el título del diálogo
+        //        folderDialog.Description = "Selecciona una Carpeta";
+
+        //        // Mostrar el diálogo
+        //        DialogResult result = folderDialog.ShowDialog();
+
+        //        // Si el usuario selecciona una carpeta (no cancela)
+        //        if (result == DialogResult.OK)
+        //        {
+        //            // Asignar la ruta de la carpeta seleccionada al TextBox
+        //            txtResePath.Text = folderDialog.SelectedPath;
+        //        }
+        //    }
+        //}
+
+
+
+
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
         {
@@ -122,12 +154,43 @@ namespace SigcatminProAddin.View.Modulos
             dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_ENV.ToString());
             GetOptionCBox(CbxEnv, dmrRecords);
             cambiaOpcionesCboxFeatures();
+
+            /**/
+            List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
+            cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
+            cbp.Add(new ComboBoxPairs("FLAT1065", 1));
+            cbp.Add(new ComboBoxPairs("CARI0213", 2));
+            cbp.Add(new ComboBoxPairs("WVAL0398", 3));
+            cbp.Add(new ComboBoxPairs("JFLO0589", 4));
+            cbp.Add(new ComboBoxPairs("CQUI1819", 5));
+
+            // Asignar la lista al ComboBox
+            CbxUsuario.DisplayMemberPath = "_Key";
+            CbxUsuario.SelectedValuePath = "_Value";
+            CbxUsuario.ItemsSource = cbp;
+
+
+            List<ComboBoxPairs> cbpF = new List<ComboBoxPairs>();
+            cbpF.Add(new ComboBoxPairs("--Seleccionar--", 0));
+            cbpF.Add(new ComboBoxPairs("Procesar Intermedia", 1));
+            cbpF.Add(new ComboBoxPairs("Procesar Producción", 2));
+            cbpF.Add(new ComboBoxPairs("Procesados", 3));
+            cbpF.Add(new ComboBoxPairs("Errores", 4));
+            // Asignar la lista al ComboBox
+            CbxFiltro.DisplayMemberPath = "_Key";
+            CbxFiltro.SelectedValuePath = "_Value";
+            CbxFiltro.ItemsSource = cbpF;
+
+            /**/
+
+
             CbxUsuario.SelectedIndex = 1;
             CbxFiltro.SelectedIndex = 1;
 
             CbxFiltroControlReg.SelectedIndex = 1;
             CbxEnv.SelectedIndex = 1;
             CbxFeatures.SelectedIndex = 1;
+            CbxFiltroTipo.SelectedIndex = 1;
 
 
         }
@@ -436,15 +499,6 @@ namespace SigcatminProAddin.View.Modulos
             DGridRegistroTmp.Columns.Add(g56Column);
             DGridRegistroTmp.Columns.Add(g84Column);
 
-            //DGridRegistroProd.Columns.Add(totalColumn);
-            //DGridRegistroProd.Columns.Add(psad17Column);
-            //DGridRegistroProd.Columns.Add(psad18Column);
-            //DGridRegistroProd.Columns.Add(psad19Column);
-            //DGridRegistroProd.Columns.Add(wgs17Column);
-            //DGridRegistroProd.Columns.Add(wgs18Column);
-            //DGridRegistroProd.Columns.Add(wgs19Column);
-            //DGridRegistroProd.Columns.Add(g56Column);
-            //DGridRegistroProd.Columns.Add(g84Column);
         }
 
         private void ConfigureDataGridClassProduccion()
@@ -599,6 +653,398 @@ namespace SigcatminProAddin.View.Modulos
             DGridDifRegistro.Columns.Add(observacionColumn);
         }
 
+        private void ConfigureDataGridResHistorico()
+        {
+            // Obtener la vista principal del GridControl
+            var tableView = DGResHistorico.View as DevExpress.Xpf.Grid.TableView;
+
+            // Limpiar columnas existentes
+            DGResHistorico.Columns.Clear();
+
+            if (tableView != null)
+            {
+                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
+            }
+
+            // Crear y configurar columnas
+
+            // Columna de índice (número de fila)
+            GridColumn idColumn = new GridColumn
+            {
+                Header = DatagridResultConstantsDM.HeadersResHistorico.Id, // Encabezado
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Id,
+                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
+                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
+                VisibleIndex = 0, // Mostrar como la primera columna
+                Width = DatagridResultConstantsDM.WidthsResHistorico.Id
+            };
+
+            GridColumn codigoColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Codigo, // Nombre del campo en el DataTable
+                Header = DatagridResultConstantsDM.HeadersResHistorico.Codigo,    // Encabezado visible
+                Width = DatagridResultConstantsDM.WidthsResHistorico.Codigo            // Ancho de la columna
+            };
+
+            GridColumn archivoColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Archivo,
+                Header = DatagridResultConstantsDM.HeadersResHistorico.Archivo,
+                Width = DatagridResultConstantsDM.WidthsResHistorico.Archivo
+            };
+
+            GridColumn claseColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Clase,
+                Header = DatagridResultConstantsDM.HeadersResHistorico.Clase,
+                Width = DatagridResultConstantsDM.WidthsResHistorico.Clase
+            };
+
+            GridColumn zonaColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Zona,
+                Header = DatagridResultConstantsDM.HeadersResHistorico.Zona,
+                Width = DatagridResultConstantsDM.WidthsResHistorico.Zona
+            };
+
+            GridColumn modregColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.ModReg,
+                Header = DatagridResultConstantsDM.HeadersResHistorico.ModReg,
+                Width = DatagridResultConstantsDM.WidthsResHistorico.ModReg
+            };
+
+            GridColumn codestColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.CodEst,
+                Header = DatagridResultConstantsDM.HeadersResHistorico.CodEst,
+                Width = DatagridResultConstantsDM.WidthsResHistorico.CodEst
+            };
+
+            GridColumn fecregColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.FecReg,
+                Header = DatagridResultConstantsDM.HeadersResHistorico.FecReg,
+                Width = DatagridResultConstantsDM.WidthsResHistorico.FecReg
+            };
+
+            // Agregar columnas al GridControl
+            DGResHistorico.Columns.Add(idColumn);
+            DGResHistorico.Columns.Add(codigoColumn);
+            DGResHistorico.Columns.Add(archivoColumn);
+            DGResHistorico.Columns.Add(claseColumn);
+            DGResHistorico.Columns.Add(zonaColumn);
+            DGResHistorico.Columns.Add(modregColumn);
+            DGResHistorico.Columns.Add(codestColumn);
+            DGResHistorico.Columns.Add(fecregColumn);
+
+        }
+
+        private void ConfigureDataGridAreaReservada()
+        {
+            // Obtener la vista principal del GridControl
+            var tableView = DGAreaReservada.View as DevExpress.Xpf.Grid.TableView;
+
+            // Limpiar columnas existentes
+            DGAreaReservada.Columns.Clear();
+
+            if (tableView != null)
+            {
+                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
+            }
+
+            // Crear y configurar columnas
+
+            // Columna de índice (número de fila)
+            GridColumn idColumn = new GridColumn
+            {
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Id, // Encabezado
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Id,
+                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
+                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
+                VisibleIndex = 0, // Mostrar como la primera columna
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Id
+            };
+
+            GridColumn nombreColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Nombre, // Nombre del campo en el DataTable
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Nombre,    // Encabezado visible
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Nombre            // Ancho de la columna
+            };
+
+            GridColumn nmreseColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.NmRese,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.NmRese,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.NmRese
+            };
+
+            GridColumn tpreseColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.TpRese,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.TpRese,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.TpRese
+            };
+
+            GridColumn categoriColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Categori,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Categori,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Categori
+            };
+
+            GridColumn claseColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Clase,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Clase,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Clase
+            };
+
+            GridColumn zonaColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Zona,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Zona,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Zona
+            };
+
+            GridColumn titularColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Titular,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Titular,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Titular
+            };
+
+            GridColumn hasColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Has,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Has,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Has
+            };
+            GridColumn zonexColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Zonex,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Zonex,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Zonex
+            };
+            GridColumn obsColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Obs,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Obs,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Obs
+            };
+            GridColumn normaColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Norma,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Norma,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Norma
+            };
+            GridColumn archivoColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Archivo,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Archivo,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Archivo
+            };
+
+            GridColumn fecinfColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.FecInf,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.FecInf,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.FecInf
+            };
+            GridColumn entidadColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Entidad,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Entidad,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Entidad
+            };
+
+            GridColumn usoColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Uso,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Uso,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Uso
+            };
+            GridColumn estgraftColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.EstGraf,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.EstGraf,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.EstGraf
+            };
+            GridColumn leyendaColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Leyenda,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Leyenda,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Leyenda
+            };
+            GridColumn fecpubColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.FecPub,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.FecPub,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.FecPub
+            };
+            GridColumn envColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Env,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Env,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Env
+            };
+            GridColumn mineriaColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Mineria,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Mineria,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Mineria
+            };
+            GridColumn identitiColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.ColumNamesAreaReservada.Identiti,
+                Header = DatagridResultConstantsDM.HeadersAreaReservada.Identiti,
+                Width = DatagridResultConstantsDM.WidthsAreaReservada.Identiti
+            };
+
+
+            // Agregar columnas al GridControl
+            DGAreaReservada.Columns.Add(idColumn);
+            DGAreaReservada.Columns.Add(nombreColumn);
+            DGAreaReservada.Columns.Add(nmreseColumn);
+            DGAreaReservada.Columns.Add(tpreseColumn);
+            DGAreaReservada.Columns.Add(categoriColumn);
+            DGAreaReservada.Columns.Add(claseColumn);
+            DGAreaReservada.Columns.Add(zonaColumn);
+            DGAreaReservada.Columns.Add(titularColumn);
+            DGAreaReservada.Columns.Add(hasColumn);
+            DGAreaReservada.Columns.Add(zonexColumn);
+            DGAreaReservada.Columns.Add(obsColumn);
+            DGAreaReservada.Columns.Add(normaColumn);
+            DGAreaReservada.Columns.Add(archivoColumn);
+            DGAreaReservada.Columns.Add(fecinfColumn);
+            DGAreaReservada.Columns.Add(entidadColumn);
+            DGAreaReservada.Columns.Add(usoColumn);
+            DGAreaReservada.Columns.Add(estgraftColumn);
+            DGAreaReservada.Columns.Add(leyendaColumn);
+            DGAreaReservada.Columns.Add(fecpubColumn);
+            DGAreaReservada.Columns.Add(envColumn);
+            DGAreaReservada.Columns.Add(mineriaColumn);
+            DGAreaReservada.Columns.Add(identitiColumn);
+        }
+
+        private void ConfigureDataGridDemarca()
+        {
+            // Obtener la vista principal del GridControl
+            var tableView = DGDemarca.View as DevExpress.Xpf.Grid.TableView;
+
+            // Limpiar columnas existentes
+            DGDemarca.Columns.Clear();
+
+            if (tableView != null)
+            {
+                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
+            }
+
+            // Crear y configurar columnas
+
+            // Columna de índice (número de fila)
+            GridColumn cgcodigoColumn = new GridColumn
+            {
+                Header = DatagridResultConstantsDM.HeadersDemarca.CgCodigo, // Encabezado
+                FieldName = DatagridResultConstantsDM.ColumNamesDemarca.CgCodigo,
+                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
+                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
+                VisibleIndex = 0, // Mostrar como la primera columna
+                Width = DatagridResultConstantsDM.WidthsDemarca.CgCodigo
+            };
+
+            GridColumn decoddemColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.HeadersDemarca.DeCoddem, // Nombre del campo en el DataTable
+                Header = DatagridResultConstantsDM.ColumNamesDemarca.DeCoddem,    // Encabezado visible
+                Width = DatagridResultConstantsDM.WidthsDemarca.DeCoddem            // Ancho de la columna
+            };
+
+            GridColumn usloguseColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.HeadersDemarca.UsLoguse,
+                Header = DatagridResultConstantsDM.ColumNamesDemarca.UsLoguse,
+                Width = DatagridResultConstantsDM.WidthsDemarca.UsLoguse
+            };
+
+            GridColumn dgfecingColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.HeadersDemarca.DgFecing,
+                Header = DatagridResultConstantsDM.ColumNamesDemarca.DgFecing,
+                Width = DatagridResultConstantsDM.WidthsDemarca.DgFecing
+            };
+
+
+            // Agregar columnas al GridControl
+            DGDemarca.Columns.Add(cgcodigoColumn);
+            DGDemarca.Columns.Add(decoddemColumn);
+            DGDemarca.Columns.Add(usloguseColumn);
+            DGDemarca.Columns.Add(dgfecingColumn);
+        }
+
+        private void ConfigureDataGridCartaIGN()
+        {
+            // Obtener la vista principal del GridControl
+            var tableView = DGCarta.View as DevExpress.Xpf.Grid.TableView;
+
+            // Limpiar columnas existentes
+            DGCarta.Columns.Clear();
+
+            if (tableView != null)
+            {
+                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
+            }
+
+            // Crear y configurar columnas
+
+            // Columna de índice (número de fila)
+            GridColumn cgcodigoColumn = new GridColumn
+            {
+                Header = DatagridResultConstantsDM.HeadersCartaIGN.CgCodigo, // Encabezado
+                FieldName = DatagridResultConstantsDM.ColumNamesCartaIGN.CgCodigo,
+                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
+                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
+                VisibleIndex = 0, // Mostrar como la primera columna
+                Width = DatagridResultConstantsDM.WidthsCartaIGN.CgCodigo
+            };
+
+            GridColumn cacodcarColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.HeadersCartaIGN.CaCodcar, // Nombre del campo en el DataTable
+                Header = DatagridResultConstantsDM.ColumNamesCartaIGN.CaCodcar,    // Encabezado visible
+                Width = DatagridResultConstantsDM.WidthsCartaIGN.CaCodcar            // Ancho de la columna
+            };
+
+            GridColumn usloguseColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.HeadersCartaIGN.UsLoguse,
+                Header = DatagridResultConstantsDM.ColumNamesCartaIGN.UsLoguse,
+                Width = DatagridResultConstantsDM.WidthsCartaIGN.UsLoguse
+            };
+
+            GridColumn catipcarColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.HeadersCartaIGN.CaTipcar,
+                Header = DatagridResultConstantsDM.ColumNamesCartaIGN.CaTipcar,
+                Width = DatagridResultConstantsDM.WidthsCartaIGN.CaTipcar
+            };
+
+            GridColumn cafecingColumn = new GridColumn
+            {
+                FieldName = DatagridResultConstantsDM.HeadersCartaIGN.CaFecing,
+                Header = DatagridResultConstantsDM.ColumNamesCartaIGN.CaFecing,
+                Width = DatagridResultConstantsDM.WidthsCartaIGN.CaFecing
+            };
+
+            // Agregar columnas al GridControl
+            DGCarta.Columns.Add(cgcodigoColumn);
+            DGCarta.Columns.Add(cacodcarColumn);
+            DGCarta.Columns.Add(usloguseColumn);
+            DGCarta.Columns.Add(catipcarColumn);
+            DGCarta.Columns.Add(cafecingColumn);
+        }
+
 
 
         public class ComboBoxPairs
@@ -628,121 +1074,8 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxFiltro_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           //DataTable dmrRecords;
-            var rows = 0;
-            if (CbxFiltro.SelectedItem is ComboBoxPairs selectedOpcion)
-            {
-                if (CbxUsuario.SelectedItem is ComboBoxPairs selectedUsuario)
-                {
-                    var dmrRecords = dataBaseHandler.GetProGisFiltro($"{selectedOpcion._Value}", $"{selectedUsuario._Key}");
-                    rows = dmrRecords.Rows.Count;
-                    DataGridResult.ItemsSource = dmrRecords.DefaultView;
-                }
-                else
-                {
-                    MessageBox.Show("Seleccione un valor válido usuario.");
-                }
-            }
-            else
-            {
-                MessageBox.Show("Seleccione un valor válido opción.");
-            }
-            LblCountRecords.Content = "Se encontraron " + rows.ToString() + " registros";
+            
 
-            // Loop through the columns of the DataGridView (assuming it's a DevExpress control)
-            //for (int i = 0; i < DataGridResult.Columns.Count; i++)
-            //{
-            //    // Disable sorting for all columns
-            //    //DataGridResult.Columns[i].OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
-
-            //    // Set ReadOnly property based on column name
-            //    if (DataGridResult.Columns[i].Name == _FIELD_PROCESAR)
-            //    {
-            //        // Make this column editable
-            //        //DataGridResult.Columns[i].OptionsColumn.ReadOnly = false;
-            //    }
-            //    else
-            //    {
-            //        // Make all other columns read-only
-            //        //DataGridResult.Columns[i].OptionsColumn.ReadOnly = true;
-            //    }
-            //}
-
-            //foreach (int rowHandle in DataGridResult.DataController.GetAllFilteredAndSortedRows())
-            //{
-            //    // Verificar si el rowHandle es válido
-            //    if (!DataGridResult.IsValidRowHandle(rowHandle))
-            //    {
-            //        Console.WriteLine($"RowHandle inválido: {rowHandle}");
-            //        continue;
-            //    }
-
-            //    // Verificar si el rowHandle corresponde a una fila de datos
-            //    if (!DataGridResult.IsDataRow(rowHandle))
-            //    {
-            //        Console.WriteLine($"RowHandle {rowHandle} no es una fila de datos.");
-            //        continue;
-            //    }
-
-            //    // Verificar que la columna _FIELD_RE_CODEST existe
-            //    var column = DataGridResult.Columns.FirstOrDefault(c => c.FieldName == _FIELD_RE_CODEST);
-            //    if (column == null)
-            //    {
-            //        Console.WriteLine($"Error: La columna {_FIELD_RE_CODEST} no existe en el GridControl.");
-            //        continue;
-            //    }
-
-            //    // Obtener el valor de la celda
-            //    var estadoObj = DataGridResult.GetRowCellValue(rowHandle, _FIELD_RE_CODEST);
-            //    if (estadoObj == null || estadoObj == DBNull.Value)
-            //    {
-            //        Console.WriteLine($"Fila {rowHandle}: La celda {_FIELD_RE_CODEST} está vacía.");
-            //        continue;
-            //    }
-
-            //    Console.WriteLine($"Fila {rowHandle}: {_FIELD_RE_CODEST} = {estadoObj} ({estadoObj.GetType()})");
-
-            //    // Asegurarse de que el valor se pueda convertir a string para compararlo
-            //    var estado = estadoObj.ToString();
-
-            //    // Comparaciones y asignaciones
-            //    if (estado.Equals(_EST_PROCTEMP) || estado.Equals(_EST_PROCPROD))
-            //    {
-            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, true);
-            //    }
-            //    else if (estado.Equals(_EST_NOPROCTEMP) || estado.Equals(_EST_NOPROCPROD))
-            //    {
-            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, false);
-            //    }
-            //    else if (estado.Equals(_EST_ERRTEMP) || estado.Equals(_EST_ERRPROD))
-            //    {
-            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, false);
-            //        DataGridResult.Columns[_FIELD_PROCESAR].OptionsColumn.ReadOnly = true;
-            //        DataGridResult.Appearance.Row.BackColor = System.Drawing.Color.Pink;
-            //    }
-            //}
-
-
-        }
-
-        private void DataGridResultTableView_CellValueChanged(object sender, CellValueChangedEventArgs e)
-        {
-            if (e.Column.FieldName == _FIELD_PROCESAR)
-            {
-                // Obtén el valor de la fila y columna modificada
-                int focusedRowHandle = e.RowHandle;
-                DataGridResult.View.PostEditor(); // Asegura que la edición se ha terminado
-
-                // Puedes obtener el valor del campo 'idReg' o realizar otras acciones
-                string idReg = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString();
-                if (!string.IsNullOrEmpty(idReg))
-                {
-                    obtenerDetalle(idReg);
-                }
-
-
-
-            }
         }
 
         private void obtenerDetalle(string idreg)
@@ -769,6 +1102,10 @@ namespace SigcatminProAddin.View.Modulos
 
             dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_ZONA.ToString());
             GetOptionCBox(CbxZona, dmrRecords);
+
+            dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_CREG.ToString());
+            GetOptionCBox(CbxFiltroTipo, dmrRecords);
+
 
             //dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO.ToString());
             //GetOptionCBox(CbxFiltro, dmrRecords);
@@ -876,16 +1213,27 @@ namespace SigcatminProAddin.View.Modulos
                 case 5:
                     try
                     {
-                        //this.rb_exeahora.Tag = _TAG_CURRENT;
-                        //this.rb_exefindia.Tag = _TAG_EXEENDDAY;
-                        //this.rb_noexe.Tag = _TAG_NOEXE;
-                        //this.lbl_nreg_historico.Text = "";
-                        //get_configuracion();
+                        string _pathrese = dataBaseHandler.GetObtienePathRese();
+                        string _pathurba = dataBaseHandler.GetObtienePathUrba();
+                        string _pathimage = dataBaseHandler.GetObtieneImage();
+                        string _tipoexe   = dataBaseHandler.GetObtieneTipoExe();
+
+                        txtResePath.Text = _pathrese;
+                        txtUrbaPath.Text = _pathurba;
+                        txtImagePath.Text = _pathimage;
+                        //rbExeAhora.IsChecked= true;
+                        
+
                     }
                     catch (Exception)
                     {
-
-                        throw;
+                        string message = "Error - No se pudo obtener la configuración establecida";
+                        ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                         "Advertencia",
+                                                                         MessageBoxButton.OK, MessageBoxImage.Warning);
+                        
+                        return;
+                        //throw;
                     }
                     break;
             }
@@ -990,34 +1338,34 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxUsuario_Loaded(object sender, RoutedEventArgs e)
         {
-            List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
-            cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
-            cbp.Add(new ComboBoxPairs("FLAT1065", 1));
-            cbp.Add(new ComboBoxPairs("CARI0213", 2));
-            cbp.Add(new ComboBoxPairs("WVAL0398", 3));
-            cbp.Add(new ComboBoxPairs("JFLO0589", 4));
-            cbp.Add(new ComboBoxPairs("CQUI1819", 5));
+            //List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
+            //cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
+            //cbp.Add(new ComboBoxPairs("FLAT1065", 1));
+            //cbp.Add(new ComboBoxPairs("CARI0213", 2));
+            //cbp.Add(new ComboBoxPairs("WVAL0398", 3));
+            //cbp.Add(new ComboBoxPairs("JFLO0589", 4));
+            //cbp.Add(new ComboBoxPairs("CQUI1819", 5));
 
-            // Asignar la lista al ComboBox
-            CbxUsuario.DisplayMemberPath = "_Key";
-            CbxUsuario.SelectedValuePath = "_Value";
-            CbxUsuario.ItemsSource = cbp;
+            //// Asignar la lista al ComboBox
+            //CbxUsuario.DisplayMemberPath = "_Key";
+            //CbxUsuario.SelectedValuePath = "_Value";
+            //CbxUsuario.ItemsSource = cbp;
             // Seleccionar la primera opción por defecto
 
         }
-        
+
         private void CbxFiltro_Loaded(object sender, RoutedEventArgs e)
         {
-            List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
-            cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
-            cbp.Add(new ComboBoxPairs("Procesar Intermedia", 1));
-            cbp.Add(new ComboBoxPairs("Procesar Producción", 2));
-            cbp.Add(new ComboBoxPairs("Procesados", 3));
-            cbp.Add(new ComboBoxPairs("Errores", 4));
-            // Asignar la lista al ComboBox
-            CbxFiltro.DisplayMemberPath = "_Key";
-            CbxFiltro.SelectedValuePath = "_Value";
-            CbxFiltro.ItemsSource = cbp;
+            //List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
+            //cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
+            //cbp.Add(new ComboBoxPairs("Procesar Intermedia", 1));
+            //cbp.Add(new ComboBoxPairs("Procesar Producción", 2));
+            //cbp.Add(new ComboBoxPairs("Procesados", 3));
+            //cbp.Add(new ComboBoxPairs("Errores", 4));
+            //// Asignar la lista al ComboBox
+            //CbxFiltro.DisplayMemberPath = "_Key";
+            //CbxFiltro.SelectedValuePath = "_Value";
+            //CbxFiltro.ItemsSource = cbp;
 
         }
 
@@ -1025,5 +1373,302 @@ namespace SigcatminProAddin.View.Modulos
         {
 
         }
+
+        private void DGResultado_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
+        {
+
+        }
+
+
+        private void btnBuscarHistorico_Click_1(object sender, RoutedEventArgs e)
+        {
+
+            string codigo = txtBuscaHistorico.Text;
+            string fecIni = DtpFecIni.Text;
+            string fecFin = DtpFecFin.Text;
+
+            if (codigo == "")
+            {
+                codigo = "#";
+            }
+            if (fecIni == "")
+            {
+                fecIni = "#";
+            }
+
+            if (fecFin == "")
+            {
+                fecFin = "#";
+            }
+
+            DataTable _table;
+            _table = dataBaseHandler.GetObtieneFiltroHistorico(codigo, fecIni, fecFin);
+            DGResHistorico.ItemsSource = _table;
+        }
+
+
+
+        private void DGResHistorico_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
+        {
+
+        }
+
+        private void btnBuscarAR_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string _codigo = "";
+                _codigo = txtBuscaAR.Text;
+                if (_codigo == "")
+                {
+
+                    string message = "Por favor ingrese un código";
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                     "Advertencia",
+                                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                DataTable _table;
+                string vOpcion = "";
+                string opt = "";
+                opt = CbxFiltroTipo.SelectedValue.ToString();
+                if (opt == "1")
+                {
+                    vOpcion = "1";
+                }
+                else
+                {
+                    vOpcion = "2";
+                }
+
+                _table = dataBaseHandler.GetObtieneDatosAR(vOpcion, _codigo);
+                DGAreaReservada.ItemsSource = _table;
+
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
+
+        private void DGAreaReservada_CustomUnboundColumnData(object sender, GridColumnDataEventArgs e)
+        {
+
+        }
+
+        private void CbxFiltroTipo_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+           
+        }
+
+        private void btnGuardarER_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnBuscarH_Click(object sender, RoutedEventArgs e)
+        {
+            //DataTable dmrRecords;
+            var rows = 0;
+            if (CbxFiltro.SelectedItem is ComboBoxPairs selectedOpcion)
+            {
+                if (CbxUsuario.SelectedItem is ComboBoxPairs selectedUsuario)
+                {
+                    var dmrRecords = dataBaseHandler.GetProGisFiltro($"{selectedOpcion._Value}", $"{selectedUsuario._Key}");
+                    rows = dmrRecords.Rows.Count;
+                    DataGridResult.ItemsSource = dmrRecords.DefaultView;
+                }
+                else
+                {
+                    MessageBox.Show("Seleccione un valor válido usuario.");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Seleccione un valor válido opción.");
+            }
+            LblCountRecords.Content = "Se encontraron " + rows.ToString() + " registros";
+
+            // Loop through the columns of the DataGridView (assuming it's a DevExpress control)
+            //for (int i = 0; i < DataGridResult.Columns.Count; i++)
+            //{
+            //    // Disable sorting for all columns
+            //    //DataGridResult.Columns[i].OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
+
+            //    // Set ReadOnly property based on column name
+            //    if (DataGridResult.Columns[i].Name == _FIELD_PROCESAR)
+            //    {
+            //        // Make this column editable
+            //        //DataGridResult.Columns[i].OptionsColumn.ReadOnly = false;
+            //    }
+            //    else
+            //    {
+            //        // Make all other columns read-only
+            //        //DataGridResult.Columns[i].OptionsColumn.ReadOnly = true;
+            //    }
+            //}
+
+            //foreach (int rowHandle in DataGridResult.DataController.GetAllFilteredAndSortedRows())
+            //{
+            //    // Verificar si el rowHandle es válido
+            //    if (!DataGridResult.IsValidRowHandle(rowHandle))
+            //    {
+            //        Console.WriteLine($"RowHandle inválido: {rowHandle}");
+            //        continue;
+            //    }
+
+            //    // Verificar si el rowHandle corresponde a una fila de datos
+            //    if (!DataGridResult.IsDataRow(rowHandle))
+            //    {
+            //        Console.WriteLine($"RowHandle {rowHandle} no es una fila de datos.");
+            //        continue;
+            //    }
+
+            //    // Verificar que la columna _FIELD_RE_CODEST existe
+            //    var column = DataGridResult.Columns.FirstOrDefault(c => c.FieldName == _FIELD_RE_CODEST);
+            //    if (column == null)
+            //    {
+            //        Console.WriteLine($"Error: La columna {_FIELD_RE_CODEST} no existe en el GridControl.");
+            //        continue;
+            //    }
+
+            //    // Obtener el valor de la celda
+            //    var estadoObj = DataGridResult.GetRowCellValue(rowHandle, _FIELD_RE_CODEST);
+            //    if (estadoObj == null || estadoObj == DBNull.Value)
+            //    {
+            //        Console.WriteLine($"Fila {rowHandle}: La celda {_FIELD_RE_CODEST} está vacía.");
+            //        continue;
+            //    }
+
+            //    Console.WriteLine($"Fila {rowHandle}: {_FIELD_RE_CODEST} = {estadoObj} ({estadoObj.GetType()})");
+
+            //    // Asegurarse de que el valor se pueda convertir a string para compararlo
+            //    var estado = estadoObj.ToString();
+
+            //    // Comparaciones y asignaciones
+            //    if (estado.Equals(_EST_PROCTEMP) || estado.Equals(_EST_PROCPROD))
+            //    {
+            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, true);
+            //    }
+            //    else if (estado.Equals(_EST_NOPROCTEMP) || estado.Equals(_EST_NOPROCPROD))
+            //    {
+            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, false);
+            //    }
+            //    else if (estado.Equals(_EST_ERRTEMP) || estado.Equals(_EST_ERRPROD))
+            //    {
+            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, false);
+            //        DataGridResult.Columns[_FIELD_PROCESAR].OptionsColumn.ReadOnly = true;
+            //        DataGridResult.Appearance.Row.BackColor = System.Drawing.Color.Pink;
+            //    }
+            //}
+
+        }
+
+        private void btnBuscarAux_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string _codigo = "";
+                _codigo = txtBuscaAux.Text;
+                if (_codigo == "")
+                {
+
+                    string message = "Por favor ingrese un código";
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
+                                                                     "Advertencia",
+                                                                     MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                DataTable _table;
+                _table = dataBaseHandler.GetObtieneConsultaDatoDB("1", _codigo);
+                DGDemarca.ItemsSource = _table;
+
+                _table = dataBaseHandler.GetObtieneConsultaDatoDB("2", _codigo);
+                DGCarta.ItemsSource = _table;
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+        }
+
+        //private void rb_1_Checked(object sender, RoutedEventArgs e)
+        //{
+        //    RadioButton selectedRadioButton = sender as RadioButton;
+        //    if (selectedRadioButton != null)
+        //    {
+        //        // Mostrar el contenido del RadioButton seleccionado en el TextBox
+        //        string tb_selection = "Seleccionaste: " + selectedRadioButton.Name.ToString();
+        //        string tb_s1election = "Seleccionaste: " + selectedRadioButton.Content.ToString();
+        //    }
+        //}
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
+        {
+            // Obtener el RadioButton que ha sido seleccionado
+            RadioButton selectedRadioButton = sender as RadioButton;
+
+            // Verificar si el RadioButton seleccionado no es nulo
+            if (selectedRadioButton != null)
+            {
+                // Mostrar el contenido del RadioButton seleccionado en el TextBox
+                string tb_selection = "Seleccionaste: " + selectedRadioButton.Content.ToString();
+            }
+
+
+        }
+
+        private void btnPathAReserva_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnPathZonaUrbana_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnPathImage_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void DataGridResultTableView_CellValueChanged(object sender, CellValueChangedEventArgs e)
+        {
+            if (e.Column.FieldName == _FIELD_PROCESAR)
+            {
+                // Obtén el valor de la fila y columna modificada
+                int focusedRowHandle = e.RowHandle;
+                DataGridResult.View.PostEditor(); // Asegura que la edición se ha terminado
+
+                // Puedes obtener el valor del campo 'idReg' o realizar otras acciones
+                string idReg = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString();
+                if (!string.IsNullOrEmpty(idReg))
+                {
+                    obtenerDetalle(idReg);
+                }
+
+
+
+            }
+        }
+
+ 
+       
+
+
+
+
+
     }
+
 }

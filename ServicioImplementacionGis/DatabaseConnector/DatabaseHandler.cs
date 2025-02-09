@@ -1576,6 +1576,47 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public string GetObtienePathRese()
+        {
+            // Procedimiento almacenado a ejecutar
+            string storedProcedure = DatabaseProcedures.Procedure_ObtienePathRese;
+
+            // Configurar parámetros
+            var parameters = new OracleParameter[] {};
+            return ExecuteScalar(storedProcedure, parameters);
+
+        }
+
+        public string GetObtienePathUrba()
+        {
+            // Procedimiento almacenado a ejecutar
+            string storedProcedure = DatabaseProcedures.Procedure_ObtienePathUrba;
+            // Configurar parámetros
+            var parameters = new OracleParameter[] { };
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string GetObtieneImage()
+        {
+            // Procedimiento almacenado a ejecutar
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneImage;
+            // Configurar parámetros
+            var parameters = new OracleParameter[] { };
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string GetObtieneTipoExe()
+        {
+            // Procedimiento almacenado a ejecutar
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneTipoExe;
+            // Configurar parámetros
+            var parameters = new OracleParameter[] { };
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+
+
+
         public DataTable GetOpcionCBox(string idGroup)
         {
             string storedProcedure = DatabaseProcedures.Procedure_ObtieneOpcionCBox;
@@ -1645,6 +1686,36 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetObtieneFiltroHistorico(string codigo, string fecini, string fecfin)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneFiltroHistorico;
+            var parameters = new OracleParameter[] {
+                new OracleParameter("CODIGO", OracleDbType.Varchar2,20) { Value = codigo },
+                new OracleParameter("FECINI", OracleDbType.Varchar2,20) { Value = fecini },
+                new OracleParameter("FECFIN", OracleDbType.Varchar2,20) { Value = fecfin }
+            };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneDatosAR(string vOpcion, string vCodigo)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneConsultaGISFiltro;
+            var parameters = new OracleParameter[] {
+                new OracleParameter("VO_OPCION", OracleDbType.Varchar2,20) { Value = vOpcion },
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2,20) { Value = vCodigo },
+            };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetObtieneConsultaDatoDB(string vOpcion, string vCodigo)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneConsultaDatoBD;
+            var parameters = new OracleParameter[] {
+                new OracleParameter("VO_OPCION", OracleDbType.Varchar2,10) { Value = vOpcion },
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2,50) { Value = vCodigo },
+            };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
 
 

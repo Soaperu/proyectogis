@@ -205,7 +205,7 @@ namespace SigcatminProAddin.Models.Constants
             public const string PSad17 = "PSAD_17";
             public const string PSad18 = "PSAD_18";
             public const string PSad19 = "PSAD_19";
-            public const string Wgs17= "WGS_17";
+            public const string Wgs17 = "WGS_17";
             public const string Wgs18 = "WGS_18";
             public const string Wgs19 = "WGS_19";
             public const string G56 = "G56";
@@ -263,11 +263,172 @@ namespace SigcatminProAddin.Models.Constants
             public const int RegDB = 80;
             public const int RegGDB = 80;
             public const int Observacion = 300;
-            
+
         }
 
+        public static class ColumNamesResHistorico
+        {
+            public const string Id = "ID";
+            public const string Codigo = "CODIGO";
+            public const string Archivo = "ARCHIVO";
+            public const string Clase = "CLASE";
+            public const string Zona = "ZONA";
+            public const string ModReg = "MODREG";
+            public const string CodEst = "CODEST";
+            public const string FecReg = "FECREG";
+        }
 
+        public static class HeadersResHistorico
+        {
+            public const string Id = "ID";
+            public const string Codigo = "CODIGO";
+            public const string Archivo = "ARCHIVO";
+            public const string Clase = "CLASE";
+            public const string Zona = "ZONA";
+            public const string ModReg = "MODREG";
+            public const string CodEst = "CODEST";
+            public const string FecReg = "FECREG";
+        }
 
+        public static class WidthsResHistorico
+        {
+            public const int Id = 60;
+            public const int Codigo = 80;
+            public const int Archivo = 80;
+            public const int Clase = 80;
+            public const int Zona = 80;
+            public const int ModReg = 120;
+            public const int CodEst = 80;
+            public const int FecReg = 130;
+        }
+
+        public static class ColumNamesAreaReservada
+        {
+            public const string Id = "CODIGO";
+            public const string Nombre = "NOMBRE";
+            public const string NmRese = "NM_RESE";
+            public const string TpRese = "TP_RESE";
+            public const string Categori = "CATEGORI";
+            public const string Clase = "CLASE";
+            public const string Zona = "ZONA";
+            public const string Titular = "TITULAR";
+            public const string Has = "HAS";
+            public const string Zonex = "ZONEX";
+            public const string Obs = "OBS";
+            public const string Norma = "NORMA";
+            public const string Archivo = "ARCHIVO";
+            public const string FecInf = "FEC_ING";
+            public const string Entidad = "ENTIDAD";
+            public const string Uso = "USO";
+            public const string EstGraf = "EST_GRAF";
+            public const string Leyenda = "LEYENDA";
+            public const string FecPub = "FEC_PUB";
+            public const string Env = "ENV";
+            public const string Mineria = "MINERIA";
+            public const string Identiti = "IDENTITI";
+        }
+
+        public static class HeadersAreaReservada
+        {
+            public const string Id = "CODIGO";
+            public const string Nombre = "NOMBRE";
+            public const string NmRese = "NM_RESE";
+            public const string TpRese = "TP_RESE";
+            public const string Categori = "CATEGORI";
+            public const string Clase = "CLASE";
+            public const string Zona = "ZONA";
+            public const string Titular = "TITULAR";
+            public const string Has = "HAS";
+            public const string Zonex = "ZONEX";
+            public const string Obs = "OBS";
+            public const string Norma = "NORMA";
+            public const string Archivo = "ARCHIVO";
+            public const string FecInf = "FEC_ING";
+            public const string Entidad = "ENTIDAD";
+            public const string Uso = "USO";
+            public const string EstGraf = "EST_GRAF";
+            public const string Leyenda = "LEYENDA";
+            public const string FecPub = "FEC_PUB";
+            public const string Env = "ENV";
+            public const string Mineria = "MINERIA";
+            public const string Identiti = "IDENTITI";
+        }
+        public static class WidthsAreaReservada
+        {
+            public const int Id = 80;
+            public const int Nombre = 80;
+            public const int NmRese = 80;
+            public const int TpRese = 80;
+            public const int Categori = 80;
+            public const int Clase = 80;
+            public const int Zona = 80;
+            public const int Titular = 80;
+            public const int Has = 80;
+            public const int Zonex = 80;
+            public const int Obs = 80;
+            public const int Norma = 80;
+            public const int Archivo = 80;
+            public const int FecInf = 80;
+            public const int Entidad = 80;
+            public const int Uso = 80;
+            public const int EstGraf = 80;
+            public const int Leyenda = 80;
+            public const int FecPub = 80;
+            public const int Env = 80;
+            public const int Mineria = 80;
+            public const int Identiti = 80;
+        }
+
+        public static class ColumNamesDemarca
+        {
+            public const string CgCodigo = "CG_CODIGO";
+            public const string DeCoddem = "DE_CODDEM";
+            public const string UsLoguse = "US_LOGUSE";
+            public const string DgFecing = "DG_FECING";
+        }
+
+        public static class HeadersDemarca
+        {
+            public const string CgCodigo = "CG_CODIGO";
+            public const string DeCoddem = "DE_CODDEM";
+            public const string UsLoguse = "US_LOGUSE";
+            public const string DgFecing = "DG_FECING";
+        }
+
+        public static class WidthsDemarca
+        {
+            public const int CgCodigo = 60;
+            public const int DeCoddem = 80;
+            public const int UsLoguse = 80;
+            public const int DgFecing = 100;
+        }
+
+        public static class ColumNamesCartaIGN
+        {
+            public const string CgCodigo = "CG_CODIGO";
+            public const string CaCodcar = "CA_CODCAR";
+            public const string UsLoguse = "US_LOGUSE";
+            public const string CaTipcar = "CA_TIPCAR";
+            public const string CaFecing = "CA_FECING";
+        }
+
+        public static class HeadersCartaIGN
+        {
+            public const string CgCodigo = "CG_CODIGO";
+            public const string CaCodcar = "CA_CODCAR";
+            public const string UsLoguse = "US_LOGUSE";
+            public const string CaTipcar = "CA_TIPCAR";
+            public const string CaFecing = "CA_FECING";
+        }
+
+        public static class WidthsCartaIGN
+        {
+            public const int CgCodigo = 60;
+            public const int CaCodcar = 80;
+            public const int UsLoguse = 80;
+            public const int CaTipcar = 100;
+            public const int CaFecing = 100;
+        }
 
 
     }

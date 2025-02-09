@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:SigcatminProAddin.View.Modulos"       
       xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
       xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-      xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" x:Class="SigcatminProAddin.View.Modulos.MantoAreaRestringida"
+      xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" x:Class="SigcatminProAddin.View.Modulos.MantoAreaRestringida"
       mc:Ignorable="d"
       d:DesignHeight="470" d:DesignWidth="680"
       Title="Mantenimiento de Areas Reservadas"
@@ -18,7 +18,7 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="316"/>
             <RowDefinition Height="97"/>
-            
+
 
         </Grid.RowDefinitions>
         <Grid VerticalAlignment="Center" Height="20">
@@ -46,66 +46,66 @@
                 <Grid Background="#FFE5E5E5" Grid.Column="0" Grid.Row="0" Height="353">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="25"/>
-                        <RowDefinition Height="200"/>
+                        <RowDefinition Height="220"/>
                         <RowDefinition Height="50"/>
-                        <RowDefinition Height="50"/>
-                        <RowDefinition Height="60"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
                     </Grid.RowDefinitions>
-
-                    <Grid Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5">
+                    <Grid Grid.Row="0" Grid.ColumnSpan="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="190"/>
-                            <ColumnDefinition Width="190"/>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="180"/>
                             <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
-
                         <Label Content="Resultados de Búsqueda" Foreground="#FF696969"
-                        FontWeight="Bold" FontSize="10" VerticalAlignment="Center"
-                           Padding="0,0,0,0" x:Name="LblCountRecords" 
-                           Height="15" Grid.ColumnSpan="2"/>
-                        <ComboBox Margin="0,0,0,0" Grid.Column="1"  Width="150"
-                        x:Name="CbxUsuario" FontSize="10"
-                        Height="20" Padding="2,0,0,0" SelectionChanged="CbxUsuario_SelectionChanged" Loaded="CbxUsuario_Loaded"  />
+                            FontWeight="Bold" FontSize="10" VerticalAlignment="Center"
+                            Padding="0,0,0,0" x:Name="LblCountRecords" 
+                            Height="15" Grid.ColumnSpan="2"/>
+                        <ComboBox Margin="0,0,0,0" Grid.Column="1"  Width="130"
+                            x:Name="CbxUsuario" FontSize="10"
+                            Height="20" Padding="2,0,0,0" SelectionChanged="CbxUsuario_SelectionChanged" Loaded="CbxUsuario_Loaded"  />
                         <ComboBox Margin="0,0,0,0" Grid.Column="2"
-                        x:Name="CbxFiltro" FontSize="10" Width="150"
-                        Height="20" Padding="0,0,0,0" SelectionChanged="CbxFiltro_SelectionChanged" Loaded="CbxFiltro_Loaded" />
-                        <Button Content="Aplicar" Width="80" Height="20" 
-                        Background="#006DA0" BorderBrush="White"
-                        Foreground="White" Grid.Column="3" HorizontalAlignment="Left"
-                        Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                        HorizontalContentAlignment="Center" FontFamily="Roboto"
-                        VerticalContentAlignment="Center" x:Name="btnAplicar" 
-                        FontSize="10" FontWeight="bold" Padding="0,0,0,0"  />
+                            x:Name="CbxFiltro" FontSize="10" Width="130"
+                            Height="20" Padding="0,0,0,0" SelectionChanged="CbxFiltro_SelectionChanged" Loaded="CbxFiltro_Loaded" />
+                        <Button Content="Buscar" Width="80" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="3" HorizontalAlignment="Center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnBuscarH" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" 
+                            Click="btnBuscarH_Click"  />
                     </Grid>
                     <Grid Grid.Row="1" Grid.ColumnSpan="5" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <dxg:GridControl FontSize="10" x:Name="DataGridResult" 
-                                   CustomUnboundColumnData="DataGridResult_CustomUnboundColumnData">
+                            CustomUnboundColumnData="DataGridResult_CustomUnboundColumnData">
                             <dxg:GridControl.View>
-                                <dxg:TableView  x:Name="DataGridResultTableView" ShowAutoFilterRow="False"
+                                <dxg:TableView  x:Name="DataGridResultTableView" 
+                                    ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
                                     FocusedRowChanged="DataGridResultTableView_FocusedRowChanged" 
                                     RowUpdated="DataGridResultTableView_RowUpdated" 
-                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,-55" />
+                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" 
+                                                />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
                     </Grid>
-                    <Grid Grid.Row="2"  Margin="0,0,0,0" Grid.ColumnSpan="5" Grid.RowSpan="5" >
+                    <Grid Grid.Row="2"  Margin="0,0,0,0" Grid.ColumnSpan="2" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="223*"/>
                             <ColumnDefinition Width="105*"/>
                         </Grid.ColumnDefinitions>
                         <TextBox Height="50"  VerticalAlignment="Center" Width="655" 
-                                 VerticalContentAlignment="Center" HorizontalAlignment="Left"
-                        x:Name="TbxDetalleAre" FontSize="10" Padding="5,0,0,0"
-                                 Background="AliceBlue" Grid.ColumnSpan="2"/>
+                           VerticalContentAlignment="Center" HorizontalAlignment="Left"
+                           x:Name="TbxDetalleAre" FontSize="10" Padding="0,0,0,0"
+                           Background="AliceBlue" Grid.ColumnSpan="2"/>
                     </Grid>
-
-                    <Grid Grid.Column="1" Grid.Row="4" Grid.ColumnSpan="5">
+                    <Grid Grid.Row="3" Grid.ColumnSpan="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
                         </Grid.RowDefinitions>
@@ -116,12 +116,14 @@
                             <ColumnDefinition Width="130"/>
                             <ColumnDefinition Width="130"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox Margin="10,7,10,3" Width="110"
+                        <ComboBox Margin="0,0,0,0" Width="110"
                             x:Name="CbxDatum" FontSize="10"
-                            Height="20" Padding="5,0,0,0" SelectionChanged="CbxDatum_SelectionChanged" />
-                        <ComboBox Margin="10,7,10,3" Width="110"
+                            Height="20" Padding="0,0,0,0" 
+                            SelectionChanged="CbxDatum_SelectionChanged" />
+                        <ComboBox Margin="0,0,0,0" Width="110"
                             x:Name="CbxZona" FontSize="10"
-                            Height="20" Padding="5,0,0,0"  Grid.Column="1" SelectionChanged="CbxZona_SelectionChanged" />
+                            Height="20" Padding="5,0,0,0"  Grid.Column="1" 
+                            SelectionChanged="CbxZona_SelectionChanged" />
                         <Button Content="Planos" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
                             Foreground="White" Grid.Column="2" HorizontalAlignment="Left"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
@@ -132,16 +134,51 @@
                             Foreground="White" Grid.Column="3" HorizontalAlignment="Center"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                             HorizontalContentAlignment="Center" FontFamily="Roboto" 
-                            VerticalContentAlignment="Center" x:Name="btnRemoveLayer" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" />
+                            VerticalContentAlignment="Center" x:Name="btnRemoveAllLayer" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" />
                         <Button Content="Visualizar" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
                             Foreground="White" Grid.Column="4" HorizontalAlignment="Center"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                             HorizontalContentAlignment="Center" FontFamily="Roboto" 
                             VerticalContentAlignment="Center" x:Name="btnVizualizar" FontSize="10" 
-                                FontWeight="bold" Padding="0,0,0,0"  />
+                            FontWeight="bold" Padding="0,0,0,0"  />
                     </Grid>
+                    <Grid Grid.Row="4" Grid.ColumnSpan="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="130"/>
+                            <ColumnDefinition Width="33.514"/>
+                            <ColumnDefinition Width="96.486"/>
+                            <ColumnDefinition Width="130"/>
+                            <ColumnDefinition Width="130"/>
+                            <ColumnDefinition Width="130"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Unselect all" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="0" HorizontalAlignment="Left"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnUnselectAll" FontSize="10" 
+                            FontWeight="Medium" Padding="0,0,0,0" />
+                        <Button Content="Selexct all" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto" 
+                            VerticalContentAlignment="Center" x:Name="btnSelectAll" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Grid.ColumnSpan="2" />
 
 
+                        <ComboBox Margin="0,0,0,0" Width="110"
+                            x:Name="CbxActualiza" FontSize="10"
+                            Height="20" Padding="5,0,0,0"  Grid.Column="3" 
+                             />
+
+                        <Button Content="Procesar" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="5" HorizontalAlignment="Center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto" 
+                            VerticalContentAlignment="Center" x:Name="btnProcesar" FontSize="10" 
+                            FontWeight="bold" Padding="0,0,0,0"  />
+                    </Grid>
                 </Grid>
 
             </TabItem>
@@ -267,20 +304,466 @@
 
             </TabItem>
             <TabItem Header="Histórico">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="300"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBox TextWrapping="Wrap" Height="20" Width="190"  Grid.Column="0"
+                            FontFamily="Roboto" FontSize="10" x:Name="txtBuscaHistorico"/>
+
+
+                        <!--<DatePicker Grid.Column="1" FontFamily="Roboto"  Height="20"
+                             Width="130" FontSize="10" x:Name="DtpFecIni" />-->
+                        <!--<DatePicker Grid.Column="2" FontFamily="Roboto" Height="20"
+                        Width="130" FontSize="10" x:Name="DtpFecFin" />-->
+
+                        <dxe:DateEdit Grid.Column="1" FontFamily="Roboto"  Height="20"
+                                    Mask="yyyy-MM-dd" Width="130" FontSize="10" x:Name="DtpFecIni"/>
+
+                        <dxe:DateEdit Grid.Column="2" FontFamily="Roboto"  Height="20"
+                                    Mask="yyyy-MM-dd" Width="130" FontSize="10" x:Name="DtpFecFin"/>
+
+                        <Button Content="Buscar" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="3" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnBuscarHistorico" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="btnBuscarHistorico_Click_1"  />
+
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.ColumnSpan="4" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <dxg:GridControl FontSize="10" x:Name="DGResHistorico" 
+                            CustomUnboundColumnData="DGResHistorico_CustomUnboundColumnData">
+                            <dxg:GridControl.View>
+                                <dxg:TableView  x:Name="DGResHistoricoTableView" ShowAutoFilterRow="False"
+                                    AllowColumnFiltering="False"
+                                    ShowGroupPanel="False" 
+                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" />
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
+                    </Grid>
+
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="160"/>
+                        </Grid.ColumnDefinitions>
+
+                        <CheckBox Content="Aplicar solo a registros seleccionados"
+                                  FontFamily="Roboto" FontSize="10" />
+                        <Button Content="Exportar Shapefile" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="1" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnExportarShp" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0"  />
+
+                        <Button Content="EXportar Excel" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="2" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnExportarExcel" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0"  />
+                    </Grid>
+                </Grid>
+
+
+
             </TabItem>
             <TabItem Header="Editar Registros">
-                <Grid Background="#FFE5E5E5"/>
+
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="300"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="170"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Búsqueda por código:" Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,10,0"
+                               VerticalAlignment="Center" HorizontalAlignment="Right" 
+                            Padding="0,0,0,0" Height="14"/>
+
+                        <TextBox TextWrapping="Wrap" Height="20"  Grid.Column="1"
+                            FontFamily="Roboto" FontSize="10" x:Name="txtBuscaAR" Margin="0,5,10,5"/>
+
+                        <ComboBox Margin="0,5,10,5" Grid.Column="2"
+                            x:Name="CbxFiltroTipo" FontSize="10"
+                            Height="20" Padding="0,0,0,0" 
+                            SelectionChanged="CbxFiltroTipo_SelectionChanged" />
+
+                        <Button Content="Buscar" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="3" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnBuscarAR" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="btnBuscarAR_Click"  />
+
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="4" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <dxg:GridControl FontSize="10" x:Name="DGAreaReservada" 
+                            CustomUnboundColumnData="DGAreaReservada_CustomUnboundColumnData">
+                            <dxg:GridControl.View>
+                                <dxg:TableView  x:Name="DGAreaReservadaTableView" ShowAutoFilterRow="False"
+                                    AllowColumnFiltering="False"
+                                    ShowGroupPanel="False" 
+                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" />
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
+                    </Grid>
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="320"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="160"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Guardar" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="3" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnGuardarER" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" 
+                            Click="btnGuardarER_Click"  />
+
+
+                        <!--<CheckBox Content="Aplicar solo a registros seleccionados"
+                                  FontFamily="Roboto" FontSize="10" />-->
+                        <!--<Button Content="Exportar Shapefile" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="1" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnExportarShp" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0"  />
+
+                        <Button Content="EXportar Excel" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="2" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnExportarExcel" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0"  />-->
+                    </Grid>
+                </Grid>
+
             </TabItem>
             <TabItem Header="Auxiliares">
-                <Grid Background="#FFE5E5E5"/>
-            </TabItem>
-            <TabItem Header="Histórico">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="160"/>
+                        <RowDefinition Height="10"/>
+                        <RowDefinition Height="160"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="140"/>
+                            <ColumnDefinition Width="170"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Búsqueda por código:" Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,10,0"
+                            VerticalAlignment="Center" HorizontalAlignment="Right" 
+                            Padding="0,0,0,0" Height="14"/>
+
+                        <TextBox TextWrapping="Wrap" Height="20"  Grid.Column="1"
+                            FontFamily="Roboto" FontSize="10" x:Name="txtBuscaAux" Margin="0,5,10,5"/>
+
+                        <Button Content="Buscar" Width="120" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="3" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnBuscarAR1" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="btnBuscarAux_Click"  />
+
+                    </Grid>
+
+                    <Grid Grid.Row="1" Grid.ColumnSpan="4" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <dxg:GridControl FontSize="10" x:Name="DGDemarca" >
+                            <dxg:GridControl.View>
+                                <dxg:TableView  x:Name="DGDemarcaTableView" ShowAutoFilterRow="False"
+                                  AllowColumnFiltering="False"
+                                  ShowGroupPanel="False" 
+                                  HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" />
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
+                    </Grid>
+
+                    <Grid Grid.Row="2" Grid.ColumnSpan="4" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+
+                    <Grid Grid.Row="3" Grid.ColumnSpan="4" >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <dxg:GridControl FontSize="10" x:Name="DGCarta" >
+                            <dxg:GridControl.View>
+                                <dxg:TableView  x:Name="DGCartaTableView" ShowAutoFilterRow="False"
+                                    AllowColumnFiltering="False"
+                                    ShowGroupPanel="False" 
+                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" />
+                            </dxg:GridControl.View>
+                        </dxg:GridControl>
+                    </Grid>
+                </Grid>
+
             </TabItem>
             <TabItem Header="Configuración">
-                <Grid Background="#FFE5E5E5"/>
+
+                <Grid Background="#FFE5E5E5">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="70"/>
+                        <RowDefinition Height="80"/>
+                        <RowDefinition Height="35"/>
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="200"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Configurar directorios" Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="12"  Margin="0,0,10,0"
+                            VerticalAlignment="Center" HorizontalAlignment="Left" 
+                            Padding="0,0,0,0" Height="14"/>
+                    </Grid>
+                    <Grid Grid.Row="1" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="500"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Establecer ubcación de archivos shapefiles para areas reservadas" Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,10,0"
+                            VerticalAlignment="Center" HorizontalAlignment="Left" 
+                            Padding="0,0,0,0" Height="14"/>
+                    </Grid>
+                    <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBox TextWrapping="Wrap" 
+                            FontFamily="Roboto" FontSize="12" 
+                            x:Name="txtResePath" Margin="0,0,0,0" IsEnabled="False"/>
+
+                        <Button Content="■" Width="30" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Bottom" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnPathAReserva" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="btnPathAReserva_Click" Margin="0,0,0,3" />
+
+
+                    </Grid>
+                    <Grid Grid.Row="3" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="500"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Establecer ubicación de archivos shapefile para Zonas Urbanas" Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,10,0"
+                            VerticalAlignment="Center" HorizontalAlignment="Left" 
+                            Padding="0,0,0,0" Height="14"/>
+                    </Grid>
+                    <Grid Grid.Row="4" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox TextWrapping="Wrap" 
+                          FontFamily="Roboto" FontSize="12" IsEnabled="False" 
+                          x:Name="txtUrbaPath" Margin="0,0,0,0"/>
+
+                        <Button Content="■" Width="30" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Bottom" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnPathZonaUrbana" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="btnPathZonaUrbana_Click" Margin="0,0,0,3" />
+                    </Grid>
+                    <Grid Grid.Row="5" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="500"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Establecer ubicación de imagenes de previsualización" Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,10,0"
+                            VerticalAlignment="Center" HorizontalAlignment="Left" 
+                            Padding="0,0,0,0" Height="14"/>
+                    </Grid>
+                    <Grid Grid.Row="6" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+                            <ColumnDefinition Width="100"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBox TextWrapping="Wrap" 
+                            FontFamily="Roboto" FontSize="12"  IsEnabled="False"
+                            x:Name="txtImagePath" Margin="0,0,0,0"/>
+                        <Button Content="■" Width="30" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Bottom" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnPathImage" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" Click="btnPathImage_Click" Margin="0,0,0,3" />
+                    </Grid>
+                    <Grid Grid.Row="7" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="500"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label Content="Configuración de procesamiento a producción" 
+                               Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,10,0"
+                            VerticalAlignment="Center" HorizontalAlignment="Left" 
+                            Padding="0,0,0,0" Height="14"/>
+                    </Grid>
+                    <Grid Grid.Row="8" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+
+                        </Grid.ColumnDefinitions>
+                        <StackPanel HorizontalAlignment="Left" VerticalAlignment="Top" Margin="0,0,0,0" Width="450">
+                            <RadioButton Name="rb_1" Content="Activar ejecución inmediata" GroupName="optionsGroup" FontFamily="Roboto" FontSize="10" IsChecked="True" Checked="RadioButton_Checked"/>
+                            <RadioButton Name="rb_2" Content="Ejecutar al termino del día" GroupName="optionsGroup" FontFamily="Roboto" FontSize="10" Checked="RadioButton_Checked"/>
+                            <RadioButton Name="rb_3" Content="Deshabilitar ejecución"      GroupName="optionsGroup" FontFamily="Roboto" FontSize="10" Checked="RadioButton_Checked"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid Grid.Row="9" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Content="Recuerde aplicar los cambios para culminar con la configuración; si obvia este paso lo cambios no serán almacenados." 
+                            Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,0,0" Grid.Column="1"
+                            VerticalAlignment="Top" HorizontalAlignment="Left" 
+                            Padding="0,0,0,0" Height="14"/>
+                    </Grid>
+                    <Grid Grid.Row="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="300"/>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="120"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Content="Ejeutar" Width="100" Height="20" 
+                            Background="#006DA0" BorderBrush="White"
+                            Foreground="White" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnEjecutar" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" 
+                             />
+
+                        <Label Content="El proceso enviara desde las capas intermedias, los registros configurados como aptos para su actualización en las capas de produccioón." 
+                            Foreground="#FF696969"
+                            FontWeight="Bold" FontSize="10"  Margin="0,0,0,0" Grid.Column="1"
+                            VerticalAlignment="Center" HorizontalAlignment="Left" 
+                            Padding="0,0,0,0" Height="14"/>
+
+                        <Button Content="Cancelar" Width="100" Height="20" 
+                            Background="#006DA0" BorderBrush="White" Grid.Column="2"
+                            Foreground="White" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnCancelar" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" 
+                             />
+
+                        <Button Content="Aplicar" Width="100" Height="20" 
+                            Background="#006DA0" BorderBrush="White" Grid.Column="3"
+                            Foreground="White" HorizontalAlignment="center"
+                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                            HorizontalContentAlignment="Center" FontFamily="Roboto"
+                            VerticalContentAlignment="Center" x:Name="btnAplicar" 
+                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" 
+                              />
+
+
+                    </Grid>
+
+                    <!--<Grid Grid.Row="8" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+                            <ColumnDefinition Width="20"/>
+                        </Grid.ColumnDefinitions>
+                        <RadioButton Content="Activar ejecución inmediata" FontFamily="Roboto" FontSize="10" x:Name="rbExeAhora"/>
+                    </Grid>
+                    <Grid Grid.Row="9" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+                            <ColumnDefinition Width="20"/>
+                        </Grid.ColumnDefinitions>
+                        <RadioButton Content="Ejecutar al termino del día" x:Name="rbExeFinDia"
+                                     FontFamily="Roboto" FontSize="10"/>
+                    </Grid>
+                    
+                    <Grid Grid.Row="10" Grid.ColumnSpan="3">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="550"/>
+                            <ColumnDefinition Width="20"/>
+                        </Grid.ColumnDefinitions>
+                        <RadioButton Content="Deshabilitar ejecución" x:Name="rbNoExe"
+                                     FontFamily="Roboto" FontSize="10"/>
+                    </Grid>-->
+
+                </Grid>
+
+
+
             </TabItem>
+
         </TabControl>
 
 

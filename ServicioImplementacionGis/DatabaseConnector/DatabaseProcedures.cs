@@ -73,6 +73,14 @@ namespace DatabaseConnector
         public const string Procedure_ObtieneNumRegUrbaTemp = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_NUMREG_URBA_TEMP";
         public const string Procedure_ObtieneReseDifreg = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_RESE_DIFREG";
         public const string Procedure_ObtieneUrbaDifreg = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_URBA_DIFREG";
+        public const string Procedure_ObtieneFiltroHistorico = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_FILTRO_HISTORICO";
+        public const string Procedure_ObtieneConsultaGISFiltro = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_CONSULTAGIS_FILTRO";
+        public const string Procedure_ObtieneConsultaDatoBD = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_CONSULTA_DATOS_BD";
+        public const string Procedure_ObtienePathRese = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_PATH_RESE";
+        public const string Procedure_ObtienePathUrba = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_PATH_URBA";
+        public const string Procedure_ObtieneImage = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_PATH_IMAGE";
+        public const string Procedure_ObtieneTipoExe = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_TIPO_EXE";
+
 
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;
