@@ -19,7 +19,7 @@ namespace Sigcatmin.pro.Persistence.Repositories
             _DdConnectionSettings = options.Value;
             _dbManager = dbManager;
         }
-        public async ValueTask<int> CountRecords(string type, string search)
+        public async ValueTask<int> CountRecordsAsync(string type, string search)
         {
             var parameters = new OracleDynamicParameters();
             parameters.Add("V_TIPO", type, OracleMappingType.Varchar2, ParameterDirection.Input, size: 1);
@@ -38,7 +38,7 @@ namespace Sigcatmin.pro.Persistence.Repositories
             
             return int.Parse(outputValue);
         }
-        public async ValueTask<IEnumerable<DerechoMineroDto>> GetDerechosMinerosUnique(string code, int type)
+        public async ValueTask<IEnumerable<DerechoMineroDto>> GetDerechosMinerosUniqueAsync(string code, int type)
         {
 
             var parameters = new OracleDynamicParameters();
@@ -57,7 +57,7 @@ namespace Sigcatmin.pro.Persistence.Repositories
             return result;
         }
 
-        public async ValueTask<IEnumerable<CoordinateDto>> GetcoordinatesByCode(string code)
+        public async ValueTask<IEnumerable<CoordinateDto>> GetcoordinatesByCodeAsync(string code)
         {
             var parameters = new OracleDynamicParameters();
             parameters.Add("V_CODIGO", code, OracleMappingType.Varchar2, ParameterDirection.Input, size: 12);

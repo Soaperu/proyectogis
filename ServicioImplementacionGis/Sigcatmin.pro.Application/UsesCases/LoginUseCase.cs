@@ -24,7 +24,7 @@ namespace Sigcatmin.pro.Application.UsesCases
         {
             try
             {
-                bool isValid = await _authRepository.Authenticate(user.UserName, user.Password);
+                bool isValid = await _authRepository.AuthenticateAsync(user.UserName, user.Password);
                 if (isValid)
                 {
                     _authService.SaveSession(user.UserName, user.Password);

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DevExpress.Xpf.Grid;
+using Sigcatmin.pro.Application.Dtos.Request;
 using Sigcatmin.pro.Application.UsesCases;
 using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
@@ -23,6 +25,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         private readonly GetDerechoMineroUseCase _getDerechoMineroUseCase;
         private readonly CountRowsGISUseCase _countRowsGISUseCase;
         private readonly GetCoordenadasDMUseCase _getCoordenadasDMUseCase;
+        private readonly GraficarDerechoMineroUseCase _graficarDerechoMineroUseCase;
 
         private string _seletecdRowCode = string.Empty;
         public EvaluacionDMView()
@@ -32,6 +35,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             _getDerechoMineroUseCase = Program.GetService<GetDerechoMineroUseCase>();
             _countRowsGISUseCase = Program.GetService<CountRowsGISUseCase>();
             _getCoordenadasDMUseCase = Program.GetService<GetCoordenadasDMUseCase>();
+            _graficarDerechoMineroUseCase = Program.GetService<GraficarDerechoMineroUseCase>();
 
             TbxRadio.Text = _evaluacionDMViewModel.RadioDefaultValue.ToString();
         }
@@ -196,6 +200,13 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
         }
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
+            if (string.IsNullOrEmpty(TbxValue.Text))
+            {
+                MessageBoxHelper.ShowInfo("Por favor ingrese un valor de radio", "Atención");
+               return;
+            }
+
+            await _graficarDerechoMineroUseCase.Execute(new GraficarDerechoMineroDto { MapName = "Catastro Minero"});
 
         }
         private void TbxRadio_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)

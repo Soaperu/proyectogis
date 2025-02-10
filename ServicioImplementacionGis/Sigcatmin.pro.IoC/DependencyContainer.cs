@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Sigcatmin.pro.Application;
 using Sigcatmin.pro.Persistence;
 using Sigcatmin.pro.Shared;

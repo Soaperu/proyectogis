@@ -19,7 +19,7 @@ namespace Sigcatmin.pro.Application.UsesCases
         {
             try
             {
-               return await _evaluacionGISRepository.CountRecords(type, search);
+               return await _evaluacionGISRepository.CountRecordsAsync(type, search);
             }catch (Exception ex) {
                 _loggerService.LogError(ex);
                 throw;

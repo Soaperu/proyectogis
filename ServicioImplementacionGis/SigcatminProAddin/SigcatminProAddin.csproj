@@ -190,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="ArcGIS.Desktop.Framework">

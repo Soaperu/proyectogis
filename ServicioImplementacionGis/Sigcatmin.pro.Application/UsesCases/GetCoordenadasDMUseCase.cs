@@ -24,7 +24,7 @@ namespace Sigcatmin.pro.Application.UsesCases
         {
             try
             {
-                var coordinates = await _evaluacionGISRepository.GetcoordinatesByCode(code);
+                var coordinates = await _evaluacionGISRepository.GetcoordinatesByCodeAsync(code);
                return _mapper.Map<IEnumerable<CoordinatedResponseDto>>(coordinates);
 
             }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using ArcGIS.Desktop.Framework;
 using ArcGIS.Desktop.Framework.Contracts;
 using Microsoft.Extensions.DependencyInjection;
@@ -21,6 +22,14 @@ namespace SigcatminProAddinUI
         //private static IConfiguration _configuration;
         public Program()
         {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            foreach (var assembly in assemblies.OrderBy(a => a.FullName))
+            {
+                Console.WriteLine($"Cargado: {assembly.FullName} | Ubicación: {assembly.Location}");
+            }
+
+            //var assembly = System.Reflection.Assembly.Load("Microsoft.Extensions.Options");
+
             var services = new ServiceCollection();
 
             string pathAsembly = PathAssembly.GetExecutingAssembly();
@@ -36,6 +45,7 @@ namespace SigcatminProAddinUI
             services.AddPresentation();
             // Construir el proveedor de servicios
             _serviceProvider = services.BuildServiceProvider();
+
             _UIStateService = GetService<IUIStateService>();
             _errorHandler = GetService<ErrorHandler>();
 

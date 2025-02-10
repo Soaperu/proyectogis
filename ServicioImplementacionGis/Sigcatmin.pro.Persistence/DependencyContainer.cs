@@ -23,11 +23,11 @@ namespace Sigcatmin.pro.Persistence
             
 
 
-            FluentMapper.Initialize(config =>
-            {
-                config.AddMap(new DerechoMineroDtoMap());
-                config.AddMap(new CoordenadaDtoMap());
-            });
+            //FluentMapper.Initialize(config =>
+            //{
+            //    config.AddMap(new DerechoMineroDtoMap());
+            //    config.AddMap(new CoordenadaDtoMap());
+            //});
 
             return services;
 

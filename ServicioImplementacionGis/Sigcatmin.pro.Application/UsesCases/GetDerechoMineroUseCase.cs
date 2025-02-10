@@ -24,7 +24,7 @@ namespace Sigcatmin.pro.Application.UsesCases
         {
             try
             {
-                return await _evaluacionGISRepository.GetDerechosMinerosUnique(code, type);
+                return await _evaluacionGISRepository.GetDerechosMinerosUniqueAsync(code, type);
             }
             catch (Exception ex)
             {

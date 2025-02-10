@@ -19,7 +19,7 @@ namespace Sigcatmin.pro.Persistence.Repositories
         {
             _DbConnectionSettings = options.Value;
         }
-        public async ValueTask<bool> Authenticate(string user, string password)
+        public async ValueTask<bool> AuthenticateAsync(string user, string password)
         {
             try
             {

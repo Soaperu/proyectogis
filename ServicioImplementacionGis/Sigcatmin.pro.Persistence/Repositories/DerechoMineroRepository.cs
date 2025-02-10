@@ -23,7 +23,7 @@ namespace Sigcatmin.pro.Persistence.Repositories
             _DdConnectionSettings = options.Value;
             _dbManager = dbManager;
         }
-        public async Task<string> VerifyDatum()
+        public async Task<string> VerifyDatumAsync()
         {
             var parameters = new OracleDynamicParameters();
             parameters.Add("VO_VA_RETORNO", null, OracleMappingType.Varchar2, ParameterDirection.Output, size: 500);
