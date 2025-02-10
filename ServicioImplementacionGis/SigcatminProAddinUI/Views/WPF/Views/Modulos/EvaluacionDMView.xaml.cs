@@ -100,7 +100,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
 
             ClearCanvas();
 
-            _evaluacionDMViewModel.Coordinates = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode, currentDatum);
+            _evaluacionDMViewModel.Coordinates = await _getCoordenadasDMUseCase.Execute(_seletecdRowCode);
             var coordinates = _evaluacionDMViewModel.GetCoordinatesByTypeSystem(currentDatum);
 
             DataGridDetails.ItemsSource = coordinates;
@@ -177,9 +177,6 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             string currentText = (sender as System.Windows.Controls.TextBox)?.Text ?? string.Empty;
             string newText = currentText.Insert(
                 (sender as System.Windows.Controls.TextBox)?.SelectionStart ?? 0, e.Text);
-
-            // Validar si el texto es un número válido
-            //e.Handled = !NumberRegex.IsMatch(newText);
         }
         private void CbxZona_Loaded(object sender, RoutedEventArgs e)
         {

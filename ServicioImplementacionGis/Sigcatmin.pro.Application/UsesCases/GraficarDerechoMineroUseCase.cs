@@ -1,4 +1,5 @@
 ﻿
+using ArcGIS.Desktop.Mapping;
 using Sigcatmin.pro.Application.Dtos.Request;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Application.Managers;
@@ -17,8 +18,8 @@ namespace Sigcatmin.pro.Application.UsesCases
 
         public async Task Execute(GraficarDerechoMineroDto request)
         {
-            //_mapService.CreateMap(request.MapName); 
-            //Map activeMap = await _mapManager.EnsureMapViewIsActiveAsync(request.MapName);
+             _mapService.CreateMap(request.MapName);
+            Map activeMap = await _mapManager.EnsureMapViewIsActiveAsync(request.MapName);
         }
     }
 }

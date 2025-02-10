@@ -13,21 +13,19 @@ namespace Sigcatmin.pro.Persistence
     {
         public static IServiceCollection AddPersistence(this IServiceCollection services)
         {
-            //services.AddScoped<IDbContext, DbContext>();
             services.AddScoped<IDbManager, DbManager>();
-            //services.AddScoped<IDbManagerFactory, DbManagerFactory>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IEvaluacionGISRepository, EvaluacionGISRepository>();
             services.AddScoped<IGeodatabaseRepository, GeodatabaseRepository>();
             services.AddScoped<IDerechoMineroRepository, DerechoMineroRepository>();
-            
 
 
-            //FluentMapper.Initialize(config =>
-            //{
-            //    config.AddMap(new DerechoMineroDtoMap());
-            //    config.AddMap(new CoordenadaDtoMap());
-            //});
+
+            FluentMapper.Initialize(config =>
+            {
+                config.AddMap(new DerechoMineroDtoMap());
+                config.AddMap(new CoordenadaDtoMap());
+            });
 
             return services;
 

@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿//using AutoMapper;
+using Mapster;
 using Sigcatmin.pro.Application.Dtos.Response;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Domain.Interfaces.Repositories;
@@ -9,23 +10,22 @@ namespace Sigcatmin.pro.Application.UsesCases
     {
         private readonly IEvaluacionGISRepository _evaluacionGISRepository;
         private readonly ILoggerService _loggerService;
-        private readonly IMapper _mapper;
+        //private readonly IMapper _mapper;
 
         public GetCoordenadasDMUseCase(IEvaluacionGISRepository evaluacionGISRepository,
-            ILoggerService loggerService,
-            IMapper mapper)
+            ILoggerService loggerService)
         {
             _evaluacionGISRepository = evaluacionGISRepository;
             _loggerService = loggerService;
-            _mapper = mapper;
+            //_mapper = mapper;
         }
 
-        public async Task<IEnumerable<CoordinatedResponseDto>> Execute(string code, int typeSystem)
+        public async Task<IEnumerable<CoordinatedResponseDto>> Execute(string code)
         {
             try
             {
                 var coordinates = await _evaluacionGISRepository.GetcoordinatesByCodeAsync(code);
-               return _mapper.Map<IEnumerable<CoordinatedResponseDto>>(coordinates);
+                return coordinates.Adapt<IEnumerable<CoordinatedResponseDto>>();
 
             }
             catch (Exception ex)

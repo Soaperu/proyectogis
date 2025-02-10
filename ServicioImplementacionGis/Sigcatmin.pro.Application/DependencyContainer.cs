@@ -10,18 +10,12 @@ namespace Sigcatmin.pro.Application
         public static IServiceCollection AddApplication(this IServiceCollection services)
         {
 
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            foreach (var assembly in assemblies.OrderBy(a => a.FullName))
-            {
-                Console.WriteLine($"Cargado: {assembly.FullName} | Ubicación: {assembly.Location}");
-            }
-
             services.AddScoped<LoginUseCase>();
             services.AddScoped<GetDerechoMineroUseCase>();
             services.AddScoped<CountRowsGISUseCase>();
             services.AddScoped<GetCoordenadasDMUseCase>();
             services.AddScoped<GraficarDerechoMineroUseCase>();
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            //services.AddAutoMapper(Assembly.GetExecutingAssembly());
 
             return services;
         }

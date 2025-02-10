@@ -12,16 +12,16 @@ namespace Sigcatmin.pro.Shared.Implements
 {
     public class ArcGISMapViewService: IMapViewService
     {
-        //public MapView ActiveMapView => MapView.Active;
+        public MapView ActiveMapView => MapView.Active;
 
-        //public SubscriptionToken SubscribeToDrawCompleteEvent(Action<EventArgs> callback)
-        //{
-        //    return DrawCompleteEvent.Subscribe(callback);
-        //}
+        public SubscriptionToken SubscribeToDrawCompleteEvent(Action<EventArgs> callback)
+        {
+            return DrawCompleteEvent.Subscribe(callback);
+        }
 
-        //public void UnsubscribeFromDrawCompleteEvent(SubscriptionToken token)
-        //{
-        //    DrawCompleteEvent.Unsubscribe(token);
-        //}
+        public void UnsubscribeFromDrawCompleteEvent(SubscriptionToken token)
+        {
+            DrawCompleteEvent.Unsubscribe(token);
+        }
     }
 }
