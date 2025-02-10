@@ -398,11 +398,22 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
                             var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
-                            //string fieldValue = Convert.ToString(row[field]);
-                            
+                            var gl_param = new GraphicsLayerCreationParams { };
+
                             if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
                             {
-                                var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {row["CODIGOU"].ToString()}" };
+                                
+                                if (HasField(layer, "CODIGOU"))
+                                {
+                                    gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {row["CODIGOU"].ToString()}" };
+                                } else if (HasField(layer, "CODIGO"))
+                                {
+                                    gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {row["CODIGO"].ToString()}" };
+                                } else
+                                {
+                                    gl_param = new GraphicsLayerCreationParams { Name = "Vertices: (Polígono)" };
+                                }
+
                                 var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
 
                                 graphicsLayer = map.GetLayersAsFlattenedList()
@@ -430,8 +441,13 @@ namespace CommonUtilities.ArcgisProUtils
 
         }
 
+        private static bool HasField(FeatureLayer layer, string fieldName)
+        {
+            return layer.GetFieldDescriptions().Any(field => field.Name == fieldName);
+        }
 
-       
+
+
         public static void LoadFeatureClassToMap(string featureClassName, string layerName, bool isVisible, int mapIndex=0)
         {
             QueuedTask.Run(() =>
