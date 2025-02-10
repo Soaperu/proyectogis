@@ -1622,7 +1622,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public string UpdateDMSimultaneidad(string fecha) // FT_UPD_CM_LIBREDEN
+        public string UpdateDMSimultaneidad(string fecha) 
         {
             string storedProcedure = "PACK_DBA_SIGCATMIN.P_UPD_SG_D_DMXGRSIMUL";
             var parameters = new OracleParameter[]
@@ -1633,7 +1633,7 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public string InsertarDMxHaGRSimultaneidad(string fecha) // FT_UPD_CM_LIBREDEN
+        public string InsertarDMxHaGRSimultaneidad(string fecha) 
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_INS_DMXHAGRSIMUL_TOT";
             var parameters = new OracleParameter[]
@@ -1644,7 +1644,7 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public string DeletePesicuSimultaneidad(string fecha) // FT_DEL_LIBREDEN
+        public string DeletePesicuSimultaneidad(string fecha) 
         {
             string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_DEL_PESICU_POR_LD";
             var parameters = new OracleParameter[]
@@ -1655,7 +1655,7 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public DataTable GetCodigouSimultaneidad(string fecha) // FT_DEL_LIBREDEN
+        public DataTable GetCodigouSimultaneidad(string fecha) 
         {
             string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.F_SEL_CODIGOU_FROM_DATE";
             var parameters = new OracleParameter[]
@@ -1666,7 +1666,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public DataTable GetCodigoQuadsSimultaneidad(string sql, string zona, string date) // FT_DEL_LIBREDEN
+        public DataTable GetCodigoQuadsSimultaneidad(string sql, string zona, string date) 
         {
             string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.F_GET_RLS_CODIGOU_QUADS";
             var parameters = new OracleParameter[]
