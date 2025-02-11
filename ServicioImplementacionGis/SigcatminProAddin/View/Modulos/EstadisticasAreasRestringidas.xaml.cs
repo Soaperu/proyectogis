@@ -7,6 +7,7 @@ using CommonUtilities.ArcgisProUtils;
 using DatabaseConnector;
 using DevExpress.Xpf.Editors.Settings;
 using DevExpress.Xpf.Grid;
+using OfficeOpenXml;
 using SigcatminProAddin.Models.Constants;
 using System;
 using System.Collections.Generic;
@@ -14,6 +15,7 @@ using System.Data;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -176,11 +178,6 @@ namespace SigcatminProAddin.View.Modulos
                     BtnMineNo.IsEnabled = true;
                     BtnLoadData.IsEnabled = true;
 
-                    // Ajuste de visibilidad y ubicación de controles
-                    //cboZona.Visibility = Visibility.Hidden;
-                    //TbxZone.Visibility = Visibility.Hidden;
-                    //lblregion.Visibility = Visibility.Hidden;
-                    //CbxRegion.Visibility = Visibility.Hidden;
 
                     // Lógica para cargar combos de reserva minera
                     CbxTypeMineNo.IsEnabled = true;
@@ -191,52 +188,53 @@ namespace SigcatminProAddin.View.Modulos
 
                     try
                     {
-                        DataTable lodbtExiste_tipo = dataBaseHandler.GetRestrictedAreaType(); //cls_Oracle.F_Obtiene_Tipo_AreaRestringida();
-                        if (lodbtExiste_tipo != null)
-                        {
-                            foreach (DataRow row in lodbtExiste_tipo.Rows)
-                            {
-                                string v_nm_depa = row["TN_DESTIP"].ToString();
-                                // Filtrado (excluir algunos tipos)
-                                if (EsValidoParaMineria(v_nm_depa))
-                                {
-                                    // Agregar según la clasificación propia
-                                    if (v_nm_depa == "AREA NATURAL")
-                                    {
-                                        CbxTypeMineNo.Items.Add("AREA NATURAL - USO INDIRECTO");
-                                        CbxTypeMineYes.Items.Add("AREA NATURAL - USO DIRECTO");
-                                        CbxTypeMineYes.Items.Add("AREA NATURAL - AMORTIGUAMIENTO");
-                                        CbxTypeMineYes.Items.Add("CLASIFICACION DIVERSA");
-                                        CbxTypeMineNo.Items.Add("CLASIFICACION DIVERSA");
-                                        CbxTypeMineYes.Items.Add("AREA DE CONSERVACION PRIVADA");
-                                        CbxTypeMineYes.Items.Add("AREA DE CONSERVACION MUNICIPAL Y OTROS");
-                                    }
-                                    else if (v_nm_depa == "PROYECTO ESPECIAL")
-                                    {
-                                        CbxTypeMineNo.Items.Add("PROYECTO ESPECIAL - HIDRAULICOS");
-                                        CbxTypeMineYes.Items.Add("PROYECTO ESPECIAL (no hidráulicos)");
-                                    }
-                                    else if (v_nm_depa == "PROPUESTA DE AREA NATURAL")
-                                    {
-                                        CbxTypeMineYes.Items.Add("PROPUESTA DE AREA NATURAL");
-                                    }
-                                    else if (v_nm_depa == "POSIBLE ZONA URBANA")
-                                    {
-                                        CbxTypeMineYes.Items.Add("POSIBLE ZONA URBANA");
-                                        CbxTypeMineYes.Items.Add("AREA DE EXPANSION URBANA");
-                                    }
-                                    else
-                                    {
-                                        CbxTypeMineNo.Items.Add(v_nm_depa);
-                                    }
-                                }
-                            }
-                        }
+                        LoadComboBoxYesNo();
+                        //DataTable lodbtExiste_tipo = dataBaseHandler.GetRestrictedAreaType(); //cls_Oracle.F_Obtiene_Tipo_AreaRestringida();
+                        //if (lodbtExiste_tipo != null)
+                        //{
+                        //    foreach (DataRow row in lodbtExiste_tipo.Rows)
+                        //    {
+                        //        string v_nm_depa = row["TN_DESTIP"].ToString();
+                        //        // Filtrado (excluir algunos tipos)
+                        //        if (EsValidoParaMineria(v_nm_depa))
+                        //        {
+                        //            // Agregar según la clasificación propia
+                        //            if (v_nm_depa == "AREA NATURAL")
+                        //            {
+                        //                CbxTypeMineNo.Items.Add("AREA NATURAL - USO INDIRECTO");
+                        //                CbxTypeMineYes.Items.Add("AREA NATURAL - USO DIRECTO");
+                        //                CbxTypeMineYes.Items.Add("AREA NATURAL - AMORTIGUAMIENTO");
+                        //                CbxTypeMineYes.Items.Add("CLASIFICACION DIVERSA");
+                        //                CbxTypeMineNo.Items.Add("CLASIFICACION DIVERSA");
+                        //                CbxTypeMineYes.Items.Add("AREA DE CONSERVACION PRIVADA");
+                        //                CbxTypeMineYes.Items.Add("AREA DE CONSERVACION MUNICIPAL Y OTROS");
+                        //            }
+                        //            else if (v_nm_depa == "PROYECTO ESPECIAL")
+                        //            {
+                        //                CbxTypeMineNo.Items.Add("PROYECTO ESPECIAL - HIDRAULICOS");
+                        //                CbxTypeMineYes.Items.Add("PROYECTO ESPECIAL (no hidráulicos)");
+                        //            }
+                        //            else if (v_nm_depa == "PROPUESTA DE AREA NATURAL")
+                        //            {
+                        //                CbxTypeMineYes.Items.Add("PROPUESTA DE AREA NATURAL");
+                        //            }
+                        //            else if (v_nm_depa == "POSIBLE ZONA URBANA")
+                        //            {
+                        //                CbxTypeMineYes.Items.Add("POSIBLE ZONA URBANA");
+                        //                CbxTypeMineYes.Items.Add("AREA DE EXPANSION URBANA");
+                        //            }
+                        //            else
+                        //            {
+                        //                CbxTypeMineNo.Items.Add(v_nm_depa);
+                        //            }
+                        //        }
+                        //    }
+                        //}
                     }
                     catch (Exception ex)
                     {
                         // Manejo de errores
-                        MessageBox.Show($"Error al obtener los tipos de reserva minera: {ex.Message}"); 
+                        MessageBox.Show($"Error al obtener los tipos de reserva minera: {ex.Message}");
                     }
 
                     if (CbxTypeMineNo.Items.Count > 0)
@@ -250,18 +248,16 @@ namespace SigcatminProAddin.View.Modulos
                 case "2":
                     // Guardamos el tipo en una variable de clase (si lo necesitas)
                     _typeConsult = "SEGUN DEPARTAMENTO";
-
+                    try
+                    {
+                        LoadComboBoxYesNo();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Manejo de errores
+                        MessageBox.Show($"Error al obtener los tipos de reserva minera: {ex.Message}");
+                    }
                     // Habilitamos/deshabilitamos controles
-                    //CbxRegion.IsEnabled = true;
-                    //cboZona.IsEnabled = false;
-                    //BtnLoadData.IsEnabled = true;
-
-                    //TbxZone.Visibility = Visibility.Hidden;
-                    //cboZona.Visibility = Visibility.Hidden;
-
-                    //// Limpiamos los ítems anteriores
-                    //CbxRegion.Items.Clear();
-                    //cboZona.Items.Clear();
 
                     await InitConectionGdb();
                     var pFeatureClass = await LayerUtils.GetFeatureClass(geodatabase, FeatureClassConstants.gstrFC_Departamento_WGS + 18);
@@ -291,7 +287,7 @@ namespace SigcatminProAddin.View.Modulos
                             }
                             items.Sort();
                             return items;
-                        }                        
+                        }
                         catch (Exception ex)
                         {
                             // Manejo de errores
@@ -310,11 +306,24 @@ namespace SigcatminProAddin.View.Modulos
 
                     //// Cargar tipos de reservas (ejemplo)
                     //CargarTiposReserva();
+                    if (CbxTypeMineNo.Items.Count > 0)
+                        CbxTypeMineNo.SelectedIndex = 0;
 
+                    if (CbxTypeMineYes.Items.Count > 0)
+                        CbxTypeMineYes.SelectedIndex = 0;
                     break;
 
                 case "3":
                     _typeConsult = "SEGUN PROVINCIA";
+                    try
+                    {
+                        LoadComboBoxYesNo();
+                    }
+                    catch (Exception ex)
+                    {
+                        // Manejo de errores
+                        MessageBox.Show($"Error al obtener los tipos de reserva minera: {ex.Message}");
+                    }
                     //CbxRegion.IsEnabled = true;
                     //CbxRegion.Items.Clear();
 
@@ -480,7 +489,7 @@ namespace SigcatminProAddin.View.Modulos
                 switch (_typeConsult)
                 {
                     case "SEGUN DEPARTAMENTO":
-                        await  CalcularSegunDepartamentoNo(sw, lodtTabla);
+                        await CalcularSegunDepartamentoNo(sw, lodtTabla);
                         break;
 
                     case "MINERIA A NIVEL NACIONAL":
@@ -528,189 +537,98 @@ namespace SigcatminProAddin.View.Modulos
 
         private async Task CalcularSegunDepartamentoNo(StreamWriter sw, DataTable lodtTabla)
         {
-            // Variables que en VB estaban definidas como globales o locales
-            string seleElemento = string.Empty;
-            string v_tipo_rese = string.Empty;
-
-            // Cargar la feature class
-            //cls_Catastro.PT_CargarFeatureClass_SDE(gstrFC_Departamento, m_application, "2", false);
-            // pFeatureClass = pFeatureLayer_depa.FeatureClass;
-            await InitConectionGdb();
-            var pFeatureClass = await LayerUtils.GetFeatureClass(geodatabase, FeatureClassConstants.gstrFC_Departamento_WGS + 18);
-
-            // Tomar valores de combos (ajusta si usas WPF: CbxTypeMineNo.SelectedItem as string, etc.)
-            string v_nm_depa = CbxRegion.SelectedItem?.ToString();
-            string v_Zona = CbxZone.SelectedItem?.ToString();
-            string v_sistema = CbxDatum.SelectedItem?.ToString();
-
-            // Ejemplo de obtener “tipo de reserva”. En VB quedaba comentado:
-            // sele_elemento = CbxTypeMineNo.SelectedItem
-            // Supongo que lo usarás más adelante.
-            // string seleElemento = CbxTypeMineNo.SelectedItem?.ToString();
-
-            // lodbtExiste_tipo = cls_Oracle.FT_OBTIENE_TIPORESE(seleElemento);
-            // Manejo de excepciones
-            try
+            // Capturar los valores en el hilo de UI antes de entrar a `QueuedTask.Run`
+            string v_nm_depa = string.Empty;
+            string v_Zona = string.Empty;
+            string v_sistema = vDatum;
+            await QueuedTask.Run(async () =>
             {
-                DataTable lodbtExiste_tipo = dataBaseHandler.GetRestrictedAreaType();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error en Obtener los tipos de reservas de la base de datos: " + ex.Message,
-                    "CONSULTA BASE DE DATOS...",
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-            }
+                // Variables que en VB estaban definidas como globales o locales
+                string seleElemento = string.Empty;
+                string v_tipo_rese = string.Empty;
 
-            // Construimos un QueryFilter (ArcObjects) o un WhereClause
-            QueryFilter pqueryfilter =
-                                       new QueryFilter()
-                                       {
-                                           WhereClause = $"NM_DEPA = '{v_nm_depa}'"
-                                       };
-            //IQueryFilter pqueryfilter = new QueryFilterClass();  // Si usas ArcObjects
-            //pqueryfilter.WhereClause = $"NM_DEPA = '{v_nm_depa}'";
+                // Cargar la feature class
+                //cls_Catastro.PT_CargarFeatureClass_SDE(gstrFC_Departamento, m_application, "2", false);
+                // pFeatureClass = pFeatureLayer_depa.FeatureClass;
+                await InitConectionGdb();
+                var pFeatureClass = await LayerUtils.GetFeatureClass(geodatabase, FeatureClassConstants.gstrFC_Departamento_WGS + 18);
 
-            // Buscamos features en la clase
-            //var pFeatureCursor = pFeatureClass.Search(pqueryfilter, true);
-            //IFeature pFeature = pFeatureCursor.NextFeature();
-            using (RowCursor cursor = pFeatureClass.Search(pqueryfilter, false))
-            {
-                while (cursor.MoveNext())
+                // Tomar valores de combos (ajusta si usas WPF: CbxTypeMineNo.SelectedItem as string, etc.)
+                Dispatcher.Invoke(() =>
                 {
-                    //// Iteramos
-                    using (Feature feature = (Feature)cursor.Current)
+                    v_nm_depa = CbxRegion.SelectedItem?.ToString();
+                    v_Zona = CbxZone.SelectedItem?.ToString();
+                    //v_sistema = CbxDatum.SelectedItem?.ToString();
+                });
+
+                // Ejemplo de obtener “tipo de reserva”. En VB quedaba comentado:
+                // sele_elemento = CbxTypeMineNo.SelectedItem
+                // Supongo que lo usarás más adelante.
+                // string seleElemento = CbxTypeMineNo.SelectedItem?.ToString();
+
+                // lodbtExiste_tipo = cls_Oracle.FT_OBTIENE_TIPORESE(seleElemento);
+                // Manejo de excepciones
+                try
+                {
+                    DataTable lodbtExiste_tipo = dataBaseHandler.GetRestrictedAreaType();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error en Obtener los tipos de reservas de la base de datos: " + ex.Message,
+                        "CONSULTA BASE DE DATOS...",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Error);
+                }
+
+                // Construimos un QueryFilter (ArcObjects) o un WhereClause
+                QueryFilter pqueryfilter =
+                                           new QueryFilter()
+                                           {
+                                               WhereClause = $"NM_DEPA = '{v_nm_depa}'"
+                                           };
+                //IQueryFilter pqueryfilter = new QueryFilterClass();  // Si usas ArcObjects
+                //pqueryfilter.WhereClause = $"NM_DEPA = '{v_nm_depa}'";
+
+                // Buscamos features en la clase
+                //var pFeatureCursor = pFeatureClass.Search(pqueryfilter, true);
+                //IFeature pFeature = pFeatureCursor.NextFeature();
+                using (RowCursor cursor = pFeatureClass.Search(pqueryfilter, false))
+                {
+                    while (cursor.MoveNext())
                     {
-                        string v_codigo = feature["CD_DEPA"].ToString();
-                        string v_nm_depa1 = feature["NM_DEPA"].ToString();
-
-                        // Si v_codigo = "99" => MAR o FRONTERA
-                        if (v_codigo == "99")
+                        //// Iteramos
+                        using (Feature feature = (Feature)cursor.Current)
                         {
-                            if (v_nm_depa1 == "MAR" || v_nm_depa1 == "FUERA DEL PERU")
+                            string v_codigo = feature["CD_DEPA"].ToString();
+                            string v_nm_depa1 = feature["NM_DEPA"].ToString();
+
+                            // Si v_codigo = "99" => MAR o FRONTERA
+                            if (v_codigo == "99")
                             {
-                                // Recorremos cbotiporese (sus Items)
-                                for (int i = 0; i < CbxTypeMineNo.Items.Count; i++)
+                                if (v_nm_depa1 == "MAR" || v_nm_depa1 == "FUERA DEL PERU")
                                 {
-                                    seleElemento = CbxTypeMineNo.Items[i].ToString();
+                                    // Recorremos cbotiporese (sus Items)
+                                    for (int i = 0; i < CbxTypeMineNo.Items.Count; i++)
+                                    {
+                                        seleElemento = CbxTypeMineNo.Items[i].ToString();
 
-                                    // Filtrar ciertos “no deseados”
-                                    if (seleElemento == "EXPEDIENTE DE CATASTRO"
-                                     || v_nm_depa == "RESERVA TURISTICA"
-                                     || v_nm_depa == "CONCESION DE LABOR GENERAL"
-                                     || v_nm_depa == "ANAD"
-                                     || v_nm_depa == "INFRAESTRUCTURA DEL ESTADO")
-                                    {
-                                        continue;
-                                    }
-
-                                    // Llamada a la base (cls_Oracle)
-                                    if (v_sistema == "2")
-                                    {
-                                        lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
-                                            "3",
-                                            $"DESA_GIS.GPO_DEP_DEPARTAMENTO_WGS{v_Zona}",
-                                            $"DESA_GIS.GPO_CAR_CARAM_WGS{v_Zona}D",
-                                            v_codigo,
-                                            seleElemento
-                                        );
-                                    }
-                                    else
-                                    {
-                                        lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
-                                            "3",
-                                            $"DESA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
-                                            $"DESA_GIS.GPO_CAR_CARAM_{v_Zona}D",
-                                            v_codigo,
-                                            seleElemento
-                                        );
-                                    }
-
-                                    if (lodbtExiste_SupAR.Rows.Count == 0)
-                                    {
-                                        // No hay nada
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        // Tomamos la última fila (o iteramos)
-                                        double v_areasup_rese = 0.0;
-                                        double v_areaini_depa = 0.0;
-                                        double v_cantidad = 0.0;
-
-                                        for (int j = 0; j < lodbtExiste_SupAR.Rows.Count; j++)
+                                        // Filtrar ciertos “no deseados”
+                                        if (seleElemento == "EXPEDIENTE DE CATASTRO"
+                                         || v_nm_depa == "RESERVA TURISTICA"
+                                         || v_nm_depa == "CONCESION DE LABOR GENERAL"
+                                         || v_nm_depa == "ANAD"
+                                         || v_nm_depa == "INFRAESTRUCTURA DEL ESTADO")
                                         {
-                                            v_areasup_rese = Convert.ToDouble(lodbtExiste_SupAR.Rows[j]["AREASUPER"]);
-                                            //v_codigo_depa = lodbtExiste_SupAR.Rows[j]["CODIGO"].ToString();
-                                            v_areaini_depa = Convert.ToDouble(lodbtExiste_SupAR.Rows[j]["AREAINI"]);
-                                            v_cantidad = Convert.ToDouble(lodbtExiste_SupAR.Rows[j]["CANTIDAD"]);
+                                            continue;
                                         }
 
-                                        if (v_cantidad > 0)
-                                        {
-                                            // Añadimos fila a lodtTabla
-                                            DataRow dRow = lodtTabla.NewRow();
-                                            dRow["CODIGO"] = v_codigo;
-                                            dRow["NOMBRE"] = v_nm_depa1;
-                                            dRow["TP_RESE"] = seleElemento;
-                                            dRow["NM_TPRESE"] = seleElemento;
-                                            dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
-                                            dRow["CANTI"] = v_cantidad;
-                                            dRow["AREA_NETA"] = Math.Round(v_areasup_rese, 4).ToString("###,###.0000");
-                                            double porc = 0.0;
-                                            if (v_areaini_depa != 0.0)
-                                                porc = (v_areasup_rese / v_areaini_depa) * 100.0;
-                                            dRow["PORCEN"] = Math.Round(porc, 2).ToString("###,###.00");
-                                            lodtTabla.Rows.Add(dRow);
-
-                                            // Imprimir en sw
-                                            switch (v_Zona)
-                                            {
-                                                case "17": sw.WriteLine("7P"); break;
-                                                case "18": sw.WriteLine("8P"); break;
-                                                case "19": sw.WriteLine("9P"); break;
-                                            }
-
-                                            sw.WriteLine(v_sistema);
-                                            sw.WriteLine(v_nm_depa1);
-                                            sw.WriteLine(seleElemento);
-                                            sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
-                                            sw.WriteLine(v_cantidad);
-                                            sw.WriteLine(Math.Round(v_areasup_rese, 4).ToString("###,###.0000"));
-                                            sw.WriteLine(Math.Round(porc, 2).ToString("###,###.00"));
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // v_codigo != "99" => caso NORMAL
-                            try
-                            {
-                                for (int i = 0; i < CbxTypeMineNo.Items.Count; i++)
-                                {
-                                    seleElemento = CbxTypeMineNo.Items[i].ToString();
-
-                                    // Filtros
-                                    if (seleElemento == "EXPEDIENTE DE CATASTRO"
-                                     || v_nm_depa == "RESERVA TURISTICA"
-                                     || v_nm_depa == "CONCESION DE LABOR GENERAL"
-                                     || v_nm_depa == "ANAD"
-                                     || v_nm_depa == "INFRAESTRUCTURA DEL ESTADO")
-                                    {
-                                        continue;
-                                    }
-
-                                    // Llamadas cls_Oracle segun v_sistema
-                                    if (v_sistema == "2")
-                                    {
-                                        if (seleElemento == "AREA DE DEFENSA NACIONAL")
+                                        // Llamada a la base (cls_Oracle)
+                                        if (v_sistema == "2")
                                         {
                                             lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
-                                                "19",
-                                                $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS{v_Zona}",
-                                                $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}D",
+                                                "3",
+                                                $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_{v_Zona}",
+                                                $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}",
                                                 v_codigo,
                                                 seleElemento
                                             );
@@ -719,400 +637,245 @@ namespace SigcatminProAddin.View.Modulos
                                         {
                                             lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
                                                 "3",
-                                                $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS{v_Zona}",
-                                                $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}D",
+                                                $"DATA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
+                                                $"DATA_GIS.GPO_CAR_CARAM_{v_Zona}",
                                                 v_codigo,
                                                 seleElemento
                                             );
                                         }
-                                    }
-                                    else
-                                    {
-                                        lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
-                                            "3",
-                                            $"DESA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
-                                            $"DESA_GIS.GPO_CAR_CARAM_{v_Zona}D",
-                                            v_codigo,
-                                            seleElemento
-                                        );
-                                    }
 
-                                    if (lodbtExiste_SupAR.Rows.Count == 0)
-                                    {
-                                        // nada
-                                        continue;
-                                    }
-                                    else
-                                    {
-                                        // En tu VB: If v_codigo = "04" or "12" or "21" or "05" or "08" => LAGUNA
-                                        // ...
-                                        // De aquí en adelante se anida mucha lógica. 
-                                        // Lo ideal es separarla en métodos, 
-                                        // pero la mantendremos igual para no romper la lógica.
-
-                                        // (1) Departamentos que tienen lagunas
-                                        if (v_codigo == "04" || v_codigo == "12" || v_codigo == "21"
-                                         || v_codigo == "05" || v_codigo == "08")
+                                        if (lodbtExiste_SupAR.Rows.Count == 0)
                                         {
-                                            // Lógica lagunas (PUNO, etc.)
-                                            // ...
-                                            // (Ajusta la migración de tu VB anidado)
-                                            // (1) DEPARTAMENTOS QUE TIENEN LAGUNAS
-                                            // Este bloque corresponde a la parte "If v_codigo = "04" Or ... Then"
-
-                                            // Leemos la tabla "lodbtExiste_SupAR" (ya poblada con FT_Int_tiporesexdepa)
-                                            double v_areaini_depa = 0.0;
+                                            // No hay nada
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            // Tomamos la última fila (o iteramos)
                                             double v_areasup_rese = 0.0;
+                                            double v_areaini_depa = 0.0;
                                             double v_cantidad = 0.0;
 
-                                            // Tomamos la última fila o iteramos para asignar v_areasup_rese, etc.
-                                            // (En tu VB hacías un For que tomaba la misma variable repetidamente.)
-                                            for (int idx = 0; idx < lodbtExiste_SupAR.Rows.Count; idx++)
+                                            for (int j = 0; j < lodbtExiste_SupAR.Rows.Count; j++)
                                             {
-                                                v_areasup_rese = Convert.ToDouble(lodbtExiste_SupAR.Rows[idx]["AREASUPER"]);
-                                                v_codigo_depa = lodbtExiste_SupAR.Rows[idx]["CODIGO"].ToString();
-                                                v_areaini_depa = Convert.ToDouble(lodbtExiste_SupAR.Rows[idx]["AREAINI"]);
-                                                v_cantidad = Convert.ToDouble(lodbtExiste_SupAR.Rows[idx]["CANTIDAD"]);
+                                                v_areasup_rese = Convert.ToDouble(lodbtExiste_SupAR.Rows[j]["AREASUPER"]);
+                                                //v_codigo_depa = lodbtExiste_SupAR.Rows[j]["CODIGO"].ToString();
+                                                v_areaini_depa = Convert.ToDouble(lodbtExiste_SupAR.Rows[j]["AREAINI"]);
+                                                v_cantidad = Convert.ToDouble(lodbtExiste_SupAR.Rows[j]["CANTIDAD"]);
                                             }
 
-                                            // Asignamos "v_nm_laguna" dependiendo del v_codigo
-                                            // (Igual que en tu VB: If v_codigo = "05" Then v_nm_laguna="LAGUNA DE PARINACOCHAS", etc.)
-                                            if (v_codigo == "05") v_nm_laguna = "LAGUNA DE PARINACOCHAS";
-                                            else if (v_codigo == "04") v_nm_laguna = "LAGUNA SALINAS";
-                                            else if (v_codigo == "08") v_nm_laguna = "LAGUNA LAGUILAYO";
-                                            else if (v_codigo == "12") v_nm_laguna = "LAGUNA DE JUNIN";
-                                            else if (v_codigo == "21") v_nm_laguna = "LAGUNAS DE PUNO";
-
-                                            // Si es "LAGUNAS DE PUNO", sumamos UMAYO, ARAPA, TITICACA
-                                            if (v_nm_laguna == "LAGUNAS DE PUNO")
+                                            if (v_cantidad > 0)
                                             {
-                                                double v_areaini_depa2 = 0.0;
-                                                double v_areasup_rese2 = 0.0;
+                                                // Añadimos fila a lodtTabla
+                                                DataRow dRow = lodtTabla.NewRow();
+                                                dRow["CODIGO"] = v_codigo;
+                                                dRow["NOMBRE"] = v_nm_depa1;
+                                                dRow["TP_RESE"] = seleElemento;
+                                                dRow["NM_TPRESE"] = seleElemento;
+                                                dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
+                                                dRow["CANTI"] = v_cantidad;
+                                                dRow["AREA_NETA"] = Math.Round(v_areasup_rese, 4).ToString("###,###.0000");
+                                                double porc = 0.0;
+                                                if (v_areaini_depa != 0.0)
+                                                    porc = (v_areasup_rese / v_areaini_depa) * 100.0;
+                                                dRow["PORCEN"] = Math.Round(porc, 2).ToString("###,###.00");
+                                                lodtTabla.Rows.Add(dRow);
 
-                                                for (int j = 1; j <= 3; j++)
+                                                // Imprimir en sw
+                                                switch (v_Zona)
                                                 {
-                                                    // Asignamos v_nm_laguna a la laguna concreta
-                                                    if (j == 1) v_nm_laguna = "LAGUNA UMAYO";
-                                                    else if (j == 2) v_nm_laguna = "LAGO DE ARAPA";
-                                                    else if (j == 3) v_nm_laguna = "LAGO TITICACA";
-
-                                                    // Volvemos a llamar FT_Int_tiporesexdepa con code=4, etc.
-                                                    // En VB: lodbtExiste_SupAR = ...
-                                                    DataTable tempSupAR;
-                                                    if (v_sistema == "2")
-                                                    {
-                                                        tempSupAR = dataBaseHandler.GetStatisticalIntersection(
-                                                            "4",
-                                                            $"DESA_GIS.GPO_DEP_DEPARTAMENTO_WGS{v_Zona}",
-                                                            $"DESA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}D",
-                                                            v_nm_laguna,
-                                                            seleElemento
-                                                        );
-                                                    }
-                                                    else
-                                                    {
-                                                        tempSupAR = dataBaseHandler.GetStatisticalIntersection(
-                                                            "4",
-                                                            $"DESA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
-                                                            $"DESA_GIS.GPO_CAR_CARAM_{v_Zona}D",
-                                                            v_nm_laguna,
-                                                            seleElemento
-                                                        );
-                                                    }
-
-                                                    // Sumamos v_areasup_rese1, v_areaini_depa1
-                                                    double v_areasup_rese1 = 0.0;
-                                                    double v_areaini_depa1 = 0.0;
-
-                                                    foreach (DataRow rowLag in tempSupAR.Rows)
-                                                    {
-                                                        v_areasup_rese1 = Convert.ToDouble(rowLag["AREASUPER"]);
-                                                        v_codigo_depa = rowLag["CODIGO"].ToString();
-                                                        v_areaini_depa1 = Convert.ToDouble(rowLag["AREAINI"]);
-                                                    }
-                                                    v_areaini_depa2 += v_areaini_depa1;
-                                                    v_areasup_rese2 += v_areasup_rese1;
+                                                    case "17": sw.WriteLine("7P"); break;
+                                                    case "18": sw.WriteLine("8P"); break;
+                                                    case "19": sw.WriteLine("9P"); break;
                                                 }
 
-                                                // Una vez sumado, creamos la fila final
-                                                if (v_cantidad > 0)
-                                                {
-                                                    DataRow dRow = lodtTabla.NewRow();
-                                                    dRow["CODIGO"] = v_codigo_depa;
-                                                    dRow["NOMBRE"] = v_nm_depa1;
-                                                    dRow["TP_RESE"] = seleElemento;
-                                                    dRow["NM_TPRESE"] = seleElemento;
-                                                    double areaTotal = (v_areaini_depa + v_areaini_depa2);
-                                                    double resaTotal = (v_areasup_rese + v_areasup_rese2);
+                                                sw.WriteLine(v_sistema);
+                                                sw.WriteLine(v_nm_depa1);
+                                                sw.WriteLine(seleElemento);
+                                                sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
+                                                sw.WriteLine(v_cantidad);
+                                                sw.WriteLine(Math.Round(v_areasup_rese, 4).ToString("###,###.0000"));
+                                                sw.WriteLine(Math.Round(porc, 2).ToString("###,###.00"));
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // v_codigo != "99" => caso NORMAL
+                                try
+                                {
+                                    for (int i = 0; i < CbxTypeMineNo.Items.Count; i++)
+                                    {
+                                        seleElemento = CbxTypeMineNo.Items[i].ToString();
 
-                                                    dRow["AREA"] = Math.Round(areaTotal, 4).ToString("###,###.0000");
-                                                    dRow["CANTI"] = v_cantidad;
-                                                    dRow["AREA_NETA"] = Math.Round(resaTotal, 4).ToString("###,###.0000");
+                                        // Filtros
+                                        if (seleElemento == "EXPEDIENTE DE CATASTRO"
+                                         || v_nm_depa == "RESERVA TURISTICA"
+                                         || v_nm_depa == "CONCESION DE LABOR GENERAL"
+                                         || v_nm_depa == "ANAD"
+                                         || v_nm_depa == "INFRAESTRUCTURA DEL ESTADO")
+                                        {
+                                            continue;
+                                        }
 
-                                                    double porcen = 0.0;
-                                                    if (areaTotal != 0.0)
-                                                        porcen = (resaTotal / areaTotal) * 100.0;
-
-                                                    dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
-
-                                                    lodtTabla.Rows.Add(dRow);
-
-                                                    // Escribir en sw
-                                                    if (v_Zona == "17") sw.WriteLine("7P");
-                                                    else if (v_Zona == "18") sw.WriteLine("8P");
-                                                    else if (v_Zona == "19") sw.WriteLine("9P");
-
-                                                    sw.WriteLine(v_sistema);
-                                                    sw.WriteLine(v_nm_depa1);
-                                                    sw.WriteLine(seleElemento);
-                                                    sw.WriteLine(Math.Round(areaTotal, 4).ToString("###,###.0000"));
-                                                    sw.WriteLine(v_cantidad);
-                                                    sw.WriteLine(Math.Round(resaTotal, 4).ToString("###,###.0000"));
-                                                    sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
-                                                }
-
-                                                // Se iguala para tener mismo valor de la area region
-                                                v_areaini_depa = v_areaini_depa2;
+                                        // Llamadas cls_Oracle segun v_sistema
+                                        if (v_sistema == "2")
+                                        {
+                                            if (seleElemento == "AREA DE DEFENSA NACIONAL")
+                                            {
+                                                lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                    "19",
+                                                    $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_{v_Zona}",
+                                                    $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}",
+                                                    v_codigo,
+                                                    seleElemento
+                                                );
                                             }
                                             else
                                             {
-                                                // Dpto con LAGUNA “individual” (no es PUNO)
-                                                // Recorremos lodbtExiste_SupAR para v_areasup_rese1, v_areaini_depa1
-                                                double v_areasup_rese1 = 0.0;
-                                                double v_areaini_depa1 = 0.0;
-
-                                                foreach (DataRow rowLag in lodbtExiste_SupAR.Rows)
-                                                {
-                                                    v_areasup_rese1 = Convert.ToDouble(rowLag["AREASUPER"]);
-                                                    v_codigo_depa = rowLag["CODIGO"].ToString();
-                                                    v_areaini_depa1 = Convert.ToDouble(rowLag["AREAINI"]);
-                                                }
-
-                                                // Sumando areas
-                                                if (v_areasup_rese > 0.0)
-                                                {
-                                                    DataRow dRow = lodtTabla.NewRow();
-                                                    double areaTotal = (v_areaini_depa + v_areaini_depa1);
-                                                    double resaTotal = (v_areasup_rese + v_areasup_rese1);
-
-                                                    dRow["CODIGO"] = v_codigo_depa;
-                                                    dRow["NOMBRE"] = v_nm_depa1;
-                                                    dRow["TP_RESE"] = seleElemento;
-                                                    dRow["NM_TPRESE"] = seleElemento;
-                                                    dRow["AREA"] = Math.Round(areaTotal, 4).ToString("###,###.0000");
-                                                    dRow["CANTI"] = v_cantidad;
-                                                    dRow["AREA_NETA"] = Math.Round(resaTotal, 4).ToString("###,###.0000");
-
-                                                    double porcen = 0.0;
-                                                    if (areaTotal != 0.0)
-                                                        porcen = (resaTotal / areaTotal) * 100.0;
-
-                                                    dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
-                                                    lodtTabla.Rows.Add(dRow);
-
-                                                    // Imprimir en sw
-                                                    if (v_Zona == "17") sw.WriteLine("7P");
-                                                    else if (v_Zona == "18") sw.WriteLine("8P");
-                                                    else if (v_Zona == "19") sw.WriteLine("9P");
-
-                                                    sw.WriteLine(v_sistema);
-                                                    sw.WriteLine(v_nm_depa1);
-                                                    sw.WriteLine(seleElemento);
-                                                    sw.WriteLine(Math.Round(areaTotal, 4).ToString("###,###.0000"));
-                                                    sw.WriteLine(v_cantidad);
-                                                    sw.WriteLine(Math.Round(resaTotal, 4).ToString("###,###.0000"));
-                                                    sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
-                                                }
-
-                                                // Sumar en la variable principal
-                                                v_areaini_depa += v_areaini_depa1;
+                                                lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                    "3",
+                                                    $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_{v_Zona}",
+                                                    $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}",
+                                                    v_codigo,
+                                                    seleElemento
+                                                );
                                             }
-                                            }
-                                            else
-                                            {
-                                            // (2) Departamentos que no tienen laguna
+                                        }
+                                        else
+                                        {
+                                            lodbtExiste_SupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                "3",
+                                                $"DATA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
+                                                $"DATA_GIS.GPO_CAR_CARAM_{v_Zona}",
+                                                v_codigo,
+                                                seleElemento
+                                            );
+                                        }
+
+                                        if (lodbtExiste_SupAR.Rows.Count == 0)
+                                        {
+                                            // nada
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            // En tu VB: If v_codigo = "04" or "12" or "21" or "05" or "08" => LAGUNA
                                             // ...
-                                            // Valida "POSIBLES ZONAS URBANAS", "xANAP INGEMMET", etc.
-                                            // (Igual que tu VB, con for cont1 etc.)
-                                            if (seleElemento == "POSIBLES ZONAS URBANAS")
+                                            // De aquí en adelante se anida mucha lógica. 
+                                            // Lo ideal es separarla en métodos, 
+                                            // pero la mantendremos igual para no romper la lógica.
+
+                                            // (1) Departamentos que tienen lagunas
+                                            if (v_codigo == "04" || v_codigo == "12" || v_codigo == "21"
+                                             || v_codigo == "05" || v_codigo == "08")
                                             {
-                                                // Llamamos FT_Int_tiporesexdepa con code=5 y "ZONA URBANA" (tal como en tu VB)
-                                                DataTable tempSupAR;
-                                                if (v_sistema == "2")
+                                                // Lógica lagunas (PUNO, etc.)
+                                                // ...
+                                                // (Ajusta la migración de tu VB anidado)
+                                                // (1) DEPARTAMENTOS QUE TIENEN LAGUNAS
+                                                // Este bloque corresponde a la parte "If v_codigo = "04" Or ... Then"
+
+                                                // Leemos la tabla "lodbtExiste_SupAR" (ya poblada con FT_Int_tiporesexdepa)
+                                                double v_areaini_depa = 0.0;
+                                                double v_areasup_rese = 0.0;
+                                                double v_cantidad = 0.0;
+
+                                                // Tomamos la última fila o iteramos para asignar v_areasup_rese, etc.
+                                                // (En tu VB hacías un For que tomaba la misma variable repetidamente.)
+                                                for (int idx = 0; idx < lodbtExiste_SupAR.Rows.Count; idx++)
                                                 {
-                                                    tempSupAR = dataBaseHandler.GetStatisticalIntersection(
-                                                        "5",
-                                                        $"DESA_GIS.GPO_DEP_DEPARTAMENTO_WGS{v_Zona}",
-                                                        $"DESA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}D",
-                                                        v_codigo,
-                                                        "ZONA URBANA"
-                                                    );
-                                                }
-                                                else
-                                                {
-                                                    tempSupAR = dataBaseHandler.GetStatisticalIntersection(
-                                                        "5",
-                                                        $"DESA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
-                                                        $"DESA_GIS.GPO_CAR_CARAM_{v_Zona}D",
-                                                        v_codigo,
-                                                        "ZONA URBANA"
-                                                    );
+                                                    v_areasup_rese = Convert.ToDouble(lodbtExiste_SupAR.Rows[idx]["AREASUPER"]);
+                                                    v_codigo_depa = lodbtExiste_SupAR.Rows[idx]["CODIGO"].ToString();
+                                                    v_areaini_depa = Convert.ToDouble(lodbtExiste_SupAR.Rows[idx]["AREAINI"]);
+                                                    v_cantidad = Convert.ToDouble(lodbtExiste_SupAR.Rows[idx]["CANTIDAD"]);
                                                 }
 
-                                                // Iteramos sobre las filas resultantes
-                                                foreach (DataRow rowZona in tempSupAR.Rows)
-                                                {
-                                                    double v_areasup_rese = Convert.ToDouble(rowZona["AREASUPER"]);
-                                                    string v_codigo_depa = rowZona["CODIGO"].ToString();
-                                                    double v_areaini_depa = Convert.ToDouble(rowZona["AREAINI"]);
-                                                    double v_cantidad = Convert.ToDouble(rowZona["CANTIDAD"]);
+                                                // Asignamos "v_nm_laguna" dependiendo del v_codigo
+                                                // (Igual que en tu VB: If v_codigo = "05" Then v_nm_laguna="LAGUNA DE PARINACOCHAS", etc.)
+                                                if (v_codigo == "05") v_nm_laguna = "LAGUNA DE PARINACOCHAS";
+                                                else if (v_codigo == "04") v_nm_laguna = "LAGUNA SALINAS";
+                                                else if (v_codigo == "08") v_nm_laguna = "LAGUNA LAGUILAYO";
+                                                else if (v_codigo == "12") v_nm_laguna = "LAGUNA DE JUNIN";
+                                                else if (v_codigo == "21") v_nm_laguna = "LAGUNAS DE PUNO";
 
+                                                // Si es "LAGUNAS DE PUNO", sumamos UMAYO, ARAPA, TITICACA
+                                                if (v_nm_laguna == "LAGUNAS DE PUNO")
+                                                {
+                                                    double v_areaini_depa2 = 0.0;
+                                                    double v_areasup_rese2 = 0.0;
+
+                                                    for (int j = 1; j <= 3; j++)
+                                                    {
+                                                        // Asignamos v_nm_laguna a la laguna concreta
+                                                        if (j == 1) v_nm_laguna = "LAGUNA UMAYO";
+                                                        else if (j == 2) v_nm_laguna = "LAGO DE ARAPA";
+                                                        else if (j == 3) v_nm_laguna = "LAGO TITICACA";
+
+                                                        // Volvemos a llamar FT_Int_tiporesexdepa con code=4, etc.
+                                                        // En VB: lodbtExiste_SupAR = ...
+                                                        DataTable tempSupAR;
+                                                        if (v_sistema == "2")
+                                                        {
+                                                            tempSupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                                "4",
+                                                                $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_{v_Zona}",
+                                                                $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}",
+                                                                v_nm_laguna,
+                                                                seleElemento
+                                                            );
+                                                        }
+                                                        else
+                                                        {
+                                                            tempSupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                                "4",
+                                                                $"DATA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
+                                                                $"DATA_GIS.GPO_CAR_CARAM_{v_Zona}",
+                                                                v_nm_laguna,
+                                                                seleElemento
+                                                            );
+                                                        }
+
+                                                        // Sumamos v_areasup_rese1, v_areaini_depa1
+                                                        double v_areasup_rese1 = 0.0;
+                                                        double v_areaini_depa1 = 0.0;
+
+                                                        foreach (DataRow rowLag in tempSupAR.Rows)
+                                                        {
+                                                            v_areasup_rese1 = Convert.ToDouble(rowLag["AREASUPER"]);
+                                                            v_codigo_depa = rowLag["CODIGO"].ToString();
+                                                            v_areaini_depa1 = Convert.ToDouble(rowLag["AREAINI"]);
+                                                        }
+                                                        v_areaini_depa2 += v_areaini_depa1;
+                                                        v_areasup_rese2 += v_areasup_rese1;
+                                                    }
+
+                                                    // Una vez sumado, creamos la fila final
                                                     if (v_cantidad > 0)
                                                     {
-                                                        // Creamos la fila en lodtTabla
-                                                        DataRow dRow = lodtTabla.NewRow();
-                                                        dRow["CODIGO"] = v_codigo_depa;
-                                                        dRow["NOMBRE"] = v_nm_depa1;
-                                                        dRow["TP_RESE"] = "ZONA URBANA";
-                                                        dRow["NM_TPRESE"] = seleElemento; // "POSIBLES ZONAS URBANAS" era el string en cbotiporese
-                                                        dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
-                                                        dRow["CANTI"] = v_cantidad;
-                                                        dRow["AREA_NETA"] = Math.Round(v_areasup_rese, 4).ToString("###,###.0000");
-
-                                                        double porcen = 0.0;
-                                                        if (v_areaini_depa != 0.0)
-                                                            porcen = (v_areasup_rese / v_areaini_depa) * 100.0;
-
-                                                        dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
-                                                        lodtTabla.Rows.Add(dRow);
-
-                                                        // Escribimos en el StreamWriter
-                                                        if (v_Zona == "17") sw.WriteLine("7P");
-                                                        else if (v_Zona == "18") sw.WriteLine("8P");
-                                                        else if (v_Zona == "19") sw.WriteLine("9P");
-
-                                                        sw.WriteLine(v_sistema);
-                                                        sw.WriteLine(v_nm_depa1);
-                                                        sw.WriteLine(seleElemento);
-                                                        sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
-                                                        sw.WriteLine(v_cantidad);
-                                                        sw.WriteLine(Math.Round(v_areasup_rese, 4).ToString("###,###.0000"));
-                                                        sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
-                                                    }
-                                                }
-                                            }
-                                            else if (seleElemento == "xANAP INGEMMET")
-                                            {
-                                                // Llamada con code=7 y "ANAP"
-                                                DataTable tempSupAR;
-                                                if (v_sistema == "2")
-                                                {
-                                                    tempSupAR = dataBaseHandler.GetStatisticalIntersection(
-                                                        "7",
-                                                        $"DESA_GIS.GPO_DEP_DEPARTAMENTO_WGS{v_Zona}",
-                                                        $"DESA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}D",
-                                                        v_codigo,
-                                                        "ANAP"
-                                                    );
-                                                }
-                                                else
-                                                {
-                                                    tempSupAR = dataBaseHandler.GetStatisticalIntersection(
-                                                        "7",
-                                                        $"DESA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
-                                                        $"DESA_GIS.GPO_CAR_CARAM_{v_Zona}D",
-                                                        v_codigo,
-                                                        "ANAP"
-                                                    );
-                                                }
-
-                                                foreach (DataRow rowInge in tempSupAR.Rows)
-                                                {
-                                                    double v_areasup_rese_inge = Convert.ToDouble(rowInge["AREASUPER"]);
-                                                    string v_codigo_depa = rowInge["CODIGO"].ToString();
-                                                    double v_areaini_depa = Convert.ToDouble(rowInge["AREAINI"]);
-                                                    double v_cantidad_inge = Convert.ToDouble(rowInge["CANTIDAD"]);
-
-                                                    if (v_cantidad_inge > 0)
-                                                    {
-                                                        // Creamos la fila "ANAP"
-                                                        DataRow dRow = lodtTabla.NewRow();
-                                                        dRow["CODIGO"] = v_codigo_depa;
-                                                        dRow["NOMBRE"] = v_nm_depa1;
-                                                        dRow["TP_RESE"] = "ANAP";
-                                                        dRow["NM_TPRESE"] = seleElemento; // "xANAP INGEMMET"
-                                                        dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
-                                                        dRow["CANTI"] = v_cantidad_inge;
-                                                        dRow["AREA_NETA"] = Math.Round(v_areasup_rese_inge, 4).ToString("###,###.0000");
-
-                                                        double porcen = 0.0;
-                                                        if (v_areaini_depa != 0.0)
-                                                            porcen = (v_areasup_rese_inge / v_areaini_depa) * 100.0;
-
-                                                        dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
-                                                        lodtTabla.Rows.Add(dRow);
-
-                                                        // Escribimos en sw
-                                                        if (v_Zona == "17") sw.WriteLine("7P");
-                                                        else if (v_Zona == "18") sw.WriteLine("8P");
-                                                        else if (v_Zona == "19") sw.WriteLine("9P");
-
-                                                        sw.WriteLine(v_sistema);
-                                                        sw.WriteLine(v_nm_depa1);
-                                                        sw.WriteLine(seleElemento);
-                                                        sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
-                                                        sw.WriteLine(v_cantidad_inge);
-                                                        sw.WriteLine(Math.Round(v_areasup_rese_inge, 4).ToString("###,###.0000"));
-                                                        sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
-                                                    }
-                                                }
-                                            }
-                                            else
-                                            {
-                                                // (PROCESO NORMAL)
-                                                // Aquí, por ejemplo, "ZONA URBANA", "ANAP", o cualquier otra reserva sin laguna
-                                                // Recorremos lodbtExiste_SupAR y creamos filas con la misma lógica
-
-                                                // En tu VB: "If sele_elemento = 'ZONA URBANA' Then code=6" 
-                                                //           "If sele_elemento = 'ANAP' Then restar v_areasup_rese_inge"
-                                                // 
-                                                // Suponiendo que lodbtExiste_SupAR es la tabla que ya obtuviste:
-                                                foreach (DataRow rowNor in lodbtExiste_SupAR.Rows)
-                                                {
-                                                    double v_areasup_rese = Convert.ToDouble(rowNor["AREASUPER"]);
-                                                    string v_codigo_depa = rowNor["CODIGO"].ToString();
-                                                    double v_areaini_depa = Convert.ToDouble(rowNor["AREAINI"]);
-                                                    double v_cantidad = Convert.ToDouble(rowNor["CANTIDAD"]);
-
-                                                    if (v_cantidad > 0)
-                                                    {
-                                                        // Si era "ANAP", se podía restar v_areasup_rese_inge, etc.
-                                                        // (Solo si así lo definiste en tu VB)
-                                                        //if (seleElemento == "ANAP")
-                                                        //{
-                                                        //    // Ajustar con variables globales v_areasup_rese_inge, v_cantidad_inge
-                                                        //    v_areasup_rese = v_areasup_rese - v_areasup_rese_inge;
-                                                        //    v_cantidad = v_cantidad - v_cantidad_inge;
-                                                        //}
-
-                                                        // Creamos la fila
                                                         DataRow dRow = lodtTabla.NewRow();
                                                         dRow["CODIGO"] = v_codigo_depa;
                                                         dRow["NOMBRE"] = v_nm_depa1;
                                                         dRow["TP_RESE"] = seleElemento;
                                                         dRow["NM_TPRESE"] = seleElemento;
-                                                        dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
+                                                        double areaTotal = (v_areaini_depa + v_areaini_depa2);
+                                                        double resaTotal = (v_areasup_rese + v_areasup_rese2);
+
+                                                        dRow["AREA"] = Math.Round(areaTotal, 4).ToString("###,###.0000");
                                                         dRow["CANTI"] = v_cantidad;
-                                                        dRow["AREA_NETA"] = Math.Round(v_areasup_rese, 4).ToString("###,###.0000");
+                                                        dRow["AREA_NETA"] = Math.Round(resaTotal, 4).ToString("###,###.0000");
 
                                                         double porcen = 0.0;
-                                                        if (v_areaini_depa != 0.0)
-                                                            porcen = (v_areasup_rese / v_areaini_depa) * 100.0;
+                                                        if (areaTotal != 0.0)
+                                                            porcen = (resaTotal / areaTotal) * 100.0;
 
                                                         dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
+
                                                         lodtTabla.Rows.Add(dRow);
 
-                                                        // Escribimos en sw
+                                                        // Escribir en sw
                                                         if (v_Zona == "17") sw.WriteLine("7P");
                                                         else if (v_Zona == "18") sw.WriteLine("8P");
                                                         else if (v_Zona == "19") sw.WriteLine("9P");
@@ -1120,28 +883,284 @@ namespace SigcatminProAddin.View.Modulos
                                                         sw.WriteLine(v_sistema);
                                                         sw.WriteLine(v_nm_depa1);
                                                         sw.WriteLine(seleElemento);
-                                                        sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
+                                                        sw.WriteLine(Math.Round(areaTotal, 4).ToString("###,###.0000"));
                                                         sw.WriteLine(v_cantidad);
-                                                        sw.WriteLine(Math.Round(v_areasup_rese, 4).ToString("###,###.0000"));
+                                                        sw.WriteLine(Math.Round(resaTotal, 4).ToString("###,###.0000"));
                                                         sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
+                                                    }
+
+                                                    // Se iguala para tener mismo valor de la area region
+                                                    v_areaini_depa = v_areaini_depa2;
+                                                }
+                                                else
+                                                {
+                                                    // Dpto con LAGUNA “individual” (no es PUNO)
+                                                    // Recorremos lodbtExiste_SupAR para v_areasup_rese1, v_areaini_depa1
+                                                    double v_areasup_rese1 = 0.0;
+                                                    double v_areaini_depa1 = 0.0;
+
+                                                    foreach (DataRow rowLag in lodbtExiste_SupAR.Rows)
+                                                    {
+                                                        v_areasup_rese1 = Convert.ToDouble(rowLag["AREASUPER"]);
+                                                        v_codigo_depa = rowLag["CODIGO"].ToString();
+                                                        v_areaini_depa1 = Convert.ToDouble(rowLag["AREAINI"]);
+                                                    }
+
+                                                    // Sumando areas
+                                                    if (v_areasup_rese > 0.0)
+                                                    {
+                                                        DataRow dRow = lodtTabla.NewRow();
+                                                        double areaTotal = (v_areaini_depa + v_areaini_depa1);
+                                                        double resaTotal = (v_areasup_rese + v_areasup_rese1);
+
+                                                        dRow["CODIGO"] = v_codigo_depa;
+                                                        dRow["NOMBRE"] = v_nm_depa1;
+                                                        dRow["TP_RESE"] = seleElemento;
+                                                        dRow["NM_TPRESE"] = seleElemento;
+                                                        dRow["AREA"] = Math.Round(areaTotal, 4).ToString("###,###.0000");
+                                                        dRow["CANTI"] = v_cantidad;
+                                                        dRow["AREA_NETA"] = Math.Round(resaTotal, 4).ToString("###,###.0000");
+
+                                                        double porcen = 0.0;
+                                                        if (areaTotal != 0.0)
+                                                            porcen = (resaTotal / areaTotal) * 100.0;
+
+                                                        dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
+                                                        lodtTabla.Rows.Add(dRow);
+
+                                                        // Imprimir en sw
+                                                        if (v_Zona == "17") sw.WriteLine("7P");
+                                                        else if (v_Zona == "18") sw.WriteLine("8P");
+                                                        else if (v_Zona == "19") sw.WriteLine("9P");
+
+                                                        sw.WriteLine(v_sistema);
+                                                        sw.WriteLine(v_nm_depa1);
+                                                        sw.WriteLine(seleElemento);
+                                                        sw.WriteLine(Math.Round(areaTotal, 4).ToString("###,###.0000"));
+                                                        sw.WriteLine(v_cantidad);
+                                                        sw.WriteLine(Math.Round(resaTotal, 4).ToString("###,###.0000"));
+                                                        sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
+                                                    }
+
+                                                    // Sumar en la variable principal
+                                                    v_areaini_depa += v_areaini_depa1;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                // (2) Departamentos que no tienen laguna
+                                                // ...
+                                                // Valida "POSIBLES ZONAS URBANAS", "xANAP INGEMMET", etc.
+                                                // (Igual que tu VB, con for cont1 etc.)
+                                                if (seleElemento == "POSIBLES ZONAS URBANAS")
+                                                {
+                                                    // Llamamos FT_Int_tiporesexdepa con code=5 y "ZONA URBANA" (tal como en tu VB)
+                                                    DataTable tempSupAR;
+                                                    if (v_sistema == "2")
+                                                    {
+                                                        tempSupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                            "5",
+                                                            $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_{v_Zona}",
+                                                            $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}",
+                                                            v_codigo,
+                                                            "ZONA URBANA"
+                                                        );
+                                                    }
+                                                    else
+                                                    {
+                                                        tempSupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                            "5",
+                                                            $"DATA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
+                                                            $"DATA_GIS.GPO_CAR_CARAM_{v_Zona}",
+                                                            v_codigo,
+                                                            "ZONA URBANA"
+                                                        );
+                                                    }
+
+                                                    // Iteramos sobre las filas resultantes
+                                                    foreach (DataRow rowZona in tempSupAR.Rows)
+                                                    {
+                                                        double v_areasup_rese = Convert.ToDouble(rowZona["AREASUPER"]);
+                                                        string v_codigo_depa = rowZona["CODIGO"].ToString();
+                                                        double v_areaini_depa = Convert.ToDouble(rowZona["AREAINI"]);
+                                                        double v_cantidad = Convert.ToDouble(rowZona["CANTIDAD"]);
+
+                                                        if (v_cantidad > 0)
+                                                        {
+                                                            // Creamos la fila en lodtTabla
+                                                            DataRow dRow = lodtTabla.NewRow();
+                                                            dRow["CODIGO"] = v_codigo_depa;
+                                                            dRow["NOMBRE"] = v_nm_depa1;
+                                                            dRow["TP_RESE"] = "ZONA URBANA";
+                                                            dRow["NM_TPRESE"] = seleElemento; // "POSIBLES ZONAS URBANAS" era el string en cbotiporese
+                                                            dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
+                                                            dRow["CANTI"] = v_cantidad;
+                                                            dRow["AREA_NETA"] = Math.Round(v_areasup_rese, 4).ToString("###,###.0000");
+
+                                                            double porcen = 0.0;
+                                                            if (v_areaini_depa != 0.0)
+                                                                porcen = (v_areasup_rese / v_areaini_depa) * 100.0;
+
+                                                            dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
+                                                            lodtTabla.Rows.Add(dRow);
+
+                                                            // Escribimos en el StreamWriter
+                                                            if (v_Zona == "17") sw.WriteLine("7P");
+                                                            else if (v_Zona == "18") sw.WriteLine("8P");
+                                                            else if (v_Zona == "19") sw.WriteLine("9P");
+
+                                                            sw.WriteLine(v_sistema);
+                                                            sw.WriteLine(v_nm_depa1);
+                                                            sw.WriteLine(seleElemento);
+                                                            sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
+                                                            sw.WriteLine(v_cantidad);
+                                                            sw.WriteLine(Math.Round(v_areasup_rese, 4).ToString("###,###.0000"));
+                                                            sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
+                                                        }
+                                                    }
+                                                }
+                                                else if (seleElemento == "xANAP INGEMMET")
+                                                {
+                                                    // Llamada con code=7 y "ANAP"
+                                                    DataTable tempSupAR;
+                                                    if (v_sistema == "2")
+                                                    {
+                                                        tempSupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                            "7",
+                                                            $"DATA_GIS.GPO_DEP_DEPARTAMENTO_WGS_{v_Zona}",
+                                                            $"DATA_GIS.GPO_CAR_CARAM_WGS_{v_Zona}",
+                                                            v_codigo,
+                                                            "ANAP"
+                                                        );
+                                                    }
+                                                    else
+                                                    {
+                                                        tempSupAR = dataBaseHandler.GetStatisticalIntersection(
+                                                            "7",
+                                                            $"DATA_GIS.GPO_DEP_DEPARTAMENTO_{v_Zona}",
+                                                            $"DATA_GIS.GPO_CAR_CARAM_{v_Zona}",
+                                                            v_codigo,
+                                                            "ANAP"
+                                                        );
+                                                    }
+
+                                                    foreach (DataRow rowInge in tempSupAR.Rows)
+                                                    {
+                                                        double v_areasup_rese_inge = Convert.ToDouble(rowInge["AREASUPER"]);
+                                                        string v_codigo_depa = rowInge["CODIGO"].ToString();
+                                                        double v_areaini_depa = Convert.ToDouble(rowInge["AREAINI"]);
+                                                        double v_cantidad_inge = Convert.ToDouble(rowInge["CANTIDAD"]);
+
+                                                        if (v_cantidad_inge > 0)
+                                                        {
+                                                            // Creamos la fila "ANAP"
+                                                            DataRow dRow = lodtTabla.NewRow();
+                                                            dRow["CODIGO"] = v_codigo_depa;
+                                                            dRow["NOMBRE"] = v_nm_depa1;
+                                                            dRow["TP_RESE"] = "ANAP";
+                                                            dRow["NM_TPRESE"] = seleElemento; // "xANAP INGEMMET"
+                                                            dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
+                                                            dRow["CANTI"] = v_cantidad_inge;
+                                                            dRow["AREA_NETA"] = Math.Round(v_areasup_rese_inge, 4).ToString("###,###.0000");
+
+                                                            double porcen = 0.0;
+                                                            if (v_areaini_depa != 0.0)
+                                                                porcen = (v_areasup_rese_inge / v_areaini_depa) * 100.0;
+
+                                                            dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
+                                                            lodtTabla.Rows.Add(dRow);
+
+                                                            // Escribimos en sw
+                                                            if (v_Zona == "17") sw.WriteLine("7P");
+                                                            else if (v_Zona == "18") sw.WriteLine("8P");
+                                                            else if (v_Zona == "19") sw.WriteLine("9P");
+
+                                                            sw.WriteLine(v_sistema);
+                                                            sw.WriteLine(v_nm_depa1);
+                                                            sw.WriteLine(seleElemento);
+                                                            sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
+                                                            sw.WriteLine(v_cantidad_inge);
+                                                            sw.WriteLine(Math.Round(v_areasup_rese_inge, 4).ToString("###,###.0000"));
+                                                            sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
+                                                        }
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    // (PROCESO NORMAL)
+                                                    // Aquí, por ejemplo, "ZONA URBANA", "ANAP", o cualquier otra reserva sin laguna
+                                                    // Recorremos lodbtExiste_SupAR y creamos filas con la misma lógica
+
+                                                    // En tu VB: "If sele_elemento = 'ZONA URBANA' Then code=6" 
+                                                    //           "If sele_elemento = 'ANAP' Then restar v_areasup_rese_inge"
+                                                    // 
+                                                    // Suponiendo que lodbtExiste_SupAR es la tabla que ya obtuviste:
+                                                    foreach (DataRow rowNor in lodbtExiste_SupAR.Rows)
+                                                    {
+                                                        double v_areasup_rese = Convert.ToDouble(rowNor["AREASUPER"]);
+                                                        string v_codigo_depa = rowNor["CODIGO"].ToString();
+                                                        double v_areaini_depa = Convert.ToDouble(rowNor["AREAINI"]);
+                                                        double v_cantidad = Convert.ToDouble(rowNor["CANTIDAD"]);
+
+                                                        if (v_cantidad > 0)
+                                                        {
+                                                            // Si era "ANAP", se podía restar v_areasup_rese_inge, etc.
+                                                            // (Solo si así lo definiste en tu VB)
+                                                            //if (seleElemento == "ANAP")
+                                                            //{
+                                                            //    // Ajustar con variables globales v_areasup_rese_inge, v_cantidad_inge
+                                                            //    v_areasup_rese = v_areasup_rese - v_areasup_rese_inge;
+                                                            //    v_cantidad = v_cantidad - v_cantidad_inge;
+                                                            //}
+
+                                                            // Creamos la fila
+                                                            DataRow dRow = lodtTabla.NewRow();
+                                                            dRow["CODIGO"] = v_codigo_depa;
+                                                            dRow["NOMBRE"] = v_nm_depa1;
+                                                            dRow["TP_RESE"] = seleElemento;
+                                                            dRow["NM_TPRESE"] = seleElemento;
+                                                            dRow["AREA"] = Math.Round(v_areaini_depa, 4).ToString("###,###.0000");
+                                                            dRow["CANTI"] = v_cantidad;
+                                                            dRow["AREA_NETA"] = Math.Round(v_areasup_rese, 4).ToString("###,###.0000");
+
+                                                            double porcen = 0.0;
+                                                            if (v_areaini_depa != 0.0)
+                                                                porcen = (v_areasup_rese / v_areaini_depa) * 100.0;
+
+                                                            dRow["PORCEN"] = Math.Round(porcen, 2).ToString("###,###.00");
+                                                            lodtTabla.Rows.Add(dRow);
+
+                                                            // Escribimos en sw
+                                                            if (v_Zona == "17") sw.WriteLine("7P");
+                                                            else if (v_Zona == "18") sw.WriteLine("8P");
+                                                            else if (v_Zona == "19") sw.WriteLine("9P");
+
+                                                            sw.WriteLine(v_sistema);
+                                                            sw.WriteLine(v_nm_depa1);
+                                                            sw.WriteLine(seleElemento);
+                                                            sw.WriteLine(Math.Round(v_areaini_depa, 4).ToString("###,###.0000"));
+                                                            sw.WriteLine(v_cantidad);
+                                                            sw.WriteLine(Math.Round(v_areasup_rese, 4).ToString("###,###.0000"));
+                                                            sw.WriteLine(Math.Round(porcen, 2).ToString("###,###.00"));
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
                                         } // fin else
                                     } // fin for CbxTypeMineNo
                                 }
-                            catch (Exception ex)
-                            {
-                                // VB: Catch ex As Exception
-                                // Se tragaba la excepción, 
-                                // al menos la imprimimos:
-                                Console.WriteLine("Error en bloque normal: " + ex.Message);
+                                catch (Exception ex)
+                                {
+                                    // VB: Catch ex As Exception
+                                    // Se tragaba la excepción, 
+                                    // al menos la imprimimos:
+                                    Console.WriteLine("Error en bloque normal: " + ex.Message);
+                                }
                             }
                         }
                     }
-                }            
-            } // fin while
+                } // fin while
+            });
         }
         private async Task CalcularMineriaNacionalNo(StreamWriter sw, DataTable lodtTabla)
         {
@@ -1174,7 +1193,7 @@ namespace SigcatminProAddin.View.Modulos
                     for (int contador2 = 0; contador2 < CbxTypeMineNo.Items.Count; contador2++)
                     {
                         string sele_elemento = CbxTypeMineNo.Items[contador2].ToString();
-                                                
+
                         lodbtExiste_SupAR = FeatureClassLoader.GetDataForElemento(sele_elemento, vDatum, vZona, vCodigo);
 
                         // Emulamos esa lógica:
@@ -2119,7 +2138,7 @@ namespace SigcatminProAddin.View.Modulos
                         CbxZone.SelectedIndex = 1;
                         CbxZone.IsEnabled = false;
                     }
-
+                    BtnMineNo.IsEnabled = true;
                     // Actualizar segun SelectedItem
                 }
                 // c) Si 3 => Ajustamos combo y Label
@@ -2130,7 +2149,7 @@ namespace SigcatminProAddin.View.Modulos
                     CbxZone.IsEnabled = true;
                     TbxZone.Visibility = Visibility.Visible;
 
-                    TbxZone.Text = "Este Departamento seleccionado se encuentra entre \r\n2 ZONAS, seleccione una ZONA";
+                    TbxZone.Text = "Departamento seleccionado se encuentra \r\nentre 2 ZONAS, seleccione una ZONA";
 
                     for (int w = 0; w < lodbtZona.Rows.Count; w++)
                     {
@@ -2148,7 +2167,7 @@ namespace SigcatminProAddin.View.Modulos
                 CbxZone.Visibility = Visibility.Visible;
                 CbxZone.IsEnabled = true;
                 TbxZone.Visibility = Visibility.Visible;
-                TbxZone.Text = "Este Departamento seleccionado se encuentra entre \r\n2 ZONAS, seleccione una ZONA";
+                TbxZone.Text = "Departamento seleccionado se encuentra \r\nentre 2 ZONAS, seleccione una ZONA";
 
                 for (int w = 0; w < lodbtZona.Rows.Count; w++)
                 {
@@ -2165,5 +2184,143 @@ namespace SigcatminProAddin.View.Modulos
                 // v_Zona = cboZona.SelectedItem?.ToString();
             }
         }
+
+        private void LoadComboBoxYesNo()
+        {
+            CbxTypeMineNo.Items.Clear();
+            CbxTypeMineYes.Items.Clear();
+            DataTable lodbtExiste_tipo = dataBaseHandler.GetRestrictedAreaType(); //cls_Oracle.F_Obtiene_Tipo_AreaRestringida();
+            if (lodbtExiste_tipo != null)
+            {
+                foreach (DataRow row in lodbtExiste_tipo.Rows)
+                {
+                    string v_nm_depa = row["TN_DESTIP"].ToString();
+                    // Filtrado (excluir algunos tipos)
+                    if (EsValidoParaMineria(v_nm_depa))
+                    {
+                        // Agregar según la clasificación propia
+                        if (v_nm_depa == "AREA NATURAL")
+                        {
+                            CbxTypeMineNo.Items.Add("AREA NATURAL - USO INDIRECTO");
+                            CbxTypeMineYes.Items.Add("AREA NATURAL - USO DIRECTO");
+                            CbxTypeMineYes.Items.Add("AREA NATURAL - AMORTIGUAMIENTO");
+                            CbxTypeMineYes.Items.Add("CLASIFICACION DIVERSA");
+                            CbxTypeMineNo.Items.Add("CLASIFICACION DIVERSA");
+                            CbxTypeMineYes.Items.Add("AREA DE CONSERVACION PRIVADA");
+                            CbxTypeMineYes.Items.Add("AREA DE CONSERVACION MUNICIPAL Y OTROS");
+                        }
+                        else if (v_nm_depa == "PROYECTO ESPECIAL")
+                        {
+                            CbxTypeMineNo.Items.Add("PROYECTO ESPECIAL - HIDRAULICOS");
+                            CbxTypeMineYes.Items.Add("PROYECTO ESPECIAL (no hidráulicos)");
+                        }
+                        else if (v_nm_depa == "PROPUESTA DE AREA NATURAL")
+                        {
+                            CbxTypeMineYes.Items.Add("PROPUESTA DE AREA NATURAL");
+                        }
+                        else if (v_nm_depa == "POSIBLE ZONA URBANA")
+                        {
+                            CbxTypeMineYes.Items.Add("POSIBLE ZONA URBANA");
+                            CbxTypeMineYes.Items.Add("AREA DE EXPANSION URBANA");
+                        }
+                        else
+                        {
+                            CbxTypeMineNo.Items.Add(v_nm_depa);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void BtnExportExcel_Click(object sender, RoutedEventArgs e)
+        {
+            ExportDataGridToExcel(DataGridResult, Path.Combine(GlobalVariables.ContaninerTemplatesReports, "Plantilla_ARES_Nacional_MineriaNo.xlsx"), Path.Combine(GlobalVariables.pathFileTemp,"ARES_Nacional_MineriaNo.xlsx"));
+        }
+        public static void ExportDataGridToExcel(GridControl dataGrid, string plantillaPath, string outputPath)
+        {
+            try
+            {
+                // Verifica si el DataGrid tiene elementos
+                if (dataGrid.VisibleRowCount == 0)
+                {
+                    MessageBox.Show("El DataGrid está vacío. No hay datos para exportar.", "Advertencia", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    return;
+                }
+
+                // Cargar la plantilla de Excel
+                FileInfo fileInfo = new FileInfo(plantillaPath);
+                if (!fileInfo.Exists)
+                {
+                    MessageBox.Show("La plantilla de Excel no existe.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                using (ExcelPackage package = new ExcelPackage(fileInfo))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets[0]; // Obtiene la primera hoja
+
+                    int filaInicio = 6; // Comenzar desde la fila 2
+                    int columnaInicio = 3; // Columna C (índice 2 en EPPlus)
+
+                    // Lista de campos que se deben exportar
+                    string[] columnasAExportar = { "TP_RESE", "CANTI", "AREA_NETA", "PORCEN" };
+                    // Filtrar las columnas del GridControl que se van a exportar
+                    var columnasFiltradas = dataGrid.Columns
+                        .Where(col => columnasAExportar.Contains(col.FieldName))
+                        .ToList();
+                    // Obtener los datos del GridControl y almacenarlos en una lista de diccionarios
+                    List<Dictionary<string, object>> datos = new List<Dictionary<string, object>>();
+                    // Recorrer las filas del DataGrid
+                    for (int i = 0; i < dataGrid.VisibleRowCount; i++)
+                    {
+                        var row = dataGrid.GetRowHandleByVisibleIndex(i);
+                        if (!dataGrid.IsValidRowHandle(row)) continue;
+
+                        int colIndex = columnaInicio;
+                        var fila = new Dictionary<string, object>();
+                        foreach (var column in columnasFiltradas)
+                        {
+                            fila[column.FieldName] = dataGrid.GetCellValue(row, column) ?? "";
+                        }
+
+                        datos.Add(fila);
+                        //foreach (var column in columnasFiltradas)
+                        //{
+                        //    if (column.Visible)
+                        //    {
+                        //        // Obtener el valor de la celda
+                        //        var cellValue = dataGrid.GetCellValue(row, column);
+                        //        worksheet.Cells[filaInicio + i, colIndex].Value = cellValue?.ToString() ?? "";
+                        //        colIndex++;
+                        //    }
+                        //}
+                    }
+                    // Ordenar los datos alfabéticamente por la columna "TP_RESET"
+                    datos = datos.OrderBy(d => d["TP_RESE"].ToString()).ToList();
+
+                    // Insertar los datos ordenados en la hoja de Excel
+                    for (int i = 0; i < datos.Count; i++)
+                    {
+                        int colIndex = columnaInicio;
+
+                        foreach (var column in columnasFiltradas)
+                        {
+                            worksheet.Cells[filaInicio + i, colIndex].Value = datos[i][column.FieldName].ToString();
+                            colIndex++;
+                        }
+                    }
+
+                    // Guardar el archivo en el outputPath
+                    package.SaveAs(new FileInfo(outputPath));
+
+                    MessageBox.Show("Datos exportados exitosamente a Excel.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error al exportar: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+        }
+
     }
 }
