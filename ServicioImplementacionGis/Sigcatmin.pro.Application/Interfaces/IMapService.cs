@@ -7,7 +7,7 @@ namespace Sigcatmin.pro.Application.Interfaces
     public interface IMapService
     {
         void CreateMap(string mapName);
-        Map FindMapByName(string mapName);
+        Task<Map> FindMapByName(string mapName);
         void ActivateMap(Map map);
     }
 }

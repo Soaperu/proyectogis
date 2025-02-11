@@ -6,6 +6,7 @@ using Sigcatmin.pro.Shared.DomainServices;
 using Sigcatmin.prop.Domain.Interfaces.Services;
 using Sigcatmin.prop.Domain.Settings;
 using Sigcatmin.pro.Application.Managers;
+using Sigcatmin.pro.Domain.Settings;
 
 namespace Sigcatmin.pro.Shared
 {
@@ -20,9 +21,10 @@ namespace Sigcatmin.pro.Shared
             .WriteTo.RollingFile(@"c:\temp\Log-{Date}.txt")
             .CreateLogger();
 
-            //services.AddMemoryCache();
+            services.AddMemoryCache();
 
             services.AddSingleton<IOptions<JWTSettings>>(x => new Options<JWTSettings>(pathSettings, nameof(JWTSettings)));
+            services.AddSingleton<IOptions<GeoDatabaseSettings>>(x => new Options<GeoDatabaseSettings>(pathSettings, nameof(GeoDatabaseSettings)));
             services.AddSingleton<IOptions<DdConnectionSettings>>(x => new Options<DdConnectionSettings>(pathSettings, "DdConnection"));
 
             services.AddSingleton<IAuthService, AuthService>();
@@ -34,8 +36,8 @@ namespace Sigcatmin.pro.Shared
             services.AddTransient<IMapViewService, ArcGISMapViewService>();
 
             services.AddScoped<IMapManager, MapManager>();
-            //services.AddSingleton<ICacheService, CacheService>();
-            
+            services.AddSingleton<ICacheService, CacheService>();
+
 
             return services;
         }

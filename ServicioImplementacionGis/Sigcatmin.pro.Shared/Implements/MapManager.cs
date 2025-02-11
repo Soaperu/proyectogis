@@ -33,7 +33,7 @@ namespace Sigcatmin.pro.Shared.Implements
                     _mapViewService.UnsubscribeFromDrawCompleteEvent(eventToken);
                 }
 
-                Map map = _mapService.FindMapByName(mapName);
+                Map map = await _mapService.FindMapByName(mapName);
                 _mapService.ActivateMap(map);
 
                 tcs.SetResult(map);

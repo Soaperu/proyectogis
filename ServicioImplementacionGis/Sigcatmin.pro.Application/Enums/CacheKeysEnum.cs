@@ -9,6 +9,7 @@ namespace Sigcatmin.pro.Application.Enums
     public enum CacheKeysEnum
     {
         StateDmY,
-        CurrentCodeDm
+        CurrentCodeDerechoMinero,
+        CurrentZone
     }
 }

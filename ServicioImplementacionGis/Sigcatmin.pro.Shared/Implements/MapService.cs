@@ -16,18 +16,24 @@ namespace Sigcatmin.pro.Shared.Implements
             {
                 Map map = MapFactory.Instance.CreateMap(mapName, MapType.Map, MapViewingMode.Map, Basemap.None);
                 ProApp.Panes.CreateMapPaneAsync(map);
-   
+
             });
         }
-        public Map FindMapByName(string mapName)
+        public async Task<Map> FindMapByName(string mapName)
         {
-            var allMaps = Project.Current.GetItems<MapProjectItem>();
-
-            // Busca el mapa con el nombre especificado
-            var mapItem = allMaps.FirstOrDefault(m => m.Name.Equals(mapName, StringComparison.OrdinalIgnoreCase));
-
-            // Si se encuentra, se devuelve como objeto Map
-            return mapItem != null ? mapItem.GetMap() : null;
+            Map resultMap = null;
+            await QueuedTask.Run(() =>
+                {
+                    var allMaps = Project.Current.GetItems<MapProjectItem>();
+                    // Busca el mapa con el nombre especificado
+                    var mapItem = allMaps.FirstOrDefault(m => m.Name.Equals(mapName, StringComparison.OrdinalIgnoreCase));
+                    // Si se encuentra, se devuelve como objeto Map
+                    if (mapItem != null)
+                    {
+                        resultMap = mapItem.GetMap();
+                    }
+                });
+            return resultMap;
         }
         public void ActivateMap(Map map)
         {

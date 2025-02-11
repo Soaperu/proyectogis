@@ -9,10 +9,10 @@ namespace Sigcatmin.pro.Application.Interfaces
 {
     public interface ICacheService
     {
-        //void SetValue<T>(CacheKeysEnum key, T value, TimeSpan? expiration = null);
-        //T GetValue<T>(CacheKeysEnum key);
-        //bool ContainsKey(CacheKeysEnum key);
-        //void RemoveValue(CacheKeysEnum key);
-      
+        void SetValue<T>(CacheKeysEnum key, T value, TimeSpan? expiration = null);
+        T GetValue<T>(CacheKeysEnum key);
+        bool ContainsKey(CacheKeysEnum key);
+        void RemoveValue(CacheKeysEnum key);
+
     }
 }

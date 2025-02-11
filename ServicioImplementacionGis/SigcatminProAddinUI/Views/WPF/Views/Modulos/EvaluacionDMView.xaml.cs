@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DevExpress.Xpf.Grid;
 using Sigcatmin.pro.Application.Dtos.Request;
 using Sigcatmin.pro.Application.UsesCases;
+using Sigcatmin.pro.Domain.Dtos;
+using Sigcatmin.pro.Domain.Enums;
 using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
@@ -203,7 +204,19 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
                return;
             }
 
-            await _graficarDerechoMineroUseCase.Execute(new GraficarDerechoMineroDto { MapName = "Catastro Minero"});
+            var derechoMineroselected = DataGridResult.GetFocusedRow() as DerechoMineroDto;
+            var graficarDto = new GraficarDerechoMineroDto
+            {
+                MapName = "Catastro Minero",
+                Codigo = derechoMineroselected.Codigo,
+                Radio = int.Parse(TbxRadio.Text),
+                Zona = derechoMineroselected.Zona, 
+                StateGraph = derechoMineroselected.Naturaleza,
+                Datum = (CoordinateSystem)CbxSistema.SelectedValue,
+                IsDMGraphVisible = ChkGraficarDmY.IsChecked.GetValueOrDefault()
+            }; 
+
+            await _graficarDerechoMineroUseCase.Execute(graficarDto);
 
         }
         private void TbxRadio_PreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
