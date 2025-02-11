@@ -182,7 +182,7 @@
                 <Button Content="Exportar Excel" Width="100" Height="25" Background="#006DA0" BorderBrush="White"
                         Foreground="White" Grid.Column="3" HorizontalAlignment="Center" FontFamily="Roboto"
                         FontSize="10" FontWeight="bold" Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                        VerticalContentAlignment="Center" x:Name="BtnExportExcel" />
+                        VerticalContentAlignment="Center" x:Name="BtnExportExcel" Click="BtnExportExcel_Click" />
             </Grid>
         </Grid>
         <Grid VerticalAlignment="Stretch"
