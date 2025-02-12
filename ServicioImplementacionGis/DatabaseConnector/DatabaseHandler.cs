@@ -140,7 +140,7 @@ namespace DatabaseConnector
                     }
 
                     command.ExecuteNonQuery();
-                    response =  returnValue.Value;
+                    response = returnValue.Value;
                 }
                 catch (OracleException oracleEx)
                 {
@@ -157,7 +157,7 @@ namespace DatabaseConnector
         public string ExecuteScalar(string storedProcedure, OracleParameter[] parameters)
         {
             var connectionString = GetConnectionStringByPackage(storedProcedure);
-            
+
             using (var connection = new OracleConnection(connectionString))//_dbConnection.OracleConnectionString()))
             using (var command = new OracleCommand(storedProcedure, connection))
             {
@@ -1362,7 +1362,7 @@ namespace DatabaseConnector
             string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_AVISO_RETIRO_XLS";
             var parameters = new OracleParameter[]
             {
-                
+
             };
 
             return ExecuteDataTable(storedProcedure, parameters);
@@ -1379,7 +1379,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public void InsertarEvaluacionTecnica(string codigo, string codigoeva, string indicador, string hectarea, string descripcion, string clase="")
+        public void InsertarEvaluacionTecnica(string codigo, string codigoeva, string indicador, string hectarea, string descripcion, string clase = "")
         {
             string insertQuery = @"INSERT INTO SISGEM.SG_T_EVALTECNICA_DESA(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_SESION, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
                                     VALUES (:codigo, :codigoeva, :indicador, 1111, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
@@ -1506,7 +1506,7 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
-             
+
         public DataTable GetRestrictedAreaType() // F_Obtiene_Tipo_AreaRestringida
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CATNOMIN_TIPO";
@@ -1524,7 +1524,7 @@ namespace DatabaseConnector
             };
             ExecuteNonQuery(deleteQuery, parameters);
         }
-        
+
 
         public DataTable GetStatisticalIntersection(string type, string layer1, string layer2, string departmentCode, string areaType) // FT_Int_tiporesexdepa
         {
@@ -1580,6 +1580,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        #region Simultaneidad
         public string VerificaSimultaneidad(string fecha)
         {
             string storedProcedure = "PACK_DBA_SIGCATMIN.P_VERIFICA_SIMU";
@@ -1622,7 +1623,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public string UpdateDMSimultaneidad(string fecha) 
+        public string UpdateDMSimultaneidad(string fecha)
         {
             string storedProcedure = "PACK_DBA_SIGCATMIN.P_UPD_SG_D_DMXGRSIMUL";
             var parameters = new OracleParameter[]
@@ -1633,7 +1634,7 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public string InsertarDMxHaGRSimultaneidad(string fecha) 
+        public string InsertarDMxHaGRSimultaneidad(string fecha)
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_INS_DMXHAGRSIMUL_TOT";
             var parameters = new OracleParameter[]
@@ -1644,7 +1645,8 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public string DeletePesicuSimultaneidad(string fecha) 
+
+        public string DeletePesicuSimultaneidad(string fecha)
         {
             string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_DEL_PESICU_POR_LD";
             var parameters = new OracleParameter[]
@@ -1655,7 +1657,7 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public DataTable GetCodigouSimultaneidad(string fecha) 
+        public DataTable GetCodigouSimultaneidad(string fecha)
         {
             string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.F_SEL_CODIGOU_FROM_DATE";
             var parameters = new OracleParameter[]
@@ -1666,9 +1668,9 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public DataTable GetCodigoQuadsSimultaneidad(string sql, string zona, string date) 
+        public DataTable GetCodigoQuadsSimultaneidad(string sql, string zona, string date)
         {
-            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.F_GET_RLS_CODIGOU_QUADS";
+            string storedProcedure = "DATA_CAT.PACK_DBA_SIMULTANEIDAD.F_GET_RLS_CODIGOU_QUADS";
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("V_SQL", OracleDbType.Varchar2, 10) { Value = sql },
@@ -1679,7 +1681,69 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public string InsertRowsSimultaneidad(string codigou, string codigoCua, string cdCuad, int grupo,
+            int grupoF, string fechaSimul, string zona, string psGrupo)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_INS_ROWS_SIMULTANEIDAD";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CODECAT", OracleDbType.Varchar2, 10) { Value = codigou },
+                new OracleParameter("CODEID", OracleDbType.Varchar2, 10) { Value = codigoCua },
+                new OracleParameter("CODEQUAD", OracleDbType.Varchar2, 10) { Value = cdCuad },
+                new OracleParameter("GR", OracleDbType.Int32) { Value = grupo },
+                new OracleParameter("GRF", OracleDbType.Int32) { Value = grupoF },
+                new OracleParameter("DATE_SIMUL", OracleDbType.Varchar2, 10) { Value = fechaSimul },
+                new OracleParameter("ZONE_GEO", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("ALFA_GRF", OracleDbType.Varchar2, 10) { Value = psGrupo }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string InsertRowsSimultaneidadEval(string codigou, string codigoCua, string cdCuad, int grupo,
+            int grupoF, string fechaSimul, string zona, string psGrupo)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_INS_ROWS_SIMULTANEID_EVAL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CODECAT", OracleDbType.Varchar2, 10) { Value = codigou },
+                new OracleParameter("CODEID", OracleDbType.Varchar2, 10) { Value = codigoCua },
+                new OracleParameter("CODEQUAD", OracleDbType.Varchar2, 10) { Value = cdCuad },
+                new OracleParameter("GR", OracleDbType.Int32) { Value = grupo },
+                new OracleParameter("GRF", OracleDbType.Int32) { Value = grupoF },
+                new OracleParameter("DATE_SIMUL", OracleDbType.Varchar2, 10) { Value = fechaSimul },
+                new OracleParameter("ZONE_GEO", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("ALFA_GRF", OracleDbType.Varchar2, 10) { Value = psGrupo }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string ActualizarCodigosRemateSimultaneidad(string fechaSimul)
+        {
+            string storedProcedure = "DATA_CAT.PACK_DBA_SIMULTANEIDAD.P_ACT_PESICU_COD_REMATE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_FECSIM", OracleDbType.Varchar2, 10) { Value = fechaSimul },
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerCoordenadasdeQuads(string codequads, string zona, string fecha)
+        {
+            string storedProcedure = "DATA_CAT.PACK_DBA_SIMULTANEIDAD.F_GET_COORDS_QUADS";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_SQL", OracleDbType.Varchar2, 10) { Value = codequads },
+                new OracleParameter("V_ZONE", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        #endregion simultaneidad
 
     }
-
 }

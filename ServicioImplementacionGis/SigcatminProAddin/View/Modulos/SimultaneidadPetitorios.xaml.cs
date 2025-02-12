@@ -22,6 +22,7 @@ using CommonUtilities;
 using CommonUtilities.ArcgisProUtils;
 using DatabaseConnector;
 using DevExpress.XtraRichEdit.Tables.Native;
+using SigcatminProAddin.Models;
 
 namespace SigcatminProAddin.View.Modulos
 {
@@ -93,7 +94,9 @@ namespace SigcatminProAddin.View.Modulos
 
             if(verificaSimultaneidad == "0")
             {
-                //procesamos archivo bat
+                Simultaneidad simultaneidad = new Simultaneidad(fechaSimultaneidadAsString);
+                simultaneidad.Main();
+
             }
 
             string v_tipo = "1";

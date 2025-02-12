@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.Linq;
 using System.Printing;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DatabaseConnector;
 using Oracle.ManagedDataAccess.Client;
@@ -18,8 +20,8 @@ namespace SigcatminProAddin.Models
         private string mainCode = "#";
         private List<List<string>> codes;
         private Dictionary<string, List<string>> rls = new Dictionary<string, List<string>>();
-        private List<List<string>> subgroups;
-        private Dictionary<int, Dictionary<int, object>> simul = new Dictionary<int, Dictionary<int, object>>();
+        private List<List<object>> subgroups;
+        private Dictionary<int, Dictionary<string, object>> simul = new Dictionary<int, Dictionary<string, object>>();
         private int zone;
         private Dictionary<string, List<Tuple<double, double>>> rows = new Dictionary<string, List<Tuple<double, double>>>();
         private int num_group = 1;
@@ -65,7 +67,7 @@ namespace SigcatminProAddin.Models
         {
             var zn = codigous.Where(x => x[1] == zone.ToString()).ToList();
             string sql = string.Join(",", zn.Select(x => $"'{x[0]}'"));
-            simul[zone] = new Dictionary<int, object>();
+            simul[zone] = new Dictionary<string, object>();
 
             DataTable dt = databaseHandler.GetCodigoQuadsSimultaneidad(sql, zone.ToString(), date );
             foreach (DataRow row in dt.Rows)
@@ -129,9 +131,204 @@ namespace SigcatminProAddin.Models
             }
         }
 
-        public void GetSoubgroups()
+        public void GetSubgroups()
         {
+            List<List<object>> subgroupsTemp = codes
+                .Select(x => new List<object>
+                {
+                    new List<string>(x), // Convierte la lista interna
+                    rls.Where(kv => kv.Value.SequenceEqual(x)) // Filtra `rls` donde el valor es igual a `x`
+                       .Select(kv => kv.Key) // Obtiene solo las claves
+                       .ToList()
+                })
+                .ToList();
+            GetRows(subgroupsTemp);
+            ReviewSimult(subgroupsTemp);
+            this.subgroups.Sort();
 
+
+            if (simul.ContainsKey(zone))
+            {
+                foreach (var kv in simul[zone])
+                {
+                    string k = kv.Key;
+                    Dictionary<string, object> v = (Dictionary<string, object>) kv.Value;
+
+                    int n = 0; // Contador de subgrupos
+
+                    foreach (var i in subgroups)
+                    {
+                        List<string> codigouList = (List<string>)i[0];
+                        List<string> cuadriculas = (List<string>)i[1];
+
+                        // Verificar si el primer elemento de codigouList está en 'codigou' del diccionario simul
+                        if (v.ContainsKey("codigou") && ((List<string>)v["codigou"]).Contains(codigouList[0]))
+                        {
+                            foreach (var codigou in codigouList)
+                            {
+                                foreach (var codicua in cuadriculas)
+                                {
+                                    InsertDataToDatabase(codigou, codicua, codicua, Int32.Parse(k), n + 1, date, zone.ToString(), letters[n]);
+                                }
+                            }
+                            n++;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        public void GetRows(List<List<object>> subgroups)
+        {
+            // Obtener los quads (segundo elemento de cada subgrupo)
+            List<string> quads = subgroups
+                .SelectMany(n => (List<string>)n[1]) // Extrae la lista de códigos de cuadriculas
+                .ToList();
+
+            if (quads.Count == 0) return;
+
+            // Construir la consulta SQL con los códigos de cuadriculas
+            string sql = string.Join(",", quads.Select(q => $"'{q}'"));
+
+            try
+            {
+                // Llamar al procedimiento almacenado y obtener el resultado como DataTable
+                DataTable dt = databaseHandler.ObtenerCoordenadasdeQuads(sql, zone.ToString(), date);
+
+                // Procesar los resultados
+                foreach (DataRow row in dt.Rows)
+                {
+                    string key = row["CD_CUAD"].ToString();  // Primera columna: código de la cuadrícula
+                    string coordsStr = row["COORDS"].ToString(); // Segunda columna: coordenadas en formato string
+
+                    // Extraer coordenadas con regex y convertirlas en tuplas (X, Y)
+                    List<Tuple<double, double>> coordList = Regex.Matches(coordsStr, @"\d+\.\d+")
+                        .Cast<Match>()
+                        .Select(m => double.Parse(m.Value, CultureInfo.InvariantCulture))
+                        .Select((value, index) => new { value, index })
+                        .GroupBy(x => x.index / 2)
+                        .Select(g => Tuple.Create(g.ElementAt(0).value, g.ElementAt(1).value))
+                        .ToList();
+
+                    rows[key] = coordList;
+                }
+
+                // Generar `rows` con las coordenadas ordenadas en pares consecutivos
+                rows = rows.ToDictionary(
+                    kv => kv.Key,
+                    kv => kv.Value
+                        .Select((v, i) => i <= 3 ? Tuple.Create(Math.Min(v.Item1, v.Item2), Math.Max(v.Item1, v.Item2)) : null)
+                        .Where(t => t != null)
+                        .ToList()
+                );
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en GetRows: {ex.Message}");
+            }
+        }
+
+        public void ReviewSimult(List<List<object>> subgroups)
+        {
+            try
+            {
+                List<List<object>> newSubgroups = new List<List<object>>();
+
+                foreach (var i in subgroups)
+                {
+                    // Obtener las coordenadas de los quads del subgrupo actual
+                    Dictionary<string, List<Tuple<double, double>>> sub =
+                        ((List<string>)i[1]) // Convertir el segundo elemento del subgrupo a lista de strings (quads)
+                        .Where(x => rows.ContainsKey(x)) // Filtrar solo las quads que existen en `rows`
+                        .ToDictionary(x => x, x => rows[x]); // Crear un diccionario con las coordenadas de cada quad
+
+                    // Analizar las cuadriculas para detectar no adyacentes o intersección en un solo vértice
+                    List<List<string>> gp = Analysis(sub);
+
+                    if (gp.Count > 0)
+                    {
+                        // Si hay subgrupos detectados, los añadimos con la referencia del primer elemento de `i`
+                        foreach (var x in gp)
+                        {
+                            newSubgroups.Add(new List<object> { i[0], x });
+                        }
+                    }
+                    else
+                    {
+                        // Si no hay cambios, se agrega el subgrupo original
+                        newSubgroups.Add(i);
+                    }
+                }
+
+                // Asignar la nueva lista de subgrupos a la propiedad
+                this.subgroups = newSubgroups;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ReviewSimult: {ex.Message}");
+            }
+        }
+
+        private List<List<string>> Analysis(Dictionary<string, List<Tuple<double, double>>> subgroups)
+        {
+            List<List<string>> gp = new List<List<string>>();
+
+            // Obtener las listas de coordenadas asociadas a cada cuadricula
+            List<List<Tuple<double, double>>> coordsForQuads = subgroups.Values.ToList();
+
+            // Unir todas las coordenadas en un conjunto único
+            HashSet<Tuple<double, double>> coordsSummary = new HashSet<Tuple<double, double>>(
+                coordsForQuads.SelectMany(x => x)
+            );
+
+            // Procesar cada coordenada única
+            foreach (var each in coordsSummary)
+            {
+                // Filtrar los elementos de `coordsForQuads` que contienen `each`
+                List<List<Tuple<double, double>>> components = coordsForQuads
+                    .Where(x => x.Contains(each))
+                    .ToList();
+
+                // Remover los elementos originales de la lista
+                foreach (var i in components)
+                {
+                    coordsForQuads.Remove(i);
+                }
+
+                // Agregar la combinación de todos los componentes como una lista única
+                coordsForQuads.Add(components.SelectMany(x => x).Distinct().ToList());
+            }
+
+            // Si existen múltiples listas de coordenadas, identificamos los grupos
+            if (coordsForQuads.Count > 1)
+            {
+                foreach (var n in coordsForQuads)
+                {
+                    List<string> a = subgroups
+                        .Where(kv => kv.Value.Any(v => n.Contains(v))) // Filtrar claves cuyo valor tenga coordenadas en `n`
+                        .Select(kv => kv.Key) // Obtener las claves de cuadriculas afectadas
+                        .Distinct()
+                        .ToList();
+
+                    gp.Add(a);
+                }
+            }
+
+            return gp;
+        }
+
+
+        public void InsertDataToDatabase(string codigou, string codicua, string cdcuad, Int32 grupo, Int32 grupoF, string fecha, string zona, string psgrupo)
+        {
+            try
+            {
+                databaseHandler.InsertRowsSimultaneidad( codigou,  codicua,  cdcuad,  grupo,  grupoF,  fecha,  zona,  psgrupo);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error al insertar datos en la base de datos: {ex.Message}");
+            }
         }
 
         public void Process(int zone)
@@ -140,7 +337,7 @@ namespace SigcatminProAddin.Models
             GetQuadrants();
             PrepareData();
             GetGroups();
-            GetSubgroups(InsertDataToDataBase);
+            GetSubgroups();
             // Implementar lógica adicional de procesamiento
         }
 
@@ -154,11 +351,9 @@ namespace SigcatminProAddin.Models
                 Process(18);
                 Process(19);
                 // Llamar otras funciones necesarias
-                Console.WriteLine("{\"state\": 1, \"msg\": \"Success\"}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("{\"state\": 0, \"msg\": \"" + ex.Message + "\"}");
             }
         }
     }
