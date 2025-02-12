@@ -49,6 +49,8 @@ namespace CommonUtilities
         public static string toolGetMineNoZa = "calculoMineriaNoZa";
         public static string toolGetMineNoRd = "calculoMineriaNoRd";
         public static string toolGetMineSiPu = "calculoMineriaSiPu";
+        public static string toolGetInputCuad = "insumosCuadriculasR";
+        public static string toolGetOutputCuad = "cuadriculasRegionales";
 
 
         // Variables obtenidas de Evaluacion DM

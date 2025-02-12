@@ -419,6 +419,21 @@
     <None Update="Scripts\CMIN_EVAL.atbx">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Scripts\cuadriculas\config.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\cuadriculasRegionales.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\insumosCuadriculas.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\model.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\worker_functions.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="Scripts\data_cat.sde">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

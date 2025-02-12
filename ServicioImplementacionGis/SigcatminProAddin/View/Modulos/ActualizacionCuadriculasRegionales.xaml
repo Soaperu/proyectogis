@@ -70,8 +70,8 @@
                 Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="320"/>
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="380"/>
+                <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label  Content="Carpeta de Inputs" FontSize="12" VerticalAlignment="Center" 
                     HorizontalAlignment="Stretch" Padding="0,0,0,0" x:Name="LblFileInputs"/>
@@ -88,8 +88,8 @@
             Grid.Column="0" Grid.Row="5" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
-                <ColumnDefinition Width="320"/>
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="380"/>
+                <ColumnDefinition Width="100"/>
             </Grid.ColumnDefinitions>
             <Label  Content="Carpeta de Outputs" FontSize="12" VerticalAlignment="Center" 
             HorizontalAlignment="Stretch" Padding="0,0,0,0" x:Name="LblFileOutputs"/>
@@ -113,22 +113,22 @@
                 <ColumnDefinition Width="90"/>
             </Grid.ColumnDefinitions>
             <Button Content="Salir" Width="50" Height="20" Background="White" BorderBrush="#006DA0"
-             Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
-             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                 HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
-             VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0" Click="BtnSalir_Click" />
+                     Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
+                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                     HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
+                     VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Click="BtnSalir_Click" />
 
             <Button Content="Procesar" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
-             Foreground="White" Grid.Column="4" HorizontalAlignment="Center"
-             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                 HorizontalContentAlignment="Center" FontFamily="Roboto"
-             VerticalContentAlignment="Center" x:Name="BtnProcesar" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="BtnProcesar_Click" />
+                     Foreground="White" Grid.Column="4" HorizontalAlignment="Center"
+                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                     HorizontalContentAlignment="Center" FontFamily="Roboto"
+                     VerticalContentAlignment="Center" x:Name="BtnProcesar" FontSize="10"  Click="BtnProcesar_Click" />
 
-            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" IsEnabled="True"
-             Foreground="White" Grid.Column="6" HorizontalAlignment="Right"
-             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                 HorizontalContentAlignment="Center" FontFamily="Roboto"
-             VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="bold" Padding="0,0,0,0" />
+            <Button Content="Graficar" Width="60" Height="20" Background="#006DA0" BorderBrush="White" 
+                     Foreground="White" Grid.Column="6" HorizontalAlignment="Right" IsEnabled="False"
+                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                     HorizontalContentAlignment="Center" FontFamily="Roboto"
+                     VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" />
         </Grid>
 
     </Grid>

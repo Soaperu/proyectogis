@@ -7,15 +7,17 @@ import os
 import uuid
 import arcpy
 from shutil import rmtree
+import json
+import traceback
 
 # Se asume que 'model.py' y otros módulos están en el mismo entorno
 from model import (regiones, zonas_geograficas, FeatureDatasets, cuadriculas_17,
                    cuadriculas_18, cuadriculas_19)
 
 from config import (Suplies, EPSG_WGS, EPSG_PSAD, FOLDER_WGS, EXTENTION_SHP)
-
+arcpy.env.parallelProcessingFactor = "60%"
 arcpy.env.overwriteOutput = True
-
+response = dict()
 
 class GeneradorInsumos(object):
 
@@ -73,7 +75,7 @@ class GeneradorInsumos(object):
 
                 # Construye la ruta al FC en la FGDB: path + "regiones" + datum + zona
                 path = os.path.join(
-                                        self._dataset.path,
+                                        self._input_dir,#self._dataset.path,
                                         f"{self._model_region.name}{datum}{val_zona}"
                                     )
 
@@ -85,7 +87,8 @@ class GeneradorInsumos(object):
                             oid.append(str(reg_cd_depa))
 
                 if oid:
-                    sql = f"{self._model_region.cd_depa.name} IN ('{"', '".join(oid)}')"
+                    joinOid ="', '".join(oid)
+                    sql = f"{self._model_region.cd_depa.name} IN ('{joinOid}')"
                 else:
                     # Si no hay regiones
                     continue
@@ -103,8 +106,8 @@ class GeneradorInsumos(object):
         de evitar cruces de información. Luego crea la carpeta para un
         datum específico.
         """
-        self._work_dir = arcpy.GetParameterAsText(2)
-
+        self._work_dir = os.path.join(self._input_dir, "insumos")#arcpy.GetParameterAsText(2)
+        response["folder_insumos"] = self._work_dir
         if not os.path.exists(self._work_dir):
             os.mkdir(self._work_dir)
 
@@ -115,8 +118,8 @@ class GeneradorInsumos(object):
 
         os.mkdir(self._datum_dir)
 
-        print(f"Directorio de trabajo: {self._work_dir}")
-        print("Se eliminaron temporales.")
+        arcpy.AddMessage(f"Directorio de trabajo: {self._work_dir}")
+        arcpy.AddMessage("Se eliminaron temporales.")
 
     def contruir_directorio(self, name, zone):
         """
@@ -185,7 +188,7 @@ class GeneradorInsumos(object):
         Retorna el EPSG o código de proyección en base a datum y la zona.
         """
         src = EPSG_WGS if datum.lower() == FOLDER_WGS else EPSG_PSAD
-        src = src + str(zona)
+        src = src + zona
         return src
 
     @staticmethod
@@ -228,9 +231,9 @@ class GeneradorInsumos(object):
                 self._dataset.zone = zone
                 # Ruta a la Feature Class que contiene las regiones para (datum, zone)
                 self._path_region_fc = os.path.join(
-                    self._dataset.path,
-                    f"{self._model_region.name}{datum}{zone}"
-                )
+                                                        self._input_dir,#self._dataset.path,
+                                                        f"{self._model_region.name}{datum}{zone}"
+                                                    )
 
                 # Genera FL de cuadrantes
                 cuadrante_lyr = self.generar_feature_layer_cuadrantes(zone, datum)
@@ -248,9 +251,9 @@ class GeneradorInsumos(object):
 
                         # Selecciona cuadrantes que intersecten la región actual
                         arcpy.SelectLayerByLocation_management(
-                            cuadrante_lyr, "INTERSECT", feature_layer_region,
-                            None, "NEW_SELECTION"
-                        )
+                                                                    cuadrante_lyr, "INTERSECT", feature_layer_region,
+                                                                    None, "NEW_SELECTION"
+                                                                )
 
                         # Fija la proyección de salida al sistema UTM apropiado
                         arcpy.env.outputCoordinateSystem = arcpy.SpatialReference(self.get_src(datum, zone))
@@ -283,5 +286,12 @@ class GeneradorInsumos(object):
 
 # Bloque principal, si se ejecuta este archivo directamente
 if __name__ == '__main__':
-    poo = GeneradorInsumos()
-    poo.main()
+    try:
+        poo = GeneradorInsumos()
+        poo.main()
+    except Exception as e:
+        arcpy.AddError("Error: " + str(e))
+        response["Error"] = traceback.format_exc()
+    finally:
+        response = json.dumps(response)
+        arcpy.SetParameterAsText(2, response)

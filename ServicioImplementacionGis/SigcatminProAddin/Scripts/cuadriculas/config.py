@@ -75,4 +75,4 @@ class Suplies:
     countries = 'paises'
     region = 'region'
     regions = 'regiones'
-    quads = 'cuadrantes'
+    quads = 'cuadriculas'

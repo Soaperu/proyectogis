@@ -33,7 +33,7 @@ class FeatureDatasets:
     @property
     def path(self):
         # Se asume que FILE_GDB está definido en connectionsqlite.py o similar.
-        return os.path.join(FILE_GDB, self.name)
+        return os.path.join("FILE_GDB", self.name)
 
 
 class tb_cademter_control:

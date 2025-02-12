@@ -1,7 +1,9 @@
 ﻿using ArcGIS.Desktop.Catalog;
 using ArcGIS.Desktop.Core;
+using ArcGIS.Desktop.Core.Geoprocessing;
 using CommonUtilities;
 using DatabaseConnector;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -149,9 +151,25 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-        private void BtnProcesar_Click(object sender, RoutedEventArgs e)
+        private async void BtnProcesar_Click(object sender, RoutedEventArgs e)
         {
-
+            ProgressBarUtils progressBar = new ProgressBarUtils("Procesando Actualización de Cuadriculas Regionles...");
+            progressBar.Show();
+            try
+            {
+                var ParamsInsumos = Geoprocessing.MakeValueArray(datum, TbxFileInputs.Text);
+                var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetInputCuad, ParamsInsumos);
+                var responseJson = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.ReturnValue);
+                var nameFolderInputs = responseJson["folder_insumos"];
+                var ParamsCuadriculas = Geoprocessing.MakeValueArray(nameFolderInputs, TbxFileOutputs.Text, datum);
+                var response2 = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetOutputCuad, ParamsCuadriculas);
+            }
+            catch (Exception ex)
+            {
+                progressBar.Dispose();
+                MessageBox.Show(ex.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
+            progressBar.Dispose();
         }
     }
 }
