@@ -237,6 +237,11 @@ namespace CommonUtilities.ArcgisProUtils
                     AliasName = "Hor_denu",
                     Length = 5
                 };
+                FieldDescription DatumPolygonFieldDescription = new ArcGIS.Core.Data.DDL.FieldDescription("DATUM", FieldType.String)
+                {
+                    AliasName = "Datum",
+                    Length = 2
+                };
 
                 List<FieldDescription> fieldDescriptions = new List<FieldDescription>() { countPolygonFieldDescription,
                                                                                           codePolygonFieldDescription,
@@ -248,7 +253,8 @@ namespace CommonUtilities.ArcgisProUtils
                                                                                           LeyePolygonFieldDescription,
                                                                                           EvalPolygonFieldDescription,
                                                                                           FechPolygonFieldDescription,
-                                                                                          HoraPolygonFieldDescription};
+                                                                                          HoraPolygonFieldDescription,
+                                                                                          DatumPolygonFieldDescription};
 
                 // Create a ShapeDescription object
                 string stringWkt = $"327{zone}";
@@ -291,6 +297,7 @@ namespace CommonUtilities.ArcgisProUtils
                     rowBuffer["EVAL"] = "EV";
                     rowBuffer["FEC_DENU"] = fechaHoy.ToShortDateString();
                     rowBuffer["HOR_DENU"] = fechaHoy.ToShortTimeString();
+                    rowBuffer["DATUM"] = "02";
 
                     using (Feature feature = featureClass.CreateRow(rowBuffer))
                     {

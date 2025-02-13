@@ -1074,12 +1074,7 @@ namespace SigcatminProAddin.View.Modulos
                 progressBar.Dispose();
             }
             progressBar.Dispose();
-
-
-
-
         }
-
 
         private ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm = 0)
         {
