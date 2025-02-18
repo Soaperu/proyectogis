@@ -1735,9 +1735,36 @@ namespace DatabaseConnector
             string storedProcedure = "DATA_CAT.PACK_DBA_SIMULTANEIDAD.F_GET_COORDS_QUADS";
             var parameters = new OracleParameter[]
             {
-                new OracleParameter("V_SQL", OracleDbType.Varchar2, 10) { Value = codequads },
+                new OracleParameter("V_SQL", OracleDbType.Varchar2, 100) { Value = codequads },
                 new OracleParameter("V_ZONE", OracleDbType.Varchar2, 10) { Value = zona },
                 new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenercuadriculasSimultaneas(string grupo, string grupoF, string tipo, string identi)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_GRUPO_CUAD_SIMUL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_GRUPO", OracleDbType.Varchar2, 32) { Value = grupo },
+                new OracleParameter("V_GRUPOF", OracleDbType.Varchar2, 32) { Value = grupoF },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 2) { Value = tipo },
+                new OracleParameter("V_IDENTI", OracleDbType.Varchar2, 20) { Value = identi }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable ObtenerDerechosSimultaneos(string grupo, string grupoF, string tipo, string identi)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DM_SIMUL_EV";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_GRUPO", OracleDbType.Varchar2, 32) { Value = grupo },
+                new OracleParameter("V_GRUPOF", OracleDbType.Varchar2, 32) { Value = grupoF },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 2) { Value = tipo },
+                new OracleParameter("V_IDENTI", OracleDbType.Varchar2, 20) { Value = identi }
             };
 
             return ExecuteDataTable(storedProcedure, parameters);

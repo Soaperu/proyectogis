@@ -594,6 +594,24 @@ namespace CommonUtilities.ArcgisProUtils
                     await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
                     await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
                 }
+                else if(caso== "Cata_sim")
+                {
+                    await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+                }
+                else if(caso == "Cuadri_sim")
+                {
+                    await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+                    await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+                    await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+                    
+                }
+                else if (caso == "Cuadri_dsim")
+                {
+                    await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+                    await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+                    await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+
+                }
                 // Otros casos a agregar de manera similar
 
             }
@@ -1020,6 +1038,61 @@ namespace CommonUtilities.ArcgisProUtils
                                 }
 
                                 row["LEYENDA"] = leyenda;
+
+                                row.Store();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+
+        }
+
+        public static async Task UpdateValueSimultaneoAsync(string capa, string subgrupo, string codRemate)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener la clase de entidades de la capa
+                    DatabaseHandler dataBaseHandler = new DatabaseHandler();
+                    // Obtener el documento del mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
+
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        int contador = 0;
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            contador++;
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+
+                                row["SUBGRUPO"] = subgrupo;
+                                row["COD_REMATE"] = codRemate;
 
                                 row.Store();
                             }

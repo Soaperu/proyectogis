@@ -439,7 +439,7 @@ namespace CommonUtilities.ArcgisProUtils
             // Cuadriculas Individuales
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_Z + v_zona_dm,
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_WGS84 + v_zona_dm,
                 LayerName = "Cuadriculas",
                 VariableName = "pFeatureLayer_cuadriculas"
             },
@@ -1419,8 +1419,8 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_CuadriculaR_PSAD56 = "DATA_GIS.GPO_CRE_CUADRICULA_REGIONAL";
 
         // Cuadrículas
-        public const string gstrFC_Cuadricula = "DATA_GIS.GPO_CUA_CUADRICULAS";
-        public const string gstrFC_Cuadricula_Z = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_PSAD56 = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_WGS84 = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_";
 
         // Caram
         public const string gstrFC_Caram56 = "DATA_GIS.GPO_CAR_CARAM_"; // PSAD56
