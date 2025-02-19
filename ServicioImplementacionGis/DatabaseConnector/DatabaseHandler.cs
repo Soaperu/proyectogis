@@ -111,9 +111,53 @@ namespace DatabaseConnector
                 }
             }
         }
+
+        public object ExecuteFunction(string functionName, OracleParameter[] parameters)
+        {
+            var connectionString = GetConnectionStringByPackage(functionName);
+            object response = null;
+
+
+            using (var connection = new OracleConnection(connectionString))
+            using (var command = new OracleCommand(functionName, connection))
+            {
+                try
+                {
+                    connection.Open();
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    // Parámetro de retorno (el valor devuelto por la función)
+                    var returnValue = new OracleParameter("RETURN_VALUE", OracleDbType.Varchar2, 100)
+                    {
+                        Direction = ParameterDirection.ReturnValue
+                    };
+                    command.Parameters.Add(returnValue);
+
+                    // Agregar los parámetros de entrada
+                    if (parameters != null)
+                    {
+                        command.Parameters.AddRange(parameters);
+                    }
+
+                    command.ExecuteNonQuery();
+                    response = returnValue.Value;
+                }
+                catch (OracleException oracleEx)
+                {
+                    throw new ApplicationException($"Error de Oracle: {oracleEx.Message}", oracleEx);
+                }
+                catch (Exception ex)
+                {
+                    throw new ApplicationException("Error al ejecutar la función almacenada.", ex);
+                }
+                return response;
+            }
+        }
+
         public string ExecuteScalar(string storedProcedure, OracleParameter[] parameters)
         {
             var connectionString = GetConnectionStringByPackage(storedProcedure);
+
             using (var connection = new OracleConnection(connectionString))//_dbConnection.OracleConnectionString()))
             using (var command = new OracleCommand(storedProcedure, connection))
             {
@@ -152,6 +196,58 @@ namespace DatabaseConnector
                 finally
                 {
                     connection.Close();
+                }
+            }
+        }
+
+        public object ExecuteScalarQuery(string query, OracleParameter[] parameters)
+        {
+            object result = null;
+
+            // Asegúrate de reemplazar esta cadena con tu cadena de conexión real
+            string connectionString = _dbConnection.OracleConnectionString();
+
+            using (OracleConnection connection = new OracleConnection(connectionString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    using (OracleCommand command = new OracleCommand(query, connection))
+                    {
+                        // Agregar parámetros si existen
+                        if (parameters != null)
+                        {
+                            command.Parameters.AddRange(parameters);
+                        }
+
+                        // Ejecutar la consulta y obtener el resultado
+                        result = command.ExecuteScalar();
+                    }
+                }
+                catch (OracleException ex)
+                {
+                    Console.WriteLine($"Error de Oracle: {ex.Message}");
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error general: {ex.Message}");
+                }
+            }
+
+            return result;
+        }
+
+        public void ExecuteNonQuery(string query, OracleParameter[] parameters)
+        {
+            var connectionString = _dbConnection.OracleConnectionString();
+            using (var connection = new OracleConnection(connectionString))
+            {
+                connection.Open();
+                using (var command = new OracleCommand(query, connection))
+                {
+                    command.Parameters.AddRange(parameters);
+                    command.ExecuteNonQuery();
                 }
             }
         }
@@ -910,6 +1006,17 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetDatosResolucion(string code) // F_Obtiene_Datos_Resolucion
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtenerrDatosResolucion;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public string CountRecords(string type, string search) // FT_Cuenta_Registro
         {
             string storedProcedure = DatabaseProcedures.Procedure_CuentaRegistros;
@@ -921,13 +1028,13 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
-        public string ManageObservationCartaDM(string code, string format, string evalCode, string indicator, string userFor, string description, string logUser, string option) // FT_Man_Observacion_CartaDM_desa
+
+        public string ManageObservationCartaDM(string code, string evalCode, string indicator, string userFor, string description, string logUser, string option) // FT_Man_Observacion_CartaDM_desa
         {
-            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTA_IGN";
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_INS_UPD_OBSERVA_CARTAIGN";
             var parameters = new OracleParameter[]
             {
                 new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code },
-                new OracleParameter("V_CG_FORMAT", OracleDbType.Varchar2, 13) { Value = format },
                 new OracleParameter("V_CG_CODEVA", OracleDbType.Varchar2, 13) { Value = evalCode },
                 new OracleParameter("V_ET_INDICA", OracleDbType.Varchar2, 1000) { Value = indicator },
                 new OracleParameter("V_ET_USUFOR", OracleDbType.Varchar2, 8) { Value = userFor },
@@ -938,6 +1045,18 @@ namespace DatabaseConnector
 
             return ExecuteScalar(storedProcedure, parameters);
         }
+
+        public string CheckObservationStatus(string code) // FT_Estado_Observacion
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.SP_VERIFICA_OBSERVACION";
+            var parameters = new OracleParameter[]
+            {
+        new OracleParameter("V_CG_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
         public DataTable GetOfficialCarta(string field, string data, string datum) // F_Obtiene_Carta_oficial
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL";
@@ -950,6 +1069,44 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public DataTable GetOfficialCartaLimite(string field, string data, string datum) // F_Obtiene_Carta_oficial limites
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL_LI";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CAMPO", OracleDbType.Varchar2, 12) { Value = field },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 40) { Value = data },
+                new OracleParameter("V_DATUM", OracleDbType.Varchar2, 40) { Value = datum }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetCartaColindante(string hoja) //cartas colindantes
+        {
+            string storedProcedure = "PACK_DBA_GIS.P_CARTA_COLINDANTE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_HOJA", OracleDbType.Varchar2, 12) { Value = hoja },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetOfficialCartaIn(string field, string data, string datum) // F_Obtiene_Carta_oficial x Filtro
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL_IN";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CAMPO", OracleDbType.Varchar2, 12) { Value = field },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 40) { Value = data },
+                new OracleParameter("V_DATUM", OracleDbType.Varchar2, 40) { Value = datum }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public DataTable GetDMData(string code) // F_Obtiene_Datos_DM
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";
@@ -984,6 +1141,16 @@ namespace DatabaseConnector
 
 
         //*----------------------*
+        public DataTable GetUbigeoData2(string code) // F_Obtiene_Datos_UBIGEO
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
         public DataTable GetUniqueDM(string code, int type) // F_OBTIENE_DM_UNIQUE
         {
@@ -997,12 +1164,47 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
+        public DataTable GetUniqueAresReserva(string tipo, string busca) // F_OBTIENE_AREA_RESERCA
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_AREA_RESERVA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 10) { Value = tipo },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2,20) { Value = busca }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
         public DataTable GetDMDataWGS84(string code) // F_Obtiene_Datos_DM_84
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL";
             var parameters = new OracleParameter[]
             {
             new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDMDataWGS84_IN(string code) // F_Obtiene_Datos_DM_84
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_WGS_84_OFICIAL_IN";
+            var parameters = new OracleParameter[]
+            {
+            new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable SelectByUbigeo(string type, string data) // FT_Selecciona_x_Ubigeo
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_LISTA_UBIGEO";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 100) { Value = data }
             };
 
             return ExecuteDataTable(storedProcedure, parameters);
@@ -1032,7 +1234,7 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
-        public DataTable ObtenerDatumDm(string code) 
+        public DataTable ObtenerDatumDm(string code)
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_DATUM_DM";
             var parameters = new OracleParameter[]
@@ -1043,7 +1245,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public DataTable ObtenerBloqueadoDm(string code) 
+        public DataTable ObtenerBloqueadoDm(string code)
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_OBTENER_BLOQUEADO_DM";
             var parameters = new OracleParameter[]
@@ -1054,7 +1256,7 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-        public DataTable ObtenerDatosUbigeo(string code) 
+        public DataTable ObtenerDatosUbigeo(string code)
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO";
             var parameters = new OracleParameter[]
@@ -1086,6 +1288,489 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
+
+        public DataTable GetUbigeoDataMultiple(string code) // F_Obtiene_Datos_UBIGEO1
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO_MULTIPLE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 255) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable GetDemarcacion(int type, string value) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_SeleccionListaUbigeo;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_DATO", OracleDbType.Varchar2, 100) { Value = value }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetZonasporUbigeo(string ubigeo) // F_OBTIENE_DM_UNIQUE
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneZonaporUbigeo;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_UBIGEO", OracleDbType.Varchar2, 6) { Value = ubigeo }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public string CountRecordsAreaRestringida(string type, string search) // FT_Cuenta_Registro
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtenerDatosdeAreasRestringida;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 10) { Value = type },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2, 20) { Value = search }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+
+        public DataTable GetDMIntegranteUEA(string code)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_INTEGRANTE_UEA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 255) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDMEstaMin(string code)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_DM_ESTAMIN";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 255) { Value = code }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetAvisoRetiroXLSValues()
+        {
+            string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_AVISO_RETIRO_XLS";
+            var parameters = new OracleParameter[]
+            {
+
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetLibreDenunciabilidadXLSValues()
+        {
+            string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_LIBRE_DENU_XLS";
+            var parameters = new OracleParameter[]
+            {
+
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public void InsertarEvaluacionTecnica(string codigo, string codigoeva, string indicador, string hectarea, string descripcion, string clase = "")
+        {
+            string insertQuery = @"INSERT INTO SISGEM.SG_T_EVALTECNICA_DESA(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_SESION, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
+                                    VALUES (:codigo, :codigoeva, :indicador, 1111, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
+
+            object hectareaValue;
+            if (string.IsNullOrWhiteSpace(hectarea))
+            {
+                hectareaValue = DBNull.Value;  // Si está vacío, insertar NULL
+            }
+            else if (double.TryParse(hectarea, out double hectareaDouble))
+            {
+                hectareaValue = hectareaDouble;  // Si es válido, insertar el valor numérico
+            }
+            else
+            {
+                throw new ArgumentException("El valor de hectarea no es válido.");
+            }
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoeva", OracleDbType.Varchar2, 13) { Value = codigoeva },
+                new OracleParameter("indicador", OracleDbType.Varchar2, 1000) { Value = indicador },
+                new OracleParameter("hectarea", OracleDbType.Double) { Value = hectareaValue },
+                new OracleParameter("descripcion", OracleDbType.Varchar2, 1000) { Value = descripcion },
+                new OracleParameter("clase", OracleDbType.Varchar2, 1000) { Value = clase }
+            };
+
+            ExecuteNonQuery(insertQuery, parameters);
+        }
+
+        public void InsertarEvaluacionTecnicaLD(string codigo, string codigoeva, string indicador, string hectarea, string descripcion, string clase = "")
+        {
+            string insertQuery = @"INSERT INTO SISGEM.SG_T_EVALTECNICA_LD(CG_CODIGO, CG_CODEVA, ET_INDICA, ET_SESION, ET_CANARE, ET_DESCRI, ET_CLASE, US_LOGUSE, ET_FECING)
+                                    VALUES (:codigo, :codigoeva, :indicador, 1111, :hectarea, :descripcion, :clase, USER, SYSDATE) ";
+
+            object hectareaValue;
+            if (string.IsNullOrWhiteSpace(hectarea))
+            {
+                hectareaValue = DBNull.Value;  // Si está vacío, insertar NULL
+            }
+            else if (double.TryParse(hectarea, out double hectareaDouble))
+            {
+                hectareaValue = hectareaDouble;  // Si es válido, insertar el valor numérico
+            }
+            else
+            {
+                throw new ArgumentException("El valor de hectarea no es válido.");
+            }
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoeva", OracleDbType.Varchar2, 13) { Value = codigoeva },
+                new OracleParameter("indicador", OracleDbType.Varchar2, 1000) { Value = indicador },
+                new OracleParameter("hectarea", OracleDbType.Double) { Value = hectareaValue },
+                new OracleParameter("descripcion", OracleDbType.Varchar2, 1000) { Value = descripcion },
+                new OracleParameter("clase", OracleDbType.Varchar2, 1000) { Value = clase }
+            };
+
+            ExecuteNonQuery(insertQuery, parameters);
+        }
+
+        public void MoveraHistoricoEvaluacionTecnica(string codigo)
+        {
+            string validarExistenciaQuery = @"SELECT COUNT(*) FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo";
+
+            string insertQuery = @"INSERT INTO SISGEM.SG_H_EVALTECNICA_DESA
+                                    SELECT * FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo";
+            string deleteQuery = @"DELETE FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo";
+
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo }
+            };
+            // Ejecutar la validación
+            object resultado = ExecuteScalarQuery(validarExistenciaQuery, parameters);
+            int cantidadRegistros = Convert.ToInt32(resultado);
+            if (cantidadRegistros > 0)
+            {
+                ExecuteNonQuery(insertQuery, parameters);
+                ExecuteNonQuery(deleteQuery, parameters);
+            }
+        }
+
+        public DataTable ObtenerResultadosEvaluacionTecnica(string codigo)
+        {
+            string consulta = @"Select cg_codigo, cg_codeva, et_indica, et_canare, et_descri
+                                from SISGEM.sg_t_evaltecnica_desa
+                                where cg_codigo = :codigo";
+            var parametro = new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo };
+
+            return ExecuteDataTable(consulta, new[] { parametro });
+
+        }
+
+        public void ActualizarRegistroEvaluacionTecnica(string codigo, string codigoEva, string newIndicador)
+        {
+            string updateQuery = @"UPDATE SISGEM.SG_T_EVALTECNICA_DESA SET ET_INDICA = :newIndicador, ET_USUMOD = USER, ET_FECUPD= SYSDATE
+                                            WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("newIndicador", OracleDbType.Varchar2, 1000) { Value = newIndicador },
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoEva", OracleDbType.Varchar2, 13) { Value = codigoEva }
+            };
+            ExecuteNonQuery(updateQuery, parameters);
+        }
+
+        public void EliminarRegistroEvaluacionTecnica(string codigo, string codigoEva)
+        {
+            string deleteQuery = @"DELETE FROM SISGEM.SG_T_EVALTECNICA_DESA WHERE CG_CODIGO = :codigo AND CG_CODEVA = :codigoEva";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+                new OracleParameter("codigoEva", OracleDbType.Varchar2, 13) { Value = codigoEva }
+            };
+            ExecuteNonQuery(deleteQuery, parameters);
+        }
+
+        public DataTable GetCodigosLibreDenu()
+        {
+            string storedProcedure = "SISGEM.PACK_WEB_LIBRE_DENU.P_SEL_COD_LIBDENU";
+            var parameters = new OracleParameter[]
+            {};
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetRestrictedAreaType() // F_Obtiene_Tipo_AreaRestringida
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CATNOMIN_TIPO";
+            var parameters = new OracleParameter[] { };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public void EliminarRegistroEvaluacionTecnicaLD(string codigo)
+        {
+            string deleteQuery = @"DELETE FROM SISGEM.SG_T_EVALTECNICA_LD WHERE CG_CODIGO = :codigo";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("codigo", OracleDbType.Varchar2, 13) { Value = codigo },
+            };
+            ExecuteNonQuery(deleteQuery, parameters);
+        }
+
+
+        public DataTable GetStatisticalIntersection(string type, string layer1, string layer2, string departmentCode, string areaType) // FT_Int_tiporesexdepa
+        {
+            string storedProcedure = "PACK_DBA_GIS.P_INT_ESTADISTICA_CARAM";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("v_Tipo", OracleDbType.Varchar2, 2) { Value = type },
+                new OracleParameter("v_layer_1", OracleDbType.Varchar2, 50) { Value = layer1 },
+                new OracleParameter("v_layer_2", OracleDbType.Varchar2, 50) { Value = layer2 },
+                new OracleParameter("v_cddepa", OracleDbType.Varchar2, 20) { Value = departmentCode },
+                new OracleParameter("v_tprese", OracleDbType.Varchar2, 50) { Value = areaType }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetRestrictedAreaTypeArg(string type) // FT_OBTIENE_TIPORESE
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_TIPORESE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 80) { Value = type }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDMOverlapByDay(string fechaInicio, string fechaFin)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMSUPERPUESTOXDIA";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("FECREPO", OracleDbType.Varchar2, 80) { Value = "" },
+                new OracleParameter("FECREPO_INICIO", OracleDbType.Varchar2, 80) { Value = fechaInicio},
+                new OracleParameter("FECREPO_FIN", OracleDbType.Varchar2, 80) { Value = fechaFin },
+                new OracleParameter("TIPOCON", OracleDbType.Varchar2, 80) { Value = "2" },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDetailsofDMOverlapByDay(string fechaInicio, string fechaFin)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMSUPERPUESTOXDIA_DET";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("FECREPO", OracleDbType.Varchar2, 80) { Value = "" },
+                new OracleParameter("FECREPO_INICIO", OracleDbType.Varchar2, 80) { Value = fechaInicio},
+                new OracleParameter("FECREPO_FIN", OracleDbType.Varchar2, 80) { Value = fechaFin },
+                new OracleParameter("TIPOCON", OracleDbType.Varchar2, 80) { Value = "2" },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        #region Simultaneidad
+        public string VerificaSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_VERIFICA_SIMU";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("V_FECHA", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            var resultado = ExecuteScalar(storedProcedure, parameters);
+            return resultado.ToString();
+        }
+
+        public DataTable ObtenerGruposSimultaneidad(string tipo, string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_REPO_GRUPO_DM_SIMUL_LD";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("TIPO", OracleDbType.Varchar2, 20) { Value = tipo },
+                    new OracleParameter("IDENTI", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerDMyGruposSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DMXGRSIMUL_LD";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("V_FECHA", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerConcesionesyGruposSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_CONCESIONXGRSIMUL_LD";
+            var parameters = new OracleParameter[]
+                {
+                    new OracleParameter("V_FECHA", OracleDbType.Varchar2, 20) { Value = fecha }
+                };
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public string UpdateDMSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_UPD_SG_D_DMXGRSIMUL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_FECHA", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string InsertarDMxHaGRSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_INS_DMXHAGRSIMUL_TOT";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("SI_FECSIM", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+
+        public string DeletePesicuSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_DEL_PESICU_POR_LD";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public DataTable GetCodigouSimultaneidad(string fecha)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.F_SEL_CODIGOU_FROM_DATE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetCodigoQuadsSimultaneidad(string sql, string zona, string date)
+        {
+            string storedProcedure = "DATA_CAT.PACK_DBA_SIMULTANEIDAD.F_GET_RLS_CODIGOU_QUADS";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_SQL", OracleDbType.Varchar2, 10) { Value = sql },
+                new OracleParameter("V_ZONE", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = date }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public string InsertRowsSimultaneidad(string codigou, string codigoCua, string cdCuad, int grupo,
+            int grupoF, string fechaSimul, string zona, string psGrupo)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_INS_ROWS_SIMULTANEIDAD";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CODECAT", OracleDbType.Varchar2, 10) { Value = codigou },
+                new OracleParameter("CODEID", OracleDbType.Varchar2, 10) { Value = codigoCua },
+                new OracleParameter("CODEQUAD", OracleDbType.Varchar2, 10) { Value = cdCuad },
+                new OracleParameter("GR", OracleDbType.Int32) { Value = grupo },
+                new OracleParameter("GRF", OracleDbType.Int32) { Value = grupoF },
+                new OracleParameter("DATE_SIMUL", OracleDbType.Varchar2, 10) { Value = fechaSimul },
+                new OracleParameter("ZONE_GEO", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("ALFA_GRF", OracleDbType.Varchar2, 10) { Value = psGrupo }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string InsertRowsSimultaneidadEval(string codigou, string codigoCua, string cdCuad, int grupo,
+            int grupoF, string fechaSimul, string zona, string psGrupo)
+        {
+            string storedProcedure = "PACK_DBA_SG_D_SIMULT_GIS.P_INS_ROWS_SIMULTANEID_EVAL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CODECAT", OracleDbType.Varchar2, 10) { Value = codigou },
+                new OracleParameter("CODEID", OracleDbType.Varchar2, 10) { Value = codigoCua },
+                new OracleParameter("CODEQUAD", OracleDbType.Varchar2, 10) { Value = cdCuad },
+                new OracleParameter("GR", OracleDbType.Int32) { Value = grupo },
+                new OracleParameter("GRF", OracleDbType.Int32) { Value = grupoF },
+                new OracleParameter("DATE_SIMUL", OracleDbType.Varchar2, 10) { Value = fechaSimul },
+                new OracleParameter("ZONE_GEO", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("ALFA_GRF", OracleDbType.Varchar2, 10) { Value = psGrupo }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public string ActualizarCodigosRemateSimultaneidad(string fechaSimul)
+        {
+            string storedProcedure = "DATA_CAT.PACK_DBA_SIMULTANEIDAD.P_ACT_PESICU_COD_REMATE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_FECSIM", OracleDbType.Varchar2, 10) { Value = fechaSimul },
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenerCoordenadasdeQuads(string codequads, string zona, string fecha)
+        {
+            string storedProcedure = "DATA_CAT.PACK_DBA_SIMULTANEIDAD.F_GET_COORDS_QUADS";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_SQL", OracleDbType.Varchar2, 100) { Value = codequads },
+                new OracleParameter("V_ZONE", OracleDbType.Varchar2, 10) { Value = zona },
+                new OracleParameter("V_DATE", OracleDbType.Varchar2, 10) { Value = fecha }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable ObtenercuadriculasSimultaneas(string grupo, string grupoF, string tipo, string identi)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_GRUPO_CUAD_SIMUL";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_GRUPO", OracleDbType.Varchar2, 32) { Value = grupo },
+                new OracleParameter("V_GRUPOF", OracleDbType.Varchar2, 32) { Value = grupoF },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 2) { Value = tipo },
+                new OracleParameter("V_IDENTI", OracleDbType.Varchar2, 20) { Value = identi }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+        public DataTable ObtenerDerechosSimultaneos(string grupo, string grupoF, string tipo, string identi)
+        {
+            string storedProcedure = "PACK_DBA_SIGCATMIN.P_SEL_DM_SIMUL_EV";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_GRUPO", OracleDbType.Varchar2, 32) { Value = grupo },
+                new OracleParameter("V_GRUPOF", OracleDbType.Varchar2, 32) { Value = grupoF },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 2) { Value = tipo },
+                new OracleParameter("V_IDENTI", OracleDbType.Varchar2, 20) { Value = identi }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        #endregion simultaneidad
 
     }
 }

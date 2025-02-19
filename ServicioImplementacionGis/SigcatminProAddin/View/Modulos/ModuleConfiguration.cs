@@ -37,9 +37,26 @@ namespace SigcatminProAddin.View.Modulos
         {
             new CategoriaModulo("Consultas", new List<Modulo>
             {
-                //new Modulo("Consulta por DM", typeof(ConsultaDM)),
+                new Modulo("Áreas Restringidas", typeof(AreasRestringidas)),
+                new Modulo("Código Carta Nacional", typeof(CodigoCartaNacional)),
+                new Modulo("Código de DM", typeof(CodigoDM)),
+                new Modulo("Coordenadas del Punto Central", typeof(Coordenadas_Punto_Central)),
+                new Modulo("DM por Carta IGN", typeof(DMCartaIGN)),
+                new Modulo("DM por Demarcación Política", typeof(DMxDemarcacionPolitica)),
+                new Modulo("Límites de Áreas de Interés", typeof(LimiteAreaInteres)),
+                new Modulo("Simulación de Petitorios", typeof(SimulaPetitorios)),
+                new Modulo("Varias Cartas Nacionales", typeof(VariasCartasNacional)),
+
+
+
+
+                new Modulo("Límite Departamental", typeof(LimiteDepartamental)),
+                new Modulo("Límite Provincial", typeof(LimiteProvincial)),
+                new Modulo("Límite Distrital", typeof(LimiteDistrital)),
                 //new Modulo("Consulta por Carta", typeof(ConsultaCarta)),
                 //new Modulo("Consulta por Demarcación", typeof(ConsultaDemarcacion))
+                new Modulo("Estadística de Áreas Restringidas", typeof(EstadisticasAreasRestringidas)),
+                new Modulo("Superpuesto Por día", typeof(SuperpuestoPorDia)),
             }),
             new CategoriaModulo("Planos", new List<Modulo>
             {
@@ -50,6 +67,8 @@ namespace SigcatminProAddin.View.Modulos
             new CategoriaModulo("Evaluación", new List<Modulo>
             {
                 new Modulo("Evaluación DM", typeof(EvaluacionDM)),
+                new Modulo("Libre Denunciabilidad", typeof(LibreDenunciabilidad)),
+                new Modulo("Simultaneidad de Petitorios", typeof(SimultaneidadPetitorios)),
             })
         };
       }

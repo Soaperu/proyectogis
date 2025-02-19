@@ -13,6 +13,8 @@ using ArcGIS.Desktop.Core.Geoprocessing;
 using System.Windows;
 using ArcGIS.Desktop.Internal.Catalog.Wizards.CreateFeatureClass;
 using ArcGIS.Desktop.Core;
+using System.Data;
+using DatabaseConnector;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -28,6 +30,7 @@ namespace CommonUtilities.ArcgisProUtils
 
         // Variables para almacenar los FeatureLayers específicos
         public FeatureLayer pFeatureLayer_dm { get; private set; }
+        public FeatureLayer pFeatureLayer_depaNac { get; private set; }
         public FeatureLayer pFeatureLayer_depa { get; private set; }
         public FeatureLayer pFeatureLayer_prov { get; private set; }
         public FeatureLayer pFeatureLayer_dist { get; private set; }
@@ -51,7 +54,11 @@ namespace CommonUtilities.ArcgisProUtils
         public FeatureLayer pFeatureLayer_caram { get; private set; }
         public FeatureLayer pFeatureLayer_cuadriculasR { get; private set; }
         public FeatureLayer pFeatureLayer_temp { get; private set; }
-        public FeatureLayer pFeatureLayer_gene { get; private set; }
+        public FeatureLayer pFeatureLayer_drena { get; private set; }
+        public FeatureLayer pFeatureLayer_vias { get; private set; }
+        public FeatureLayer pFeatureLayer_ccpp { get; private set; }
+        public FeatureLayer pFeatureLayer_polygon { get; private set; }
+        public FeatureLayer pFeatureLayer_catH { get; private set; }
 
         public FeatureClassLoader(Geodatabase geodatabase, Map map, string zonaDm, string regionSele)
         {
@@ -63,11 +70,11 @@ namespace CommonUtilities.ArcgisProUtils
             featureLayerMap = new Dictionary<string, FeatureLayer>();
         }
 
-        public async Task<FeatureLayer> LoadFeatureClassAsync(string featureClassName, bool isVisible)
+        public async Task<FeatureLayer> LoadFeatureClassAsync(string featureClassName, bool isVisible, string queryClause = "1=1")
         {
             try
             {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+                #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -97,12 +104,13 @@ namespace CommonUtilities.ArcgisProUtils
                         FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
                         {
                             Name = actualLayerName,//featureClassInfo.LayerName,
-                            IsVisible = isVisible,                            
-                            
+                            IsVisible = isVisible,
+                            DefinitionQuery = new DefinitionQuery(whereClause: queryClause, name: "Filtro dema")
+
                         };
-                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams,_map);
+                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, _map);
                         //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
-                        
+
                         // Asignar el FeatureLayer a la variable correspondiente si es necesario
                         AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
                         return featureLayer;
@@ -157,6 +165,10 @@ namespace CommonUtilities.ArcgisProUtils
                     pFeatureLayer_cuadriculas = featureLayer;
                     loFeature = "Cuadriculas";
                     break;
+                case "pfeatureLayer_CuadriculasR":
+                    pFeatureLayer_cuadriculasR = featureLayer;
+                    loFeature = "Cuadricula Regional";
+                    break;
                 case "pFeatureLayer_boletin":
                     pFeatureLayer_boletin = featureLayer;
                     loFeature = "Boletin";
@@ -182,6 +194,7 @@ namespace CommonUtilities.ArcgisProUtils
                     break;
                 case "pFeatureLayer_hoja":
                     pFeatureLayer_hoja = featureLayer;
+                    loFeature = "Carta IGN";
                     break;
                 case "pFeatureLayer_tras":
                     pFeatureLayer_tras = featureLayer;
@@ -203,7 +216,32 @@ namespace CommonUtilities.ArcgisProUtils
                     break;
                 case "pFeatureLayer_caram":
                     pFeatureLayer_caram = featureLayer;
+                    loFeature = "Caram";
                     break;
+                case "pFeatureLayer_drena":
+                    pFeatureLayer_drena = featureLayer;
+                    loFeature = "Drenaje";
+                    break;
+                case "pFeatureLayer_vias":
+                    pFeatureLayer_vias = featureLayer;
+                    loFeature = "Vías";
+                    break;
+                case "pFeatureLayer_ccpp":
+                    pFeatureLayer_ccpp = featureLayer;
+                    loFeature = "Centro Poblado";
+                    break;
+
+                case "pFeatureLayer_polygon":
+                    pFeatureLayer_polygon = featureLayer;
+                    loFeature = "Poligono";
+                    break;
+
+                case "pFeatureLayer_catH":
+                    pFeatureLayer_catH = featureLayer;
+                    loFeature = "Catastro";
+                    break;
+
+
                 default:
                     break;
             }
@@ -217,6 +255,13 @@ namespace CommonUtilities.ArcgisProUtils
 
         public static List<FeatureClassInfo> FeatureClassMappings = new List<FeatureClassInfo>
         {
+            // Dep. Nacional
+            new FeatureClassInfo
+            {
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_DepNacional + v_zona_dm,
+                LayerName = "Departamento_Nacional",
+                VariableName = "pFeatureLayer_depaNac"
+            },
             // Departamento
             new FeatureClassInfo
             {
@@ -377,12 +422,26 @@ namespace CommonUtilities.ArcgisProUtils
                 VariableName = "pFeatureLayer_Actmin"
             },
 
-            // Cuadriculas
+            // Cuadriculas Regionales
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Cuadricula,
+                FeatureClassName = FeatureClassConstants.gstrFC_CuadriculaR_WGS84,
                 LayerName = "Cuadricula Regional",
                 VariableName = "pFeatureLayer_cuadriculasR"
+            },
+            new FeatureClassInfo
+            {
+                FeatureClassName = FeatureClassConstants.gstrFC_CuadriculaR_PSAD56,
+                LayerName = "Cuadricula Regional",
+                VariableName = "pFeatureLayer_cuadriculasR"
+            },
+
+            // Cuadriculas Individuales
+            new FeatureClassInfo
+            {
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_WGS84 + v_zona_dm,
+                LayerName = "Cuadriculas",
+                VariableName = "pFeatureLayer_cuadriculas"
             },
             new FeatureClassInfo
             {
@@ -406,15 +465,15 @@ namespace CommonUtilities.ArcgisProUtils
             // Ríos
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Rios56,
+                FeatureClassName =  FeatureClassConstants.gstrFC_Rios56,
                 LayerName = "Drenaje",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_drena"
             },
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Rios84,
+                FeatureClassName = FeatureClassConstants.gstrFC_Rios84,
                 LayerName = "Drenaje",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_drena"
             },
 
             // Carreteras
@@ -422,13 +481,13 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Carretera56,
                 LayerName = "Vías",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_vias"
             },
             new FeatureClassInfo
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_Carretera84,
                 LayerName = "Vías",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_vias"
             },
 
             // Centros Poblados
@@ -436,13 +495,13 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_CPoblado56,
                 LayerName = "Centro Poblado",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_ccpp"
             },
             new FeatureClassInfo
             {
                 FeatureClassNameGenerator = (_) => FeatureClassConstants.gstrFC_CPoblado84,
                 LayerName = "Centro Poblado",
-                VariableName = "pFeatureLayer_gene"
+                VariableName = "pFeatureLayer_ccpp"
             },
 
             // Frontera
@@ -480,6 +539,8 @@ namespace CommonUtilities.ArcgisProUtils
                 LayerName = "Zona Reservada",
                 VariableName = "pFeatureLayer_rese"
             },
+
+
             //new FeatureClassInfo
             //{
             //    FeatureClassName = "DATA_GIS.GPO_ARE_AREA_RESERVADA_WGS_18",
@@ -520,8 +581,41 @@ namespace CommonUtilities.ArcgisProUtils
                 FeatureClassName = "DATA_GIS.GPO_HOJ_HOJAS_18",
                 LayerName = "Carta IGN",
                 VariableName = "pFeatureLayer_hoja"
-            }
+            },
+            new FeatureClassInfo
+            {
+                FeatureClassName = "DATA_GIS.GPO_HOJ_HOJAS", //PSAD56
+                LayerName = "Carta IGN",
+                VariableName = "pFeatureLayer_hoja"
+            },
             // Agregar todas las demás capas siguiendo el mismo patrón...
+            new FeatureClassInfo
+            {
+                FeatureClassName = "Poligono",
+                LayerName = "Poligono",
+                VariableName = "pFeatureLayer_polygon"
+            },
+
+            //*******
+             // Catastro Minero Histórico WGS84
+            new FeatureClassInfo
+            {
+                //FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_WGS_",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_CatastroHistoricoWGS84 + v_zona_dm,
+                LayerName = "Catastro",
+                VariableName = "pFeatureLayer_catH"
+            },
+
+            // Catastro Minero Histórico PSAD56
+            new FeatureClassInfo
+            {
+                //FeatureClassName = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_PSAD_",
+                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_CatastroHistoricoPSAD56 + v_zona_dm,
+                LayerName = "Catastro",
+                VariableName = "pFeatureLayer_catH"
+            }
+            //********
+
         };
 
         public async Task<string> IntersectFeatureClassAsync(string loFeature, double xMin, double yMin, double xMax, double yMax, string shapeFileOut = "")
@@ -545,7 +639,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // Ejecutar la selección y obtener los resultados
                 string lostrJoinCodigos = "";
 
-                await QueuedTask.Run(async() =>
+                await QueuedTask.Run(async () =>
                 {
                     // Crear el envolvente
                     Envelope envelope = EnvelopeBuilder.CreateEnvelope(xMin, yMin, xMax, yMax, pFLayer.GetSpatialReference());
@@ -557,10 +651,10 @@ namespace CommonUtilities.ArcgisProUtils
                         SpatialRelationship = SpatialRelationship.Intersects
                     };
                     // Ejecuta seleccion
-                    pFLayer.Select(spatialFilter,SelectionCombinationMethod.New);
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
                     // Obtener el número de entidades seleccionadas
                     int selectionCount = pFLayer.SelectionCount;
-                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut)) 
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
                     {
                         await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
                     }
@@ -571,7 +665,7 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             using (Row row = rowCursor.Current)
                             {
-                               
+
                                 // Variables para las salidas del método
                                 string lostr_Join_Codigos_marcona;
                                 string valida_urb_shp;
@@ -599,7 +693,7 @@ namespace CommonUtilities.ArcgisProUtils
                 if (!string.IsNullOrEmpty(lostrJoinCodigos))
                 {
                     lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
-                
+
                     try
                     {
                         string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
@@ -613,12 +707,253 @@ namespace CommonUtilities.ArcgisProUtils
                 }
 
                 return lostrJoinCodigos;
-            
+
 
             }
             catch
             {
                 return "";
+            }
+
+        }
+
+        public async Task<string> IntersectFeatureClassbyEnvelopeAsync(string loFeature, Envelope envelope, string shapeFileOut = "")
+        {
+            try
+            {
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return "";
+                }
+                // Ajustar la cláusula WHERE si es necesario
+                // ... código adicional ...
+
+                // Ejecutar la selección y obtener los resultados
+                string lostrJoinCodigos = "";
+
+                await QueuedTask.Run(async () =>
+                {
+
+
+                    // Crear el filtro espacial
+                    SpatialQueryFilter spatialFilter = new SpatialQueryFilter
+                    {
+                        FilterGeometry = envelope,
+                        SpatialRelationship = SpatialRelationship.Intersects
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+
+                    using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
+                    {
+                        while (rowCursor.MoveNext())
+                        {
+                            using (Row row = rowCursor.Current)
+                            {
+
+                                // Variables para las salidas del método
+                                string lostr_Join_Codigos_marcona;
+                                string valida_urb_shp;
+                                string lostr_Join_Codigos_AREA;
+
+                                // Llamar al método para procesar la fila
+                                lostrJoinCodigos += FeatureProcessorUtils.ProcessFeatureFields(
+                                                                                                    loFeature,
+                                                                                                    row,
+                                                                                                    "",
+                                                                                                    out lostr_Join_Codigos_marcona,
+                                                                                                    out valida_urb_shp,
+                                                                                                    out lostr_Join_Codigos_AREA
+                                );
+                            }
+                        }
+                    }
+                });
+                if (loFeature == "Carta IGN")
+                {
+                    GlobalVariables.CurrentPagesDm = lostrJoinCodigos;
+                }
+                // Construir la cláusula WHERE final
+                // ... código para construir la cláusula WHERE ...
+                if (!string.IsNullOrEmpty(lostrJoinCodigos))
+                {
+                    lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
+
+                    try
+                    {
+                        string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
+                        //Console.WriteLine(joinCondition);
+                        lostrJoinCodigos = joinCondition;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Console.WriteLine($"Error: {ex.Message}");
+                    }
+                }
+
+                return lostrJoinCodigos;
+
+
+            }
+            catch
+            {
+                return "";
+            }
+
+        }
+
+        public async Task<string> IntersectFeatureClassbyGeometryAsync(string loFeature, ArcGIS.Core.Geometry.Geometry geometry, string shapeFileOut = "")
+        {
+            try
+            {
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return "";
+                }
+                // Ajustar la cláusula WHERE si es necesario
+                // ... código adicional ...
+
+                // Ejecutar la selección y obtener los resultados
+                string lostrJoinCodigos = "";
+
+                await QueuedTask.Run(async () =>
+                {
+
+
+                    // Crear el filtro espacial
+                    SpatialQueryFilter spatialFilter = new SpatialQueryFilter
+                    {
+                        FilterGeometry = geometry,
+                        SpatialRelationship = SpatialRelationship.Intersects
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(spatialFilter, SelectionCombinationMethod.New);
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+
+                    using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
+                    {
+                        while (rowCursor.MoveNext())
+                        {
+                            using (Row row = rowCursor.Current)
+                            {
+
+                                // Variables para las salidas del método
+                                string lostr_Join_Codigos_marcona;
+                                string valida_urb_shp;
+                                string lostr_Join_Codigos_AREA;
+
+                                // Llamar al método para procesar la fila
+                                lostrJoinCodigos += FeatureProcessorUtils.ProcessFeatureFields(
+                                                                                                    loFeature,
+                                                                                                    row,
+                                                                                                    "",
+                                                                                                    out lostr_Join_Codigos_marcona,
+                                                                                                    out valida_urb_shp,
+                                                                                                    out lostr_Join_Codigos_AREA
+                                );
+                            }
+                        }
+                    }
+                });
+                if (loFeature == "Carta IGN")
+                {
+                    GlobalVariables.CurrentPagesDm = lostrJoinCodigos;
+                }
+                // Construir la cláusula WHERE final
+                // ... código para construir la cláusula WHERE ...
+                if (!string.IsNullOrEmpty(lostrJoinCodigos))
+                {
+                    lostrJoinCodigos = lostrJoinCodigos.TrimEnd(',');
+
+                    try
+                    {
+                        string joinCondition = FeatureProcessorUtils.GenerateJoinCondition(loFeature, lostrJoinCodigos);
+                        //Console.WriteLine(joinCondition);
+                        lostrJoinCodigos = joinCondition;
+                    }
+                    catch (Exception ex)
+                    {
+                        //Console.WriteLine($"Error: {ex.Message}");
+                    }
+                }
+
+                return lostrJoinCodigos;
+
+
+            }
+            catch
+            {
+                return "";
+            }
+
+        }
+
+
+        public async Task QueryFeatureClassAsync(string loFeature, string queryClause, string shapeFileOut = "")
+        {
+            try
+            {
+                //// Obtener el FeatureLayer desde el diccionario
+                if (!featureLayerMap.TryGetValue(loFeature, out FeatureLayer pFLayer) || pFLayer == null)
+                {
+                    // Manejo de error si la capa no existe
+                    //return "";
+                    pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+                }
+                if (pFLayer == null)
+                {
+                    return;
+                }
+
+
+                await QueuedTask.Run(async () =>
+                {
+                    QueryFilter queryFilter = new QueryFilter
+                    {
+                        WhereClause = queryClause
+                        //WhereClause = $"EVAL = '{criterio}'"
+                    };
+                    // Ejecuta seleccion
+                    pFLayer.Select(queryFilter, SelectionCombinationMethod.New);
+                    // Obtener el número de entidades seleccionadas
+                    int selectionCount = pFLayer.SelectionCount;
+                    if (selectionCount > 0 && !string.IsNullOrEmpty(shapeFileOut))
+                    {
+                        await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
+                    }
+
+
+                });
+
+            }
+            catch
+            {
+                return;
             }
 
         }
@@ -660,7 +995,7 @@ namespace CommonUtilities.ArcgisProUtils
                 }
 
                 // Definir la ruta de salida y el nombre del archivo
-                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut,GlobalVariables.fileTemp);
+                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
                 //string outputFileName = pNombreArchivo;
                 //string outputPath = Path.Combine(outputFolder, outputFileName + ".shp");
 
@@ -691,7 +1026,7 @@ namespace CommonUtilities.ArcgisProUtils
                 //{
                 // Exportar el FeatureClass a shapefile
                 tema.Select(queryFilter, SelectionCombinationMethod.And);
-                var valueArray = Geoprocessing.MakeValueArray(tema.Name, outputFolder, outputFileName);                
+                var valueArray = Geoprocessing.MakeValueArray(tema.Name, outputFolder, outputFileName);
                 //IGPResult gpResult = await Geoprocessing.ExecuteToolAsync("FeatureClassToShapefile_conversion", valueArray, null, null, null, GPExecuteToolFlags.Default);
                 IGPResult gpResult = await Geoprocessing.ExecuteToolAsync("FeatureClassToFeatureClass_conversion", valueArray, null, null, null, GPExecuteToolFlags.Default);
                 //});
@@ -702,7 +1037,7 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
-        public async Task ExportAttributesTemaAsync(string layerName, bool sele_denu, string outputLayerName, string customWhereClause="")
+        public async Task ExportAttributesTemaAsync(string layerName, bool sele_denu, string outputLayerName, string customWhereClause = "")
         {
             try
             {
@@ -742,6 +1077,305 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
+        public async Task<FeatureLayer> LoadFeatureClassAsyncGDB(string featureClassName, bool isVisible, string queryClause = "1=1")
+        {
+            try
+            {
+                return await QueuedTask.Run(() =>
+                {
+                    // Buscar la información de la Feature Class en la lista
+                    var featureClassInfo = FeatureClassMappings?.FirstOrDefault(f => string.Equals(f.FeatureClassName, featureClassName, StringComparison.OrdinalIgnoreCase)
+                                                                                    || (f.FeatureClassNameGenerator != null && string.Equals(f.FeatureClassNameGenerator(v_zona_dm), featureClassName, StringComparison.OrdinalIgnoreCase)));
+
+                    if (featureClassInfo == null)
+                    {
+                        // Si no se encuentra, usar un nombre genérico
+                        featureClassInfo = new FeatureClassInfo
+                        {
+                            FeatureClassName = featureClassName,
+                            LayerName = featureClassName,
+                            VariableName = null
+                        };
+                    }
+                    // Obtener el nombre real de la Feature Class
+                    string actualFeatureClassName = featureClassInfo.FeatureClassName ?? featureClassInfo.FeatureClassNameGenerator?.Invoke(v_zona_dm);
+
+                    // Abrir la Feature Class
+                    Geodatabase geodatabase = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri("C:\\bdgeocatmin\\Temporal\\GeneralGDB.gdb")));
+
+                    using (FeatureClass featureClass = geodatabase.OpenDataset<FeatureClass>(actualFeatureClassName))
+                    {
+                        // Obtener el nombre real de la capa (Layer)
+                        string actualLayerName = featureClassInfo.LayerName ?? featureClassInfo.LayerNameGenerator?.Invoke(cd_region_sele);
+
+                        // Crear el FeatureLayer
+                        FeatureLayerCreationParams flParams = new FeatureLayerCreationParams(featureClass)
+                        {
+                            Name = actualLayerName,//featureClassInfo.LayerName,
+                            IsVisible = isVisible,
+                            DefinitionQuery = new DefinitionQuery(whereClause: queryClause, name: "Filtro dema")
+
+                        };
+                        FeatureLayer featureLayer = LayerFactory.Instance.CreateLayer<FeatureLayer>(flParams, _map);
+                        //FeatureLayer featureLayer = LayerFactory.Instance.(featureClass);
+
+                        // Asignar el FeatureLayer a la variable correspondiente si es necesario
+                        if (featureClassName.Contains("Poligono"))
+                        {
+                            AssignFeatureLayerVariable(featureLayer, "pFeatureLayer_polygon");
+                        }
+                        else
+                        {
+                            AssignFeatureLayerVariable(featureLayer, featureClassInfo.VariableName);
+                        }
+
+                        return featureLayer;
+                    }
+                });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            }
+            catch (Exception ex)
+            {
+                return null;
+                // Manejo de excepciones
+                //MessageBox.Show($"Error al cargar la Feature Class '{featureClassName}': {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+            }
+        }
+
+        public static DataTable GetDataForElemento(
+                                                string sele_elemento,
+                                                string v_sistema,
+                                                string v_zona,
+                                                string v_codigo
+                                            )
+        {
+            // Este DataTable será el que devuelva cls_Oracle
+            DataTable result = new DataTable();
+
+            // Ajusta según tu lógica real
+            // code = primer parámetro de FT_Int_tiporesexdepa
+            // table1, table2 = segundo y tercer parámetro
+            string code = "";
+            string table1 = string.Empty;
+            string table2 = string.Empty;
+            string elementoParaConsulta = sele_elemento;
+
+            
+            // Sólo un ejemplo de switch para "sele_elemento".
+            // Ajusta según tus necesidades reales:
+            switch (sele_elemento)
+            {
+                case "ZONA URBANA":
+                    // De tu VB original se ve que usabas code=34 (ejemplo),
+                    // y las tablas "DESA_GIS.GPO_DEP_NACIONAL_WGS_18" y
+                    // "DATA_GIS.GPO_CAR_CARAM_WGS_18" si v_sistema=="2"
+                    code = "34";
+                    if (v_sistema == "2") //WGS_84
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;//$"DATA_GIS.GPO_DEP_NACIONAL_WGS_{v_zona}";
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;//$"DATA_GIS.GPO_CAR_CARAM_WGS_{v_zona}";
+                    }
+                    else
+                    {
+                        // Ajusta en caso no sea WGS_84
+                        table1 = $"DATA_GIS.GPO_DEP_NACIONAL_{v_zona}";
+                        table2 = $"DATA_GIS.GPO_CAR_CARAM_{v_zona}";
+                    }
+                    break;
+
+                case "PROYECTO ESPECIAL - HIDRAULICOS":
+                    code = "36";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona; ;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        // A veces en tu código original enviabas "PROYECTO ESPECIAL" 
+                        // como último parámetro, en lugar de sele_elemento:
+                        elementoParaConsulta = "PROYECTO ESPECIAL";
+                    }
+                    else
+                    {
+                        table1 = $"DATA_GIS.GPO_DEP_NACIONAL_{v_zona}";
+                        table2 = $"DATA_GIS.GPO_CAR_CARAM_{v_zona}";
+                        elementoParaConsulta = "PROYECTO ESPECIAL";
+                    }
+                    break;
+                case "AREA NATURAL - USO DIRECTO":
+                    code = "30";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA NATURAL - USO INDIRECTO":
+                    code = "31";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA NATURAL - AMORTIGUAMIENTO":
+                    code = "32";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "PROYECTO ESPECIAL (no hidráulicos)":
+                    code = "37";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "PROYECTO ESPECIAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+
+                case "CLASIFICACION DIVERSA":
+                    code = "39";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "OTRA AREA RESTRINGIDA";
+                    }
+                    break;
+                case "PROPUESTA DE AREA NATURAL":
+                    code = "38";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "PROPUESTA DE AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "SITIO RAMSAR":
+                case "AREA DE DEFENSA NACIONAL":
+                case "ANAP":
+                case "ANAP INGEMMET":
+                case "SITIO HISTORICO DE BATALLA":
+                case "PAISAJE CULTURAL":
+                case "ZONA DE RIESGO NO MITIGABLE":
+                case "ECOSISTEMA FRAGIL":
+                case "RESERVA INDIGENA":
+                case "RESERVA TERRITORIAL":
+                case "CONCESION FORESTAL":
+                    code = "39";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                    }
+
+                    break;
+                case "PUERTO Y/O AEROPUERTOS":
+                    code = "40";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                    }
+
+                    break;
+                case "ZONA ARQUEOLOGICA":
+                case "RED VIAL NACIONAL":
+                case "POSIBLE ZONA URBANA":
+                    // Podrías asignar un code distinto, si tu original lo pide
+                    code = "14";
+                    if (v_sistema == "2")
+                    {
+                        table1 = " "; //FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        //elementoParaConsulta = "OTRA AREA RESTRINGIDA";
+                        v_codigo = " ";
+                    }
+                    break;
+                case "AREA DE CONSERVACION PRIVADA":
+                    code = "42";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                case "AREA DE CONSERVACION MUNICIPAL Y OTROS":
+                    code = "43.0";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "AREA NATURAL";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                // Y así sucesivamente para cada caso...
+                case "AREA DE EXPANSION URBANA":
+                    code = "31";
+                    if (v_sistema == "2")
+                    {
+                        table1 = FeatureClassConstants.gstrFC_DepNacional + v_zona;
+                        table2 = FeatureClassConstants.gstrFC_Caram84 + v_zona;
+                        elementoParaConsulta = "ZONA URBANA";
+                    }
+                    else
+                    {
+                        // etc...
+                    }
+                    break;
+                default:
+                    // Si no coincide con ninguno, podrías retornar un DataTable vacío
+                    // o lanzar una excepción controlada:
+                    // throw new Exception($"Elemento '{sele_elemento}' no manejado en switch.");
+                    break;
+            }
+
+            // Llamada real a la librería (ajusta nombres de parámetros y return):
+            if (code != "" && !string.IsNullOrEmpty(table1) && !string.IsNullOrEmpty(table2))
+            {
+                // Suponiendo que cls_Oracle.FT_Int_tiporesexdepa tiene la firma:
+                //   DataTable FT_Int_tiporesexdepa(int code, string table1, string table2, string codigo, string elemento)
+                DatabaseHandler dataBaseHandler = new DatabaseHandler();
+                result = dataBaseHandler.GetStatisticalIntersection(code, table1, table2, v_codigo, elementoParaConsulta);
+            }
+
+            return result;
+        }
+
+
     }
     public class FeatureClassInfo
     {
@@ -780,9 +1414,13 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_CatastroPSAD56 = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_";
         public const string gstrFC_CatastroWGS84 = "DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_";
 
+        // Cuadrículas Regionales
+        public const string gstrFC_CuadriculaR_WGS84 = "DATA_GIS.GPO_CRE_CUADRICULA_REGIONAL_18";
+        public const string gstrFC_CuadriculaR_PSAD56 = "DATA_GIS.GPO_CRE_CUADRICULA_REGIONAL";
+
         // Cuadrículas
-        public const string gstrFC_Cuadricula = "DATA_GIS.GPO_CUA_CUADRICULAS";
-        public const string gstrFC_Cuadricula_Z = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_PSAD56 = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_WGS84 = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_";
 
         // Caram
         public const string gstrFC_Caram56 = "DATA_GIS.GPO_CAR_CARAM_"; // PSAD56
@@ -854,8 +1492,13 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_IgnRaster84 = "DATA_GIS.DS_IGN_CARTA_NACIONAL_2016_W84";
         public const string gstrRT_IngMosaic56 = "DATA_GIS.MD_IGN_CARTA_56";
         public const string gstrRT_IngMosaic84 = "DATA_GIS.MD_IGN_CARTA_84";
+        public const string gstrFC_DepNacional = "DATA_GIS.GPO_DEP_NACIONAL_WGS_";
 
         // Agregar más constantes según sea necesario
+        // Catastro Histórico
+        public const string gstrFC_CatastroHistoricoPSAD56 = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_PSAD_";
+        //public const string gstrFC_CatastroHistoricoWGS84 = "DATA_GIS.GPO_CMI_CATASTRO_HISTOR_WGS_";
+        public const string gstrFC_CatastroHistoricoWGS84 = "WURB0904.GPO_CMI_CATASTRO_HISTO_WGS_";
     }
 
 }

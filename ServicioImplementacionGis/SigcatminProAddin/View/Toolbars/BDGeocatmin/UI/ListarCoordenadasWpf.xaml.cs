@@ -23,6 +23,7 @@ using CommonUtilities.ArcgisProUtils.Models;
 using DatabaseConnector;
 using CommonUtilities;
 using DevExpress.Pdf.Native;
+using ArcGIS.Core.Internal.CIM;
 
 namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
 {
@@ -31,7 +32,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
     /// </summary>
     public partial class ListarCoordenadasWpf : Window
     {
-        private List<Row> listRows = new List<Row>();
+        private List<ListarCoordenadasModel> listRows = new List<ListarCoordenadasModel>(); 
         private DatabaseHandler dataBaseHandler;
         public ListarCoordenadasWpf()
         {
@@ -91,7 +92,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
             var map = MapView.Active.Map;
             var selectedLayers = MapView.Active.GetSelectedLayers();
             var layer = selectedLayers.OfType<FeatureLayer>().FirstOrDefault();
-            var listRows = new List<ListarCoordenadasModel>();
+            //var listRows = new List<ListarCoordenadasModel>();
             await QueuedTask.Run(async() =>
             {
                 if (layer == null)
@@ -99,11 +100,11 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
                     return;
                 }
-                if (layer.Name.ToLower() != "catastro")
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona la capa de Catastro.", "Advertencia");
-                    return;
-                }
+                //if (layer.Name.ToLower() != "catastro")
+                //{
+                //    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona la capa de Catastro.", "Advertencia");
+                //    return;
+                //}
 
                 listRows = await CommonUtilities.ArcgisProUtils.MapUtils.GetRowsAslistByClick(mapPoint);
                 
@@ -127,11 +128,7 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 }
                 DataGridSelectedPolygons.ItemsSource = records.DefaultView;
 
-
-                lblPolygonsFound.Content = $"Se encontraron {records.Rows.Count} registros";
-
-
-                
+                lblPolygonsFound.Content = $"Se encontraron {records.Rows.Count} registros";       
 
 
 
@@ -157,23 +154,61 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
                 if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
                 {
                     // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
-                    string codigoValue = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
-                    string nombre = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "NOMBRE")?.ToString();
-                    string area = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "AREA")?.ToString();
-                    var records = dataBaseHandler.GetDMData(codigoValue);
+                    string codigoValue = "00000001";
+                    string nombre = "Simulado";
+                    var geometry = listRows[focusedRowHandle].geom;
+                    string area = null;
+                    try
+                    {
+                        codigoValue = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "CODIGO")?.ToString();
+                        nombre = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "NOMBRE")?.ToString();
+                        area = DataGridSelectedPolygons.GetCellValue(focusedRowHandle, "AREA")?.ToString();
+                        geometry = listRows.Where(r => r.codigo != null && r.codigo.Equals(codigoValue, StringComparison.OrdinalIgnoreCase))
+                                        .ToList()[focusedRowHandle].geom;
+                        if(codigoValue == "")
+                        {
+                            codigoValue = "00000001";
+                            nombre = "Simulado";
+
+                        }
+                    }
+
+                    catch { }
+
+                    
+                    var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                    area = Math.Round(polygon.Area/10000,4).ToString();
+                    
+
+
+                        var records = dataBaseHandler.GetDMData(codigoValue);
                     texto += $"Código = {codigoValue} \n";
                     texto += $"Nombre = {nombre}\n";
                     texto += "--------------------------------------------------\n";
                     texto += new string(' ', 3) + " Vert." + new string(' ', 10) + "Norte" + new string(' ', 10) + "Este\n";
                     texto += "--------------------------------------------------\n";
 
-                    for(int i = 0; i< records.Rows.Count; i++)
+                    //for(int i = 0; i< records.Rows.Count; i++)
+                    //{
+                    //    var este = Math.Round(double.Parse(records.Rows[i]["CD_COREST"].ToString()),3);
+                    //    var norte = Math.Round(double.Parse(records.Rows[i]["CD_CORNOR"].ToString()),3);
+                    //    var esteFormateado = string.Format("{0:### ###.#0}", este);
+                    //    var norteFormateado = string.Format("{0:# ### ###.#0}", norte);
+                    //    texto += new string(' ', 5) + (i+1).ToString().PadLeft(3, '0');
+                    //    texto += new string(' ', 5) + esteFormateado;
+                    //    texto += new string(' ', 5) + norteFormateado + "\n";
+
+                    //}
+
+                    for (int i = 0; i < polygon.PointCount - 1; i++)
                     {
-                        var este = Math.Round(double.Parse(records.Rows[i]["CD_COREST"].ToString()),3);
-                        var norte = Math.Round(double.Parse(records.Rows[i]["CD_CORNOR"].ToString()),3);
+                        var vertex = polygon.Points[i];
+
+                        var este = Math.Round(vertex.X, 3);
+                        var norte = Math.Round(vertex.Y, 3);
                         var esteFormateado = string.Format("{0:### ###.#0}", este);
                         var norteFormateado = string.Format("{0:# ### ###.#0}", norte);
-                        texto += new string(' ', 5) + (i+1).ToString().PadLeft(3, '0');
+                        texto += new string(' ', 5) + (i + 1).ToString().PadLeft(3, '0');
                         texto += new string(' ', 5) + esteFormateado;
                         texto += new string(' ', 5) + norteFormateado + "\n";
 
@@ -190,6 +225,16 @@ namespace SigcatminProAddin.View.Toolbars.BDGeocatmin.UI
         private void btnCerrar_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void gridHeader_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // Comprueba que el botón izquierdo del ratón esté presionado
+            if (e.ButtonState == MouseButtonState.Pressed)
+            {
+                // Permite el arrastre de la ventana
+                this.DragMove();
+            }
         }
     }
 }

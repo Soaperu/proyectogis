@@ -1,4 +1,5 @@
 ﻿using ArcGIS.Core.Data;
+using ArcGIS.Core.CIM;
 using ArcGIS.Core.Geometry;
 using ArcGIS.Desktop.Core;
 using ArcGIS.Desktop.Framework.Contracts;
@@ -14,18 +15,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls.Primitives;
+using ArcGIS.Core.Data.UtilityNetwork.Trace;
+using ArcGIS.Core.Internal.CIM;
+using QueryFilter = ArcGIS.Core.Data.QueryFilter;
+using Path = System.IO.Path;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CommonUtilities.ArcgisProUtils
 {
     public class LayoutUtils
     {
         //private const string V = "Plantilla_evd_84";
-        private readonly LayoutConfiguration _config;
+        private  LayoutConfiguration? _config;
         public LayoutUtils(LayoutConfiguration config)
         {
             _config = config;
         }
-        public static async Task<LayoutProjectItem> AddLayoutPath(string layoutFilePath, string nameLayer, string mapName, string layoutName)
+        public static async Task<LayoutProjectItem> AddLayoutPath(string layoutFilePath, string nameLayer, string mapName, string layoutName, int scale = 1)
         {
             // Verificar si el archivo existe
             if (!File.Exists(layoutFilePath))
@@ -35,7 +42,8 @@ namespace CommonUtilities.ArcgisProUtils
             }
 
             // Ejecutar la tarea en el hilo principal de CIM
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CS8603 // Posible tipo de valor devuelto de referencia nulo
             return await QueuedTask.Run(async () =>
             {
                 try
@@ -46,7 +54,7 @@ namespace CommonUtilities.ArcgisProUtils
                     var addItem = ItemFactory.Instance.Create(layoutFilePath, ItemFactory.ItemType.PathItem) as IProjectItem;
                     // Agregar el layout al proyecto actual
                     Project.Current.AddItem(addItem);
-                    LayoutProjectItem layoutItem = Project.Current.GetItems<LayoutProjectItem>().FirstOrDefault(l => l.Name == layoutName);
+                    LayoutProjectItem layoutItem = Project.Current.GetItems<LayoutProjectItem>().FirstOrDefault(l => string.Equals(l.Name, layoutName, StringComparison.OrdinalIgnoreCase));
                     // Verificar si la capa fue agregada correctamente
                     //LayoutProjectItem layout = layoutProjectItem as LayoutProjectItem;
                     Layout layout = layoutItem.GetLayout();
@@ -57,8 +65,8 @@ namespace CommonUtilities.ArcgisProUtils
 
                         // Mostrar un mensaje de éxito
                         //MessageBox.Show($"Layout '{layout.Name}' agregado y abierto exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-                        layout.SetName(mapName);
-                        MapFrame mfrm = layout.FindElement( mapName +" Map Frame") as MapFrame;
+                        //layout.SetName(mapName);
+                        MapFrame mfrm = layout.FindElement( mapName + " Map Frame") as MapFrame;
                         Map mapCatastro = await MapUtils.FindMapByNameAsync(mapName);
                         mfrm.SetMap(mapCatastro);
                         var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == nameLayer);
@@ -68,8 +76,14 @@ namespace CommonUtilities.ArcgisProUtils
                         FeatureClassDefinition fcDef = featureClass.GetDefinition() as FeatureClassDefinition;
                         if (fcDef != null)
                         {
-                            Envelope layerExtent = fcDef.GetExtent();
+                            ArcGIS.Core.Geometry.Envelope layerExtent = fcDef.GetExtent();
                             mfrm.SetCamera(layerExtent);
+                            if (scale > 1)
+                            {
+                                Camera cam = mfrm.Camera;
+                                cam.Scale = scale;
+                                mfrm.SetCamera(cam);
+                            }
                         }
                         // Obtener la lista de mapas después de agregar el layout
                         var mapsAfter = Project.Current.GetItems<MapProjectItem>().Select(m => m.Name).ToList();
@@ -105,7 +119,8 @@ namespace CommonUtilities.ArcgisProUtils
                     MessageBox.Show($"Ocurrió un error al agregar el layout: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CS8603 // Posible tipo de valor devuelto de referencia nulo
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async Task ActivateLayoutAsync(Layout layout)
@@ -127,71 +142,111 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
         /// <summary>
-        /// Genera y agrega un layout al proyecto de ArcGIS Pro basado en el tipo de plano.
+        /// Elimina los diseños (layouts) del proyecto actual cuyos nombres coincidan con la lista proporcionada.
+        /// Si la lista está vacía o es nula, pregunta al usuario si desea eliminar todos los layouts.
         /// </summary>
-        /// <param name="tipoPlano">Tipo de plano a generar.</param>
-        /// <returns>True si se agregó exitosamente, de lo contrario False.</returns>
-        //public async Task<bool> GeneraPlanoReporteAsync(string tipoPlano)
-        //{
-        //    string rutaPlantilla = DeterminarRutaPlantilla(tipoPlano);
+        /// <param name="layoutNamesToDelete">
+        /// Lista de nombres de layouts a eliminar. Puede ser nula o vacía.
+        /// </param>
+        public static async Task DeleteSpecifiedLayoutsAsync(List<string>? layoutNamesToDelete = null)
+        {
+            // Verificar si no se proporcionó lista o está vacía
+            if (layoutNamesToDelete == null || layoutNamesToDelete.Count == 0)
+            {
+                var result = MessageBox.Show(
+                    "No se proporcionaron nombres de layouts para eliminar. ¿Desea eliminar todos los layouts del proyecto?",
+                    "Advertencia",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
 
-        //    if (string.IsNullOrEmpty(rutaPlantilla))
-        //    {
-        //        MessageBox.Show($"No se encontró una plantilla para el tipo de plano: {tipoPlano}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return false;
-        //    }
+                if (result == MessageBoxResult.No)
+                {
+                    return; // Usuario canceló la operación
+                }
+            }
 
-        //    if (!File.Exists(rutaPlantilla))
-        //    {
-        //        MessageBox.Show($"No se encontró el archivo de plantilla: {rutaPlantilla}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return false;
-        //    }
+            // Ejecuta la operación en el contexto de ArcGIS Pro
+            await QueuedTask.Run(() =>
+            {
+                // Obtiene todos los layouts del proyecto actual
+                var allLayouts = Project.Current.GetItems<LayoutProjectItem>();
 
-        //    try
-        //    {
-        //        // Ejecutar en el hilo adecuado
-        //        await QueuedTask.Run(async () =>
-        //        {
-        //            try
-        //            {
-        //                // Agregar la plantilla al proyecto
-        //                var layoutProjectItem = await Project.Current.AddItemAsync(rutaPlantilla, ProjectItemType.Layout);
+                // Para evitar problemas al eliminar mientras iteramos, usamos .ToList()
+                foreach (var layoutItem in allLayouts.ToList())
+                {
+                    // Si layoutNamesToDelete es null o vacío, eliminamos todos
+                    // De lo contrario, eliminamos solo los que coincidan por nombre (ignorando mayúsc/minúsc)
+                    if ((layoutNamesToDelete == null || layoutNamesToDelete.Count == 0) ||
+                         layoutNamesToDelete.Contains(layoutItem.Name, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Project.Current.RemoveItem(layoutItem);
+                    }
+                }
+            });
+        }
 
-        //                // Verificar si la plantilla se agregó correctamente
-        //                if (layoutProjectItem is LayoutProjectItem layout)
-        //                {
-        //                    // Abrir la vista del layout
-        //                    await layout.OpenAsync();
+        /// <summary>
+        /// Exporta un layout a PDF dado su nombre y la ruta de salida.
+        /// </summary>
+        /// <param name="layoutName">El nombre del layout a exportar.</param>
+        /// <param name="outputPdfPath">Ruta completa (incluyendo el archivo) donde se guardará el PDF.</param>
+        /// <returns>Tarea asíncrona.</returns>
+        public static async Task ExportLayoutToPdfAsync(string layoutName, string outputPdfPath)
+        {
+            // Verificar que la ruta no sea nula o vacía
+            if (string.IsNullOrEmpty(outputPdfPath))
+            {
+                throw new ArgumentException("La ruta de salida para el PDF es inválida.", nameof(outputPdfPath));
+            }
 
-        //                    // Notificar al usuario
-        //                    MessageBox.Show($"Layout '{layout.Name}' agregado y abierto exitosamente.", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-        //                }
-        //                else
-        //                {
-        //                    MessageBox.Show("No se pudo agregar el layout. Asegúrate de que el archivo es un .pagx válido.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //                }
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                MessageBox.Show($"Ocurrió un error al agregar el layout: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //            }
-        //        });
+            // Asegurarnos de que el directorio exista
+            string directory = Path.GetDirectoryName(outputPdfPath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
 
-        //        return true;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        MessageBox.Show($"Error inesperado: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-        //        return false;
-        //    }
-        //}
+            // Ejecutar en el hilo especializado de ArcGIS Pro
+            await QueuedTask.Run(() =>
+            {
+                // 1. Buscar el LayoutProjectItem con el nombre especificado
+                var layoutItem = Project.Current
+                                        .GetItems<LayoutProjectItem>()
+                                        .FirstOrDefault(item =>
+                                                string.Equals(item.Name, layoutName, StringComparison.OrdinalIgnoreCase));
+                if (layoutItem == null)
+                {
+                    throw new InvalidOperationException($"No se encontró el layout con nombre '{layoutName}'.");
+                }
+
+                // 2. Obtener el objeto Layout a partir del LayoutProjectItem
+                Layout layout = layoutItem.GetLayout();
+
+                // 3. Configurar los parámetros de exportación a PDF
+                //    Puedes ajustar la resolución, la calidad de compresión, etc.
+                ExportFormat pdfFormat = new PDFFormat
+                {
+                    OutputFileName = outputPdfPath,
+                    Resolution = 300,             // DPI (puntos por pulgada)
+                    DoCompressVectorGraphics = true,
+                    ImageCompression = ImageCompression.Adaptive,
+                    ImageCompressionQuality = 80, // Calidad de compresión de imágenes (0-100)
+                };
+
+                // 4. Exportar el layout a PDF
+                layout.Export(pdfFormat);
+
+                // (Opcional) Si quieres mostrar un mensaje de éxito o log
+                //MessageBox.Show($"Layout exportado correctamente a: {outputPdfPath}");
+            });
+        }
 
         /// <summary>
         /// Determina la ruta de la plantilla basada en el tipo de plano y otras configuraciones.
         /// </summary>
         /// <param name="tipoPlano">Tipo de plano.</param>
         /// <returns>Ruta completa de la plantilla.</returns>
-        private string DeterminarRutaPlantilla(string tipoPlano)
+        public string DeterminarRutaPlantilla(string tipoPlano)
         {
             string rutaPlantilla = string.Empty;
 
@@ -554,7 +609,45 @@ namespace CommonUtilities.ArcgisProUtils
 
             return rutaPlantilla;
         }
-       
+
+        public static Task<string> GeneratorTextListVerticesDecrease(RowCursor rowCursor)
+        {
+            string texto = "";
+
+            return QueuedTask.Run(() =>
+            {
+                using (Row row = rowCursor.Current)
+                {
+                    var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                    var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                    texto += $"Nombre = {row["RESULTADO"]} - {row["CONCATENAT"]}\n";
+
+                    texto += "--------------------------------------------------\n";
+                    texto += new string(' ', 3) + " Vert." + new string(' ', 10) + "Norte" + new string(' ', 10) + "Este\n";
+                    texto += "--------------------------------------------------\n";
+                    for (int i = 0; i < polygon.PointCount - 1; i++)
+                        {
+                            var vertex = polygon.Points[i];
+
+                            var este = Math.Round(vertex.X, 3);
+                            var norte = Math.Round(vertex.Y, 3);
+                            var esteFormateado = string.Format("{0:### ###.#0}", este);
+                            var norteFormateado = string.Format("{0:# ### ###.#0}", norte);
+                            texto += new string(' ', 5) + (i + 1).ToString().PadLeft(3, '0');
+                            texto += new string(' ', 5) + esteFormateado;
+                            texto += new string(' ', 5) + norteFormateado + "\n";
+                        }
+                    texto += "--------------------------------------------------\n";
+                    texto += new string(' ', 10) + $"Área UTM = {Math.Round(polygon.Area / 10000,2)} (Ha)\n";
+                    texto += "--------------------------------------------------\n";
+
+                    return texto;
+                }
+                    //}
+                //}
+            });
+        }
+
 
     }
     public class LayoutConfiguration
@@ -563,7 +656,7 @@ namespace CommonUtilities.ArcgisProUtils
         public string Sistema { get; set; } // Equivalente a v_sistema
         public string ValidaUrbShp { get; set; } // Equivalente a valida_urb_shp
         public string CasoLdMasivo { get; set; } // Equivalente a caso_ldmasivo
-        public string SelePlano { get; set; } // Equivalente a sele_plano
+        public string SelePlano { get; set; } // Equivalente a sele_plano - formato de plano
         public string SeleccionPlanoSi { get; set; } // Equivalente a seleccion_plano_si
         public int TablaIntegrantesCount { get; set; } // Equivalente a tabla_integrantes.Rows.Count
         public int ContaHojaSup { get; set; } // Equivalente a conta_hoja_sup

@@ -19,6 +19,11 @@ using System.ComponentModel;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using System.Data;
 using CommonUtilities.ArcgisProUtils.Models;
+using System.Windows;
+using ArcGIS.Core.Events;
+using ArcGIS.Desktop.Mapping.Events;
+using DatabaseConnector;
+using CommonUtilities.ArcgisProUtils.Models.Constants;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -31,7 +36,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <returns>El objeto Map creado.</returns>
         public static async Task CreateMapAsync(string mapName)
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 // Crear un nuevo mapa
@@ -40,7 +45,7 @@ namespace CommonUtilities.ArcgisProUtils
                 ProApp.Panes.CreateMapPaneAsync(map);
                 
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>
@@ -74,6 +79,34 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static async Task DeleteSpecifiedMapsAsync(List<string>? mapNamesToDelete= null)
+        {
+            if (mapNamesToDelete == null || mapNamesToDelete.Count == 0)
+            {
+               var result =MessageBox.Show("No se proporcionaron nombres de mapas para eliminar. Desea Eliminar todos los mapas del proyecto?", "Error", MessageBoxButton.YesNo, MessageBoxImage.Error);
+                if (result == MessageBoxResult.No)
+                {
+                    return;
+                }
+            }
+
+            // Ejecuta en el contexto de ArcGIS Pro
+            await QueuedTask.Run(() =>
+            {
+                // Obtiene todos los mapas del proyecto actual
+                var allMaps = Project.Current.GetItems<MapProjectItem>();
+
+                foreach (var mapItem in allMaps)
+                {
+                    // Si el mapa está en la lista de nombres para eliminar, procede a eliminarlo
+                    if (mapNamesToDelete != null && mapNamesToDelete.Contains(mapItem.Name, StringComparer.OrdinalIgnoreCase))
+                    {
+                        Project.Current.RemoveItem(mapItem);
+                    }
+                }
+            });
+        }
+
         public static async Task ActivateMapAsync(Map map)
         {
             await QueuedTask.Run(() =>
@@ -91,6 +124,21 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             }
         });
+        }
+
+        public static void ActivateOrOpenMapPane(string mapName)
+        {
+            var mapProjItem = Project.Current.GetItems<MapProjectItem>().FirstOrDefault(mp => mp.Name == mapName);
+            if (mapProjItem != null)
+            {
+                // is it already open? - check the open panes
+                var mapPane = ProApp.Panes.OfType<IMapPane>().FirstOrDefault(pane => pane.Caption == mapName);
+                if (mapPane != null)
+                {
+                    var pane = mapPane as Pane;
+                    pane.Activate();
+                }
+            }
         }
 
         public static void AnnotateLayer(FeatureLayer layer, string field, string graphicLayerName, string color = "")
@@ -147,7 +195,31 @@ namespace CommonUtilities.ArcgisProUtils
         public static void AnnotateLayerbyName(string layername, string field, string graphicLayerName, string color = "#000000",
             string fontFamily ="Arial", double fontSize=8.5, string fontWeight="Regular")
         {
-            
+
+            // Colores para Catastro
+            Dictionary<string, string> coloresCatastro = new Dictionary<string, string>()
+            {
+                { "G1", "#00FF00" },
+                { "G2", "#FF0000" },
+                { "G3", "#0000FF" },
+                { "G4", "#000000" },
+                { "G5", "#4E0000" },
+                { "G6", "#CD00ED" },
+                { "G7", "#000000" },
+            };
+
+            // Colores para SituacionDM
+            Dictionary<string, string> coloresSituacionDM = new Dictionary<string, string>()
+            {
+                { "CONCESIÓN MINERA EN EXPLORACIÓN (1)", "#00A9E6" },
+                { "CONCESIÓN MINERA EN EXPLOTACIÓN (1)", "#E69800" },
+                { "SOLICITUD DE DERECHO MINERO", "#C5FEC3" },
+                { "CONCESIÓN MINERA EXTINGUIDA", "#D2D2D2" },
+                { "PLANTAS DE BENEFICIO, CANTERAS (ESTADO)", "#4E0000" },
+                { "CONCESIÓN SIN ACTIVIDAD MINERA", "#CD00ED" },
+                { "", "#888888" },
+            };
+
             var map = MapView.Active.Map;
 
             GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
@@ -178,11 +250,32 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
                             string fieldValue = Convert.ToString(row[field]);
+                            
+                            if (layername== "Catastro")
+                            {
+                                var leyenda = row["LEYENDA"].ToString();
+                                if (coloresCatastro.ContainsKey(leyenda))
+                                {
+                                    color = coloresCatastro[leyenda];
+                                }
+                            }
+
+                            if (layername == "Situacion_DM")
+                            {
+                                var tipo = row["TIPO"].ToString();
+                                if (coloresSituacionDM.ContainsKey(tipo))
+                                {
+                                    color = coloresSituacionDM[tipo];
+                                }
+                            }
+
 
                             if (geometry != null && !string.IsNullOrEmpty(fieldValue))
                             {
                                 // Convertir la geometría a un punto (en este caso, tomamos el centroide de la geometría)
-                                var point = geometry.Extent.Center;
+                                //var point = geometry.Extent.Center;
+                                
+                                var point = GeometryEngine.Instance.LabelPoint(geometry);
                                 var textGraphic = new CIMTextGraphic();
                                 CIMColor rgbColor = ColorUtils.HexToCimColorRGB(color);
                                 var textSymbol = SymbolFactory.Instance.ConstructTextSymbol
@@ -232,11 +325,7 @@ namespace CommonUtilities.ArcgisProUtils
                     ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
                     return;
                 }
-                if (layer.Name.ToLower() != "catastro")
-                {
-                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona la capa de Catastro.", "Advertencia");
-                    return;
-                }
+
 
                 using (var rowCursor = layer.Search(null))
                 {
@@ -250,13 +339,27 @@ namespace CommonUtilities.ArcgisProUtils
 
                             if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
                             {
-                                var customRow = new ListarCoordenadasModel
+                                var customRow = new ListarCoordenadasModel();
+
+                                if (layer.Name.ToLower() == "catastro")
                                 {
-                                    nombre = row["CONCESION"].ToString(),
-                                    numero = row["CONTADOR"].ToString(),
-                                    codigo = row["CODIGOU"].ToString(),
-                                    area = row["HECTAGIS"].ToString()
-                                };
+                                     customRow = new ListarCoordenadasModel
+                                    {
+                                        nombre = row["CONCESION"]?.ToString(),
+                                        numero = row["CONTADOR"]?.ToString(),
+                                        codigo = row["CODIGOU"]?.ToString(),
+                                        area = row["HECTAGIS"]?.ToString(),
+                                        geom = geometry
+                                    };
+                                }
+                                else
+                                {
+                                    customRow = new ListarCoordenadasModel
+                                    {
+                                        geom = geometry
+                                    };
+                                }
+                                
 
                                 listRows.Add(customRow);
                             }
@@ -275,11 +378,7 @@ namespace CommonUtilities.ArcgisProUtils
             var map = MapView.Active.Map;
             var selectedLayers = MapView.Active.GetSelectedLayers();
             var layer = selectedLayers.OfType<FeatureLayer>().FirstOrDefault();
-            var gl_param = new GraphicsLayerCreationParams { Name = "Vertices" };
-            var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
-
-            GraphicsLayer? graphicsLayer = map.GetLayersAsFlattenedList()
-                .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+            GraphicsLayer? graphicsLayer = null;
 
             QueuedTask.Run(() =>
             {
@@ -289,7 +388,66 @@ namespace CommonUtilities.ArcgisProUtils
                     return;
                 }
                 if (clickedPoint == null) return;
+                
+                // Crear un cursor para iterar sobre las características de la capa
+                using (var rowCursor = layer.Search(null))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        using (Row row = rowCursor.Current)
+                        {
+                            var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                            var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                            //string fieldValue = Convert.ToString(row[field]);
+                            
+                            if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
+                            {
+                                var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {row["CODIGOU"].ToString()}" };
+                                var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
 
+                                graphicsLayer = map.GetLayersAsFlattenedList()
+                                    .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+                                int contador = 1;
+                                    for(int i = 0; i < polygon.PointCount - 1; i++)
+                                    {
+                                    var vertex = polygon.Points[i];
+                                    var textGraphic = new CIMTextGraphic();
+                                    textGraphic.Symbol = SymbolFactory.Instance.ConstructTextSymbol
+                                                                                (CIMColor.CreateRGBColor(255, 0, 0), 9, "Arial", "Regular").MakeSymbolReference();
+                                    textGraphic.Shape = vertex;
+                                    textGraphic.Text = contador.ToString();                    
+                                    graphicsLayer.AddElement(textGraphic, contador.ToString());
+                                    contador += 1;
+                                }
+                                
+                            }
+
+                        }
+                    }
+                }
+            });
+            if(graphicsLayer is not null) graphicsLayer.ClearSelection();
+
+        }
+
+
+        public static void AnnotateVerticesofLayer(string layerName)
+        {
+            //var featureclass = layer.GetFeatureClass();
+            var map = MapView.Active.Map;
+            var selectedLayers = MapView.Active.GetSelectedLayers();
+            FeatureLayer layer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, layerName);
+            var featureclass = layer.GetFeatureClass();
+            GraphicsLayer? graphicsLayer = null;
+
+            QueuedTask.Run(() =>
+            {
+                if (layer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
+                    return;
+                }
+               
 
                 // Crear un cursor para iterar sobre las características de la capa
                 using (var rowCursor = layer.Search(null))
@@ -302,11 +460,15 @@ namespace CommonUtilities.ArcgisProUtils
                             var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
                             //string fieldValue = Convert.ToString(row[field]);
 
-                            if (geometry != null && GeometryEngine.Instance.Contains(geometry, clickedPoint))
-                            {
+                            
+                                var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices" };
+                                var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
+
+                                graphicsLayer = map.GetLayersAsFlattenedList()
+                                    .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
                                 int contador = 1;
-                                    for(int i = 0; i < polygon.PointCount - 1; i++)
-                                    {
+                                for (int i = 0; i < polygon.PointCount - 1; i++)
+                                {
                                     var vertex = polygon.Points[i];
                                     var textGraphic = new CIMTextGraphic();
                                     textGraphic.Symbol = SymbolFactory.Instance.ConstructTextSymbol
@@ -316,19 +478,19 @@ namespace CommonUtilities.ArcgisProUtils
                                     graphicsLayer.AddElement(textGraphic, contador.ToString());
                                     contador += 1;
                                 }
-                                
-                            }
+
+                            
 
                         }
                     }
                 }
             });
-            graphicsLayer.ClearSelection();
+            if (graphicsLayer is not null) graphicsLayer.ClearSelection();
 
         }
 
 
-       
+
         public static void LoadFeatureClassToMap(string featureClassName, string layerName, bool isVisible, int mapIndex=0)
         {
             QueuedTask.Run(() =>
@@ -339,7 +501,7 @@ namespace CommonUtilities.ArcgisProUtils
                     throw new Exception("No hay un mapa activo.");
 
                 // Conectar a la geodatabase
-                string gdbPath = @"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
+                string gdbPath = GlobalVariables.localGdbPath; //@"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
                 using (var gdb = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(gdbPath))))
                 {
                     // Abrir la clase de entidad
@@ -368,7 +530,7 @@ namespace CommonUtilities.ArcgisProUtils
                 try
                 {
                     // Conectar a la geodatabase
-                    string gdbPath = @"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
+                    string gdbPath = GlobalVariables.localGdbPath; //@"C:\bdgeocatmin\BDGEOCATMINPRO_84.gdb"; // Actualiza esto con la ruta correcta
                     using (var gdb = new Geodatabase(new FileGeodatabaseConnectionPath(new Uri(gdbPath))))
                     {
                         // Abrir la clase de entidad
@@ -402,9 +564,168 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static Map? GetActiveMapAsync()
+        {
+            // Ejecutar la tarea en el contexto adecuado de ArcGIS Pro
+            //return QueuedTask.Run(() =>
+            //{
+                // Obtener el mapa activo desde la vista del mapa activa
+            return MapView.Active?.Map;
+            //});
+        }
 
-        
+        public static async Task<Map> EnsureMapViewIsActiveAsync(string mapName)
+        {
+            if (MapView.Active != null && string.Equals(MapView.Active.Map.Name, mapName, StringComparison.OrdinalIgnoreCase))
+            {
+                return MapView.Active.Map;
+            }
 
+            // Esperar hasta que MapView.Active esté disponible
+            TaskCompletionSource<Map> tcs = new TaskCompletionSource<Map>();
 
+            SubscriptionToken eventToken = null;
+            eventToken = DrawCompleteEvent.Subscribe(async args =>
+            {
+                // Desuscribirse del evento
+                // Desuscribirse del evento
+                if (eventToken != null)
+                {
+                    DrawCompleteEvent.Unsubscribe(eventToken);
+                }
+                // Activar el mapa "CATASTRO MINERO"
+                Map map = await FindMapByNameAsync(mapName);
+                await ActivateMapAsync(map);
+
+                // Completar la tarea con el mapa activo
+                //tcs.SetResult(MapView.Active.Map);
+                tcs.SetResult(map);
+            });
+
+            // Esperar hasta que el evento se complete
+            return await tcs.Task;
+        }
+
+        ///// <summary>
+        ///// Asegura que el MapView especificado esté activo. Si no lo está, lo activa y espera a que se active.
+        ///// </summary>
+        ///// <param name="mapName">Nombre del mapa a activar.</param>
+        ///// <param name="timeoutMilliseconds">Tiempo máximo de espera en milisegundos.</param>
+        ///// <returns>El objeto Map activo.</returns>
+        //public static async Task<Map> EnsureMapViewIsActiveAsync(string mapName, int timeoutMilliseconds = 10000)
+        //{
+        //    if (string.IsNullOrEmpty(mapName))
+        //        throw new ArgumentException("El nombre del mapa no puede ser nulo o vacío.", nameof(mapName));
+
+        //    // Si el mapa deseado ya está activo, retornarlo
+        //    if (MapView.Active != null &&
+        //        string.Equals(MapView.Active.Map.Name, mapName, StringComparison.OrdinalIgnoreCase))
+        //    {
+        //        return MapView.Active.Map;
+        //    }
+
+        //    // Crear un TaskCompletionSource para esperar hasta que el mapa esté activo
+        //    TaskCompletionSource<Map> tcs = new TaskCompletionSource<Map>();
+
+        //    // Suscribirse al evento de cambio de mapa activo
+        //    SubscriptionToken token = null;
+        //    token = ActiveMapViewChangedEvent.Subscribe((OnActiveMapViewChanged) =>
+        //    {
+        //        if (newMapView != null &&
+        //            string.Equals(newMapView.Map.Name, mapName, StringComparison.OrdinalIgnoreCase))
+        //        {
+        //            // Desuscribirse del evento
+        //            MapView.ActiveChanged.Unsubscribe(token);
+
+        //            // Completar la tarea con el mapa activo
+        //            tcs.SetResult(newMapView.Map);
+        //        }
+        //    });
+
+        //    // Ejecutar la activación del mapa en el hilo especializado de ArcGIS Pro
+        //    await QueuedTask.Run(async () =>
+        //    {
+        //        // Buscar el mapa por nombre
+        //        Map map = await FindMapByNameAsync(mapName);
+        //        if (map == null)
+        //        {
+        //            // Desuscribirse si el mapa no se encuentra
+        //            MapView.ActiveChanged.Unsubscribe(token);
+        //            tcs.SetException(new InvalidOperationException($"No se encontró un mapa con el nombre '{mapName}'."));
+        //            return;
+        //        }
+
+        //        // Activar el mapa
+        //        await ActivateMapAsync(map);
+        //    });
+
+        //    // Implementar timeout
+        //    var delayTask = Task.Delay(timeoutMilliseconds);
+        //    var completedTask = await Task.WhenAny(tcs.Task, delayTask);
+
+        //    if (completedTask == delayTask)
+        //    {
+        //        // Desuscribirse del evento para evitar memory leaks
+        //        MapView.ActiveChanged.Unsubscribe(token);
+        //        throw new TimeoutException($"No se pudo activar el mapa '{mapName}' dentro del tiempo esperado.");
+        //    }
+
+        //    // Retornar el resultado
+        //    return await tcs.Task;
+        //}
+
+        public static ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm = 0)
+        {
+            DatabaseHandler dataBaseHandler = new DatabaseHandler();
+            var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+            double xmin = int.MaxValue;
+            double xmax = int.MinValue;
+            double ymin = int.MaxValue;
+            double ymax = int.MinValue;
+            double radioMeters = radioKm * 1000;
+            ExtentModel extent = null;
+            if (dmrRecords.Rows.Count > 0)
+            {
+                var originalDatumDm = dmrRecords.Rows[0]["SC_CODDAT"];
+                if (datum == int.Parse(originalDatumDm.ToString()))
+                {
+
+                    // Iterar sobre las filas para calcular los valores extremos
+                    foreach (DataRow row in dmrRecords.Rows)
+                    {
+                        double este = Convert.ToDouble(row["CD_COREST"]);
+                        double norte = Convert.ToDouble(row["CD_CORNOR"]);
+
+                        if (este < xmin) xmin = este;
+                        if (este > xmax) xmax = este;
+                        if (norte < ymin) ymin = norte;
+                        if (norte > ymax) ymax = norte;
+                    }
+                }
+                else
+                {
+                    // Iterar sobre las filas para calcular los valores extremos
+                    foreach (DataRow row in dmrRecords.Rows)
+                    {
+                        double este = Convert.ToDouble(row["CD_COREST_E"]);
+                        double norte = Convert.ToDouble(row["CD_CORNOR_E"]);
+
+                        if (este < xmin) xmin = este;
+                        if (este > xmax) xmax = este;
+                        if (norte < ymin) ymin = norte;
+                        if (norte > ymax) ymax = norte;
+                    }
+                }
+                extent = new ExtentModel
+                {
+                    xmin = xmin - radioMeters,
+                    xmax = xmax + radioMeters,
+                    ymin = ymin - radioMeters,
+                    ymax = ymax + radioMeters
+                };
+            }
+            return extent;
+
+        }
     }
 }

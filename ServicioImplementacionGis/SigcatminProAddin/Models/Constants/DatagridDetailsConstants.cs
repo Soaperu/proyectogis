@@ -15,12 +15,18 @@ namespace SigcatminProAddin.Models.Constants
             public const string CoorNorte = "CD_CORNOR";
             public const string CoorEsteE = "CD_COREST_E";
             public const string CoorNorteE = "CD_CORNOR_E";
+
+           
+
         }
         public static class ColumnNames
         {
             public const string Vertice = "VERTICE";
             public const string Este = "ESTE";
             public const string Norte = "NORTE";
+
+            
+
         }
 
         public static class Headers

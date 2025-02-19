@@ -66,6 +66,7 @@ namespace CommonUtilities.ArcgisProUtils
         }
         public static async void CustomLinePolygonLayer(FeatureLayer layer, SimpleLineStyle style, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2 = null)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 var trans = 75.0;//semi transparent
@@ -85,10 +86,12 @@ namespace CommonUtilities.ArcgisProUtils
                 // Actualiza la simbologia 
                 layer.SetRenderer(symbol);
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async void CustomLinePolygonGraphic(ArcGIS.Core.Geometry.Geometry geomPolygon, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2)
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 Map activeMap = MapView.Active.Map;
@@ -110,17 +113,19 @@ namespace CommonUtilities.ArcgisProUtils
                 };
                 MapView.Active.AddOverlay(cimGraphicElement);
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
-        public static async Task ApplySymbologyFromStyleAsync(string layerName, string styleFilePath, string fieldName, string codeValue)
+        public static async Task ApplySymbologyFromStyleAsync(string layerName, string styleFilePath, string fieldName, StyleItemType styleGeomItem,string codeValue="")
         {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 //Obtener el mapa y la capa
                 Map map = MapView.Active?.Map;
                 if (map == null)
                 {
-                    System.Windows.MessageBox.Show("No active map found.");
+                    MessageBox.Show("Mapa Activo no encontrado.");
                     return;
                 }
 
@@ -128,7 +133,7 @@ namespace CommonUtilities.ArcgisProUtils
                 FeatureLayer featureLayer = map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase));
                 if (featureLayer == null)
                 {
-                    System.Windows.MessageBox.Show($"Layer '{layerName}' not found.");
+                    //System.Windows.MessageBox.Show($"Layer '{layerName}' not found.");
                     return;
                 }
                 StyleHelper.AddStyle(Project.Current, styleFilePath);
@@ -144,7 +149,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                     else
                     {
-                        System.Windows.MessageBox.Show($"Style file '{styleFilePath}' not found or could not be added to the project.");
+                        System.Windows.MessageBox.Show($"Archivo de estilo '{styleFilePath}' no encontrado o no se pudo agregar al proyecto.");
                         return;
                     }
                 }
@@ -169,7 +174,7 @@ namespace CommonUtilities.ArcgisProUtils
                 {
                     // Obtenga el símbolo del estilo según el valor
                     var symbolLookupName = value; // Suponiendo que los nombres de los símbolos en el estilo coinciden con los valores del campo
-                    SymbolStyleItem symbolItem = styleItem.SearchSymbols(StyleItemType.PolygonSymbol, symbolLookupName).FirstOrDefault();
+                    SymbolStyleItem symbolItem = styleItem.SearchSymbols(styleGeomItem, symbolLookupName).FirstOrDefault();
 
                     if (symbolItem == null)
                     {
@@ -190,7 +195,7 @@ namespace CommonUtilities.ArcgisProUtils
                     CIMUniqueValueClass uniqueValueClass = new CIMUniqueValueClass
                     {
                         Values = new CIMUniqueValue[] { uniqueValue },
-                        Label = labelValue, // Use the field value as the label
+                        Label = labelValue, // Utilice el valor del campo como etiqueta
                         Symbol = symbol.MakeSymbolReference()
                     };
 
@@ -211,6 +216,70 @@ namespace CommonUtilities.ArcgisProUtils
                 featureLayer.SetRenderer(uniqueValueRenderer);
 
             });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+        }
+
+
+        public static async Task ApplyUniqueSymbologyFromStyleAsync(string layerName, string styleFilePath, StyleItemType styleGeomItem)
+        {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            await QueuedTask.Run(() =>
+            {
+                // Obtener el mapa y la capa
+                Map map = MapView.Active?.Map;
+                if (map == null)
+                {
+                    System.Windows.MessageBox.Show("No active map found.");
+                    return;
+                }
+
+                // Encuentre la capa de entidades por nombre
+                FeatureLayer featureLayer = map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase));
+                if (featureLayer == null)
+                {
+                    //System.Windows.MessageBox.Show($"Layer '{layerName}' not found.");
+                    return;
+                }
+
+                // Agregar el archivo de estilo al proyecto si no está agregado
+                StyleHelper.AddStyle(Project.Current, styleFilePath);
+
+                // Abrir el archivo .stylx
+                StyleProjectItem styleItem = Project.Current.GetItems<StyleProjectItem>().FirstOrDefault(s => s.Path.Equals(styleFilePath, StringComparison.OrdinalIgnoreCase));
+                if (styleItem == null)
+                {
+                    System.Windows.MessageBox.Show($"Archivo de estilo '{styleFilePath}' no encontrado o no se pudo agregar al proyecto.");
+                    return;
+                }
+
+                // Buscar el primer símbolo disponible en el archivo de estilo
+                SymbolStyleItem symbolItem = styleItem.SearchSymbols(styleGeomItem, "").FirstOrDefault();
+                if (symbolItem == null)
+                {
+                    System.Windows.MessageBox.Show($"No se encontraron símbolos de tipo '{styleGeomItem}' en el archivo de estilo.");
+                    return;
+                }
+
+                // Obtener el CIMSymbol del primer símbolo encontrado
+                CIMSymbol symbol = symbolItem.Symbol;
+                if (symbol == null)
+                {
+                    System.Windows.MessageBox.Show($"No se pudo recuperar el símbolo del archivo de estilo.");
+                    return;
+                }
+
+                // Crear un renderizador de símbolo único
+                CIMSimpleRenderer simpleRenderer = new CIMSimpleRenderer
+                {
+                    Symbol = symbol.MakeSymbolReference(),
+                    Label = "",
+                    Description = "Simbolo Unico"
+                };
+
+                // Aplicar el renderizador a la capa
+                featureLayer.SetRenderer(simpleRenderer);
+            });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>
@@ -244,7 +313,7 @@ namespace CommonUtilities.ArcgisProUtils
             return uniqueValues;
         }
 
-        public static string GetUniqueValueLabel(string styleItemName, string codeValue, string catastroH="", string estadoHDm="")
+        public static string GetUniqueValueLabel(string styleItemName, string codeValue="", string catastroH="", string estadoHDm="")
         {
             string value = string.Empty;  // Variable para almacenar el valor de la etiqueta
 
@@ -281,6 +350,18 @@ namespace CommonUtilities.ArcgisProUtils
                 case "G8":
                     value = "D.M. con Res. Ext. sin Consentir"; // Activo
                     break;
+                case "ZONA RESERVADA":
+                    value = "Zona Reservada"; // Activo
+                    break;
+                case "ZONA URBANA":
+                    value = "Zona Urbana"; // 
+                    break;
+                case "1":
+                    value = "0"; // 
+                    break;
+                case "2":
+                    value = "1"; // 
+                    break;
                 // Puedes agregar más casos según sea necesario
                 default:
                     value = ""; // Valor predeterminado si no se encuentra el caso
@@ -300,19 +381,7 @@ namespace CommonUtilities.ArcgisProUtils
             {
                 string layerName = featureLayer.Name;
                 try
-                {
-                    //// Obtener el mapa activo
-                    //Map map = MapView.Active.Map;
-
-                    //// Buscar la capa por nombre
-                    //FeatureLayer featureLayer = map.Layers.FirstOrDefault(l => l.Name.Equals(layerName, StringComparison.OrdinalIgnoreCase)) as FeatureLayer;
-
-                    //if (featureLayer == null)
-                    //{
-                    //    MessageBox.Show($"La capa '{layerName}' no existe o no es una FeatureLayer.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                    //    return;
-                    //}
-                    
+                {                    
                     // Crear el símbolo de relleno simple
                     CIMPolygonSymbol simpleFillSymbol = new CIMPolygonSymbol();
 
@@ -339,6 +408,43 @@ namespace CommonUtilities.ArcgisProUtils
                     MessageBox.Show($"Error al asignar simbología a la capa '{layerName}': {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
+        }
+
+        public static async Task ColorLineSimple(FeatureLayer featureLayer)//string layerName)
+        {
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            await QueuedTask.Run(() =>
+            {
+                string layerName = featureLayer.Name;
+                try
+                {
+                    // Crear el símbolo de relleno simple
+                    CIMLineSymbol  simpleLineSymbol = new CIMLineSymbol();
+
+                    // Crear el símbolo de línea simple
+                    CIMStroke simpleLineSymbolStroke = null;
+
+                    // Asignar estilo, color y ancho basados en condiciones
+                    AssignSymbolLineProperties(layerName, ref simpleLineSymbol);
+
+                    // Crear el renderizador simple
+                    CIMSimpleRenderer simpleRenderer = new CIMSimpleRenderer
+                    {
+                        Symbol = simpleLineSymbol.MakeSymbolReference(),
+                    };
+
+                    // Asignar el renderizador a la capa
+                    featureLayer.SetRenderer(simpleRenderer);
+
+                    // Refrescar la vista para aplicar los cambios
+                    //MapView.Active.Redraw(true);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error al asignar simbología a la capa '{layerName}': {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>
@@ -391,6 +497,29 @@ namespace CommonUtilities.ArcgisProUtils
                 }
             }
         }
+
+        private static void AssignSymbolLineProperties(string layerName, ref CIMLineSymbol lineSymbol)
+        {
+            // Definir colores según la función GetRGBColor
+            Func<int, int, int, CIMRGBColor> GetRGBColor = (r, g, b) => new CIMRGBColor
+            {
+                R = r,
+                G = g,
+                B = b,
+                Alpha = 0 // Opacidad completa
+            };
+
+            // Obtener el diccionario de configuraciones
+            var symbolConfigurations = GetSymbolConfigurations();
+
+            // Asignar simbología basada en el diccionario
+            if (symbolConfigurations.TryGetValue(layerName, out var config))
+            {
+                lineSymbol = CreateOnlyLineSymbol(config.LineStyle, config.LineWidth, config.LineColor);
+                //fillSymbol = CreatePolygonSymbol(config.FillStyle, config.FillColor, lineSymbol);
+            }
+        }
+                    
         private static Dictionary<string, SymbolConfiguration> GetSymbolConfigurations()
         {
             Func<int, int, int, CIMRGBColor> GetRGBColor = (r, g, b) => new CIMRGBColor
@@ -601,7 +730,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 },
                 {
-                    "Cuadriculas_10HAS",
+                    "Cuadriculas_10HA",
                     new SymbolConfiguration
                     {
                         FillStyle = SimpleFillStyle.Null,
@@ -612,7 +741,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 },
                 {
-                    "Cuadriculas_100HAS",
+                    "Cuadriculas_100HA",
                     new SymbolConfiguration
                     {
                         FillStyle = SimpleFillStyle.Null,
@@ -755,7 +884,7 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 },
                 {
-                    "Red Hidrografica",
+                    "Drenaje",
                     new SymbolConfiguration
                     {
                         //FillStyle = SimpleFillStyle.Null, // Asumiendo que el estilo es Hollow según VB.NET
@@ -766,23 +895,56 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 },
                 {
-                    "Red Vial",
+                    "Vías",
                     new SymbolConfiguration
                     {
-                        //FillStyle = SimpleFillStyle.Null, // Asumiendo que el estilo es Hollow según VB.NET
+                        //FillStyle = SimpleFillStyle.Null, // 
                         //FillColor = GetRGBColor(0, 197, 255),
                         LineStyle = SimpleLineStyle.Solid,
                         LineColor = GetRGBColor(255, 0, 0),
                         LineWidth = 1
                     }
-                }
+                },
+                {
+                    "Areadispo",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.BackwardDiagonal, // 
+                        FillColor = GetRGBColor(230, 76, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(230, 76, 0),
+                        LineWidth = 0.2
+                    }
+                },
+                {
+                    "Areainter",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.BackwardDiagonal, // 
+                        FillColor = GetRGBColor(56 , 168, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(56, 168, 0),
+                        LineWidth = 0.2
+                    }
+                },
+                {
+                    "Resultado_reducir",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.Null,
+                        FillColor = GetRGBColor(230, 0, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(230, 0, 0),
+                        LineWidth = 0.75
+                    }
+                },
                 // Agrega más configuraciones según sea necesario...
 
                 // Configuraciones compartidas por múltiples capas
             };
 
             // Configuraciones compartidas para capas renurets
-            var renurets = new List<string> { "Renuret1", "Renuren1", "Renuret2", "Renuren2", "Renuret3", "Renuren3", "Renuret4", "Renuren4" };
+            var renurets = new List<string> { "Malla Cuadricula 10Ha", "Malla Cuadricula 100Ha", "DM_Cudriculas", "Renuren2", "Renuret3", "Renuren3", "Renuret4", "Renuren4" };
             var renuretConfig = new SymbolConfiguration
             {
                 FillStyle = SimpleFillStyle.Horizontal,
@@ -809,8 +971,12 @@ namespace CommonUtilities.ArcgisProUtils
         /// <returns>Objeto CIMPolygonSymbol configurado.</returns>
         private static CIMPolygonSymbol CreatePolygonSymbol(SimpleFillStyle style, CIMRGBColor color, CIMStroke lineSymbol)
         {
-            return SymbolFactory.Instance.ConstructPolygonSymbol(
-                        color, style, lineSymbol); ;
+            return SymbolFactory.Instance.ConstructPolygonSymbol(color, style, lineSymbol);
+        }
+
+        private static CIMLineSymbol CreateOnlyLineSymbol(SimpleLineStyle style, double width, CIMRGBColor color)
+        {
+            return SymbolFactory.Instance.ConstructLineSymbol(color, width, style); ;
         }
 
         /// <summary>

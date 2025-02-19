@@ -9,15 +9,15 @@
       xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
       d:DesignHeight="470" d:DesignWidth="680"
       Title="EvaluacionDM"
-      FontFamily="Roboto">
-    <Page.Resources>
+      FontFamily="Roboto" Loaded="Page_Loaded">
+    <!--<Page.Resources>
 
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
-    </Page.Resources>
+    </Page.Resources>-->
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -41,7 +41,7 @@
                    VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center"
                         Grid.Column="1" HorizontalAlignment="Right">
-                <TextBlock Text="Administrador01" VerticalAlignment="Center" HorizontalAlignment="Right"
+                <TextBlock Text="Administrador01" VerticalAlignment="Bottom" HorizontalAlignment="Right"
                            FontSize="10" Margin="0,0,5,0" x:Name="CurrentUserLabel">
                     <TextBlock.Foreground>
                         <SolidColorBrush Color="#FF696969"/>
@@ -71,14 +71,14 @@
                        HorizontalAlignment="Left" Width="50" Height="12" VerticalAlignment="Bottom"/>
             <ComboBox Margin="0,0,0,0" Grid.Column="1" HorizontalAlignment="Stretch"
                       x:Name="CbxTypeConsult" Width="250" FontSize="10"
-                       Height="20" Padding="0,3,0,3" Loaded="CbxTypeConsult_Loaded" SelectionChanged="CbxTypeConsult_SelectionChanged"/>
-            <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10"
+                       Height="20" Padding="5,0,0,0" Loaded="CbxTypeConsult_Loaded" SelectionChanged="CbxTypeConsult_SelectionChanged"/>
+            <TextBlock Text="Dato" VerticalAlignment="Bottom" FontSize="10" Margin="20,0,0,10" 
                        Grid.Column="2" HorizontalAlignment="Left" FontWeight="Medium"/>
-            <TextBox Height="20" Margin="0,0,0,0" VerticalAlignment="Center"
+            <TextBox Height="20" Margin="0,0,0,0"  VerticalAlignment="Center" 
                      Grid.Column="3" Width="230" VerticalContentAlignment="Center" HorizontalAlignment="Center"
-                     x:Name="TbxValue" FontSize="10" Padding="0,2,0,2" KeyDown="TbxValue_KeyDown"/>
+                     x:Name="TbxValue" FontSize="10" Padding="5,0,0,0" KeyDown="TbxValue_KeyDown"/>
             <Button Content="Buscar" Width="60" Height="20" Background="#006DA0" BorderBrush="White"
-                    Foreground="White" Grid.Column="4" HorizontalAlignment="Right" FontFamily="Roboto"
+                    Foreground="White" Grid.Column="4" HorizontalAlignment="Center" FontFamily="Roboto"
                     FontSize="10" FontWeight="bold"
                     Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                     VerticalContentAlignment="Center" x:Name="BtnSearch" Padding="0,0,0,0" Click="BtnSearch_Click" />
@@ -101,8 +101,8 @@
             <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
                   Grid.Column="1" Grid.Row="0" HorizontalAlignment="Stretch" >
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="50"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="60"/>
+                    <ColumnDefinition Width="90"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="30"/>
@@ -111,14 +111,14 @@
                 </Grid.RowDefinitions>
                 <TextBlock Text="Radio (km)" FontSize="10" Margin="0,0,0,0"
                            VerticalAlignment="Center" FontWeight="Medium"/>
-                <TextBox Grid.Column="1" Width="100" Height="25" VerticalAlignment="Center"
+                <TextBox Grid.Column="1" Width="90" Height="25" VerticalAlignment="Center"
                           x:Name="TbxRadio" VerticalContentAlignment="Center" PreviewTextInput="TbxRadio_PreviewTextInput" PreviewKeyDown="TbxRadio_PreviewKeyDown"/>
                 <TextBlock Grid.Row="1" Text="Zona" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
-                <ComboBox Grid.Row="1" Grid.Column="1" Width="100" Height="25" 
-                          VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded"  />
+                <ComboBox Grid.Row="1" Grid.Column="1" Width="90" Height="25" 
+                          VerticalAlignment="Center"  x:Name="CbxZona" Loaded="CbxZona_Loaded" IsEnabled="False" />
                 <TextBlock Grid.Row="2" Text="Sistema" FontSize="10" Margin="0,0,0,0" VerticalAlignment="Center" FontWeight="Medium"/>
-                <ComboBox Grid.Row="2" Grid.Column="2" Width="100" Height="25" 
-                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" />
+                <ComboBox Grid.Row="2" Grid.Column="2" Width="90" Height="25" 
+                          VerticalAlignment="Center" x:Name="CbxSistema" Loaded="CbxSistema_Loaded" SelectionChanged="CbxSistema_SelectionChanged" />
             </Grid>
         </Grid>
 

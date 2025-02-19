@@ -1,0 +1,191 @@
+﻿<Window x:Class="SigcatminProAddin.View.Toolbars.Evaluacion.UI.ObservacionesCartaIgnWpf"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SigcatminProAddin.View.Toolbars.Evaluacion.UI"
+        mc:Ignorable="d"
+        xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
+        WindowStartupLocation="CenterScreen" Background="#F3F3F3"
+        ResizeMode="NoResize"
+        Title="VerCapasWpf" Height="500" Width="410" WindowStyle="None">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/SigcatminProAddin;component/View/Toolbars/Evaluacion/EvaluacionGalleryTemplate.xaml"/>
+                <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+        <Grid Background="#006DA0" Height="50" VerticalAlignment="Top" HorizontalAlignment="Stretch"
+                x:Name="gridHeader" Margin="0,0,0,0" MouseLeftButtonDown="gridHeader_MouseLeftButtonDown"  >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="130"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="SIGCATMIN" Foreground="White" FontSize="16" 
+                FontWeight="Bold" Margin="0,0,0,0" VerticalAlignment="Center"
+                HorizontalAlignment="Center"/>
+                        <TextBlock Text="Sistema de Graficación de Catastro Minero" TextWrapping="Wrap"
+                Foreground="White" FontSize="12" Grid.Column="2" FontFamily="Roboto"
+                Margin="0,0,0,0" VerticalAlignment="Center" TextAlignment="Right"/>
+        </Grid>
+        <!-- Header -->
+        <TextBlock Grid.Row="1" Text="Observaciones Carta IGN" FontWeight="Bold" VerticalAlignment="Center"
+                   FontSize="14" TextAlignment="Center" Margin="0,10,0,10" FontFamily="Roboto"/>
+
+        <!-- Main CheckBox Section -->
+        <Grid Grid.Row="2" Margin="0,0,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <!-- Zona Agrícola -->
+            <GroupBox Header="Zona Agrícola" Grid.Column="0" Margin="5" FontFamily="Roboto">
+                <StackPanel>
+                    <RadioButton x:Name="checked1" Content="Zona Agrícola Total" 
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                    <RadioButton x:Name="checked2" Content="Zona Agrícola Parcial" 
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Recubrimiento Aerofotográfico -->
+            <GroupBox Header="Recubrimiento Aerofotográfico" Grid.Column="0" Grid.Row="3" Margin="5"
+                      FontFamily="Roboto" VerticalAlignment="Center">
+                <StackPanel>
+                    <RadioButton Content="Sin Recubrimiento Total" x:Name="checked9"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                    <RadioButton Content="Con Recubrimiento Parcial" x:Name="checked10"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Dominio Marítimo -->
+            <GroupBox Header="Dominio Marítimo" Grid.Column="2" Margin="5" FontFamily="Roboto">
+                <StackPanel>
+                    <RadioButton Content="Dominio Marítimo Total" x:Name="checked3"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                    <RadioButton Content="Dominio Marítimo Parcial" x:Name="checked4"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Carretera -->
+            <GroupBox Header="Carretera" Grid.Column="0" Grid.Row="2" Margin="5" FontFamily="Roboto"
+                      VerticalAlignment="Center">
+                <StackPanel>
+                    <RadioButton Content="Carretera Asfaltada" x:Name="checked5"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                    <RadioButton Content="Carretera Afirmada" x:Name="checked6"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Zona de Bosques -->
+            <GroupBox Header="Zona de Bosques" Grid.Column="0" Grid.Row="1" Margin="5" FontFamily="Roboto"
+                      VerticalContentAlignment="Center" VerticalAlignment="Center">
+                <StackPanel>
+                    <RadioButton Content="Zona de Bosque Total" x:Name="checked7"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                    <RadioButton Content="Zona de Bosque Parcial" x:Name="checked8"
+                                 FontFamily="Roboto" FontSize="11" Margin="2"
+                                 Style="{DynamicResource RadioButtonAsCheckBox}"/>
+                </StackPanel>
+            </GroupBox>
+
+            <!-- Otros -->
+            <GroupBox Header="Otros" Grid.Column="2" Grid.Row="1" Margin="5" Grid.RowSpan="3"
+                      FontFamily="Roboto" VerticalContentAlignment="Center" VerticalAlignment="Center">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <CheckBox Content="Río(s)" FontFamily="Roboto" FontSize="11" x:Name="checked11"
+                              Grid.Column="0" Grid.Row="0" Margin="2" Checked="checked11_Checked" Unchecked="checked11_Unchecked"/>
+                    <TextBox FontFamily="Roboto" FontSize="11" Grid.ColumnSpan="2"
+                             Grid.Column="0" Grid.Row="1" Visibility="Collapsed" Margin="2" x:Name="txtRio"
+                             VerticalContentAlignment="Center"/>
+                    <CheckBox Content="Laguna(s)" FontFamily="Roboto" FontSize="11" x:Name="checked13"
+                              Grid.Column="0" Grid.Row="2" Margin="2" Checked="checked13_Checked" Unchecked="checked13_Unchecked"/>
+                    <TextBox FontFamily="Roboto" FontSize="11" Grid.ColumnSpan="2" 
+                              Grid.Column="0" Grid.Row="3" Visibility="Collapsed" Margin="2"
+                             VerticalContentAlignment="Center" x:Name="txtLaguna"/>
+                    <CheckBox Content="Línea Ferrea" FontFamily="Roboto" FontSize="11" x:Name="checked15"
+                              Grid.Column="0" Grid.Row="4" Grid.ColumnSpan="2" Margin="2"/>
+                    <CheckBox Content="Línea de Frontera" FontFamily="Roboto" FontSize="11" x:Name="checked19"
+                              Grid.Column="0" Grid.Row="5" Grid.ColumnSpan="2" Margin="2"/>
+                    <CheckBox Content="Línea de Alta Tensión Eléctrica" FontFamily="Roboto" FontSize="11"
+                              Grid.Column="0" Grid.Row="6" Grid.ColumnSpan="2" Margin="2" x:Name="checked16"/>
+                    <CheckBox Content="Restos Arqueológicos" FontFamily="Roboto" FontSize="11"
+                              Grid.Column="0" Grid.Row="7" Grid.ColumnSpan="2" Margin="2" x:Name="checked17"/>
+                    <CheckBox Content="Canal" FontFamily="Roboto" FontSize="11"
+                              Grid.Column="0" Grid.Row="8" Margin="2" x:Name="checked12"/>
+                    <CheckBox Content="Zona de Traslape" FontFamily="Roboto" FontSize="11" x:Name="checked18"
+                              Grid.Column="0" Grid.Row="9" Grid.ColumnSpan="2" Margin="2"/>
+                    <CheckBox Content="Reservorio" FontFamily="Roboto" FontSize="11"
+                              Grid.Column="0" Grid.Row="10" Margin="2" x:Name="checked14"/>
+                    <CheckBox Content="Posible Área Urbana/Exp. Urbana" FontFamily="Roboto" FontSize="11"
+                              Grid.Column="0" Grid.Row="11" Grid.ColumnSpan="2" Margin="2" x:Name="checked20" Checked="checked20_Checked" Unchecked="checked20_Unchecked"/>
+                    <TextBox x:Name="txtAreaUrbana" FontFamily="Roboto" FontSize="11" Grid.ColumnSpan="2"
+                             Grid.Column="0" Grid.Row="12" Visibility="Collapsed" Margin="2"
+                             VerticalContentAlignment="Center"/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+
+        <!-- Footer -->
+        <Button Content="Salir" Width="50" Height="25" Background="White" BorderBrush="#006DA0"
+                Foreground="#006DA0" Grid.Row="3" HorizontalAlignment="Left" Margin="15,0,0,0"
+                Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+                HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
+                VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" />    
+        <Button x:Name="btnGuardar" Content="Guardar" Margin="0,0,15,0" Width="80" Height="25"
+                Grid.Row="3" Grid.ColumnSpan="2" VerticalAlignment="Center" Foreground="White"
+                Background="#006DA0" BorderBrush="White" FontFamily="Roboto" FontSize="10"
+                HorizontalAlignment="Right" IsEnabled="true"
+                FontWeight="bold" Style="{DynamicResource Esri_Button}" Click="btnGuardar_Click" />
+    </Grid>
+</Window>
