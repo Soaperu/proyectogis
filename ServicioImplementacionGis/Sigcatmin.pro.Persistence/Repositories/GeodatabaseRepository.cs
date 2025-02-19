@@ -1,4 +1,5 @@
 ﻿using ArcGIS.Core.Data;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Domain.Interfaces.Repositories;
 using Sigcatmin.prop.Domain.Settings;
@@ -15,7 +16,6 @@ namespace Sigcatmin.pro.Persistence.Repositories
             _authService = authService;
 
         }
-
         public async Task<Geodatabase> ConnectToDatabaseAsync(string instance, string version)
         {
             return await Task.Run(() =>
@@ -33,6 +33,11 @@ namespace Sigcatmin.pro.Persistence.Repositories
                   return new Geodatabase(connectionProperties);
 
               });
+        }
+
+        public async Task<FeatureClass> OpenFeatureClassAsync(Geodatabase geodatabase, string featureClassName)
+        {
+            return await QueuedTask.Run(() => geodatabase.OpenDataset<FeatureClass>(featureClassName));
         }
     }
 }

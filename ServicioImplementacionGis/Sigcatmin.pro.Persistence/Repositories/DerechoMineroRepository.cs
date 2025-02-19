@@ -23,15 +23,17 @@ namespace Sigcatmin.pro.Persistence.Repositories
             _DdConnectionSettings = options.Value;
             _dbManager = dbManager;
         }
-        public async Task<string> VerifyDatumAsync()
+        public async Task<string> VerifyDatumAsync(string code)
         {
             var parameters = new OracleDynamicParameters();
+            parameters.Add("V_CODIGO", code, OracleMappingType.Varchar2, ParameterDirection.Input, size: 10);
             parameters.Add("VO_VA_RETORNO", null, OracleMappingType.Varchar2, ParameterDirection.Output, size: 500);
 
-            using var connection = await _dbManager.GetConnectionAsync(_DdConnectionSettings.Oracle);
+           
+            using var connection = await _dbManager.GetConnectionAsync(_DdConnectionSettings.Geocat);
 
             await connection.ExecuteAsync(
-                 EvaluacionGISProcedures.ProcedureCuentaRegistros,
+                 DerechoMineroProcedures.VerifyDatum,
                  parameters,
                  commandType: CommandType.StoredProcedure
              );

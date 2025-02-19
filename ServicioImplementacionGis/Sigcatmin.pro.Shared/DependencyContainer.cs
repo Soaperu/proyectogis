@@ -34,10 +34,13 @@ namespace Sigcatmin.pro.Shared
             services.AddTransient<IUserSessionService, UserSessionService>();
             services.AddTransient<IMapService, MapService>();
             services.AddTransient<IMapViewService, ArcGISMapViewService>();
-
+            services.AddTransient<IFeatureLayerServiceFactory, FeatureLayerServiceFactory>();
+            
             services.AddScoped<IMapManager, MapManager>();
             services.AddSingleton<ICacheService, CacheService>();
 
+
+            
 
             return services;
         }

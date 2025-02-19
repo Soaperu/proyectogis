@@ -8,6 +8,6 @@ namespace Sigcatmin.pro.Domain.Interfaces.Repositories
 {
     public interface IDerechoMineroRepository
     {
-        Task<string> VerifyDatumAsync();
+        Task<string> VerifyDatumAsync(string code);
     }
 }
