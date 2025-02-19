@@ -1,6 +1,4 @@
-﻿
-using System.Runtime.CompilerServices;
-using ArcGIS.Desktop.Mapping;
+﻿using ArcGIS.Desktop.Mapping;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Application.Managers;
 using Sigcatmin.pro.Application.Contracts.Constants;
@@ -8,6 +6,8 @@ using Sigcatmin.pro.Application.Contracts.Enums;
 using Sigcatmin.pro.Application.Contracts.Requests;
 using Sigcatmin.pro.Domain.Interfaces.Repositories;
 using Sigcatmin.pro.Domain.Settings;
+using ArcGIS.Desktop.Framework.Threading.Tasks;
+using ArcGIS.Core.Data;
 
 namespace Sigcatmin.pro.Application.UsesCases
 {
@@ -45,17 +45,16 @@ namespace Sigcatmin.pro.Application.UsesCases
         {
             _mapService.CreateMap(request.MapName);
             Map activeMap = await _mapManager.EnsureMapViewIsActiveAsync(request.MapName);
+
             var geodatabase = await _geodatabaseRepository.ConnectToDatabaseAsync(
                 _geoDatabaseSettings.Instance,
                 _geoDatabaseSettings.Version);
 
             //string zonaDM = await _derechoMineroRepository.VerifyDatumAsync(request.Codigo);
 
-            IFeatureLayerService featureLayerService = _featureLayerServiceFactory.CreateFeatureLayerService(geodatabase, activeMap);
+            IFeatureLayerService featureLayerService = _featureLayerServiceFactory.CreateFeatureLayerService(geodatabase, activeMap, request.Zona, "99");
 
-            string currentFeatureName = _featureClassNameResolver.ResolveFeatureClassName(FeatureClassConstants.gstrFC_CatastroWGS84, request.Zona);
-
-            await featureLayerService.LoadFeatureLayerAsync(currentFeatureName, request.Zona, false);
+             await featureLayerService.LoadFeatureLayerAsync(FeatureClassConstants.gstrFC_CatastroWGS84 + request.Zona, false);
 
             SetCacheValues(request);
 

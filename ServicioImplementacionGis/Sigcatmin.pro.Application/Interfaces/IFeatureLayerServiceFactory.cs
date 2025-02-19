@@ -5,6 +5,6 @@ namespace Sigcatmin.pro.Application.Interfaces
 {
     public interface IFeatureLayerServiceFactory
     {
-        IFeatureLayerService CreateFeatureLayerService(Geodatabase geodatabase, Map activeMap);
+        IFeatureLayerService CreateFeatureLayerService(Geodatabase geodatabase, Map activeMap,string zona, string regionSelected);
     }
 }

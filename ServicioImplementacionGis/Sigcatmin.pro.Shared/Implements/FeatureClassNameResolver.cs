@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sigcatmin.pro.Application.Contracts.Dtos;
 using Sigcatmin.pro.Application.Contracts.Models;
 using Sigcatmin.pro.Application.Interfaces;
 
@@ -17,7 +18,7 @@ namespace Sigcatmin.pro.Shared.Implements
             _featureClassMappings = featureClassMappings;
         }
 
-        public string ResolveFeatureClassName(string requestedFeatureClassName, string zona)
+        public FeatureClassNameDto ResolveFeatureClassName(string requestedFeatureClassName, string zona, string regionSelected)
         {
             var featureClassInfo = _featureClassMappings.FirstOrDefault(f =>
                 string.Equals(f.FeatureClassName, requestedFeatureClassName, StringComparison.OrdinalIgnoreCase) ||
@@ -35,7 +36,12 @@ namespace Sigcatmin.pro.Shared.Implements
                 };
             }
 
-            return featureClassInfo?.FeatureClassName ?? featureClassInfo?.FeatureClassNameGenerator?.Invoke(zona) ?? requestedFeatureClassName + zona;
+            string layerName = featureClassInfo.LayerName ?? featureClassInfo.LayerNameGenerator?.Invoke(regionSelected);
+
+            string featureName = featureClassInfo?.FeatureClassName ?? featureClassInfo?.FeatureClassNameGenerator?.Invoke(zona) ?? requestedFeatureClassName;
+
+            return new FeatureClassNameDto(featureName, layerName);
         }
+
     }
 }

@@ -18,7 +18,7 @@ namespace Sigcatmin.pro.Persistence.Repositories
         }
         public async Task<Geodatabase> ConnectToDatabaseAsync(string instance, string version)
         {
-            return await Task.Run(() =>
+            return await QueuedTask.Run(() =>
               {
                   var userSession = _authService.GetSession();
 

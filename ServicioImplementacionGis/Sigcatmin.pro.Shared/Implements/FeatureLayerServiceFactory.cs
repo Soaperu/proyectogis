@@ -6,9 +6,16 @@ namespace Sigcatmin.pro.Shared.Implements
 {
     public class FeatureLayerServiceFactory : IFeatureLayerServiceFactory
     {
-        public IFeatureLayerService CreateFeatureLayerService(Geodatabase geodatabase, Map activeMap)
+        private readonly IFeatureClassNameResolver _featureClassNameResolver;
+
+        public FeatureLayerServiceFactory(IFeatureClassNameResolver featureClassNameResolver)
         {
-            return new FeatureLayerService(geodatabase, activeMap);
+            _featureClassNameResolver = featureClassNameResolver;
         }
+        public IFeatureLayerService CreateFeatureLayerService(Geodatabase geodatabase, Map activeMap, string zona, string regionSelected)
+        {
+            return new FeatureLayerService(geodatabase, activeMap, zona, regionSelected, _featureClassNameResolver);
+        }
+
     }
 }

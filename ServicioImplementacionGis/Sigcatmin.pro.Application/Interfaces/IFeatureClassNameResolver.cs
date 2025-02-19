@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Sigcatmin.pro.Application.Contracts.Dtos;
 
 namespace Sigcatmin.pro.Application.Interfaces
 {
     public interface IFeatureClassNameResolver
     {
-        string ResolveFeatureClassName(string requestedFeatureClassName, string zona);
+        FeatureClassNameDto ResolveFeatureClassName(string requestedFeatureClassName, string zona, string regionSelected);
     }
 }

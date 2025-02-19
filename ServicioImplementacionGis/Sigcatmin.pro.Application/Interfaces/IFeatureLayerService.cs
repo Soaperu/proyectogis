@@ -9,6 +9,6 @@ namespace Sigcatmin.pro.Application.Interfaces
 {
     public interface IFeatureLayerService
     {
-        Task<FeatureLayer> LoadFeatureLayerAsync(string featureClassName, string zona, bool isVisible);
+        Task<FeatureLayer> LoadFeatureLayerAsync(string featureClassName, bool isVisible, string queryClause = "1=1");
     }
 }
