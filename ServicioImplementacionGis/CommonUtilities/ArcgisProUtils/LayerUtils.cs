@@ -122,6 +122,42 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static async Task RemoveLayersFromMapNameAsync(string nameMap, List<string> layersToRemove = null)
+        {
+            if (layersToRemove == null)
+            {
+                layersToRemove = new List<string>();
+            }
+
+            await QueuedTask.Run(async() =>
+            {
+                var targetMap = await MapUtils.FindMapByNameAsync(nameMap);
+
+                var layers = targetMap.GetLayersAsFlattenedList();
+
+                if (layersToRemove.Count == 0)
+                {
+                    // Si la lista de capas está vacía, eliminar todas las capas
+                    foreach (var layer in layers)
+                    {
+                        targetMap.RemoveLayer(layer);
+                    }
+                }
+                else
+                {
+                    // Eliminar solo las capas que están en la lista layersToRemove
+                    foreach (var layer in layers)
+                    {
+                        // Verificar si el nombre de la capa está en la lista
+                        if (layersToRemove.Contains(layer.Name, StringComparer.OrdinalIgnoreCase))
+                        {
+                            targetMap.RemoveLayer(layer);
+                        }
+                    }
+                }
+            });
+        }
+
         public static async void SelectSetAndZoomAsync(FeatureLayer layer, bool selected=false, string whereClause = "")
         {
             await QueuedTask.Run(() =>

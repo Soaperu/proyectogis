@@ -188,14 +188,14 @@ namespace SigcatminProAddin.Models.Constants
         {
             public const int Id = 40;
             public const int Codigo = 70;
-            public const int Zona = 50;
-            public const int Clase = 50;
+            public const int Zona = 40;
+            public const int Clase = 40;
             public const int Archivo = 100;
             public const int ModReg = 100;
             public const int Usuario = 100;
             public const int FecReg = 80;
-            public const int CodEst = 80;
-            public const int Mineria = 100;
+            public const int CodEst = 50;
+            public const int Mineria = 60;
             public const int Proc = 50;
         }
 

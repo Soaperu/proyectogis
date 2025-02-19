@@ -84,5 +84,21 @@ namespace CommonUtilities
 
             return null;
         }
+
+        // Función para obtener la subcadena después de la última barra invertida
+        public static string GetSubstringAfterLastBackslash(string input)
+        {
+            // Encuentra la última posición del carácter '\'
+            int lastIndex = input.LastIndexOf('\\');
+
+            // Si la barra invertida existe, se devuelve la subcadena posterior
+            if (lastIndex >= 0)
+            {
+                return input.Substring(lastIndex + 1);
+            }
+
+            // Si no se encuentra una barra invertida, devuelve la cadena completa
+            return input;
+        }
     }
 }

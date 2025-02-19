@@ -1085,19 +1085,6 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-
-
-        //*----------------------*
-
-
-
-
-        ///Metodos aun no migrados
-
-
-
-
-        //*----------------------*
         public DataTable GetUbigeoData2(string code) // F_Obtiene_Datos_UBIGEO
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_UBIGEO";
@@ -1178,20 +1165,6 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
-
-        //*----------------------*
-
-
-
-
-
-        ///Metodos aun no migrados
-
-
-
-
-        //*----------------------*
-
 
         public string VerifyDatumDM(string code) // FT_verifica_datumdm
         {
@@ -1744,8 +1717,39 @@ namespace DatabaseConnector
             //return ExecuteStoredProcedureWithReturnValue(storedProcedure, parameters);
         }
 
+        public string GetShapefilePath(string code, string shapefileName) // P_SEL_PATH_SHAPEFILE
+        {
+            string storedProcedure = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_PATH_SHAPEFILE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CODIGO", OracleDbType.Varchar2, 20) { Value = code },
+                new OracleParameter("NAMESHP", OracleDbType.Varchar2, 20) { Value = shapefileName }
+            };
 
+            return ExecuteScalar(storedProcedure, parameters);
+        }
 
+        public string GetFeatureName(string code, int option, string datum, string zone) // P_SEL_NOMBRE_FEATURE
+        {
+            string storedProcedure = "DATA_CAT.PACK_DBA_GIS_ARE_PROD.P_SEL_NOMBRE_FEATURE";
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CODIGO", OracleDbType.Varchar2, 20) { Value = code },
+                new OracleParameter("OPCION", OracleDbType.Int32) { Value = option },
+                new OracleParameter("DATUM", OracleDbType.Varchar2, 1) { Value = datum },
+                new OracleParameter("ZONA", OracleDbType.Varchar2, 2) { Value = zone }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
+        public DataTable GetUserFilter() // P_SEL_FILTRO_USUARIO
+        {
+            string storedProcedure = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_FILTRO_USUARIO";
+            var parameters = new OracleParameter[] { };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
 
     }
 

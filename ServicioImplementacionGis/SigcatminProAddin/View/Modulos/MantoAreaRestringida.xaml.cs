@@ -6,8 +6,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Media;
 using ArcGIS.Core.Data;
 using ArcGIS.Core.Events;
 using ArcGIS.Desktop.Mapping;
@@ -17,25 +15,22 @@ using CommonUtilities.ArcgisProUtils;
 using DatabaseConnector;
 using DevExpress.Xpf.Grid;
 using SigcatminProAddin.Utils.UIUtils;
-using FlowDirection = System.Windows.FlowDirection;
 using System.Text.RegularExpressions;
 using SigcatminProAddin.Models;
 using SigcatminProAddin.Models.Constants;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Threading.Tasks;
-using ArcGIS.Core.CIM;
-using DevExpress.Xpf.Grid.GroupRowLayout;
-using DevExpress.DataAccess.Native.Web;
-using Newtonsoft.Json;
-using CommonUtilities.ArcgisProUtils.Models;
 
-//using DevExpress.CodeParser;
-//using DevExpress.XtraRichEdit.Commands;
-//using DevExpress.XtraCharts.Native;
-using ArcGIS.Desktop.Core.Utilities;
-using DevExpress.XtraCharts.Native;
-using DevExpress.Charts.Native;
-using DevExpress.Utils.CommonDialogs;
+using DevExpress.Xpf.Editors.Settings;
+using System.Windows.Data;
+using DevExpress.Utils;
+using DevExpress.Xpf.Editors;
+using ArcGIS.Core.Geometry;
+using System.Security.Policy;
+using DevExpress.Pdf.Xmp;
+using DevExpress.XtraPrinting.Native;
+using DevExpress.Xpo.DB.Helpers;
+//using DevExpress.Data;
 
 
 
@@ -50,7 +45,7 @@ namespace SigcatminProAddin.View.Modulos
         public Geodatabase geodatabase;
         private DatabaseConnection dbconn;
         public DatabaseHandler dataBaseHandler;
-
+        string mapName = "Manto Area Restringida";
         // Definición de nombres de campos
         int opt;
         private string _FIELD_CG_CODIGO = "CODIGO";
@@ -107,6 +102,7 @@ namespace SigcatminProAddin.View.Modulos
         public MantoAreaRestringida()
         {
             InitializeComponent();
+            CurrentUser();
             ConfigureDataGridResultColumns();
             ConfigureDataGridClassTemporales();
             ConfigureDataGridClassProduccion();
@@ -120,28 +116,10 @@ namespace SigcatminProAddin.View.Modulos
             cargar_combo();
         }
 
-        //private void btnResePath_Click(object sender, RoutedEventArgs e)
-        //{
-        //    // Crear una nueva instancia del FolderBrowserDialog
-        //    using (IFolderBrowserDialog folderDialog = new FolderBrowserDialog())
-        //    {
-        //        // Establecer el título del diálogo
-        //        folderDialog.Description = "Selecciona una Carpeta";
-
-        //        // Mostrar el diálogo
-        //        DialogResult result = folderDialog.ShowDialog();
-
-        //        // Si el usuario selecciona una carpeta (no cancela)
-        //        if (result == DialogResult.OK)
-        //        {
-        //            // Asignar la ruta de la carpeta seleccionada al TextBox
-        //            txtResePath.Text = folderDialog.SelectedPath;
-        //        }
-        //    }
-        //}
-
-
-
+        private void CurrentUser()
+        {
+            CurrentUserLabel.Text = GlobalVariables.ToTitleCase(AppConfig.fullUserName);
+        }
 
 
         private void Page_Loaded(object sender, RoutedEventArgs e)
@@ -155,20 +133,9 @@ namespace SigcatminProAddin.View.Modulos
             GetOptionCBox(CbxEnv, dmrRecords);
             cambiaOpcionesCboxFeatures();
 
+            dmrRecords = dataBaseHandler.GetUserFilter();
+            GetOptionCBox(CbxUsuario, dmrRecords);
             /**/
-            List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
-            cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
-            cbp.Add(new ComboBoxPairs("FLAT1065", 1));
-            cbp.Add(new ComboBoxPairs("CARI0213", 2));
-            cbp.Add(new ComboBoxPairs("WVAL0398", 3));
-            cbp.Add(new ComboBoxPairs("JFLO0589", 4));
-            cbp.Add(new ComboBoxPairs("CQUI1819", 5));
-
-            // Asignar la lista al ComboBox
-            CbxUsuario.DisplayMemberPath = "_Key";
-            CbxUsuario.SelectedValuePath = "_Value";
-            CbxUsuario.ItemsSource = cbp;
-
 
             List<ComboBoxPairs> cbpF = new List<ComboBoxPairs>();
             cbpF.Add(new ComboBoxPairs("--Seleccionar--", 0));
@@ -181,8 +148,14 @@ namespace SigcatminProAddin.View.Modulos
             CbxFiltro.SelectedValuePath = "_Value";
             CbxFiltro.ItemsSource = cbpF;
 
+            List<ComboBoxPairs> cbpA = new List<ComboBoxPairs>();
+            cbpA.Add(new ComboBoxPairs("Zona Reservada", 0));
+            cbpA.Add(new ComboBoxPairs("Zona Urbana", 1));
+            // Asignar la lista al ComboBox
+            CbxActualiza.DisplayMemberPath = "_Key";
+            CbxActualiza.SelectedValuePath = "_Value";
+            CbxActualiza.ItemsSource = cbpA;
             /**/
-
 
             CbxUsuario.SelectedIndex = 1;
             CbxFiltro.SelectedIndex = 1;
@@ -191,8 +164,6 @@ namespace SigcatminProAddin.View.Modulos
             CbxEnv.SelectedIndex = 1;
             CbxFeatures.SelectedIndex = 1;
             CbxFiltroTipo.SelectedIndex = 1;
-
-
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, DevExpress.Xpf.Grid.GridColumnDataEventArgs e)
@@ -233,37 +204,7 @@ namespace SigcatminProAddin.View.Modulos
                         {
 
                         }
-                    }
-
-                    ////'Si la columna PROCESAR no existe el evento debe finalizar
-                    //if (!DataGridResult.Columns.Any(c => c.FieldName == _FIELD_PROCESAR))
-                    //{
-                    //    return;
-                    //}
-                    ///*****/
-
-
-                    //var focusedRowData = e.NewRow as YourDataModel; // Asegúrate de que 'YourDataModel' es el tipo de datos que usas en la grilla
-
-                    //if (focusedRowData != null)
-                    //{
-                    //    // Cambiar el color de la fila seleccionada
-                    //    var focusedRowHandle = e.NewRowHandle;
-                    //    DataGridResultTableView.SetRowCellValue(focusedRowHandle, "Background", new SolidColorBrush(Colors.Blue)); // Cambiar color a azul
-                    //}
-
-
-
-
-
-                    //'Si la columna a PROCESAR es seleccionada se debe esperar a que se cambie el checkbox para avanzar 
-                    //if (e.Column != null && e.Column.FieldName == _FIELD_PROCESAR)
-
-                    //{
-                    //    DataGridResult.View.FocusedRowHandle = focusedRowHandle;
-                    //    DataGridResult.View.PostEditor(); // Asegura que la edición termine
-                    //    //obtenerDetalle(idreg);
-                    //}
+                    }                  
                 }
             }
         }
@@ -392,8 +333,45 @@ namespace SigcatminProAddin.View.Modulos
             {
                 FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Proc,
                 Header = DatagridResultConstantsDM.HeadersMantoAR.Proc,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Proc
+                Width = DatagridResultConstantsDM.WidthsMantoAR.Proc,
+                UnboundType = DevExpress.Data.UnboundColumnType.Boolean,
+                AllowEditing = DefaultBoolean.True,
+                EditSettings = new CheckEditSettings
+                {
+
+                    //IsThreeState = false,     // Permite un estado indeterminado (null)
+                    AllowNullInput = false,   // Permite valores nulos (indeterminado)
+                    
+                }
             };
+
+            // CELDA: Checkbox que muestra y actualiza el valor unbound
+            //procColumn.CellTemplate = CreateCellTemplate();
+            // Crear la plantilla de edición (ControlTemplate) para el CheckBox
+            // con un FrameworkElementFactory (WPF).
+            //var editTemplate = new ControlTemplate(typeof(CheckEdit));
+            //var checkBoxFactory = new FrameworkElementFactory(typeof(CheckEdit));
+            ////var isEnabledBinding = new Binding("IsEnabledSelection")
+            ////{
+            ////    Mode = BindingMode.OneTime,
+            ////};
+            ////checkBoxFactory.SetBinding(CheckEdit.IsEnabledProperty, isEnabledBinding);
+
+            //// Binding para IsChecked = "{Binding Path=IsSelectedObject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+            //var isCheckedBinding = new Binding("RowData.Row.Proc")
+            //{
+            //    Mode = BindingMode.TwoWay,
+            //    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            //};
+            //checkBoxFactory.SetBinding(CheckEdit.IsCheckedProperty, isCheckedBinding);
+
+            //// Asignar el árbol visual del template
+            //editTemplate.VisualTree = checkBoxFactory;
+
+            //// 3) Asignar la plantilla a la columna
+            //procColumn.EditTemplate = editTemplate;
+
+            // --- DisplayTemplate (cuando la celda NO está en edición) ---
 
             // Agregar columnas al GridControl
             DataGridResult.Columns.Add(idColumn);
@@ -408,6 +386,19 @@ namespace SigcatminProAddin.View.Modulos
             DataGridResult.Columns.Add(mineriaColumn);
             DataGridResult.Columns.Add(procColumn);
 
+        }
+
+        private DataTemplate CreateCellTemplate()
+        {
+            var dt = new DataTemplate();
+            var f = new FrameworkElementFactory(typeof(CheckEdit));
+            f.SetBinding(CheckEdit.IsCheckedProperty, new Binding("Value")
+            {
+                Mode = BindingMode.TwoWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+            dt.VisualTree = f;
+            return dt;
         }
 
         private void ConfigureDataGridClassTemporales()
@@ -1106,15 +1097,6 @@ namespace SigcatminProAddin.View.Modulos
             dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_CREG.ToString());
             GetOptionCBox(CbxFiltroTipo, dmrRecords);
 
-
-            //dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO.ToString());
-            //GetOptionCBox(CbxFiltro, dmrRecords);
-
-            //dmrRecords = dataBaseHandler.GetFiltroUsuario();
-            //GetOptionCBox(CbxUsuario, dmrRecords);
-
-            //CbxUsuario.SelectedValue = "FLAT1065";
-
         }
 
         public void GetOptionCBox(ComboBox cbox, DataTable dgrid)
@@ -1287,7 +1269,7 @@ namespace SigcatminProAddin.View.Modulos
             try
             {
                 int _tipo = Convert.ToInt32(CbxFiltroControlReg.SelectedValue);
-                string _feature = CbxFeatures.SelectedValue.ToString();
+                string _feature = CbxFeatures.SelectedValue?.ToString();
 
                 if (_tipo == _FILT_ARE_RESE)
                 {
@@ -1382,28 +1364,35 @@ namespace SigcatminProAddin.View.Modulos
 
         private void btnBuscarHistorico_Click_1(object sender, RoutedEventArgs e)
         {
-
-            string codigo = txtBuscaHistorico.Text;
-            string fecIni = DtpFecIni.Text;
-            string fecFin = DtpFecFin.Text;
-
-            if (codigo == "")
+            try
             {
-                codigo = "#";
-            }
-            if (fecIni == "")
-            {
-                fecIni = "#";
-            }
+                string codigo = txtBuscaHistorico.Text;
+                string fecIni = DtpFecIni.DateTime.ToString("yyyy/MM/dd");
+                string fecFin = DtpFecFin.DateTime.ToString("yyyy/MM/dd");
 
-            if (fecFin == "")
-            {
-                fecFin = "#";
-            }
+                if (codigo == "")
+                {
+                    codigo = "#";
+                }
+                if (fecIni == "")
+                {
+                    fecIni = "#";
+                }
 
-            DataTable _table;
-            _table = dataBaseHandler.GetObtieneFiltroHistorico(codigo, fecIni, fecFin);
-            DGResHistorico.ItemsSource = _table;
+                if (fecFin == "")
+                {
+                    fecFin = "#";
+                }
+
+                DataTable _table;
+                _table = dataBaseHandler.GetObtieneFiltroHistorico(codigo, fecIni, fecFin);
+                DGResHistorico.ItemsSource = _table;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            
         }
 
 
@@ -1476,9 +1465,9 @@ namespace SigcatminProAddin.View.Modulos
             var rows = 0;
             if (CbxFiltro.SelectedItem is ComboBoxPairs selectedOpcion)
             {
-                if (CbxUsuario.SelectedItem is ComboBoxPairs selectedUsuario)
+                if (CbxUsuario.SelectedItem is DataRowView selectedUsuario)
                 {
-                    var dmrRecords = dataBaseHandler.GetProGisFiltro($"{selectedOpcion._Value}", $"{selectedUsuario._Key}");
+                    var dmrRecords = dataBaseHandler.GetProGisFiltro($"{selectedOpcion._Value}", $"{selectedUsuario.Row.ItemArray[0]}");
                     rows = dmrRecords.Rows.Count;
                     DataGridResult.ItemsSource = dmrRecords.DefaultView;
                 }
@@ -1492,79 +1481,6 @@ namespace SigcatminProAddin.View.Modulos
                 MessageBox.Show("Seleccione un valor válido opción.");
             }
             LblCountRecords.Content = "Se encontraron " + rows.ToString() + " registros";
-
-            // Loop through the columns of the DataGridView (assuming it's a DevExpress control)
-            //for (int i = 0; i < DataGridResult.Columns.Count; i++)
-            //{
-            //    // Disable sorting for all columns
-            //    //DataGridResult.Columns[i].OptionsColumn.AllowSort = DevExpress.Utils.DefaultBoolean.False;
-
-            //    // Set ReadOnly property based on column name
-            //    if (DataGridResult.Columns[i].Name == _FIELD_PROCESAR)
-            //    {
-            //        // Make this column editable
-            //        //DataGridResult.Columns[i].OptionsColumn.ReadOnly = false;
-            //    }
-            //    else
-            //    {
-            //        // Make all other columns read-only
-            //        //DataGridResult.Columns[i].OptionsColumn.ReadOnly = true;
-            //    }
-            //}
-
-            //foreach (int rowHandle in DataGridResult.DataController.GetAllFilteredAndSortedRows())
-            //{
-            //    // Verificar si el rowHandle es válido
-            //    if (!DataGridResult.IsValidRowHandle(rowHandle))
-            //    {
-            //        Console.WriteLine($"RowHandle inválido: {rowHandle}");
-            //        continue;
-            //    }
-
-            //    // Verificar si el rowHandle corresponde a una fila de datos
-            //    if (!DataGridResult.IsDataRow(rowHandle))
-            //    {
-            //        Console.WriteLine($"RowHandle {rowHandle} no es una fila de datos.");
-            //        continue;
-            //    }
-
-            //    // Verificar que la columna _FIELD_RE_CODEST existe
-            //    var column = DataGridResult.Columns.FirstOrDefault(c => c.FieldName == _FIELD_RE_CODEST);
-            //    if (column == null)
-            //    {
-            //        Console.WriteLine($"Error: La columna {_FIELD_RE_CODEST} no existe en el GridControl.");
-            //        continue;
-            //    }
-
-            //    // Obtener el valor de la celda
-            //    var estadoObj = DataGridResult.GetRowCellValue(rowHandle, _FIELD_RE_CODEST);
-            //    if (estadoObj == null || estadoObj == DBNull.Value)
-            //    {
-            //        Console.WriteLine($"Fila {rowHandle}: La celda {_FIELD_RE_CODEST} está vacía.");
-            //        continue;
-            //    }
-
-            //    Console.WriteLine($"Fila {rowHandle}: {_FIELD_RE_CODEST} = {estadoObj} ({estadoObj.GetType()})");
-
-            //    // Asegurarse de que el valor se pueda convertir a string para compararlo
-            //    var estado = estadoObj.ToString();
-
-            //    // Comparaciones y asignaciones
-            //    if (estado.Equals(_EST_PROCTEMP) || estado.Equals(_EST_PROCPROD))
-            //    {
-            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, true);
-            //    }
-            //    else if (estado.Equals(_EST_NOPROCTEMP) || estado.Equals(_EST_NOPROCPROD))
-            //    {
-            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, false);
-            //    }
-            //    else if (estado.Equals(_EST_ERRTEMP) || estado.Equals(_EST_ERRPROD))
-            //    {
-            //        DataGridResult.SetRowCellValue(rowHandle, _FIELD_PROCESAR, false);
-            //        DataGridResult.Columns[_FIELD_PROCESAR].OptionsColumn.ReadOnly = true;
-            //        DataGridResult.Appearance.Row.BackColor = System.Drawing.Color.Pink;
-            //    }
-            //}
 
         }
 
@@ -1662,13 +1578,138 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
- 
-       
+        private async void btnVizualizar_Click(object sender, RoutedEventArgs e)
+        {
+            // Obtener la vista principal como TableView
+            DevExpress.Xpf.Grid.TableView view = DataGridResult.View as DevExpress.Xpf.Grid.TableView;
+            if (view == null)
+                return;
+            
+            // Verificar si hay filas en el grid (VisibleRowCount = número de filas de datos visibles)
+            if (view.DataControl.VisibleRowCount == 0)
+            {
+                MessageBox.Show("No se encontraron registros",
+                                "Advertencia",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+                return;
+            }
+            int focusedRowHandle = DataGridResult.GetSelectedRowHandles()[0];
+            int[] selectedHandles = view.GetSelectedRowHandles();
+            if (selectedHandles == null || selectedHandles.Length == 0)
+            {
+                MessageBox.Show("No ha seleccionado ningun registro.",
+                                "Advertencia",
+                                MessageBoxButton.OK,
+                                MessageBoxImage.Information);
+                return;
+            }
+
+            // Extraer los valores de las celdas (asegúrate de que _FIELD_RE_ARCGRA, etc. 
+            // sean los nombres de columna correctos en FieldName)
+            string nameshp = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_ARCGRA)?.ToString();
+            string codeare = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_CG_CODIGO)?.ToString();
+            string estado = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_CODEST)?.ToString();
+
+            // Obtener el valor de cb_datum, cb_zona (según tu configuración de DataContext/SelectedValuePath)
+            int datum = Convert.ToInt32(CbxDatum.SelectedValue);
+            string zona = CbxZona.SelectedValue?.ToString();
 
 
+            var feature_shp = dataBaseHandler.GetShapefilePath(codeare, nameshp);
+            var sdeHelper = new DatabaseConnector.SdeConnectionGIS();
+            Geodatabase geodatabase = await sdeHelper.ConnectToOracleGeodatabaseAsync(AppConfig.serviceNameGis
+                                                                                        , AppConfig.userName
+                                                                                        , AppConfig.password);
+            // Lógica análoga a VB: If opt = _FILT_PROCTEMP Or _FILT_PROCPROD Or _FILT_ERRORES
+            if (opt == _FILT_PROCTEMP || opt == _FILT_PROCPROD || opt == _FILT_ERRORES)
+            {
+                if (int.Parse(estado) != _EST_ERRPROD)
+                {
+                    await MapUtils.CreateMapAsync(mapName); 
+                    Map map = await MapUtils.EnsureMapViewIsActiveAsync(mapName);
+                    var fLyr = await LayerUtils.AddLayerAsync(map, feature_shp);
+                    //_params.Clear();
+                    //_params.Add(feature_shp);
 
+                    //string result = ExecuteGP(_tool_gen_agregarfeaturetoc, _params);
+                    //string[] response = result.Split(';');
+                    //if (response[0] != "1")
+                    //{
+                    //    error_scripttool_as_messagebox(response[1]);
+                    //}
+                }
+            }
+                       
+            // If opt = _FILT_PROCPROD Or _FILT_PROCESADO Or _FILT_ERRORES
+            if (opt == _FILT_PROCPROD || opt == _FILT_PROCESADO || opt == _FILT_ERRORES)
+            {
+                string whereQuery = $"CODIGO = '{codeare}' AND UPPER(ARCHIVO) = UPPER('{_FILT_PROCPROD}')";
+                if (int.Parse(estado) != _EST_ERRTEMP)
+                {
+                    var feature_gdb = dataBaseHandler.GetFeatureName(codeare, _FILT_PROCPROD, datum.ToString(), zona);
+                    string nameFeatureClass = StringProcessorUtils.GetSubstringAfterLastBackslash(feature_gdb);
+                    var featureLayer = await LayerUtils.AddFeatureClassToMapFromGdbAsync(geodatabase, nameFeatureClass, nameshp);
+                    await QueuedTask.Run(() => { featureLayer.SetDefinitionQuery(whereQuery); });
+                    //var feature_gdb = conn.P_SEL_NOMBRE_FEATURE(codeare, _FILT_PROCPROD, datum, zona);
+                    //_params.Clear();
+                    //_params.Add(codeare);
+                    //_params.Add(nameshp);
+                    //_params.Add(feature_gdb);
+                    //_params.Add(0);
 
+                    //string result = ExecuteGP(_tool_are_agregarfeaturetocare, _params, _toolboxPathAre);
+                    //string[] response = result.Split(';');
+                    //if (response[0] != "1")
+                    //{
+                    //    error_scripttool_as_messagebox(response[1]);
+                    //}
+                }
+            }
 
+            // If opt = _FILT_PROCESADO
+            if (opt == _FILT_PROCESADO)
+            {
+                string whereQuery = $"CODIGO = '{codeare}' AND UPPER(ARCHIVO) = UPPER('{_FILT_PROCESADO}')";
+                var feature_gdb = dataBaseHandler.GetFeatureName(codeare, _FILT_PROCESADO, datum.ToString(), zona);
+                string nameFeatureClass = StringProcessorUtils.GetSubstringAfterLastBackslash(feature_gdb);
+                var featureLayer = await LayerUtils.AddFeatureClassToMapFromGdbAsync(geodatabase, nameFeatureClass, nameshp);
+                await QueuedTask.Run(() => { featureLayer.SetDefinitionQuery(whereQuery); });
+                //var feature_gdb = conn.P_SEL_NOMBRE_FEATURE(codeare, _FILT_PROCESADO, datum, zona);
+                //_params.Clear();
+                //_params.Add(codeare);
+                //_params.Add(nameshp);
+                //_params.Add(feature_gdb);
+                //_params.Add(1);
+
+                //string result = ExecuteGP(_tool_are_agregarfeaturetocare, _params, _toolboxPathAre);
+                //string[] response = result.Split(';');
+                //if (response[0] != "1")
+                //{
+                //    error_scripttool_as_messagebox(response[1]);
+                //}
+            }
+        }
+
+        private async void btnRemoveAllLayer_Click(object sender, RoutedEventArgs e)
+        {
+            await LayerUtils.RemoveLayersFromMapNameAsync(mapName);
+        }
+
+        private void btnExportarShp_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnExportarExcel_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void btnProcesar_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 
 }
