@@ -2,7 +2,6 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using Sigcatmin.pro.Application.Dtos.Response;
 using SigcatminProAddinUI.Models;
 using SigcatminProAddinUI.Resources.Extensions;
 using SigcatminProAddinUI.Resources.Helpers;
@@ -11,6 +10,7 @@ using System.Linq;
 using System;
 using ActiproSoftware.Windows.Extensions;
 using System.Windows;
+using Sigcatmin.pro.Application.Contracts.Responses;
 
 namespace SigcatminProAddinUI.Views.WPF.ViewModel
 {
@@ -29,7 +29,7 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
             "Red Vial"
         };
         public int RadioDefaultValue { get; set; } = 5;
-        public IEnumerable<CoordinatedResponseDto> Coordinates;
+        public IEnumerable<CoordinatedResponse> Coordinates;
         public List<ComboBoxItemGeneric<int>> GetItemsComboTypeConsult()
         {
             return new List<ComboBoxItemGeneric<int>>

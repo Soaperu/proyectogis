@@ -5,15 +5,15 @@ using System.Text;
 using System.Threading.Tasks;
 using Sigcatmin.pro.Domain.Enums;
 
-namespace Sigcatmin.pro.Application.Dtos.Request
+namespace Sigcatmin.pro.Application.Contracts.Requests
 {
-    public record struct GraficarDerechoMineroDto(
+    public record struct GraficarDerechoMineroRequest(
         string MapName,
         bool IsDMGraphVisible,
         CoordinateSystem Datum,
         int Radio,
         string Codigo,
-        string Zona, 
+        string Zona,
         string StateGraph);
 
 }

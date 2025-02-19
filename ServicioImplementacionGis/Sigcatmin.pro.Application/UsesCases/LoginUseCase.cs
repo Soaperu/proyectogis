@@ -1,5 +1,5 @@
-﻿using Sigcatmin.pro.Application.Dtos.Request;
-using Sigcatmin.pro.Application.Interfaces;
+﻿using Sigcatmin.pro.Application.Interfaces;
+using Sigcatmin.pro.Application.Contracts.Requests;
 using Sigcatmin.prop.Domain.Interfaces.Repositories;
 using Sigcatmin.prop.Domain.Interfaces.Services;
 using Sigcatmin.prop.Domain.Settings;
@@ -20,7 +20,7 @@ namespace Sigcatmin.pro.Application.UsesCases
             _authRepository = authRepository;
             _loggerService = loggerService;
         }
-        public async ValueTask<bool> Execute(LoginRequestDto user)
+        public async ValueTask<bool> Execute(LoginRequest user)
         {
             try
             {

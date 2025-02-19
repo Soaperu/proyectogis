@@ -1,10 +1,11 @@
 ﻿
 using System.Runtime.CompilerServices;
 using ArcGIS.Desktop.Mapping;
-using Sigcatmin.pro.Application.Dtos.Request;
-using Sigcatmin.pro.Application.Enums;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Application.Managers;
+using Sigcatmin.pro.Application.Contracts.Constants;
+using Sigcatmin.pro.Application.Contracts.Enums;
+using Sigcatmin.pro.Application.Contracts.Requests;
 using Sigcatmin.pro.Domain.Interfaces.Repositories;
 using Sigcatmin.pro.Domain.Settings;
 
@@ -18,15 +19,17 @@ namespace Sigcatmin.pro.Application.UsesCases
         private readonly IGeodatabaseRepository _geodatabaseRepository;
         private readonly IDerechoMineroRepository _derechoMineroRepository;
         private readonly IFeatureLayerServiceFactory _featureLayerServiceFactory;
+        private readonly IFeatureClassNameResolver _featureClassNameResolver;
         private readonly GeoDatabaseSettings _geoDatabaseSettings;
         public GraficarDerechoMineroUseCase(
             IOptions<GeoDatabaseSettings> geoDatabaseSettings,
-            IMapManager mapManager, 
+            IMapManager mapManager,
             IMapService mapService,
             ICacheService cacheService,
             IGeodatabaseRepository geodatabaseRepository,
             IDerechoMineroRepository derechoMineroRepository,
-            IFeatureLayerServiceFactory featureLayerServiceFactory)
+            IFeatureLayerServiceFactory featureLayerServiceFactory,
+            IFeatureClassNameResolver featureClassNameResolver)
         {
             _mapManager = mapManager;
             _mapService = mapService;
@@ -35,27 +38,30 @@ namespace Sigcatmin.pro.Application.UsesCases
             _geoDatabaseSettings = geoDatabaseSettings.Value;
             _derechoMineroRepository = derechoMineroRepository;
             _featureLayerServiceFactory = featureLayerServiceFactory;
+            _featureClassNameResolver = featureClassNameResolver;
         }
 
-        public async Task Execute(GraficarDerechoMineroDto request)
+        public async Task Execute(GraficarDerechoMineroRequest request)
         {
-             _mapService.CreateMap(request.MapName);
-             Map activeMap = await _mapManager.EnsureMapViewIsActiveAsync(request.MapName);
-             var geodatabase  = await _geodatabaseRepository.ConnectToDatabaseAsync(
-                 _geoDatabaseSettings.Instance, 
-                 _geoDatabaseSettings.Version);
+            _mapService.CreateMap(request.MapName);
+            Map activeMap = await _mapManager.EnsureMapViewIsActiveAsync(request.MapName);
+            var geodatabase = await _geodatabaseRepository.ConnectToDatabaseAsync(
+                _geoDatabaseSettings.Instance,
+                _geoDatabaseSettings.Version);
 
-             string zonaDM = await _derechoMineroRepository.VerifyDatumAsync(request.Codigo);
+            //string zonaDM = await _derechoMineroRepository.VerifyDatumAsync(request.Codigo);
 
             IFeatureLayerService featureLayerService = _featureLayerServiceFactory.CreateFeatureLayerService(geodatabase, activeMap);
 
-            await featureLayerService.LoadFeatureLayerAsync($"DATA_GIS.GPO_CMI_CATASTRO_MINERO_WGS_" + request.Zona, false);
+            string currentFeatureName = _featureClassNameResolver.ResolveFeatureClassName(FeatureClassConstants.gstrFC_CatastroWGS84, request.Zona);
+
+            await featureLayerService.LoadFeatureLayerAsync(currentFeatureName, request.Zona, false);
 
             SetCacheValues(request);
 
         }
 
-        private void SetCacheValues(GraficarDerechoMineroDto request)
+        private void SetCacheValues(GraficarDerechoMineroRequest request)
         {
             _cacheService.SetValue(CacheKeysEnum.StateDmY, request.IsDMGraphVisible);
             _cacheService.SetValue(CacheKeysEnum.CurrentCodeDerechoMinero, request.Codigo);

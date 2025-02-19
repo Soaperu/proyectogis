@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using ArcGIS.Desktop.Mapping;
 
 namespace Sigcatmin.pro.Application.Interfaces
 {
-    public interface IFeatureLayerService
+    public interface IFeatureClassNameResolver
     {
-        Task<FeatureLayer> LoadFeatureLayerAsync(string featureClassName, string zona, bool isVisible);
+        string ResolveFeatureClassName(string requestedFeatureClassName, string zona);
     }
 }

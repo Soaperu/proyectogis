@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sigcatmin.pro.Application.Enums
+namespace Sigcatmin.pro.Application.Contracts.Enums
 {
     public enum CacheKeysEnum
     {

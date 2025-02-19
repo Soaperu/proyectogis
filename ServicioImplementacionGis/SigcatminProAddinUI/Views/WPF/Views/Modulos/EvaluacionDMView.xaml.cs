@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DevExpress.Xpf.Grid;
-using Sigcatmin.pro.Application.Dtos.Request;
+using Sigcatmin.pro.Application.Contracts.Requests;
 using Sigcatmin.pro.Application.UsesCases;
 using Sigcatmin.pro.Domain.Dtos;
 using Sigcatmin.pro.Domain.Enums;
@@ -205,7 +205,7 @@ namespace SigcatminProAddinUI.Views.WPF.Views.Modulos
             }
 
             var derechoMineroselected = DataGridResult.GetFocusedRow() as DerechoMineroDto;
-            var graficarDto = new GraficarDerechoMineroDto
+            var graficarDto = new GraficarDerechoMineroRequest
             {
                 MapName = "Catastro Minero",
                 Codigo = derechoMineroselected.Codigo,

@@ -3,7 +3,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using Sigcatmin.pro.Application.Dtos.Request;
+using Sigcatmin.pro.Application.Contracts.Requests;
 using Sigcatmin.pro.Application.Interfaces;
 using Sigcatmin.pro.Application.UsesCases;
 using SigcatminProAddinUI.Handlers;
@@ -96,7 +96,7 @@ namespace SigcatminProAddinUI.Views.WPF.ViewModel
         {
             try
             {
-                bool isValid = await _loginUseCase.Execute(new LoginRequestDto()
+                bool isValid = await _loginUseCase.Execute(new LoginRequest()
                 {
                     UserName = Username,
                     Password = Password

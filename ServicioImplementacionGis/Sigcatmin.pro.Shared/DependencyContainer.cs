@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using Sigcatmin.pro.Application.Interfaces;
+using Sigcatmin.pro.Application.Settings;
 using Sigcatmin.pro.Shared.Implements;
 using Sigcatmin.pro.Shared.DomainServices;
 using Sigcatmin.prop.Domain.Interfaces.Services;
@@ -35,7 +36,11 @@ namespace Sigcatmin.pro.Shared
             services.AddTransient<IMapService, MapService>();
             services.AddTransient<IMapViewService, ArcGISMapViewService>();
             services.AddTransient<IFeatureLayerServiceFactory, FeatureLayerServiceFactory>();
-            
+
+            // Registra FeatureClassMappings como un Singleton
+            services.AddSingleton(FeatureClassMappings.GetMappings());
+            services.AddTransient<IFeatureClassNameResolver, FeatureClassNameResolver>();
+
             services.AddScoped<IMapManager, MapManager>();
             services.AddSingleton<ICacheService, CacheService>();
 

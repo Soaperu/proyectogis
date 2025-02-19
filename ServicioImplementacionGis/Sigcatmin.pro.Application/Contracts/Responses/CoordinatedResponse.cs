@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sigcatmin.pro.Application.Dtos.Response
+namespace Sigcatmin.pro.Application.Contracts.Responses
 {
-    public record struct CoordinatedResponseDto(int Vertice,
+    public record struct CoordinatedResponse(int Vertice,
         double Norte,
         double Este,
         double NorteEquivalente,
-        double EsteEquivalente, 
+        double EsteEquivalente,
         string CodigoDatum);
 
 }

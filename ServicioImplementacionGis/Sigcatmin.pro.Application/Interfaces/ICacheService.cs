@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Sigcatmin.pro.Application.Enums;
+using Sigcatmin.pro.Application.Contracts.Enums;
 
 namespace Sigcatmin.pro.Application.Interfaces
 {

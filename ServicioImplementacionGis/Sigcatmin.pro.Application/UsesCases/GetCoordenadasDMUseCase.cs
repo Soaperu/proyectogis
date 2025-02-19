@@ -1,7 +1,7 @@
 ﻿//using AutoMapper;
 using Mapster;
-using Sigcatmin.pro.Application.Dtos.Response;
 using Sigcatmin.pro.Application.Interfaces;
+using Sigcatmin.pro.Application.Contracts.Responses;
 using Sigcatmin.pro.Domain.Interfaces.Repositories;
 
 namespace Sigcatmin.pro.Application.UsesCases
@@ -20,12 +20,12 @@ namespace Sigcatmin.pro.Application.UsesCases
             //_mapper = mapper;
         }
 
-        public async Task<IEnumerable<CoordinatedResponseDto>> Execute(string code)
+        public async Task<IEnumerable<CoordinatedResponse>> Execute(string code)
         {
             try
             {
                 var coordinates = await _evaluacionGISRepository.GetcoordinatesByCodeAsync(code);
-                return coordinates.Adapt<IEnumerable<CoordinatedResponseDto>>();
+                return coordinates.Adapt<IEnumerable<CoordinatedResponse>>();
 
             }
             catch (Exception ex)

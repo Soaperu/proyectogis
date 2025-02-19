@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using Sigcatmin.pro.Application.Enums;
 using Sigcatmin.pro.Application.Interfaces;
+using Sigcatmin.pro.Application.Contracts.Enums;
 
 namespace Sigcatmin.pro.Shared.Implements
 {
