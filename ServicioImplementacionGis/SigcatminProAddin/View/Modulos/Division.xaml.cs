@@ -545,10 +545,19 @@ namespace SigcatminProAddin.View.Modulos
                         DatagridDetailsConstants.RawColumNames.CoorEsteE,
                         DatagridDetailsConstants.RawColumNames.CoorNorteE };
 
-                var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+                //var dmrRecords = dataBaseHandler.GetDMDataWGS84(codigoValue);
+                var dmrRecords = dataBaseHandler.GetDatosDivision(codigoValue, GlobalVariables.CurrentNameDm, "4", GlobalVariables.CurrentTipoAreaDm);
+                int zona = int.Parse(dmrRecords.Rows[0]["PE_ZONCAT"].ToString());
+                string vigcat = dmrRecords.Rows[0]["PE_VIGCAT"].ToString();
+                string tipoex = dmrRecords.Rows[0]["TE_TIPOEX"].ToString();
+                CbxZona.SelectedValue = zona;
+                GlobalVariables.CurrentZoneDm = zona.ToString();
+                GlobalVariables.CurrentTipoEx = tipoex;
+                GlobalVariables.CurrentVigCat = vigcat;
+
                 if (dmrRecords.Rows.Count > 0)
                 {
-                    var originalDatumDm = dmrRecords.Rows[0]["SC_CODDAT"];
+                    var originalDatumDm = dmrRecords.Rows[0]["DD_CODDAT"];
                     if (datum == int.Parse(originalDatumDm.ToString()))
                     {
                         requiredColumns = new string[] {

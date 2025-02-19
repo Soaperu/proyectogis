@@ -74,7 +74,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
-                #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -1404,9 +1404,9 @@ namespace CommonUtilities.ArcgisProUtils
 
                                 string codigo = "000000001";
                                 string codigosp = row[row.FindField("CODIGOU")].ToString();
-                                string  concesion = row[row.FindField("CONCESION")].ToString();
+                                string concesion = row[row.FindField("CONCESION")].ToString();
                                 string zona = row[row.FindField("ZONA")].ToString();
-                                string  tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                string tipoex = row[row.FindField("TIPO_EX")].ToString();
                                 decimal areasup = Convert.ToDecimal(area / 10000);/// Convert.ToDecimal(row[row.FindField("AREA")]);
                                 dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
 
@@ -1494,6 +1494,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
                     }
                     // Buscar las entidades con ambos filtros: espacial y de atributo
+                    string tipoex = "";
                     using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
                     {
                         while (rowCursor.MoveNext())
@@ -1504,7 +1505,15 @@ namespace CommonUtilities.ArcgisProUtils
                                 string codigosp = row[row.FindField("CODIGOU")].ToString();
                                 string concesion = row[row.FindField("CONCESION")].ToString();
                                 string zona = row[row.FindField("ZONA")].ToString();
-                                string tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                try
+                                {
+                                     tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                }
+                                catch (Exception)
+                                {
+                                     tipoex = "";
+                                }
+                                
                                 decimal areasup = Convert.ToDecimal(row[row.FindField("AREA")]);
                                 dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
 
@@ -1753,6 +1762,48 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
+        public async Task ZoomToEnvelopeAsync(string loFeature, double xMin, double yMin, double xMax, double yMax)
+
+        {
+            try
+
+            {
+                FeatureLayer pFLayer;
+                //// Obtener el FeatureLayer desde el diccionario
+
+                pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+
+                if (pFLayer == null)
+                {
+                    return;
+                }
+
+                //await QueuedTask.Run(async () =>
+                //{
+                // Crear el envolvente
+                Envelope envelope = EnvelopeBuilder.CreateEnvelope(xMin, yMin, xMax, yMax, pFLayer.GetSpatialReference());
+
+
+                // Get the active map view
+                MapView mapView = MapView.Active;
+
+                if (mapView != null)
+                {
+                    // Zoom to the specified envelope (bounding box)
+                    mapView.ZoomTo(envelope);
+
+                }
+
+
+            }
+            catch
+            {
+                return;
+            }
+
+        }
+
+
         public static DataTable GetDataForElemento(
                                                 string sele_elemento,
                                                 string v_sistema,
@@ -1771,7 +1822,7 @@ namespace CommonUtilities.ArcgisProUtils
             string table2 = string.Empty;
             string elementoParaConsulta = sele_elemento;
 
-            
+
             // Sólo un ejemplo de switch para "sele_elemento".
             // Ajusta según tus necesidades reales:
             switch (sele_elemento)

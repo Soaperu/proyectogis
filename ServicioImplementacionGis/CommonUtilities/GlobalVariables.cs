@@ -17,6 +17,12 @@ namespace CommonUtilities
         public static string idExport = "";
         public static string mapNameCatastro = "CATASTRO MINERO";
         public static string mapNameDemarcacionPo = "DEMARCACION POLITICA";
+        public static string mapNameRenunciaDM = "RENUNCIA DM";
+        public static string mapNameRenunciaAR = "RENUNCIA ARESTRINGIDA";
+        public static string mapNameIntegranteAcum = "INTEGRANTES ACUMULACION";
+        public static string mapNameAcumulaDM = "ACUMULACION DM";
+        public static string mapNameAcumulaAR = "ACUMULACION AREA RESTRINGIDA";
+        public static string mapNameAcumulaAF = "ACUMULACION AFECTACION";
         public static string mapNameCartaIgn = "CARTA IGN";
         public static string fieldTypeString = "STRING";
         public static string fieldTypeLong = "LONG";
