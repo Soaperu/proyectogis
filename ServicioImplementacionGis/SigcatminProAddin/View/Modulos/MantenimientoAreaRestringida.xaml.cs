@@ -37,9 +37,9 @@ using DevExpress.Xpo.DB.Helpers;
 namespace SigcatminProAddin.View.Modulos
 {
     /// <summary>
-    /// Lógica de interacción para MantoAreaRestringida.xaml
+    /// Lógica de interacción para MantenimientoAreaRestringida.xaml
     /// </summary>
-    public partial class MantoAreaRestringida : Page
+    public partial class MantenimientoAreaRestringida : Page
     {
         private FeatureClassLoader featureClassLoader;
         public Geodatabase geodatabase;
@@ -99,11 +99,10 @@ namespace SigcatminProAddin.View.Modulos
         public int _TAG_EXEENDDAY = 4;
         public int _TAG_NOEXE = 5;
 
-        public MantoAreaRestringida()
+        public MantenimientoAreaRestringida()
         {
             InitializeComponent();
             CurrentUser();
-            ConfigureDataGridResultColumns();
             ConfigureDataGridClassTemporales();
             ConfigureDataGridClassProduccion();
             ConfigureDataGridReseDifReg();
@@ -126,15 +125,28 @@ namespace SigcatminProAddin.View.Modulos
         {
             //CbxFeatures.SelectedIndex = 1;
             //CbxEnv.SelectedIndex = 1;
-            var dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_CREG.ToString());
+            //Opciones Datum
+            var dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_DATUM.ToString());
+            GetOptionCBox(CbxDatum, dmrRecords);
+
+            //Opciones Zona
+            dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_ZONA.ToString());
+            GetOptionCBox(CbxZona, dmrRecords);
+
+            //Opciones Filtro
+            dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO.ToString());
+            GetOptionCBox(CbxFiltro, dmrRecords);            
+
+            //Opciones Filtro Usuario
+            dmrRecords = dataBaseHandler.GetUserFilter();
+            GetOptionCBox(CbxUsuario, dmrRecords);
+
+            dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_CREG.ToString());
             GetOptionCBox(CbxFiltroControlReg, dmrRecords);
 
             dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_ENV.ToString());
             GetOptionCBox(CbxEnv, dmrRecords);
             cambiaOpcionesCboxFeatures();
-
-            dmrRecords = dataBaseHandler.GetUserFilter();
-            GetOptionCBox(CbxUsuario, dmrRecords);
             /**/
 
             List<ComboBoxPairs> cbpF = new List<ComboBoxPairs>();
@@ -244,162 +256,6 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-
-
-        private void ConfigureDataGridResultColumns()
-        {
-            // Obtener la vista principal del GridControl
-            var tableView = DataGridResult.View as DevExpress.Xpf.Grid.TableView;
-
-            // Limpiar columnas existentes
-            DataGridResult.Columns.Clear();
-
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            // Crear y configurar columnas
-
-            // Columna de índice (número de fila)
-            GridColumn idColumn = new GridColumn
-            {
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Id, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Id,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Id
-            };
-
-            GridColumn codigoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Codigo, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Codigo,    // Encabezado visible
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Codigo            // Ancho de la columna
-            };
-
-            GridColumn zonaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Zona,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Zona,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Zona
-            };
-
-            GridColumn claseColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Clase,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Clase,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Clase
-            };
-
-            GridColumn archivoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Archivo,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Archivo,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Archivo
-            };
-            GridColumn modRegColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.ModReg,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.ModReg,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.ModReg
-            };
-            GridColumn usuarioColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Usuario,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Usuario,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Usuario
-            };
-            GridColumn fechRegColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.FecReg,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.FecReg,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.FecReg
-            };
-            GridColumn codEstColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.CodEst,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.CodEst,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.CodEst
-            };
-            GridColumn mineriaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Mineria,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Mineria,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Mineria
-            };
-            GridColumn procColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Proc,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Proc,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Proc,
-                UnboundType = DevExpress.Data.UnboundColumnType.Boolean,
-                AllowEditing = DefaultBoolean.True,
-                EditSettings = new CheckEditSettings
-                {
-
-                    //IsThreeState = false,     // Permite un estado indeterminado (null)
-                    AllowNullInput = false,   // Permite valores nulos (indeterminado)
-                    
-                }
-            };
-
-            // CELDA: Checkbox que muestra y actualiza el valor unbound
-            //procColumn.CellTemplate = CreateCellTemplate();
-            // Crear la plantilla de edición (ControlTemplate) para el CheckBox
-            // con un FrameworkElementFactory (WPF).
-            //var editTemplate = new ControlTemplate(typeof(CheckEdit));
-            //var checkBoxFactory = new FrameworkElementFactory(typeof(CheckEdit));
-            ////var isEnabledBinding = new Binding("IsEnabledSelection")
-            ////{
-            ////    Mode = BindingMode.OneTime,
-            ////};
-            ////checkBoxFactory.SetBinding(CheckEdit.IsEnabledProperty, isEnabledBinding);
-
-            //// Binding para IsChecked = "{Binding Path=IsSelectedObject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            //var isCheckedBinding = new Binding("RowData.Row.Proc")
-            //{
-            //    Mode = BindingMode.TwoWay,
-            //    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            //};
-            //checkBoxFactory.SetBinding(CheckEdit.IsCheckedProperty, isCheckedBinding);
-
-            //// Asignar el árbol visual del template
-            //editTemplate.VisualTree = checkBoxFactory;
-
-            //// 3) Asignar la plantilla a la columna
-            //procColumn.EditTemplate = editTemplate;
-
-            // --- DisplayTemplate (cuando la celda NO está en edición) ---
-
-            // Agregar columnas al GridControl
-            DataGridResult.Columns.Add(idColumn);
-            DataGridResult.Columns.Add(codigoColumn);
-            DataGridResult.Columns.Add(zonaColumn);
-            DataGridResult.Columns.Add(claseColumn);
-            DataGridResult.Columns.Add(archivoColumn);
-            DataGridResult.Columns.Add(modRegColumn);
-            DataGridResult.Columns.Add(usuarioColumn);
-            DataGridResult.Columns.Add(fechRegColumn);
-            DataGridResult.Columns.Add(codEstColumn);
-            DataGridResult.Columns.Add(mineriaColumn);
-            DataGridResult.Columns.Add(procColumn);
-
-        }
-
-        private DataTemplate CreateCellTemplate()
-        {
-            var dt = new DataTemplate();
-            var f = new FrameworkElementFactory(typeof(CheckEdit));
-            f.SetBinding(CheckEdit.IsCheckedProperty, new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            });
-            dt.VisualTree = f;
-            return dt;
-        }
 
         private void ConfigureDataGridClassTemporales()
         {
@@ -1063,11 +919,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private void CbxFiltro_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
-
-        }
+        
 
         private void obtenerDetalle(string idreg)
         {
@@ -1315,7 +1167,8 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxUsuario_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            GetDiferenciaAnm();
+            RefreshBySelections();
+            //GetDiferenciaAnm();
         }
 
         private void CbxUsuario_Loaded(object sender, RoutedEventArgs e)
@@ -1457,6 +1310,77 @@ namespace SigcatminProAddin.View.Modulos
         private void btnGuardarER_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void RefreshBySelections()
+        {
+            try
+            {
+                opt = Int32.Parse(CbxFiltro.SelectedValue.ToString());
+                string SelectedUser = CbxUsuario.SelectedValue.ToString();
+
+                //Procedimiento que actualiza la tabla de procesamiento segun usuario y estados
+                DataTable table = dataBaseHandler.GetProGisFiltro($"{opt}", $"{SelectedUser}");
+                // Antes de asignarlo al DataGridResult, agrega la columna PROC
+                if (!table.Columns.Contains("PROC"))
+                {
+                    table.Columns.Add("PROC", typeof(bool)); // Asegura que sea de tipo bool
+                }
+                foreach (DataRow row in table.Rows)
+                {
+                    row["PROC"] = false; // 🔹 Valor predeterminado para que los checkboxes aparezcan desmarcados
+                }
+                DataGridResult.ItemsSource = table.DefaultView;
+                int numRows = table.Rows.Count;
+                LblCountRecords.Content = "Se encontraron " + numRows.ToString() + " registros";
+
+                if (DataGridResult.ItemsSource is IEnumerable<object> items)
+                {
+                    foreach (var item in items)
+                    {
+                        var row = item as DataRowView; // Si está vinculado a un DataTable
+                        if (row != null)
+                        {
+                            int estado = (int)row[_FIELD_RE_CODEST];
+
+                            if (estado == _EST_PROCTEMP || estado == _EST_PROCPROD)
+                            {
+                                row[_FIELD_PROCESAR] = true;
+                            }
+                            else if (estado == _EST_NOPROCTEMP || estado == _EST_NOPROCPROD)
+                            {
+                                row[_FIELD_PROCESAR] = false;
+                            }
+                            else if (estado == _EST_ERRTEMP || estado == _EST_ERRPROD)
+                            {
+                                row[_FIELD_PROCESAR] = false;
+
+                                // Si el GridControl admite celdas de solo lectura
+                                // (esto depende de cómo se haya configurado la edición en el Grid)
+                                row.Row.Table.Columns[_FIELD_PROCESAR].ReadOnly = true;
+
+                                // Si el GridControl permite cambiar el color de fila o celda
+                                // Dependerá de cómo estés manejando los estilos en WPF
+                                // Se puede hacer a través de estilos en XAML o en código
+                                // Aquí dejo una posible forma si usas `RowStyle` dinámico:
+
+                                // Suponiendo que existe una propiedad en tu modelo para aplicar estilos:
+                                row.Row.Table.Columns[_FIELD_RE_CODEST].ExtendedProperties["Background"] = "Pink";
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+           
+        }
+
+        private void CbxFiltro_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RefreshBySelections();
         }
 
         private void btnBuscarH_Click(object sender, RoutedEventArgs e)
@@ -1710,6 +1634,59 @@ namespace SigcatminProAddin.View.Modulos
         {
 
         }
+
+        private void btnUnselectAll_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DataGridResult.ItemsSource is IEnumerable<object> items)
+                {
+                    foreach (var item in items)
+                    {
+                        var row = item as DataRowView; // Si está vinculado a un DataTable
+                        if (row != null)
+                        {
+                            if ((int)row[_FIELD_RE_CODEST] != _EST_ERRTEMP && (int)row[_FIELD_RE_CODEST] != _EST_ERRPROD)
+                            {
+                                row[_FIELD_PROCESAR] = false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
+        private void btnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DataGridResult.ItemsSource is IEnumerable<object> items)
+                {
+                    foreach (var item in items)
+                    {
+                        var row = item as DataRowView; // Si los datos provienen de un DataTable
+                        if (row != null)
+                        {
+                            if ((int)row[_FIELD_RE_CODEST] != _EST_ERRTEMP && (int)row[_FIELD_RE_CODEST] != _EST_ERRPROD)
+                            {
+                                row[_FIELD_PROCESAR] = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+                
     }
 
 }
