@@ -230,14 +230,14 @@ namespace SigcatminProAddin.View.Modulos
             return dt;
         }
 
-        private void BtnGraficar_Click(object sender, RoutedEventArgs e)
+        private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
             DataTable dtSimultaneidad = ConvertirGridControlADataTable(DataGridSimultaneidad);
-            ConsultaDMSimultaneoc(dtSimultaneidad);
+            await ConsultaDMSimultaneoc(dtSimultaneidad);
             generaplanosimultaneos();
         }
 
-        public async void ConsultaDMSimultaneoc( DataTable p_ListBox)
+        public async Task ConsultaDMSimultaneoc( DataTable p_ListBox)
         {
             string p_txtExiste;
             string esc_sim = "1";
@@ -380,8 +380,9 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_HCarta56, false);
                 }
 
-                ArcGIS.Core.Geometry.Envelope envelope = null;
-                envelope = featureClassLoader.pFeatureLayer_cuadriculas.QueryExtent();
+                Envelope envelope = null;
+                await QueuedTask.Run(() => envelope = featureClassLoader.pFeatureLayer_cuadriculas.QueryExtent());
+                
 
                 ExtentModel extentCuad = new ExtentModel {xmin= envelope.XMin, ymin= envelope.YMin, xmax= envelope.XMax, ymax= envelope.YMax };
                 string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentCuad.xmin, extentCuad.ymin, extentCuad.xmax, extentCuad.ymax);
@@ -395,26 +396,30 @@ namespace SigcatminProAddin.View.Modulos
                 {
                     string tipod = "1";
                     string inputFeatureClass = "Cuadri_sim";
+                    FeatureLayer flCuadriSim = await LayerUtils.GetFeatureLayerByNameAsync(inputFeatureClass);
                     string outputFeatureClass = "Cuadri_dsim";
                     string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
+                    //string inputPath = Path.Combine(outputFolder, inputFeatureClass + ".shp");
                     string outputPath = Path.Combine(outputFolder, outputFeatureClass + ".shp");
-                    List<string> dissolveFields = new List<string> { "Zona" };
+
+                    List<string> dissolveFields = new List<string> { "ZONA" };
 
                     //Realiza dissolve
 
-                    List<string> parameters = new List<string>
+                    List<object> parameters = new List<object>
                         {
-                            inputFeatureClass,           // Capa de entrada
-                            outputFeatureClass,          // Capa de salida
+                            flCuadriSim,           // Capa de entrada
+                            outputPath,          // Capa de salida
                             string.Join(";", dissolveFields),  // Campos de disolución
-                            "Dissolve.Shape, Sum.Shape_area",                          // Estadísticas opcionales (dejar vacío si no se necesitan)
+                            "",                          // Estadísticas opcionales (dejar vacío si no se necesitan)
                             "MULTI_PART",                // MULTI_PART o SINGLE_PART (elige según necesidad)
                             "DISSOLVE_LINES"             // "DISSOLVE_LINES" o "UNSPLIT_LINES"
                         };
 
                     // Ejecuta el geoproceso Dissolve
+                    var toolParams = Geoprocessing.MakeValueArray(parameters.ToArray());
                     var dissolveResult = await QueuedTask.Run(() =>
-                        Geoprocessing.ExecuteToolAsync("management.Dissolve", parameters));
+                        Geoprocessing.ExecuteToolAsync("Dissolve_management", toolParams, null, CancelableProgressor.None, GPExecuteToolFlags.None));
 
                     // Verificar si la herramienta se ejecutó correctamente
                     if (dissolveResult.IsFailed)
