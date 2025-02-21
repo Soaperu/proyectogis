@@ -586,6 +586,17 @@ namespace CommonUtilities.ArcgisProUtils
                         LineWidth = 1
                     }
                 },
+                                {
+                    "Cata_sim",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.Null,
+                        FillColor = GetRGBColor(0, 0, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(0, 0, 2300),
+                        LineWidth = 2.5
+                    }
+                },
                 {
                     "Zona Reservada",
                     new SymbolConfiguration
@@ -608,7 +619,7 @@ namespace CommonUtilities.ArcgisProUtils
                         LineWidth = 1
                     }
                 },
-                 {
+                {
                     "Cuadri_Suptot",
                     new SymbolConfiguration
                     {
@@ -617,6 +628,28 @@ namespace CommonUtilities.ArcgisProUtils
                         LineStyle = SimpleLineStyle.Solid,
                         LineColor = GetRGBColor(76, 230, 0),
                         LineWidth = 0.2
+                    }
+                },
+                {
+                    "Cuadri_sim",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.Null,
+                        FillColor = GetRGBColor(0, 0, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(230, 0, 0),
+                        LineWidth = 2
+                    }
+                },
+                {
+                    "Cuadri_dsim",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.Null,
+                        FillColor = GetRGBColor(0, 0, 0),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(230, 0, 0),
+                        LineWidth = 2
                     }
                 },
                 {

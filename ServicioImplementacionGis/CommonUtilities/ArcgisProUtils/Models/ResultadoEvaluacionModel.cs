@@ -58,7 +58,7 @@ namespace CommonUtilities.ArcgisProUtils.Models
         }
     }
 
-        public class ResultadoEval
+    public class ResultadoEval
     {
         public string Contador { get; set; }
         public string Concesion { get; set; }
@@ -69,5 +69,14 @@ namespace CommonUtilities.ArcgisProUtils.Models
         public string Eval { get; set; }
         public string Hectarea { get; set; }
         public string Clase { get; set; }
+    }
+
+    public class ResultadoSimultaneo
+    {
+        public string Concesion { get; set; }
+        public string CodigoU { get; set; }
+        public string TitConces { get; set; }
+        public string Hectarea { get; set; }
+
     }
 }

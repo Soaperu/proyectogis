@@ -161,11 +161,11 @@ namespace CommonUtilities.ArcgisProUtils
                     pFeatureLayer_Actmin = featureLayer;
                     loFeature = "DM_Actividad_Minera";
                     break;
-                case "pfeatureLayer_Cuadriculas":
+                case "pFeatureLayer_cuadriculas":
                     pFeatureLayer_cuadriculas = featureLayer;
                     loFeature = "Cuadriculas";
                     break;
-                case "pfeatureLayer_CuadriculasR":
+                case "pFeatureLayer_cuadriculasR":
                     pFeatureLayer_cuadriculasR = featureLayer;
                     loFeature = "Cuadricula Regional";
                     break;
@@ -437,29 +437,29 @@ namespace CommonUtilities.ArcgisProUtils
             },
 
             // Cuadriculas Individuales
+            //new FeatureClassInfo
+            //{
+            //    FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_WGS84 + v_zona_dm,
+            //    LayerName = "Cuadriculas",
+            //    VariableName = "pFeatureLayer_cuadriculas"
+            //},
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_Z + v_zona_dm,
+                FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_17",
                 LayerName = "Cuadriculas",
                 VariableName = "pFeatureLayer_cuadriculas"
             },
             new FeatureClassInfo
             {
-                FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_17",
-                LayerName = "Cuadriculas",
-                VariableName = "pfeaturelayer_cuadriculas"
-            },
-            new FeatureClassInfo
-            {
                 FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_18",
                 LayerName = "Cuadriculas",
-                VariableName = "pfeaturelayer_cuadriculas"
+                VariableName = "pFeatureLayer_cuadriculas"
             },
             new FeatureClassInfo
             {
                 FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_19",
                 LayerName = "Cuadriculas",
-                VariableName = "pfeaturelayer_cuadriculas"
+                VariableName = "pFeatureLayer_cuadriculas"
             },
 
             // Ríos
@@ -2081,8 +2081,8 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_CuadriculaR_PSAD56 = "DATA_GIS.GPO_CRE_CUADRICULA_REGIONAL";
 
         // Cuadrículas
-        public const string gstrFC_Cuadricula = "DATA_GIS.GPO_CUA_CUADRICULAS";
-        public const string gstrFC_Cuadricula_Z = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_PSAD56 = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_WGS84 = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_";
 
         // Caram
         public const string gstrFC_Caram56 = "DATA_GIS.GPO_CAR_CARAM_"; // PSAD56

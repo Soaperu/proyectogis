@@ -543,14 +543,17 @@ namespace CommonUtilities.ArcgisProUtils
         /// </summary>
         /// <param name="layerName">Nombre de la capa a buscar (no distingue mayúsculas/minúsculas).</param>
         /// <returns>Un FeatureLayer o null.</returns>
-        public static async Task<FeatureLayer> GetFeatureLayerByNameAsync(string layerName)
+        public static async Task<FeatureLayer> GetFeatureLayerByNameAsync(string layerName, Map map = null)
         {
-            if (MapView.Active == null)
-                return null;  // No hay vista activa
+            if(map == null)
+            {
+                if (MapView.Active == null)
+                    return null;  // No hay vista activa
 
-            Map map = MapView.Active.Map;
-            if (map == null)
-                return null;  // No hay un mapa activo
+                map = MapView.Active.Map;
+                if (map == null)
+                    return null;  // No hay un mapa activo
+            }
 
             // Se necesita ejecutar en el hilo MCT, ya que consultamos la colección de capas
             return await QueuedTask.Run(() =>
