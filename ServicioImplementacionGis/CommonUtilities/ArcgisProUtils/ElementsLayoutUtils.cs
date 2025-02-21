@@ -130,7 +130,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             // Lógica de formateo de texto
             //return $"{res.Contador.PadRight(3)} {res.Concesion.PadRight(25)} {res.CodigoU.PadRight(20)} {res.TipoEx.PadRight(10)} {res.Eval.PadRight(10)} {res.Estado}";
-            return $"{res.CodigoU.PadRight(3)} {res.Concesion.PadRight(30)} {res.TitConces.PadRight(10)} {res.Hectarea}";
+            return $"{res.CodigoU.PadRight(10)} {res.Concesion.PadRight(20)} {res.TitConces.PadRight(10)} {res.Hectarea}";
         }
         private string FormatearTexto(string vCampo1, string vCampo2, string vCampo3, string vCampo4, string vCampo5, string vCampo6, string vCampo7, string vCampo8, string vCampo9)
         {

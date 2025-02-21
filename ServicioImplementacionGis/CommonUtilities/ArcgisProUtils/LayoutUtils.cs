@@ -689,7 +689,7 @@ namespace CommonUtilities.ArcgisProUtils
         public static async Task AddTextListVerticesToLayoutSim(FeatureLayer featureLayer, LayoutProjectItem layoutItem, string filter = "1=1")
         {
             double x = 20.0;
-            double y = 13.8;
+            double y = 12.8;
             await QueuedTask.Run(async () =>
             {
                 var layer = featureLayer.GetFeatureClass();
