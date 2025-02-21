@@ -869,6 +869,9 @@ namespace SigcatminProAddin.View.Modulos
             string dmShpNamePath = "DM" + fechaArchi + ".shp";
             string dmShpRenunciaAR = "RenuAR" + fechaArchi;
             string dmShpRenunciaARPath = "RenuAR" + fechaArchi + ".shp";
+            string dmShpCaramc = "Carac_" + fechaArchi;
+            string dmShpCaramcPath = "Carac_" + fechaArchi + ".shp";
+            
             try
             {
                 // Obtener el mapa Catastro//
@@ -1252,9 +1255,6 @@ namespace SigcatminProAddin.View.Modulos
                     CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
                     await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Renuncia");
 
-
-
-
                 }
                 catch (Exception ex) { }
 
@@ -1264,42 +1264,68 @@ namespace SigcatminProAddin.View.Modulos
                     Map mapAR = await EnsureMapViewIsActiveAsync(GlobalVariables.mapNameRenunciaAR);
                     var featureClassLoader = new FeatureClassLoader(geodatabase, mapAR, zoneDm, "99");
 
-                    //var fla = await featureClassLoader.LoadFeatureClassAsyncGDB(poligonoGen, true);
-                    //CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(poligonoGen, false);
-                    //CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fla, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
-                    //await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fla, "Renuncia");
-
                     await QueuedTask.Run(async () =>
                     {
-                        var fl = await featureClassLoader.LoadFeatureClassAsyncGDB(poligonoGen, false);
+                        var fl = await featureClassLoader.LoadFeatureClassAsyncGDB(poligonoGen, true);
                         CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 255, 255, 0), CIMColor.CreateRGBColor(255, 0, 0));
                         await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Renuncia");
 
                         //Carga capa Zona Urbana
-                        if (datum == datumwgs84)
-                        {
-                            await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false);
-                        }
-                        else
-                        {
-                            await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
-                        }
+                        //if (datum == datumwgs84)
+                        //{
+                        //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaWgs84 + zoneDm, false);
+                        //}
+                        //else
+                        //{
+                        //    await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_ZUrbanaPsad56 + zoneDm, false);
+                        //}
+                        dmShpCaramc = "Caram" + GlobalVariables.idExport;
+                        dmShpCaramcPath = "Caram" + GlobalVariables.idExport + ".shp";
 
-                        await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ClipLayersAsync("Zona Urbana", "Renuncia", Path.Combine(outputFolder, dmShpRenunciaARPath) );
-                        //List<string> layersToRemove = new List<string>() { "Zona Urbana" };
-                        //await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                        var flc = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapAR, Path.Combine(outputFolder, dmShpCaramcPath));
+
+                        await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ClipLayersAsync(dmShpCaramc, "Renuncia", Path.Combine(outputFolder, dmShpRenunciaARPath) );
+
+                        var mapView = MapView.Active;
+                        //var pFeatureLayerV = mapView.Map.Layers.FirstOrDefault(l => l.Name == dmShpRenunciaAR) as FeatureLayer;
+                        //var featureTable = pFeatureLayerV.GetTable();
+                        //if (featureTable == null)
+                        //{
+                            
+                        //}
 
 
-                        //await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync(dmShpRenunciaAR, "Caram_Renun");
-                        //await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameByFeatureLayerAsync((FeatureLayer)fl, "Caram_Renun");
-                        await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.AgregarCampoTemaTpm(dmShpRenunciaAR, "Caram_Renun");
+                        var fl1 = await CommonUtilities.ArcgisProUtils.LayerUtils.AddLayerAsync(mapAR, Path.Combine(outputFolder, dmShpRenunciaARPath));
+                        CommonUtilities.ArcgisProUtils.SymbologyUtils.CustomLinePolygonLayer((FeatureLayer)fl1, SimpleLineStyle.Solid, CIMColor.CreateRGBColor(0, 0, 255, 0), CIMColor.CreateRGBColor(0, 0, 255));
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(dmShpRenunciaAR, "Caram_renum");
 
+                        envelope = featureClassLoader.pFeatureLayer_polygon.QueryExtent();
+
+                        string listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Zona Urbana", envelope, dmShpCaramc);
+
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(dmShpCaramc, "Caram");
+
+                        
+
+                        
+                        var pFeatureLayer_caram = mapView.Map.Layers.FirstOrDefault(l => l.Name == "Caram") as FeatureLayer;
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(pFeatureLayer_caram);
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync("Caram", "Zona Urbana");
+                        
+
+                        var pFeatureLayerC = mapView.Map.Layers.FirstOrDefault(l => l.Name == "Renuncia") as FeatureLayer;
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(pFeatureLayerC);
+
+                        pFeatureLayerC = mapView.Map.Layers.FirstOrDefault(l => l.Name == "Caram_renum") as FeatureLayer;
+                        await CommonUtilities.ArcgisProUtils.SymbologyUtils.ColorPolygonSimple(pFeatureLayerC);
+                        await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(pFeatureLayerC, "NM_URBA", 7, "#4e4e4e", "Bold");
+                        await CommonUtilities.ArcgisProUtils.LabelUtils.LabelFeatureLayer(pFeatureLayerC, "NM_AREA", 7, "#4e4e4e", "Bold");
+
+                        List<string> layersToRemove = new List<string>() { "Zona Urbana", dmShpRenunciaAR };
+                        await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
+                        CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync("Renuncia", false);
 
                     });
-
-
-
-
 
                 }
                 catch (Exception ex) { }

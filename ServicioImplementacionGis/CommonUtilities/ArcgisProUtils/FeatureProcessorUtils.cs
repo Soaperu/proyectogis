@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using MessageBox = ArcGIS.Desktop.Framework.Dialogs.MessageBox;
+/**/
+
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -1150,18 +1152,16 @@ namespace CommonUtilities.ArcgisProUtils
 
             foreach (var layerName in layers)
             {
-                if (layerName == "Zona Urbana")
-                {
+                //if (layerName == "Zona Urbana")
+                //{
                     var featureLayer = MapView.Active.Map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name == layerName);
-                    string output = $@"C:\temp\Clipped.shp";
-
                     await QueuedTask.Run(() =>
                     {
                         var result = Geoprocessing.ExecuteToolAsync("analysis.Clip", 
                             Geoprocessing.MakeValueArray(featureLayer, clipLayer, outLayer));
                         result.Wait();
                     });
-                }
+                //}
 
 
                 //MessageBox.Show($"{layerName} cortada.");

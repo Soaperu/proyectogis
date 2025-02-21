@@ -242,6 +242,11 @@ namespace CommonUtilities.ArcgisProUtils
                     AliasName = "Datum",
                     Length = 2
                 };
+                FieldDescription ObservPolygonFieldDescription = new ArcGIS.Core.Data.DDL.FieldDescription("OBSERV", FieldType.String)
+                {
+                    AliasName = "Observ",
+                    Length = 20
+                };
 
                 List<FieldDescription> fieldDescriptions = new List<FieldDescription>() { countPolygonFieldDescription,
                                                                                           codePolygonFieldDescription,
@@ -254,7 +259,8 @@ namespace CommonUtilities.ArcgisProUtils
                                                                                           EvalPolygonFieldDescription,
                                                                                           FechPolygonFieldDescription,
                                                                                           HoraPolygonFieldDescription,
-                                                                                          DatumPolygonFieldDescription};
+                                                                                          DatumPolygonFieldDescription,
+                                                                                          ObservPolygonFieldDescription};
 
                 // Create a ShapeDescription object
                 string stringWkt = $"327{zone}";
@@ -298,6 +304,7 @@ namespace CommonUtilities.ArcgisProUtils
                     rowBuffer["FEC_DENU"] = fechaHoy.ToShortDateString();
                     rowBuffer["HOR_DENU"] = fechaHoy.ToShortTimeString();
                     rowBuffer["DATUM"] = "02";
+                    rowBuffer["OBSERV"] = "RETENIDA";
 
                     using (Feature feature = featureClass.CreateRow(rowBuffer))
                     {
