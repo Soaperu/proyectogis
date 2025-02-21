@@ -65,6 +65,32 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static async Task<Layer> AddLayerAsync(Map map, string layerPath, bool visible=false)
+        {
+            return await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    if (!File.Exists(layerPath))
+                    {
+
+                        MessageBox.Show($"El archivo {layerPath} no existe.");
+                    }
+                    Uri uri = new Uri(layerPath);
+                    Layer layer = LayerFactory.Instance.CreateLayer(uri, map);
+                    //MapView.Active.ZoomTo(layer);
+                    layer.SetVisibility(visible);
+
+                    return layer;
+                }
+                catch (Exception ex)
+                {
+                    // Captura cualquier otra excepción y mostrar el mensaje
+                    MessageBox.Show($"Error al agregar la capa: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return null; // Retornar null si ocurre un error
+                }
+            });
+        }
         /// <summary>
         /// Agrega múltiples capas al mapa especificado.
         /// </summary>
@@ -589,5 +615,8 @@ namespace CommonUtilities.ArcgisProUtils
 
 
         }
+
+
+
     }
 }

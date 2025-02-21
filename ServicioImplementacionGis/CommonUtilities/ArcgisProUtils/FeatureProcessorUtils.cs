@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using MessageBox = ArcGIS.Desktop.Framework.Dialogs.MessageBox;
+/**/
+
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -93,14 +95,14 @@ namespace CommonUtilities.ArcgisProUtils
             // Ejecutamos la herramienta AddField_management de Geoprocessing
             await QueuedTask.Run(() =>
             {
-            // Verificamos si el campo ya existe
-            var featureClass = featureLayer.GetTable() as FeatureClass;
-            var fieldIndex = featureClass.GetDefinition().FindField(fieldName);
+                // Verificamos si el campo ya existe
+                var featureClass = featureLayer.GetTable() as FeatureClass;
+                var fieldIndex = featureClass.GetDefinition().FindField(fieldName);
 
-            if (fieldIndex == -1)  // El campo no existe, lo vamos a crear
-            {
-                // Construimos los parámetros para la herramienta AddField_management
-                var parameters = new List<object>
+                if (fieldIndex == -1)  // El campo no existe, lo vamos a crear
+                {
+                    // Construimos los parámetros para la herramienta AddField_management
+                    var parameters = new List<object>
                 {
                     featureLayer,         // Feature Layer donde agregar el campo
                     fieldName,            // Nombre del nuevo campo
@@ -109,22 +111,22 @@ namespace CommonUtilities.ArcgisProUtils
                     fieldPrecision ?? -1, // Precisión (si aplica, por ejemplo para campos numéricos)
                     fieldScale ?? -1      // Escala (si aplica, por ejemplo para campos numéricos)
                 };
-                var toolParams = Geoprocessing.MakeValueArray(parameters.ToArray());
-                Geoprocessing.ExecuteToolAsync("AddField_management", toolParams);
-            }
-            else
-            {
-                // Si el campo ya existe, no es necesario agregarlo
-                System.Diagnostics.Debug.WriteLine($"El campo {fieldName} ya existe en la Feature Layer.");
-            }
+                    var toolParams = Geoprocessing.MakeValueArray(parameters.ToArray());
+                    Geoprocessing.ExecuteToolAsync("AddField_management", toolParams);
+                }
+                else
+                {
+                    // Si el campo ya existe, no es necesario agregarlo
+                    System.Diagnostics.Debug.WriteLine($"El campo {fieldName} ya existe en la Feature Layer.");
+                }
             });
-            
+
         }
 
         /// <summary>
         /// Añade un campo si no existe en un featureClass dentro de un GDB.
         /// </summary>
-        public static async void AddFieldIfNotExistsGdb(FeatureLayer featureLayer, string fieldName, FieldType fieldType, int length, int scale=0, int precision=0)
+        public static async void AddFieldIfNotExistsGdb(FeatureLayer featureLayer, string fieldName, FieldType fieldType, int length, int scale = 0, int precision = 0)
         {
             var result = await QueuedTask.Run(() =>
             {
@@ -146,10 +148,10 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             fieldDescription.Length = length;
                         }
-                        else if (FieldType.Integer == fieldType) 
+                        else if (FieldType.Integer == fieldType)
                         {
                             fieldDescription.Scale = scale;
-                            fieldDescription.Precision = precision; 
+                            fieldDescription.Precision = precision;
                         }
 
                         var fieldDescriptions = new List<ArcGIS.Core.Data.DDL.FieldDescription>() {
@@ -360,7 +362,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                 case "Catastro Forestal":
                     return $"CD_CONCE IN ({lostrJoinCodigos})";
-                
+
                 case "Carta IGN":
                     return $"CD_HOJA IN ({lostrJoinCodigos})";
 
@@ -554,7 +556,7 @@ namespace CommonUtilities.ArcgisProUtils
                 //var featureClass = featureLayer.GetTable() as FeatureClass;
 
                 // Añadir o eliminar campos según el caso
-                if ( caso == "CODIGO")
+                if (caso == "CODIGO")
                 {
                     // Añadir el campo "CODIGO" si no existe
                     AddFieldIfNotExistsAsync(featureLayer, "CODIGO", "STRING", 16);
@@ -603,12 +605,12 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
-         public static void ProcessOverlapAreaDm(
-                                        DataTable tableExistDm,
-                                        out string listCodigoColin,
-                                        out string listCodigoSup,
-                                        out List<string> colectionAreaOverlap)
-         {
+        public static void ProcessOverlapAreaDm(
+                                       DataTable tableExistDm,
+                                       out string listCodigoColin,
+                                       out string listCodigoSup,
+                                       out List<string> colectionAreaOverlap)
+        {
             // Inicializar las salidas
             listCodigoColin = string.Empty;
             listCodigoSup = string.Empty;
@@ -672,7 +674,7 @@ namespace CommonUtilities.ArcgisProUtils
                 listCodigoColin = codigoColinBuilder.ToString();
                 listCodigoSup = codigoSupBuilder.ToString();
             }
-         }
+        }
 
         public async static Task UpdateRecordsDmAsync(string capa, string listCodigoColin, string listCodigoSup, List<string> colectionAreaOverlap)
         {
@@ -755,7 +757,7 @@ namespace CommonUtilities.ArcgisProUtils
                                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se pudo obtener el Registro para actualizar.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                         continue;
                                     }
-                                                                   
+
                                     switch (seleccionTema)
                                     {
                                         case "Superpuesto":
@@ -808,8 +810,8 @@ namespace CommonUtilities.ArcgisProUtils
                         }
 
                         // Actualizar campos
-                        row[indexEVAL]= "IN";
-                        row[indexAREA_INT]= areaSup;
+                        row[indexEVAL] = "IN";
+                        row[indexAREA_INT] = areaSup;
                     }
                 }
             }
@@ -823,8 +825,8 @@ namespace CommonUtilities.ArcgisProUtils
         /// <param name="indexAREA_INT">Índice del campo AREA_INT.</param>
         private static void UpdateNeighboring(Row feature, int indexEVAL, int indexAREA_INT)
         {
-            feature[indexEVAL]= "CO";
-            feature[indexAREA_INT]= 0.0;
+            feature[indexEVAL] = "CO";
+            feature[indexAREA_INT] = 0.0;
         }
 
         /// <summary>
@@ -840,7 +842,7 @@ namespace CommonUtilities.ArcgisProUtils
 
             if (codigoOU == GlobalVariables.CurrentCodeDm)
             {
-                feature[indexEVAL]= "EV";
+                feature[indexEVAL] = "EV";
             }
             else
             {
@@ -1048,7 +1050,7 @@ namespace CommonUtilities.ArcgisProUtils
                 var queryFilter = new ArcGIS.Core.Data.SpatialQueryFilter
                 {
                     WhereClause = "", // Si no hay filtro de atributos, se puede dejar vacío
-                    FilterGeometry= envelope, // Establece la geometría de la intersección
+                    FilterGeometry = envelope, // Establece la geometría de la intersección
                     SpatialRelationship = SpatialRelationship.Intersects
                 };
 
@@ -1064,7 +1066,7 @@ namespace CommonUtilities.ArcgisProUtils
                     var row = rowCursor.Current;
 
                     // Obtén el valor del campo 'ubigeo'
-                    if (row != null )
+                    if (row != null)
                     {
                         string ubigeoValue = row[fieldName] as string;
                         if (!string.IsNullOrEmpty(ubigeoValue))
@@ -1135,6 +1137,45 @@ namespace CommonUtilities.ArcgisProUtils
             // Devuelve el resultado como una cadena separada por comas
             return result;
         }
+
+
+        public static async Task ClipLayersAsync(string inpLayer, string clpLayer, string outLayer)
+        {
+            var layers = new[] { inpLayer};
+            var clipLayer = MapView.Active.Map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name == clpLayer);
+
+            if (clipLayer == null || layers.Any(name => MapView.Active.Map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name == name) == null))
+            {
+                MessageBox.Show("Faltan capas necesarias en el TOC.");
+                return;
+            }
+
+            foreach (var layerName in layers)
+            {
+                //if (layerName == "Zona Urbana")
+                //{
+                    var featureLayer = MapView.Active.Map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name == layerName);
+                    await QueuedTask.Run(() =>
+                    {
+                        var result = Geoprocessing.ExecuteToolAsync("analysis.Clip", 
+                            Geoprocessing.MakeValueArray(featureLayer, clipLayer, outLayer));
+                        result.Wait();
+                    });
+                //}
+
+
+                //MessageBox.Show($"{layerName} cortada.");
+            }
+        }
+
+
+
+
+
+
+
+
+
     }
 }
 

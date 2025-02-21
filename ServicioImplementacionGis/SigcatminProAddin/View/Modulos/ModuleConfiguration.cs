@@ -39,10 +39,12 @@ namespace SigcatminProAddin.View.Modulos
             new CategoriaModulo("Consultas", new List<Modulo>
             {
                 new Modulo("Actualización Cuadriculas Regionales", typeof(ActualizacionCuadriculasRegionales)),
+                new Modulo("Acumulación", typeof(Acumulacion)),
                 new Modulo("Áreas Restringidas", typeof(AreasRestringidas), "Áreas Restringidas"),
                 new Modulo("Código Carta Nacional", typeof(CodigoCartaNacional)),
                 new Modulo("Código de DM", typeof(CodigoDM)),
                 new Modulo("Coordenadas del Punto Central", typeof(Coordenadas_Punto_Central)),
+                new Modulo("División", typeof(Division)),
                 new Modulo("DM por Carta IGN", typeof(DMCartaIGN)),
                 new Modulo("DM por Demarcación Política", typeof(DMxDemarcacionPolitica)),
                 new Modulo("Estadística de Áreas Restringidas", typeof(EstadisticasAreasRestringidas)),

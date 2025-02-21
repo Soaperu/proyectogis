@@ -36,7 +36,7 @@
                 <ColumnDefinition Width="70*"/>
                 <ColumnDefinition Width="30*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Text="Evaluación | Evaluación D.M." Grid.Row="0" Grid.Column="0"
+            <TextBlock Text="Consulta | Renuncia" Grid.Row="0" Grid.Column="0"
                    FontSize="16" FontWeight="Bold" Margin="0,0,0,0"
                    VerticalAlignment="Bottom" Foreground="#006DA0" FontFamily="Roboto"/>
             <StackPanel Orientation="Horizontal" Margin="0,0,0,0" VerticalAlignment="Center"

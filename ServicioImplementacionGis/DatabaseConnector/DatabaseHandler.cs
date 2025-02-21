@@ -1014,6 +1014,18 @@ namespace DatabaseConnector
             return ExecuteScalar(storedProcedure, parameters);
         }
 
+        public string CountRecordsAC(string type, string search) // FT_Cuenta_Registro
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_CuentaRegistrosAC;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 1) { Value = type },
+                new OracleParameter("V_BUSCA", OracleDbType.Varchar2, 13) { Value = search }
+            };
+
+            return ExecuteScalar(storedProcedure, parameters);
+        }
+
         public DataTable GetOfficialCarta(string field, string data, string datum) // F_Obtiene_Carta_oficial
         {
             string storedProcedure = "PACK_DBA_SG_D_EVALGIS.P_SEL_DATOS_CARTA_OFICIAL";
@@ -1274,6 +1286,32 @@ namespace DatabaseConnector
                 new OracleParameter("PD_NOMARE", OracleDbType.Varchar2, 50) { Value = vnombre },
                 new OracleParameter("V_TIPO", OracleDbType.Varchar2, 2) { Value = vtipo },
                 new OracleParameter("PD_ESTADO", OracleDbType.Varchar2, 2) { Value = vtipoarea }
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDatosDivision(string vcodigo, string nombre, string vtipo, string tipoarea)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneDatoDMDivision;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("V_CODIGO", OracleDbType.Varchar2, 13) { Value = vcodigo },
+                new OracleParameter("V_NOMBRE", OracleDbType.Varchar2, 30) { Value = nombre },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 5) { Value = vtipo },
+                new OracleParameter("V_TIPOAREA", OracleDbType.Varchar2, 5) { Value = tipoarea },
+            };
+
+            return ExecuteDataTable(storedProcedure, parameters);
+        }
+
+        public DataTable GetDatosAcumulacion(string vcodigo, string vtipo)
+        {
+            string storedProcedure = DatabaseProcedures.Procedure_ObtieneDatoDMAcumulacion;
+            var parameters = new OracleParameter[]
+            {
+                new OracleParameter("CG_CODIGO", OracleDbType.Varchar2, 13) { Value = vcodigo },
+                new OracleParameter("V_TIPO", OracleDbType.Varchar2, 2) { Value = vtipo },
             };
 
             return ExecuteDataTable(storedProcedure, parameters);

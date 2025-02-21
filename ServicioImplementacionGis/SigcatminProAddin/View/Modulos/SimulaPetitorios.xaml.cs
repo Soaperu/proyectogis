@@ -488,6 +488,7 @@ namespace SigcatminProAddin.View.Modulos
             int radio = int.Parse(TbxRadio.Text);
             string datumStr = CbxSistema.Text;
             string zoneDm = CbxZona.SelectedValue.ToString();
+            GlobalVariables.CurrentZoneDm=zoneDm;
             var codigoValue = "000000001";
             ArcGIS.Core.Geometry.Geometry polygon = null;
             ArcGIS.Core.Geometry.Envelope envelope = null;
@@ -519,6 +520,8 @@ namespace SigcatminProAddin.View.Modulos
 
             DataTable dtTouches = new DataTable();
             DataTable dtIntersec = new DataTable();
+            DataTable dtResultado = new DataTable();
+
             await QueuedTask.Run(async () =>
             {
                 if (datum == 2)
@@ -631,7 +634,7 @@ namespace SigcatminProAddin.View.Modulos
                 if (radio == 0)
                 {
                     listDms = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroShpName);
-                    listDmsTouches = await featureClassLoader.IntersectFeatureClassbyGeometryTouchesAsync("Catastro", polygon, catastroTouchesShpName);
+                    //   listDmsTouches = await featureClassLoader.IntersectFeatureClassbyGeometryTouchesAsync("Catastro", polygon, catastroTouchesShpName);
                 }
                 else
                 {
@@ -642,28 +645,45 @@ namespace SigcatminProAddin.View.Modulos
                     //listDmsInter = await featureClassLoader.IntersectFeatureClassbyGeometryAsync("Catastro", polygon, catastroInterseShpName);
 
                     dtTouches = await featureClassLoader.IntersectFeatureClassbyGeometryTouchesDTAsync("Catastro", polygon, catastroTouchesShpName);
-                    dtIntersec = await featureClassLoader.IntersectFeatureClassbyGeometryDTAsync("Catastro", polygon, catastroTouchesShpName);
-
-                    // Eliminar filas en dt1 que tengan el mismo CODIGOU en dt2
-                   foreach (DataRow row1 in dtIntersec.Rows.Cast<DataRow>().ToList())
-                    {
-                        // Buscar si existe alguna fila en dt2 con el mismo CODIGOU
-                        bool existsInDt2 = dtTouches.AsEnumerable().Any(row2 => row2.Field<string>("CODIGO_SP") == row1.Field<string>("CODIGO_SP"));
-
-                        // Si existe, eliminar la fila de dt1
-                        if (existsInDt2)
-                        {
-                            dtIntersec.Rows.Remove(row1);
-                        }
-                    }
+                    //dtIntersec = await featureClassLoader.IntersectFeatureClassbyGeometryDTAsync("Catastro", polygon, catastroTouchesShpName);
+                    //dtTouches = await featureClassLoader.IntersectFeatureClassbyGeometryDTQueryTouchesAsync("Catastro", polygon, codigoValue, catastroTouchesShpName);
+                    //dtIntersec = await featureClassLoader.IntersectFeatureClassbyGeometryDTQueryIntersecAsync("Catastro", polygon, codigoValue, catastroInterseShpName);
 
 
+                    //// Encontrar los códigos que están en ambos DataTables
+                    //var codigosDuplicados = dtTouches.AsEnumerable()
+                    //                           .Select(row => row["CODIGO_SP"])
+                    //                           .Intersect(dtIntersec.AsEnumerable()
+                    //                                         .Select(row => row["CODIGO_SP"]))
+                    //                           .ToList();
 
+                    //// Unir ambos DataTables y filtrar aquellos códigos duplicados
+                    //var combined = dtTouches.AsEnumerable()
+                    //                  .Concat(dtIntersec.AsEnumerable())
+                    //                  .Where(row => !codigosDuplicados.Contains(row["CODIGO_SP"]));
 
+                    //// Crear un nuevo DataTable para guardar los resultados sin duplicados
+                    //DataTable dtResultado = dtTouches.Clone();  // Copia la estructura de dt1
+
+                    //// Añadir las filas filtradas al DataTable de resultados
+                    //foreach (var row in combined)
+                    //{
+                    //    dtResultado.ImportRow(row);
+                    //}
+
+                    //// Eliminar filas en dt1 que tengan el mismo CODIGOU en dt2
+                    //foreach (DataRow row1 in dtIntersec.Rows.Cast<DataRow>().ToList())
+                    //{
+                    //    // Buscar si existe alguna fila en dt2 con el mismo CODIGOU
+                    //    bool existsInDt2 = dtTouches.AsEnumerable().Any(row2 => row2.Field<string>("CODIGO_SP") == row1.Field<string>("CODIGO_SP"));
+
+                    //    // Si existe, eliminar la fila de dt1
+                    //    if (existsInDt2)
+                    //    {
+                    //        dtIntersec.Rows.Remove(row1);
+                    //    }
+                    //}
                 }
-
-
-
                 if (listDms == "")
                 {
                     string message = "No hay información del área seleccionada";
@@ -692,45 +712,8 @@ namespace SigcatminProAddin.View.Modulos
                         Console.WriteLine("Error: " + ex.Message);
                     }
                 });
-
-
-
-                /*******/
                 DataTable intersectDm;
-                //if (datum == datumwgs84)
-                //{
-                //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroWGS84, FeatureClassConstants.gstrFC_CatastroWGS84 + zoneDm, codigoValue);
-                //}
-                //else
-                //{
-                //    intersectDm = dataBaseHandler.IntersectOracleFeatureClass("24", FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, FeatureClassConstants.gstrFC_CatastroPSAD56 + zoneDm, codigoValue);
-                //}
-                ///*INTERSECTAR*/
-                //DataTable dataTable = new DataTable();
-                //dataTable.Columns.Add("CODIGOU", typeof(string));
-                //dataTable.Columns.Add("CODIGO_SP", typeof(string));
-                //dataTable.Columns.Add("CONCESION", typeof(string));
-                //dataTable.Columns.Add("ZONA", typeof(string));
-                //dataTable.Columns.Add("TIPO_EX", typeof(string));
-                //dataTable.Columns.Add("AREASUP", typeof(decimal));
-                //DataRow dataRow = dataTable.NewRow();
-                //string codigo;
-                //string codigosp;
-                //string concesion;
-                //string zona;
-                //string tipoex;
-                //decimal areasup;
-
-                //codigo = "700005820";
-                //codigosp = "030016408";
-                //concesion = "JUAN DIEGO 2008";
-                //zona = "17";
-                //tipoex = "PE";
-                //areasup = Convert.ToDecimal(27.4439);
-                //dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
-
-                intersectDm = dtIntersec;
-
+                intersectDm = dtResultado;
 
                 /*      */
 
@@ -741,13 +724,21 @@ namespace SigcatminProAddin.View.Modulos
 
                 CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.ProcessOverlapAreaDm(intersectDm, out string listaCodigoColin, out string listaCodigoSup, out List<string> coleccionesAareaSup);
                 await CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.UpdateRecordsDmAsync(catastroShpName, listaCodigoColin, listaCodigoSup, coleccionesAareaSup);
+                await UpdateValueSHPAsync(catastroShpName, dtTouches, "CO");
+                //await UpdateValueSHPAsync(catastroShpName, dtResultado, "PR");
+
+
                 await featureClassLoader.ExportAttributesTemaAsync(catastroShpName, GlobalVariables.stateDmY, dmShpName, $"CODIGOU='{codigoValue}'");
                 string styleCat = Path.Combine(GlobalVariables.stylePath, GlobalVariables.styleCatastro);
                 await CommonUtilities.ArcgisProUtils.SymbologyUtils.ApplySymbologyFromStyleAsync(catastroShpName, styleCat, "LEYENDA", StyleItemType.PolygonSymbol, codigoValue);
-                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
+                //var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue);
+
+                await UpdateValueCampoSHPAsync(catastroShpName, codigoValue, "02");
+
+                var Params = Geoprocessing.MakeValueArray(catastroShpNamePath, codigoValue, GlobalVariables.CurrentDatumDm, GlobalVariables.CurrentZoneDm);
                 var response = await GlobalVariables.ExecuteGPAsync(GlobalVariables.toolBoxPathEval, GlobalVariables.toolGetEval, Params);
                 CommonUtilities.ArcgisProUtils.LayerUtils.SelectSetAndZoomByNameAsync(catastroShpName, false);
-                List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana", "Poligono", poligonoGen };
+                List<string> layersToRemove = new List<string>() { "Catastro", "Carta IGN", dmShpName, "Zona Urbana", "Poligono", poligonoGen, catastroTouchesShpName, catastroInterseShpName };
                 await CommonUtilities.ArcgisProUtils.LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
                 await CommonUtilities.ArcgisProUtils.LayerUtils.ChangeLayerNameAsync(catastroShpName, "Catastro");
                 GlobalVariables.CurrentShpName = "Catastro";
@@ -959,6 +950,58 @@ namespace SigcatminProAddin.View.Modulos
             }
 
         }
+
+        public static async Task UpdateValueCampoSHPAsync(string capa, string codigo, string valorcampo)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener el mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
+
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+                                string v_codigo_dm = row["CODIGOU"].ToString();
+                                if (v_codigo_dm == codigo)
+                                {
+                                    row["DATUM"] = valorcampo; // Puedes cambiar esto si necesitas otro valor
+                                    row.Store();
+                                }
+
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Mejor manejo de errores: registrar o devolver el error sin bloquear la UI
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+        }
+
 
         private ExtentModel ObtenerExtent(double XMin, double YMin, double XMax, double YMax, int datum, int radioKm = 0)
         {
@@ -1457,6 +1500,78 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
+        public static async Task UpdateValueSHPAsync(string capa, DataTable dt, string valorcampo)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Verificar si el DataTable tiene filas
+                    if (dt.Rows.Count == 0)
+                    {
+                        //System.Windows.MessageBox.Show("No hay datos en el DataTable");
+                        return;
+                    }
+
+                    // Crear un diccionario para buscar rápidamente los valores en el DataTable
+                    Dictionary<string, DataRow> codigouDict = new Dictionary<string, DataRow>();
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string codigou = row["CODIGO_SP"].ToString();
+                        if (!codigouDict.ContainsKey(codigou))
+                        {
+                            codigouDict[codigou] = row;
+                        }
+                    }
+
+                    // Obtener el mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
+
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+                                string v_codigo_dm = row["CODIGOU"].ToString();
+
+                                // Verificar si el CODIGOU existe en el diccionario
+                                if (codigouDict.ContainsKey(v_codigo_dm))
+                                {
+                                    // Actualizar el campo DATUM con el valor deseado
+                                    row["EVAL"] = valorcampo; // Puedes cambiar esto si necesitas otro valor
+                                    row.Store();
+                                }
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Mejor manejo de errores: registrar o devolver el error sin bloquear la UI
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+        }
 
 
     }

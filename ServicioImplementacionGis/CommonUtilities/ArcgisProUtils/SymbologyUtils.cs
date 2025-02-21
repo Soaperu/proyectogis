@@ -653,6 +653,18 @@ namespace CommonUtilities.ArcgisProUtils
                     }
                 },
                 {
+                    "Caram_renum",
+                    new SymbolConfiguration
+                    {
+                        FillStyle = SimpleFillStyle.Vertical,
+                        FillColor = GetRGBColor(0, 180, 190),
+                        LineStyle = SimpleLineStyle.Solid,
+                        LineColor = GetRGBColor(0, 180, 190),
+                        LineWidth = 1.0,
+                        Angle = 135
+                    }
+                },
+                {
                     "Acumulacion",
                     new SymbolConfiguration
                     {
@@ -672,6 +684,7 @@ namespace CommonUtilities.ArcgisProUtils
                         LineStyle = SimpleLineStyle.Solid,
                         LineColor = GetRGBColor(230, 0, 0),
                         LineWidth = 1.2
+
                     }
                 },
                 {
@@ -1016,5 +1029,6 @@ namespace CommonUtilities.ArcgisProUtils
         public SimpleLineStyle LineStyle { get; set; }
         public CIMRGBColor LineColor { get; set; }
         public double LineWidth { get; set; }
+        public double Angle { get; set; }
     }
 }

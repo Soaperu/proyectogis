@@ -80,7 +80,9 @@ namespace DatabaseConnector
         public const string Procedure_ObtienePathUrba = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_PATH_URBA";
         public const string Procedure_ObtieneImage = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_PATH_IMAGE";
         public const string Procedure_ObtieneTipoExe = "SISGEM.PACK_DBA_SG_D_ARE_GIS.P_SEL_TIPO_EXE";
-
+        public const string Procedure_CuentaRegistrosAC = "PACK_DBA_SG_D_EVALGIS.SP_CUENTA_REGISTRO_AC";
+        public const string Procedure_ObtieneDatoDMAcumulacion = "PACK_DBA_SIGCATMIN.P_SEL_DATOS_DM_ACUMULACION";
+        public const string Procedure_ObtieneDatoDMDivision = "PACK_DBA_SIGCATMIN.P_SEL_DATOS_DM_DIVISION";
 
         //public const string Procedure_ = ;
         //public const string Procedure_ = ;
