@@ -431,13 +431,13 @@ namespace CommonUtilities.ArcgisProUtils
         }
 
 
-        public static void AnnotateVerticesofLayer(string layerName)
+        public static void AnnotateVerticesOfLayer(string layerName)
         {
             //var featureclass = layer.GetFeatureClass();
             var map = MapView.Active.Map;
             var selectedLayers = MapView.Active.GetSelectedLayers();
-            FeatureLayer layer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, layerName);
-            var featureclass = layer.GetFeatureClass();
+            FeatureLayer layer = FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, layerName);
+            //var featureclass = layer.GetFeatureClass();
             GraphicsLayer? graphicsLayer = null;
 
             QueuedTask.Run(() =>
@@ -461,7 +461,7 @@ namespace CommonUtilities.ArcgisProUtils
                             //string fieldValue = Convert.ToString(row[field]);
 
                             
-                                var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices" };
+                                var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {layerName}" };
                                 var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
 
                                 graphicsLayer = map.GetLayersAsFlattenedList()

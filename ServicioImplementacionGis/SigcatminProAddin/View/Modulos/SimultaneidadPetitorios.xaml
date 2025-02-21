@@ -71,8 +71,10 @@
                 <ColumnDefinition Width="150"/>
             </Grid.ColumnDefinitions>
             <Label Grid.Column="0" VerticalAlignment="Center" HorizontalAlignment="Center">Fecha Reporte :</Label>
-            <DatePicker SelectedDate="{x:Static sys:DateTime.Now}"  Grid.Column="1" Width="200" Height="25" HorizontalAlignment="Left" x:Name="DatePickerInicio" DisplayDate="2025-02-03"/>
-            <Button Content="Procesar" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
+            <DatePicker SelectedDate="{x:Static sys:DateTime.Now}"  Grid.Column="1" Width="200" Height="25" 
+                        HorizontalAlignment="Left" x:Name="DatePickerInicio" DisplayDate="2025-02-03"
+                        VerticalContentAlignment="Center"/>
+            <Button Content="Procesar" Width="80" Height="20" Background="#006DA0" BorderBrush="White"
             Foreground="White" Grid.Column="3" HorizontalAlignment="Left"
             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                 HorizontalContentAlignment="Center" FontFamily="Roboto"
@@ -108,11 +110,6 @@
             </dxg:GridControl.View>
         </dxg:GridControl>
 
-      
-
-
-        
-
         <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
           Grid.Column="0" Grid.Row="7">
             <Grid.ColumnDefinitions>
@@ -128,13 +125,13 @@
             Foreground="#006DA0" Grid.Column="0" HorizontalAlignment="Left"
             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                 HorizontalContentAlignment="Center" FontWeight="bold" FontFamily="Roboto"
-            VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10" Padding="0,0,0,0" Click="BtnSalir_Click"   />
+            VerticalContentAlignment="Center" x:Name="BtnSalir" FontSize="10"  Click="BtnSalir_Click"   />
 
-            <Button Content="Graficar" Width="90" Height="20" Background="#006DA0" BorderBrush="White"
-            Foreground="White" Grid.Column="6" HorizontalAlignment="Left"
+            <Button Content="Graficar" Width="80" Height="20" Background="#006DA0" BorderBrush="White"
+            Foreground="White" Grid.Column="6" HorizontalAlignment="Center"
             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                HorizontalContentAlignment="Center" FontFamily="Roboto"
-            VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="BtnGraficar_Click" />
+                HorizontalContentAlignment="Center" FontFamily="Roboto" IsEnabled="False"
+            VerticalContentAlignment="Center" x:Name="BtnGraficar" FontSize="10" FontWeight="Medium" Click="BtnGraficar_Click" />
 
         </Grid>
 

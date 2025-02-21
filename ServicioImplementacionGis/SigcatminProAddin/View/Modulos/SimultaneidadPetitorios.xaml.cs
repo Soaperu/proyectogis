@@ -2,20 +2,10 @@
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
-using System.Linq;
 using System.Security.Policy;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Forms;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using ArcGIS.Core.CIM;
 using ArcGIS.Core.Data;
 using ArcGIS.Core.Data.DDL;
 using ArcGIS.Core.Geometry;
@@ -26,10 +16,7 @@ using ArcGIS.Desktop.Mapping;
 using CommonUtilities;
 using CommonUtilities.ArcgisProUtils;
 using DatabaseConnector;
-using DevExpress.CodeParser;
-using DevExpress.Pdf.Native.BouncyCastle.Utilities;
 using DevExpress.Xpf.Grid;
-using DevExpress.XtraRichEdit.Tables.Native;
 using SigcatminProAddin.Models;
 
 namespace SigcatminProAddin.View.Modulos
@@ -46,6 +33,7 @@ namespace SigcatminProAddin.View.Modulos
         private string gstrFC_Catastro_Minero = "";
         private string gstrFC_Cuadricula_Z = "";
         private string gstrFC_Carta = "";
+        private string nameTemplate = "Plano Simultaneo";
         public SimultaneidadPetitorios()
         {
             InitializeComponent();
@@ -70,17 +58,6 @@ namespace SigcatminProAddin.View.Modulos
         {
             DateTime fechaDatum = new DateTime(2016, 4, 7);
             DateTime fechaLibreDenunciabilidad = new DateTime(2020, 1, 1);
-            
-
-            List<string> mapsToDelete = new List<string>()
-            {
-                GlobalVariables.mapNameCatastro,
-
-            };
-
-            await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
-            await MapUtils.CreateMapAsync(GlobalVariables.mapNameCatastro);
-
             DateTime fechaSimultaneidad = DatePickerInicio.SelectedDate.Value;
             fechaSimultaneidadAsString = fechaSimultaneidad.ToString("dd/MM/yyyy");
 
@@ -134,13 +111,14 @@ namespace SigcatminProAddin.View.Modulos
             string TablaDMSimultaneidad = "DMSimul" + fechaArchi;
 
             // Creamos tabla  DBf
-            CrearTablaSimultaneidad(ConcesionxGrupo, TablaDMSimultaneidad);
+            await CrearTablaSimultaneidad(ConcesionxGrupo, TablaDMSimultaneidad);
 
             DataGridSimultaneidad.ItemsSource = grupoCodigoRemate;
+            BtnGraficar.IsEnabled = true;
         }
 
 
-        private async void CrearTablaSimultaneidad(DataTable datos, string nombreTabla)
+        private async Task CrearTablaSimultaneidad(DataTable datos, string nombreTabla)
         {
             string glo_pathSIM = @"C:/bdgeocatmin/BDGEOCATMINPRO_84.gdb";
 
@@ -202,21 +180,19 @@ namespace SigcatminProAddin.View.Modulos
                                 newRow.Store();
                             }
                         }
-                        ArcGIS.Desktop.Mapping.Map map = await MapUtils.EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
-                        ArcGIS.Desktop.Mapping.IStandaloneTableFactory tableFactory = ArcGIS.Desktop.Mapping.StandaloneTableFactory.Instance;
-                        tableFactory.CreateStandaloneTable(new ArcGIS.Desktop.Mapping.StandaloneTableCreationParams(table), map);
+                        //ArcGIS.Desktop.Mapping.Map map = await MapUtils.EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro);
+                        //ArcGIS.Desktop.Mapping.IStandaloneTableFactory tableFactory = ArcGIS.Desktop.Mapping.StandaloneTableFactory.Instance;
+                        //tableFactory.CreateStandaloneTable(new ArcGIS.Desktop.Mapping.StandaloneTableCreationParams(table), map);
                     }
 
-                    
                 });
 
-              
 
-                System.Windows.MessageBox.Show("Tabla generada y datos insertados correctamente.", "Éxito", System.Windows.MessageBoxButton.OK);
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Tabla generada y datos insertados correctamente.", "Éxito", System.Windows.MessageBoxButton.OK);
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show($"Error en generar tabla: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Error en generar tabla: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
             }
         }
 
@@ -232,9 +208,20 @@ namespace SigcatminProAddin.View.Modulos
 
         private async void BtnGraficar_Click(object sender, RoutedEventArgs e)
         {
-            DataTable dtSimultaneidad = ConvertirGridControlADataTable(DataGridSimultaneidad);
-            await ConsultaDMSimultaneoc(dtSimultaneidad);
-            generaplanosimultaneos();
+            ProgressBarUtils progressBar = new ProgressBarUtils("Evaluando y graficando Derecho Minero");
+            progressBar.Show();
+            try
+            {
+                DataTable dtSimultaneidad = ConvertirGridControlADataTable(DataGridSimultaneidad);
+                await ConsultaDMSimultaneoc(dtSimultaneidad);
+                generaplanosimultaneos("Catastro_sim");
+            }
+            catch (Exception ex)
+            {
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Error al graficar: {ex.Message}", "Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
+                progressBar.Dispose();
+            }
+            progressBar.Dispose();
         }
 
         public async Task ConsultaDMSimultaneoc( DataTable p_ListBox)
@@ -281,7 +268,7 @@ namespace SigcatminProAddin.View.Modulos
                     }
                 }
             }
-
+            GlobalVariables.CurrentCodeDm = v_cod_remate;
             tipo = "1";
             v_grusimf = databaseHandler.ObtenercuadriculasSimultaneas(grusim, grusimf, tipo, fechaSimultaneidadAsString);
             string codigo_eval = "";
@@ -307,11 +294,16 @@ namespace SigcatminProAddin.View.Modulos
                                                                                         , AppConfig.userName
                                                                                         , AppConfig.password);
 
-
-
             string datumwgs84 = "2";
             try
             {
+                List<string> mapsToDelete = new List<string>()
+                    {
+                        GlobalVariables.mapNameCatastro,
+                    };
+
+                await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+                await MapUtils.CreateMapAsync(GlobalVariables.mapNameCatastro);
                 // Obtener el mapa Catastro//
                 Map map = await MapUtils.EnsureMapViewIsActiveAsync(GlobalVariables.mapNameCatastro); // "CATASTRO MINERO"
                 // Crear instancia de FeatureClassLoader y cargar las capas necesarias
@@ -326,8 +318,6 @@ namespace SigcatminProAddin.View.Modulos
                     await featureClassLoader.LoadFeatureClassAsync(FeatureClassConstants.gstrFC_Cuadricula_PSAD56 + v_zona_dm, false, lista_cuad_sim);
                 }
 
-                
-
 
                 //Obtener DMS Simultaneos
                 v_grusim = databaseHandler.ObtenerDerechosSimultaneos(grusim, grusimf, tipo, fechaSimultaneidadAsString);
@@ -339,7 +329,7 @@ namespace SigcatminProAddin.View.Modulos
                         codigo_eval = v_grusim.Rows[contador]["CODIGOU"].ToString();
                         hectagis_sim = v_grusim.Rows[contador]["HECTAGIS"].ToString();
 
-                        if(contador == 0)
+                        if (contador == 0)
                         {
                             hectagis_min = hectagis_sim;
                             lista_dm_sim = $"CODIGOU = '{codigo_eval}'";
@@ -366,7 +356,7 @@ namespace SigcatminProAddin.View.Modulos
 
                 await featureClassLoader.ExportAttributesTemaAsync("Catastro", false, "Cata_sim", lista_dm_sim);
                 await FeatureProcessorUtils.AgregarCampoTemaTpm("Cata_sim", "Cata_sim");
-
+                var featureLayerCata = await LayerUtils.GetFeatureLayerByNameAsync("Cata_sim");
                 await featureClassLoader.ExportAttributesTemaAsync("Cuadriculas", false, "Cuadri_sim", lista_cuad_sim);
                 await FeatureProcessorUtils.AgregarCampoTemaTpm("Cuadri_sim", "Cuadri_sim");
                 await FeatureProcessorUtils.UpdateValueSimultaneoAsync("Cuadri_sim", sgrupo_sim, v_cod_remate);
@@ -382,31 +372,42 @@ namespace SigcatminProAddin.View.Modulos
 
                 Envelope envelope = null;
                 await QueuedTask.Run(() => envelope = featureClassLoader.pFeatureLayer_cuadriculas.QueryExtent());
-                
 
-                ExtentModel extentCuad = new ExtentModel {xmin= envelope.XMin, ymin= envelope.YMin, xmax= envelope.XMax, ymax= envelope.YMax };
-                string listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentCuad.xmin, extentCuad.ymin, extentCuad.xmax, extentCuad.ymax);
-
-
-                if(num_cuasim == 1)
+                string listHojas;
+                ExtentModel newExtent;
+                ExtentModel extentCuad = new ExtentModel { xmin = envelope.XMin, ymin = envelope.YMin, xmax = envelope.XMax, ymax = envelope.YMax };
+                if (v_zona_dm == "18")
                 {
-                    MapUtils.AnnotateVerticesofLayer("Cata_sim");
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", extentCuad.xmin, extentCuad.ymin, extentCuad.xmax, extentCuad.ymax);
                 }
                 else
                 {
-                    string tipod = "1";
-                    string inputFeatureClass = "Cuadri_sim";
-                    FeatureLayer flCuadriSim = await LayerUtils.GetFeatureLayerByNameAsync(inputFeatureClass);
-                    string outputFeatureClass = "Cuadri_dsim";
-                    string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
-                    //string inputPath = Path.Combine(outputFolder, inputFeatureClass + ".shp");
-                    string outputPath = Path.Combine(outputFolder, outputFeatureClass + ".shp");
+                    newExtent = ComplementaryProcessesUtils.TransformBoundingBox(extentCuad, v_zona_dm);
+                    listHojas = await featureClassLoader.IntersectFeatureClassAsync("Carta IGN", newExtent.xmin, newExtent.ymin, newExtent.xmax, newExtent.ymax);
+                    List<string> layersToRemove = new List<string>() { "Carta IGN", "Cuadriculas", "Catastro" };
 
-                    List<string> dissolveFields = new List<string> { "ZONA" };
+                    if (num_cuasim == 1)
+                    {
+                        MapUtils.AnnotateVerticesOfLayer("Cata_sim");
+                        await SymbologyUtils.ColorPolygonSimple(featureLayerCata);
+                        MapUtils.AnnotateLayerbyName("Cata_sim", "CONCESION", "Catastro_Anotaciones", color: "#E60000");
+                        await LayerUtils.ChangeLayerNameAsync("Cuadri_sim", "Cuadricula_sim");
+                        await LayerUtils.ChangeLayerNameAsync("Cata_sim", "Catastro_sim");
+                    }
+                    else
+                    {
+                        layersToRemove.Add("Cuadri_sim");
+                        string tipod = "1";
+                        string inputFeatureClass = "Cuadri_sim";
+                        FeatureLayer flCuadriSim = await LayerUtils.GetFeatureLayerByNameAsync(inputFeatureClass);
+                        string outputFeatureClass = "Cuadri_dsim";
+                        string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
+                        string outputPath = Path.Combine(outputFolder, outputFeatureClass + ".shp");
 
-                    //Realiza dissolve
+                        List<string> dissolveFields = new List<string> { "ZONA" };
 
-                    List<object> parameters = new List<object>
+                        //Realiza dissolve
+                        List<object> parameters = new List<object>
                         {
                             flCuadriSim,           // Capa de entrada
                             outputPath,          // Capa de salida
@@ -416,57 +417,71 @@ namespace SigcatminProAddin.View.Modulos
                             "DISSOLVE_LINES"             // "DISSOLVE_LINES" o "UNSPLIT_LINES"
                         };
 
-                    // Ejecuta el geoproceso Dissolve
-                    var toolParams = Geoprocessing.MakeValueArray(parameters.ToArray());
-                    var dissolveResult = await QueuedTask.Run(() =>
-                        Geoprocessing.ExecuteToolAsync("Dissolve_management", toolParams, null, CancelableProgressor.None, GPExecuteToolFlags.None));
+                        // Ejecuta el geoproceso Dissolve
+                        var toolParams = Geoprocessing.MakeValueArray(parameters.ToArray());
+                        var dissolveResult = await QueuedTask.Run(() =>
+                            Geoprocessing.ExecuteToolAsync("Dissolve_management", toolParams, null, CancelableProgressor.None, GPExecuteToolFlags.None));
 
-                    // Verificar si la herramienta se ejecutó correctamente
-                    if (dissolveResult.IsFailed)
-                    {
-                        Console.WriteLine("Error en Dissolve: " + dissolveResult.ErrorMessages);
+                        // Verificar si la herramienta se ejecutó correctamente
+                        if (dissolveResult.IsFailed)
+                        {
+                            Console.WriteLine("Error en Dissolve: " + dissolveResult.ErrorMessages);
+                        }
+                        else
+                        {
+                            flCuadriSim = (FeatureLayer)await LayerUtils.AddLayerAsync(map, outputPath);
+                            Console.WriteLine("Dissolve ejecutado con éxito.");
+                        }
+                        await SymbologyUtils.ColorPolygonSimple(featureLayerCata);
+                        await SymbologyUtils.ColorPolygonSimple(flCuadriSim);
+                        await FeatureProcessorUtils.AgregarCampoTemaTpm("Cuadri_dsim", "Cuadri_dsim");
+                        await FeatureProcessorUtils.UpdateValueSimultaneoAsync("Cuadri_dsim", sgrupo_sim, v_cod_remate);
+                        MapUtils.AnnotateVerticesOfLayer("Cata_sim");
+                        MapUtils.AnnotateLayerbyName("Cata_sim", "CONCESION", "Catastro_Anotaciones", color: "#0000E6");
+
+                        if (num_cuasim == 1)
+                        {
+                            MapUtils.AnnotateLayerbyName("Cuadri_sim", "COD_REMATE", "Cuadriculas_Anotaciones", color: "#E60000");
+                            await LayerUtils.ChangeLayerNameAsync("Cuadri_sim", "Cuadricula_sim");
+                        }
+                        else
+                        {
+                            MapUtils.AnnotateLayerbyName("Cuadri_dsim", "COD_REMATE", "Cuadriculas_Anotaciones", color: "#E60000");
+                            await LayerUtils.ChangeLayerNameAsync("Cuadri_dsim", "Cuadricula_dsim");
+                            await LayerUtils.ChangeLayerNameAsync("Cata_sim", "Catastro_sim");
+
+                        }
                     }
-                    else
-                    {
-                        Console.WriteLine("Dissolve ejecutado con éxito.");
-                    }
 
-                    await FeatureProcessorUtils.AgregarCampoTemaTpm("Cuadri_dsim", "Cuadri_dsim");
-                    await FeatureProcessorUtils.UpdateValueSimultaneoAsync("Cuadri_dsim", sgrupo_sim, v_cod_remate);
-                    MapUtils.AnnotateVerticesofLayer("Cata_sim");
-                    MapUtils.AnnotateLayerbyName("Cata_sim", "CONCESION", "Catastro_Anotaciones");
-                    
-
-                    if (num_cuasim == 1)
-                    {
-                        MapUtils.AnnotateLayerbyName("Cuadri_sim", "COD_REMATE", "Cuadriculas_Anotaciones");
-                        await LayerUtils.ChangeLayerNameAsync("Cuadri_sim", "Cuadricula_sim");
-
-                    }
-                    else
-                    {
-                        MapUtils.AnnotateLayerbyName("Cuadri_dsim", "COD_REMATE", "Cuadriculas_Anotaciones");
-                        //await LayerUtils.ChangeLayerNameAsync("Cuadri_dsim", "Cuadricula_sim");
-
-                    }
-
+                    await LayerUtils.RemoveLayersFromActiveMapAsync(layersToRemove);
                 }
-
-                //anota textos
-
-
             }
-            catch
+            catch (Exception ex)
             {
-
+                ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
-            
-            
-
         }
 
-        public async void generaplanosimultaneos()
+        public async void generaplanosimultaneos(string layerName)
         {
+            double x;
+            double y;
+            var layoutConfiguration = new LayoutConfiguration();
+            layoutConfiguration.BasePath = GlobalVariables.ContaninerTemplatesReport;
+            var layoutUtils = new LayoutUtils(layoutConfiguration);
+            var layoutPath = layoutUtils.DeterminarRutaPlantilla(nameTemplate);
+            string nameWithoutExtention = Path.GetFileNameWithoutExtension(layoutPath);
+            int scale = 50000;
+            var layoutProjectItem = await LayoutUtils.AddLayoutPath(layoutPath, layerName, GlobalVariables.mapNameCatastro, nameWithoutExtention, scale);
+            ElementsLayoutUtils elementsLayoutUtils = new ElementsLayoutUtils();
+            y = await elementsLayoutUtils.AgregarTextosLayoutAsync("Simultaneo", layoutProjectItem, 15.2);
+            FeatureLayer cuadriculaSim = null;
+            cuadriculaSim = await LayerUtils.GetFeatureLayerByNameAsync("Cuadricula_dsim", await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro));
+            if (cuadriculaSim == null)
+            {
+                cuadriculaSim = await LayerUtils.GetFeatureLayerByNameAsync("Cuadricula_sim", await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro));
+            }
+            await LayoutUtils.AddTextListVerticesToLayoutSim(cuadriculaSim, layoutProjectItem);
 
         }
 
