@@ -10,6 +10,8 @@ namespace SigcatminProAddin.Models
     {
         public int Id { get; set; }
         public string Codigo { get; set; }
+        public string CodigoEstado { get; set; }
+        
         public bool IsProcess { get; set; }
     }
 }

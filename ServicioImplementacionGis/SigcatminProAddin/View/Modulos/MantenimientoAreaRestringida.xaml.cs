@@ -33,6 +33,7 @@ using DevExpress.Xpo.DB.Helpers;
 using DevExpress.CodeParser;
 using DevExpress.XtraCharts.Native;
 using ArcGIS.Desktop.Internal.Framework.Utilities;
+using DevExpress.XtraExport.Helpers;
 //using DevExpress.Data;
 
 
@@ -106,7 +107,6 @@ namespace SigcatminProAddin.View.Modulos
         {
             InitializeComponent();
             CurrentUser();
-            ConfigureDataGridResHistorico();
             ConfigureDataGridAreaReservada();
             ConfigureDataGridDemarca();
             ConfigureDataGridCartaIGN();
@@ -135,13 +135,15 @@ namespace SigcatminProAddin.View.Modulos
 
             //Opciones Filtro
             dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO.ToString());
-            GetOptionCBox(CbxFiltro, dmrRecords);            
+            GetOptionCBox(CbxFiltro, dmrRecords);
 
             //Opciones Filtro Usuario
             dmrRecords = dataBaseHandler.GetUserFilter();
             GetOptionCBox(CbxUsuario, dmrRecords);
 
             CbxFiltro.SelectedIndex = 0;
+            CbxDatum.SelectedIndex = 0;
+            CbxZona.SelectedIndex = 0;
             CbxUsuario.SelectedValue = AppConfig.fullUserName;
 
             dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_CREG.ToString());
@@ -188,30 +190,18 @@ namespace SigcatminProAddin.View.Modulos
 
         private void DataGridResultTableView_FocusedRowChanged(object sender, DevExpress.Xpf.Grid.FocusedRowChangedEventArgs e)
         {
-            var tableView = sender as DevExpress.Xpf.Grid.TableView;
-            if (tableView != null && tableView.Grid.VisibleRowCount > 0)
+            try
             {
-                // Obtener el índice de la fila seleccionada
-                int focusedRowHandle = tableView.FocusedRowHandle;
-
-                if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
+                var tableView = sender as DevExpress.Xpf.Grid.TableView;
+                if (tableView != null && tableView.Grid.VisibleRowCount > 0)
                 {
-                    // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
-                    if (DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_MODREG)?.ToString() == _ANDE)
-                    {
+                    // Obtener el índice de la fila seleccionada
+                    int focusedRowHandle = tableView.FocusedRowHandle;
 
-                    }
-                    else
+                    if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
                     {
-
-                    }
-                    string idReg = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString();
-                    obtenerDetalle(idReg);
-
-                    if (opt == _FILT_ERRORES)
-                    {
-                        var estado = int.Parse(DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString());
-                        if (estado == _EST_ERRPROD)
+                        // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
+                        if (DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_MODREG)?.ToString() == _ANDE)
                         {
 
                         }
@@ -219,9 +209,29 @@ namespace SigcatminProAddin.View.Modulos
                         {
 
                         }
-                    }                  
+                        string idReg = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString();
+                        obtenerDetalle(idReg);
+
+                        if (opt == _FILT_ERRORES)
+                        {
+                            var estado = int.Parse(DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString());
+                            if (estado == _EST_ERRPROD)
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+
+            }
+
         }
 
 
@@ -259,95 +269,6 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-
-
-
-        private void ConfigureDataGridResHistorico()
-        {
-            // Obtener la vista principal del GridControl
-            var tableView = DGResHistorico.View as DevExpress.Xpf.Grid.TableView;
-
-            // Limpiar columnas existentes
-            DGResHistorico.Columns.Clear();
-
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            // Crear y configurar columnas
-
-            // Columna de índice (número de fila)
-            GridColumn idColumn = new GridColumn
-            {
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Id, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Id,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Id
-            };
-
-            GridColumn codigoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Codigo, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Codigo,    // Encabezado visible
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Codigo            // Ancho de la columna
-            };
-
-            GridColumn archivoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Archivo,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Archivo,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Archivo
-            };
-
-            GridColumn claseColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Clase,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Clase,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Clase
-            };
-
-            GridColumn zonaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Zona,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Zona,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Zona
-            };
-
-            GridColumn modregColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.ModReg,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.ModReg,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.ModReg
-            };
-
-            GridColumn codestColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.CodEst,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.CodEst,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.CodEst
-            };
-
-            GridColumn fecregColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.FecReg,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.FecReg,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.FecReg
-            };
-
-            // Agregar columnas al GridControl
-            DGResHistorico.Columns.Add(idColumn);
-            DGResHistorico.Columns.Add(codigoColumn);
-            DGResHistorico.Columns.Add(archivoColumn);
-            DGResHistorico.Columns.Add(claseColumn);
-            DGResHistorico.Columns.Add(zonaColumn);
-            DGResHistorico.Columns.Add(modregColumn);
-            DGResHistorico.Columns.Add(codestColumn);
-            DGResHistorico.Columns.Add(fecregColumn);
-
-        }
 
         private void ConfigureDataGridAreaReservada()
         {
@@ -681,7 +602,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        
+
 
         private void obtenerDetalle(string idreg)
         {
@@ -812,13 +733,13 @@ namespace SigcatminProAddin.View.Modulos
                         string _pathrese = dataBaseHandler.GetObtienePathRese();
                         string _pathurba = dataBaseHandler.GetObtienePathUrba();
                         string _pathimage = dataBaseHandler.GetObtieneImage();
-                        string _tipoexe   = dataBaseHandler.GetObtieneTipoExe();
+                        string _tipoexe = dataBaseHandler.GetObtieneTipoExe();
 
                         txtResePath.Text = _pathrese;
                         txtUrbaPath.Text = _pathurba;
                         txtImagePath.Text = _pathimage;
                         //rbExeAhora.IsChecked= true;
-                        
+
 
                     }
                     catch (Exception)
@@ -827,7 +748,7 @@ namespace SigcatminProAddin.View.Modulos
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                          "Advertencia",
                                                                          MessageBoxButton.OK, MessageBoxImage.Warning);
-                        
+
                         return;
                         //throw;
                     }
@@ -930,11 +851,11 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxUsuario_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            RefreshBySelections();
+            RefreshDatagridByComboSelections();
             //GetDiferenciaAnm();
         }
 
-       
+
 
         private void btnPlano_Click(object sender, RoutedEventArgs e)
         {
@@ -977,7 +898,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
         }
 
 
@@ -1036,7 +957,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxFiltroTipo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           
+
         }
 
         private void btnGuardarER_Click(object sender, RoutedEventArgs e)
@@ -1044,7 +965,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private void RefreshBySelections()
+        private void RefreshDatagridByComboSelections()
         {
             try
             {
@@ -1067,38 +988,26 @@ namespace SigcatminProAddin.View.Modulos
                     row["PROC"] = false; // 🔹 Valor predeterminado para que los checkboxes aparezcan desmarcados
                 }
 
-                List<MantenimientoAreaRModel> areasRestringias = new List<MantenimientoAreaRModel>();
-
-                foreach (DataRow fila in table.Rows)
-                {
-                    MantenimientoAreaRModel item = new MantenimientoAreaRModel
-                    {
-                        Id = Convert.ToInt32(fila["ID"]),
-                        Codigo = fila["CODIGO"].ToString(),
-                        IsProcess = Convert.ToBoolean(fila["PROC"]) 
-                    };
-                    areasRestringias.Add(item);
-                }
-
-
-                DataGridResult.ItemsSource = areasRestringias;
+                DataGridResult.ItemsSource = table.DefaultView;
                 int numRows = table.Rows.Count;
-                LblCountRecords.Content = "Se encontraron " + numRows.ToString() + " registros";                
+                LblCountRecords.Content = "Se encontraron " + numRows.ToString() + " registros";
+
+                DataGridResultTableView.ShowingEditor += GridControl_ShowingEditor;
 
             }
             catch
             {
 
             }
-           
+
         }
 
         private void CbxFiltro_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            RefreshBySelections();
+            RefreshDatagridByComboSelections();
         }
 
-       
+
 
         private void btnBuscarAux_Click(object sender, RoutedEventArgs e)
         {
@@ -1191,7 +1100,7 @@ namespace SigcatminProAddin.View.Modulos
             DevExpress.Xpf.Grid.TableView view = DataGridResult.View as DevExpress.Xpf.Grid.TableView;
             if (view == null)
                 return;
-            
+
             // Verificar si hay filas en el grid (VisibleRowCount = número de filas de datos visibles)
             if (view.DataControl.VisibleRowCount == 0)
             {
@@ -1233,7 +1142,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 if (int.Parse(estado) != _EST_ERRPROD)
                 {
-                    await MapUtils.CreateMapAsync(mapName); 
+                    await MapUtils.CreateMapAsync(mapName);
                     Map map = await MapUtils.EnsureMapViewIsActiveAsync(mapName);
                     var fLyr = await LayerUtils.AddLayerAsync(map, feature_shp);
                     //_params.Clear();
@@ -1247,7 +1156,7 @@ namespace SigcatminProAddin.View.Modulos
                     //}
                 }
             }
-                       
+
             // If opt = _FILT_PROCPROD Or _FILT_PROCESADO Or _FILT_ERRORES
             if (opt == _FILT_PROCPROD || opt == _FILT_PROCESADO || opt == _FILT_ERRORES)
             {
@@ -1322,14 +1231,13 @@ namespace SigcatminProAddin.View.Modulos
         {
             try
             {
-                if (DataGridResult.ItemsSource is IEnumerable<object> items)
+                if (DataGridResult.ItemsSource is DataView dataView)
                 {
-                    foreach (var item in items)
+                    foreach (DataRowView row in dataView)
                     {
-                        var row = item as DataRowView; // Si está vinculado a un DataTable
                         if (row != null)
                         {
-                            if ((int)row[_FIELD_RE_CODEST] != _EST_ERRTEMP && (int)row[_FIELD_RE_CODEST] != _EST_ERRPROD)
+                            if (row[_FIELD_RE_CODEST].ToString() != _EST_ERRTEMP.ToString() && row[_FIELD_RE_CODEST].ToString() != _EST_ERRPROD.ToString())
                             {
                                 row[_FIELD_PROCESAR] = false;
                             }
@@ -1348,14 +1256,13 @@ namespace SigcatminProAddin.View.Modulos
         {
             try
             {
-                if (DataGridResult.ItemsSource is IEnumerable<object> items)
+                if (DataGridResult.ItemsSource is DataView dataView)
                 {
-                    foreach (var item in items)
+                    foreach (DataRowView row in dataView) 
                     {
-                        var row = item as DataRowView; // Si los datos provienen de un DataTable
                         if (row != null)
                         {
-                            if ((int)row[_FIELD_RE_CODEST] != _EST_ERRTEMP && (int)row[_FIELD_RE_CODEST] != _EST_ERRPROD)
+                            if (row[_FIELD_RE_CODEST].ToString() != _EST_ERRTEMP.ToString() && row[_FIELD_RE_CODEST].ToString() != _EST_ERRPROD.ToString())
                             {
                                 row[_FIELD_PROCESAR] = true;
                             }
@@ -1378,12 +1285,28 @@ namespace SigcatminProAddin.View.Modulos
                 CbxEnv.SelectedIndex = 0;
                 CbxFeatures.SelectedIndex = 0;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
 
             }
 
-           
+
+        }
+
+        private void GridControl_ShowingEditor(object sender, ShowingEditorEventArgs e)
+        {
+            if (DataGridResult.ItemsSource is DataView dataView)
+            {
+                var row = dataView[e.RowHandle];
+                if (row != null)
+                {
+                    if ( row[_FIELD_RE_CODEST].ToString() == _EST_ERRTEMP.ToString() || row[_FIELD_RE_CODEST].ToString() == _EST_ERRPROD.ToString())
+                    {
+                        e.Cancel = true;
+                    }
+                }
+            }
+
         }
     }
 

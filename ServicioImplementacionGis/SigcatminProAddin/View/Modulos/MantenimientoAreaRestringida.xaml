@@ -75,8 +75,7 @@
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <dxg:GridControl FontSize="10" x:Name="DataGridResult" 
-                            CustomUnboundColumnData="DataGridResult_CustomUnboundColumnData" >
+                        <dxg:GridControl FontSize="10" x:Name="DataGridResult">
 
                             <!-- Agregar estilos -->
                             <dxg:GridControl.Resources>
@@ -86,35 +85,40 @@
                                             <Setter Property="Background" Value="#CCFFC0CB"/>
                                             <Setter Property="Foreground" Value="Black"/>
                                         </DataTrigger>
+                                        <DataTrigger Binding="{Binding Row.CODEST}" Value="97">
+                                            <Setter Property="Background" Value="#CCFFC0CB"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
 
                             </dxg:GridControl.Resources>
                             <dxg:GridControl.Columns >
-                                <dxg:GridColumn FieldName="Id" Header="ID" Binding="{Binding ID}" Width="40"/>
-                                <dxg:GridColumn FieldName="Codigo" Header="CODIGO" Binding="{Binding CODIGO}" Width="*"/>
-                                <dxg:GridColumn FieldName="Zona" Header="ZONA" Binding="{Binding ZONA}" Width="40"/>
-                                <dxg:GridColumn FieldName="Clase" Header="CLASE" Binding="{Binding CLASE}" Width="40"/>
-                                <dxg:GridColumn FieldName="Archivo" Header="ARCHIVO" Binding="{Binding ARCHIVO}" Width="*"/>
-                                <dxg:GridColumn FieldName="ModReg" Header="MODREG" Binding="{Binding MODREG}" Width="*"/>
-                                <dxg:GridColumn FieldName="Usuario" Header="USUARIO" Binding="{Binding USUARIO}" Width="*"/>
-                                <dxg:GridColumn FieldName="FechaCreacion" Header="FECREG" Binding="{Binding FECREG}" Width="90">
+                                <dxg:GridColumn Header="ID" Binding="{Binding ID}" Width="40"/>
+                                <dxg:GridColumn Header="CODIGO" Binding="{Binding CODIGO}" Width="*"/>
+                                <dxg:GridColumn Header="ZONA" Binding="{Binding ZONA}" Width="40"/>
+                                <dxg:GridColumn Header="CLASE" Binding="{Binding CLASE}" Width="40"/>
+                                <dxg:GridColumn Header="ARCHIVO" Binding="{Binding ARCHIVO}" Width="*"/>
+                                <dxg:GridColumn Header="MODREG" Binding="{Binding MODREG}" Width="*"/>
+                                <dxg:GridColumn Header="USUARIO" Binding="{Binding USUARIO}" Width="*"/>
+                                <dxg:GridColumn Header="FECREG" Binding="{Binding FECREG}" Width="90">
                                     <dxg:GridColumn.EditSettings>
                                         <dxe:DateEditSettings DisplayFormat="g"/>
                                     </dxg:GridColumn.EditSettings>
                                 </dxg:GridColumn>
-                                <dxg:GridColumn FieldName="CodigoEstado" Header="CODEST" Binding="{Binding CODEST}" Width="50"/>
-                                <dxg:GridColumn FieldName="Mineria" Header="MINERIA" Binding="{Binding MINERIA}" Width="*"/>
+                                <dxg:GridColumn Header="CODEST" Binding="{Binding CODEST}" Width="50"/>
+                                <dxg:GridColumn Header="MINERIA" Binding="{Binding MINERIA}" Width="*"/>
 
-                                <dxg:GridColumn FieldName="IsProcess" Header="PROC" Width="40" AllowEditing="True" >
+                                <dxg:GridColumn Header="PROC"  Width="40" AllowEditing="True" >
                                     <dxg:GridColumn.EditSettings>
-                                        <dxe:CheckEditSettings IsThreeState="False">
+                                        <dxe:CheckEditSettings   IsThreeState="False">
                                         </dxe:CheckEditSettings>
                                     </dxg:GridColumn.EditSettings>
-
                                     <dxg:GridColumn.Binding>
                                         <Binding Path="PROC" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
                                     </dxg:GridColumn.Binding>
+
+                     
                                 </dxg:GridColumn>
                             </dxg:GridControl.Columns>
 
@@ -123,11 +127,12 @@
                                     ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
-                                    AllowEditing="False"
+                                    AllowEditing="True"
                                     ShowIndicator="False"
-                                    FocusedRowChanged="DataGridResultTableView_FocusedRowChanged" 
+                                    FocusedRowChanged="DataGridResultTableView_FocusedRowChanged"
+                                    ShowingEditor="GridControl_ShowingEditor"     
                                     RowUpdated="DataGridResultTableView_RowUpdated" 
-                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" 
+                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0"
                                                 />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
@@ -160,11 +165,11 @@
                             <ComboBox Margin="0,0,0,0" Width="110"
                             x:Name="CbxDatum" FontSize="10"
                             Height="20" Padding="0,0,0,0" 
-                            SelectionChanged="CbxDatum_SelectionChanged" />
+                            SelectionChanged="CbxDatum_SelectionChanged" IsEnabled="False" />
                             <ComboBox Margin="0,0,0,0" Width="110"
                             x:Name="CbxZona" FontSize="10"
                             Height="20" Padding="5,0,0,0"  Grid.Column="1" 
-                            SelectionChanged="CbxZona_SelectionChanged" />
+                            SelectionChanged="CbxZona_SelectionChanged" IsEnabled="False"/>
                             <Button Content="Planos" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
                             Foreground="White" Grid.Column="2" HorizontalAlignment="Left"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
@@ -211,7 +216,7 @@
 
                             <ComboBox Margin="0,0,0,0" Width="110"
         x:Name="CbxActualiza" FontSize="10" HorizontalAlignment="Left"
-        Height="20" Padding="0,0,0,0"  Grid.Column="2" 
+        Height="20" Padding="0,0,0,0"  Grid.Column="2" Visibility="Hidden"
          />
 
                             <Button Content="Procesar" Width="80" Height="20" Background="#006DA0" BorderBrush="White"
@@ -420,11 +425,25 @@
                         </Grid.ColumnDefinitions>
                         <dxg:GridControl FontSize="10" x:Name="DGResHistorico" 
                             CustomUnboundColumnData="DGResHistorico_CustomUnboundColumnData">
+                            <dxg:GridControl.Columns >
+                                <dxg:GridColumn Header="ID" Binding="{Binding ID}" Width="40"/>
+                                <dxg:GridColumn Header="CODIGO" Binding="{Binding CODIGO}" Width="*"/>
+                                <dxg:GridColumn Header="ARCHIVO" Binding="{Binding ARCHIVO}" Width="*"/>
+                                <dxg:GridColumn Header="CLASE" Binding="{Binding CLASE}" Width="40"/>
+                                <dxg:GridColumn Header="ZONA" Binding="{Binding ZONA}" Width="40"/>
+                                <dxg:GridColumn Header="MODREG" Binding="{Binding MODREG}" Width="*"/>
+                                <dxg:GridColumn Header="CODEST" Binding="{Binding CODEST}" Width="50"/>
+                                <dxg:GridColumn Header="FECREG" Binding="{Binding FECREG}" Width="90">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:DateEditSettings DisplayFormat="g"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                            </dxg:GridControl.Columns>
                             <dxg:GridControl.View>
                                 <dxg:TableView  x:Name="DGResHistoricoTableView" ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
-                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" />
+                                    HorizontalAlignment="Left" Margin="0,0,0,0" />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
                     </Grid>
