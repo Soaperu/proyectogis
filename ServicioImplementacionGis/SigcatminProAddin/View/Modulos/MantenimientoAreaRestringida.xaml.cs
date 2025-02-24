@@ -30,6 +30,10 @@ using System.Security.Policy;
 using DevExpress.Pdf.Xmp;
 using DevExpress.XtraPrinting.Native;
 using DevExpress.Xpo.DB.Helpers;
+using DevExpress.CodeParser;
+using DevExpress.XtraCharts.Native;
+using ArcGIS.Desktop.Internal.Framework.Utilities;
+using DevExpress.XtraExport.Helpers;
 //using DevExpress.Data;
 
 
@@ -37,9 +41,9 @@ using DevExpress.Xpo.DB.Helpers;
 namespace SigcatminProAddin.View.Modulos
 {
     /// <summary>
-    /// Lógica de interacción para MantoAreaRestringida.xaml
+    /// Lógica de interacción para MantenimientoAreaRestringida.xaml
     /// </summary>
-    public partial class MantoAreaRestringida : Page
+    public partial class MantenimientoAreaRestringida : Page
     {
         private FeatureClassLoader featureClassLoader;
         public Geodatabase geodatabase;
@@ -99,15 +103,10 @@ namespace SigcatminProAddin.View.Modulos
         public int _TAG_EXEENDDAY = 4;
         public int _TAG_NOEXE = 5;
 
-        public MantoAreaRestringida()
+        public MantenimientoAreaRestringida()
         {
             InitializeComponent();
             CurrentUser();
-            ConfigureDataGridResultColumns();
-            ConfigureDataGridClassTemporales();
-            ConfigureDataGridClassProduccion();
-            ConfigureDataGridReseDifReg();
-            ConfigureDataGridResHistorico();
             ConfigureDataGridAreaReservada();
             ConfigureDataGridDemarca();
             ConfigureDataGridCartaIGN();
@@ -126,44 +125,62 @@ namespace SigcatminProAddin.View.Modulos
         {
             //CbxFeatures.SelectedIndex = 1;
             //CbxEnv.SelectedIndex = 1;
-            var dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_CREG.ToString());
+            //Opciones Datum
+            var dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_DATUM.ToString());
+            GetOptionCBox(CbxDatum, dmrRecords);
+
+            //Opciones Zona
+            dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_ZONA.ToString());
+            GetOptionCBox(CbxZona, dmrRecords);
+
+            //Opciones Filtro
+            dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO.ToString());
+            GetOptionCBox(CbxFiltro, dmrRecords);
+
+            //Opciones Filtro Usuario
+            dmrRecords = dataBaseHandler.GetUserFilter();
+            GetOptionCBox(CbxUsuario, dmrRecords);
+
+            CbxFiltro.SelectedIndex = 0;
+            CbxDatum.SelectedIndex = 0;
+            CbxZona.SelectedIndex = 0;
+            CbxUsuario.SelectedValue = AppConfig.fullUserName;
+
+            dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_CREG.ToString());
             GetOptionCBox(CbxFiltroControlReg, dmrRecords);
 
             dmrRecords = dataBaseHandler.GetOpcionCBox(_OPT_FILTRO_ENV.ToString());
             GetOptionCBox(CbxEnv, dmrRecords);
             cambiaOpcionesCboxFeatures();
-
-            dmrRecords = dataBaseHandler.GetUserFilter();
-            GetOptionCBox(CbxUsuario, dmrRecords);
             /**/
 
-            List<ComboBoxPairs> cbpF = new List<ComboBoxPairs>();
-            cbpF.Add(new ComboBoxPairs("--Seleccionar--", 0));
-            cbpF.Add(new ComboBoxPairs("Procesar Intermedia", 1));
-            cbpF.Add(new ComboBoxPairs("Procesar Producción", 2));
-            cbpF.Add(new ComboBoxPairs("Procesados", 3));
-            cbpF.Add(new ComboBoxPairs("Errores", 4));
-            // Asignar la lista al ComboBox
-            CbxFiltro.DisplayMemberPath = "_Key";
-            CbxFiltro.SelectedValuePath = "_Value";
-            CbxFiltro.ItemsSource = cbpF;
+            //List<ComboBoxPairs> cbpF = new List<ComboBoxPairs>();
+            //cbpF.Add(new ComboBoxPairs("--Seleccionar--", 0));
+            //cbpF.Add(new ComboBoxPairs("Procesar Intermedia", 1));
+            //cbpF.Add(new ComboBoxPairs("Procesar Producción", 2));
+            //cbpF.Add(new ComboBoxPairs("Procesados", 3));
+            //cbpF.Add(new ComboBoxPairs("Errores", 4));
+            //// Asignar la lista al ComboBox
+            //CbxFiltro.DisplayMemberPath = "_Key";
+            //CbxFiltro.SelectedValuePath = "_Value";
+            //CbxFiltro.ItemsSource = cbpF;
 
-            List<ComboBoxPairs> cbpA = new List<ComboBoxPairs>();
-            cbpA.Add(new ComboBoxPairs("Zona Reservada", 0));
-            cbpA.Add(new ComboBoxPairs("Zona Urbana", 1));
-            // Asignar la lista al ComboBox
-            CbxActualiza.DisplayMemberPath = "_Key";
-            CbxActualiza.SelectedValuePath = "_Value";
-            CbxActualiza.ItemsSource = cbpA;
-            /**/
+            //List<ComboBoxPairs> cbpA = new List<ComboBoxPairs>();
+            //cbpA.Add(new ComboBoxPairs("Zona Reservada", 0));
+            //cbpA.Add(new ComboBoxPairs("Zona Urbana", 1));
+            //// Asignar la lista al ComboBox
+            //CbxActualiza.DisplayMemberPath = "_Key";
+            //CbxActualiza.SelectedValuePath = "_Value";
+            //CbxActualiza.ItemsSource = cbpA;
+            ///**/
 
-            CbxUsuario.SelectedIndex = 1;
-            CbxFiltro.SelectedIndex = 1;
+            //CbxUsuario.SelectedIndex = 1;
+            //CbxFiltro.SelectedIndex = 1;
 
-            CbxFiltroControlReg.SelectedIndex = 1;
-            CbxEnv.SelectedIndex = 1;
-            CbxFeatures.SelectedIndex = 1;
-            CbxFiltroTipo.SelectedIndex = 1;
+            //CbxFiltroControlReg.SelectedIndex = 1;
+            //CbxEnv.SelectedIndex = 1;
+            //CbxFeatures.SelectedIndex = 1;
+            //CbxFiltroTipo.SelectedIndex = 1;
         }
 
         private void DataGridResult_CustomUnboundColumnData(object sender, DevExpress.Xpf.Grid.GridColumnDataEventArgs e)
@@ -173,30 +190,18 @@ namespace SigcatminProAddin.View.Modulos
 
         private void DataGridResultTableView_FocusedRowChanged(object sender, DevExpress.Xpf.Grid.FocusedRowChangedEventArgs e)
         {
-            var tableView = sender as DevExpress.Xpf.Grid.TableView;
-            if (tableView != null && tableView.Grid.VisibleRowCount > 0)
+            try
             {
-                // Obtener el índice de la fila seleccionada
-                int focusedRowHandle = tableView.FocusedRowHandle;
-
-                if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
+                var tableView = sender as DevExpress.Xpf.Grid.TableView;
+                if (tableView != null && tableView.Grid.VisibleRowCount > 0)
                 {
-                    // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
-                    if (DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_MODREG)?.ToString() == _ANDE)
-                    {
+                    // Obtener el índice de la fila seleccionada
+                    int focusedRowHandle = tableView.FocusedRowHandle;
 
-                    }
-                    else
+                    if (focusedRowHandle >= 0) // Verifica si hay una fila seleccionada
                     {
-
-                    }
-                    string idReg = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString();
-                    obtenerDetalle(idReg);
-
-                    if (opt == _FILT_ERRORES)
-                    {
-                        var estado = int.Parse(DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString());
-                        if (estado == _EST_ERRPROD)
+                        // Obtener el valor de una columna específica (por ejemplo, "CODIGO")
+                        if (DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_MODREG)?.ToString() == _ANDE)
                         {
 
                         }
@@ -204,9 +209,29 @@ namespace SigcatminProAddin.View.Modulos
                         {
 
                         }
-                    }                  
+                        string idReg = DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString();
+                        obtenerDetalle(idReg);
+
+                        if (opt == _FILT_ERRORES)
+                        {
+                            var estado = int.Parse(DataGridResult.GetCellValue(focusedRowHandle, _FIELD_RE_SECUEN)?.ToString());
+                            if (estado == _EST_ERRPROD)
+                            {
+
+                            }
+                            else
+                            {
+
+                            }
+                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+
+            }
+
         }
 
 
@@ -244,492 +269,6 @@ namespace SigcatminProAddin.View.Modulos
             }
         }
 
-
-
-        private void ConfigureDataGridResultColumns()
-        {
-            // Obtener la vista principal del GridControl
-            var tableView = DataGridResult.View as DevExpress.Xpf.Grid.TableView;
-
-            // Limpiar columnas existentes
-            DataGridResult.Columns.Clear();
-
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            // Crear y configurar columnas
-
-            // Columna de índice (número de fila)
-            GridColumn idColumn = new GridColumn
-            {
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Id, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Id,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Id
-            };
-
-            GridColumn codigoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Codigo, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Codigo,    // Encabezado visible
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Codigo            // Ancho de la columna
-            };
-
-            GridColumn zonaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Zona,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Zona,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Zona
-            };
-
-            GridColumn claseColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Clase,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Clase,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Clase
-            };
-
-            GridColumn archivoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Archivo,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Archivo,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Archivo
-            };
-            GridColumn modRegColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.ModReg,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.ModReg,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.ModReg
-            };
-            GridColumn usuarioColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Usuario,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Usuario,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Usuario
-            };
-            GridColumn fechRegColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.FecReg,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.FecReg,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.FecReg
-            };
-            GridColumn codEstColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.CodEst,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.CodEst,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.CodEst
-            };
-            GridColumn mineriaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Mineria,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Mineria,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Mineria
-            };
-            GridColumn procColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesMantoAR.Proc,
-                Header = DatagridResultConstantsDM.HeadersMantoAR.Proc,
-                Width = DatagridResultConstantsDM.WidthsMantoAR.Proc,
-                UnboundType = DevExpress.Data.UnboundColumnType.Boolean,
-                AllowEditing = DefaultBoolean.True,
-                EditSettings = new CheckEditSettings
-                {
-
-                    //IsThreeState = false,     // Permite un estado indeterminado (null)
-                    AllowNullInput = false,   // Permite valores nulos (indeterminado)
-                    
-                }
-            };
-
-            // CELDA: Checkbox que muestra y actualiza el valor unbound
-            //procColumn.CellTemplate = CreateCellTemplate();
-            // Crear la plantilla de edición (ControlTemplate) para el CheckBox
-            // con un FrameworkElementFactory (WPF).
-            //var editTemplate = new ControlTemplate(typeof(CheckEdit));
-            //var checkBoxFactory = new FrameworkElementFactory(typeof(CheckEdit));
-            ////var isEnabledBinding = new Binding("IsEnabledSelection")
-            ////{
-            ////    Mode = BindingMode.OneTime,
-            ////};
-            ////checkBoxFactory.SetBinding(CheckEdit.IsEnabledProperty, isEnabledBinding);
-
-            //// Binding para IsChecked = "{Binding Path=IsSelectedObject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-            //var isCheckedBinding = new Binding("RowData.Row.Proc")
-            //{
-            //    Mode = BindingMode.TwoWay,
-            //    UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            //};
-            //checkBoxFactory.SetBinding(CheckEdit.IsCheckedProperty, isCheckedBinding);
-
-            //// Asignar el árbol visual del template
-            //editTemplate.VisualTree = checkBoxFactory;
-
-            //// 3) Asignar la plantilla a la columna
-            //procColumn.EditTemplate = editTemplate;
-
-            // --- DisplayTemplate (cuando la celda NO está en edición) ---
-
-            // Agregar columnas al GridControl
-            DataGridResult.Columns.Add(idColumn);
-            DataGridResult.Columns.Add(codigoColumn);
-            DataGridResult.Columns.Add(zonaColumn);
-            DataGridResult.Columns.Add(claseColumn);
-            DataGridResult.Columns.Add(archivoColumn);
-            DataGridResult.Columns.Add(modRegColumn);
-            DataGridResult.Columns.Add(usuarioColumn);
-            DataGridResult.Columns.Add(fechRegColumn);
-            DataGridResult.Columns.Add(codEstColumn);
-            DataGridResult.Columns.Add(mineriaColumn);
-            DataGridResult.Columns.Add(procColumn);
-
-        }
-
-        private DataTemplate CreateCellTemplate()
-        {
-            var dt = new DataTemplate();
-            var f = new FrameworkElementFactory(typeof(CheckEdit));
-            f.SetBinding(CheckEdit.IsCheckedProperty, new Binding("Value")
-            {
-                Mode = BindingMode.TwoWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            });
-            dt.VisualTree = f;
-            return dt;
-        }
-
-        private void ConfigureDataGridClassTemporales()
-        {
-            // Obtener la vista principal del GridControl
-            var tableView = DGridRegistroTmp.View as DevExpress.Xpf.Grid.TableView;
-
-            // Limpiar columnas existentes
-            DGridRegistroTmp.Columns.Clear();
-
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            // Crear y configurar columnas
-
-            // Columna de índice (número de fila)
-            GridColumn totalColumn = new GridColumn
-            {
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Total, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Total,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Total
-            };
-
-            GridColumn psad17Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.PSad17, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.PSad17,    // Encabezado visible
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.PSad17            // Ancho de la columna
-            };
-
-            GridColumn psad18Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.PSad18,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.PSad18,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.PSad18
-            };
-
-            GridColumn psad19Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.PSad19,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.PSad19,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.PSad19
-            };
-
-            GridColumn wgs17Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Wgs17,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Wgs17,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Wgs17
-            };
-            GridColumn wgs18Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Wgs18,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Wgs18,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Wgs18
-            };
-            GridColumn wgs19Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Wgs19,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Wgs19,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Wgs19
-            };
-            GridColumn g56Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.G56,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.G56,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.G56
-            };
-            GridColumn g84Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.G84,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.G84,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.G84
-            };
-
-            // Agregar columnas al GridControl
-            DGridRegistroTmp.Columns.Add(totalColumn);
-            DGridRegistroTmp.Columns.Add(psad17Column);
-            DGridRegistroTmp.Columns.Add(psad18Column);
-            DGridRegistroTmp.Columns.Add(psad19Column);
-            DGridRegistroTmp.Columns.Add(wgs17Column);
-            DGridRegistroTmp.Columns.Add(wgs18Column);
-            DGridRegistroTmp.Columns.Add(wgs19Column);
-            DGridRegistroTmp.Columns.Add(g56Column);
-            DGridRegistroTmp.Columns.Add(g84Column);
-
-        }
-
-        private void ConfigureDataGridClassProduccion()
-        {
-            // Obtener la vista principal del GridControl
-            var tableView = DGridRegistroProd.View as DevExpress.Xpf.Grid.TableView;
-
-            // Limpiar columnas existentes
-            DGridRegistroProd.Columns.Clear();
-
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            // Crear y configurar columnas
-
-            // Columna de índice (número de fila)
-            GridColumn totalColumn = new GridColumn
-            {
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Total, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Total,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Total
-            };
-
-            GridColumn psad17Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.PSad17, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.PSad17,    // Encabezado visible
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.PSad17            // Ancho de la columna
-            };
-
-            GridColumn psad18Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.PSad18,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.PSad18,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.PSad18
-            };
-
-            GridColumn psad19Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.PSad19,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.PSad19,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.PSad19
-            };
-
-            GridColumn wgs17Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Wgs17,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Wgs17,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Wgs17
-            };
-            GridColumn wgs18Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Wgs18,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Wgs18,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Wgs18
-            };
-            GridColumn wgs19Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.Wgs19,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.Wgs19,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.Wgs19
-            };
-            GridColumn g56Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.G56,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.G56,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.G56
-            };
-            GridColumn g84Column = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesClassTemporales.G84,
-                Header = DatagridResultConstantsDM.HeadersClassTemporales.G84,
-                Width = DatagridResultConstantsDM.WidthsClassTemporales.G84
-            };
-
-            // Agregar columnas al GridControl
-            DGridRegistroProd.Columns.Add(totalColumn);
-            DGridRegistroProd.Columns.Add(psad17Column);
-            DGridRegistroProd.Columns.Add(psad18Column);
-            DGridRegistroProd.Columns.Add(psad19Column);
-            DGridRegistroProd.Columns.Add(wgs17Column);
-            DGridRegistroProd.Columns.Add(wgs18Column);
-            DGridRegistroProd.Columns.Add(wgs19Column);
-            DGridRegistroProd.Columns.Add(g56Column);
-            DGridRegistroProd.Columns.Add(g84Column);
-        }
-
-        private void ConfigureDataGridReseDifReg()
-        {
-            // Obtener la vista principal del GridControl
-            var tableView = DGridDifRegistro.View as DevExpress.Xpf.Grid.TableView;
-
-            // Limpiar columnas existentes
-            DGridDifRegistro.Columns.Clear();
-
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            // Crear y configurar columnas
-
-            // Columna de índice (número de fila)
-            GridColumn codigoColumn = new GridColumn
-            {
-                Header = DatagridResultConstantsDM.HeadersReseDifReg.Codigo, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNamesReseDifReg.Codigo,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.WidthsReseDifReg.Codigo
-            };
-
-            GridColumn claseColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesReseDifReg.Clase, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.HeadersReseDifReg.Clase,    // Encabezado visible
-                Width = DatagridResultConstantsDM.WidthsReseDifReg.Clase            // Ancho de la columna
-            };
-
-            GridColumn regdbColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesReseDifReg.RegDB,
-                Header = DatagridResultConstantsDM.HeadersReseDifReg.RegDB,
-                Width = DatagridResultConstantsDM.WidthsReseDifReg.RegDB
-            };
-
-            GridColumn reggdbColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesReseDifReg.RegGDB,
-                Header = DatagridResultConstantsDM.HeadersReseDifReg.RegGDB,
-                Width = DatagridResultConstantsDM.WidthsReseDifReg.RegGDB
-            };
-
-            GridColumn observacionColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesReseDifReg.Observacion,
-                Header = DatagridResultConstantsDM.HeadersReseDifReg.Observacion,
-                Width = DatagridResultConstantsDM.WidthsReseDifReg.Observacion
-            };
-
-            // Agregar columnas al GridControl
-            DGridDifRegistro.Columns.Add(codigoColumn);
-            DGridDifRegistro.Columns.Add(claseColumn);
-            DGridDifRegistro.Columns.Add(regdbColumn);
-            DGridDifRegistro.Columns.Add(reggdbColumn);
-            DGridDifRegistro.Columns.Add(observacionColumn);
-        }
-
-        private void ConfigureDataGridResHistorico()
-        {
-            // Obtener la vista principal del GridControl
-            var tableView = DGResHistorico.View as DevExpress.Xpf.Grid.TableView;
-
-            // Limpiar columnas existentes
-            DGResHistorico.Columns.Clear();
-
-            if (tableView != null)
-            {
-                tableView.AllowEditing = false; // Bloquea la edición a nivel de vista
-            }
-
-            // Crear y configurar columnas
-
-            // Columna de índice (número de fila)
-            GridColumn idColumn = new GridColumn
-            {
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Id, // Encabezado
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Id,
-                UnboundType = DevExpress.Data.UnboundColumnType.Integer, // Tipo de columna no vinculada
-                AllowEditing = DevExpress.Utils.DefaultBoolean.False, // Bloquear edición
-                VisibleIndex = 0, // Mostrar como la primera columna
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Id
-            };
-
-            GridColumn codigoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Codigo, // Nombre del campo en el DataTable
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Codigo,    // Encabezado visible
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Codigo            // Ancho de la columna
-            };
-
-            GridColumn archivoColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Archivo,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Archivo,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Archivo
-            };
-
-            GridColumn claseColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Clase,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Clase,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Clase
-            };
-
-            GridColumn zonaColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.Zona,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.Zona,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.Zona
-            };
-
-            GridColumn modregColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.ModReg,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.ModReg,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.ModReg
-            };
-
-            GridColumn codestColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.CodEst,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.CodEst,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.CodEst
-            };
-
-            GridColumn fecregColumn = new GridColumn
-            {
-                FieldName = DatagridResultConstantsDM.ColumNamesResHistorico.FecReg,
-                Header = DatagridResultConstantsDM.HeadersResHistorico.FecReg,
-                Width = DatagridResultConstantsDM.WidthsResHistorico.FecReg
-            };
-
-            // Agregar columnas al GridControl
-            DGResHistorico.Columns.Add(idColumn);
-            DGResHistorico.Columns.Add(codigoColumn);
-            DGResHistorico.Columns.Add(archivoColumn);
-            DGResHistorico.Columns.Add(claseColumn);
-            DGResHistorico.Columns.Add(zonaColumn);
-            DGResHistorico.Columns.Add(modregColumn);
-            DGResHistorico.Columns.Add(codestColumn);
-            DGResHistorico.Columns.Add(fecregColumn);
-
-        }
 
         private void ConfigureDataGridAreaReservada()
         {
@@ -1063,11 +602,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private void CbxFiltro_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            
 
-        }
 
         private void obtenerDetalle(string idreg)
         {
@@ -1198,13 +733,13 @@ namespace SigcatminProAddin.View.Modulos
                         string _pathrese = dataBaseHandler.GetObtienePathRese();
                         string _pathurba = dataBaseHandler.GetObtienePathUrba();
                         string _pathimage = dataBaseHandler.GetObtieneImage();
-                        string _tipoexe   = dataBaseHandler.GetObtieneTipoExe();
+                        string _tipoexe = dataBaseHandler.GetObtieneTipoExe();
 
                         txtResePath.Text = _pathrese;
                         txtUrbaPath.Text = _pathurba;
                         txtImagePath.Text = _pathimage;
                         //rbExeAhora.IsChecked= true;
-                        
+
 
                     }
                     catch (Exception)
@@ -1213,7 +748,7 @@ namespace SigcatminProAddin.View.Modulos
                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show(message,
                                                                          "Advertencia",
                                                                          MessageBoxButton.OK, MessageBoxImage.Warning);
-                        
+
                         return;
                         //throw;
                     }
@@ -1228,6 +763,7 @@ namespace SigcatminProAddin.View.Modulos
 
             var dmrRecords = dataBaseHandler.GetObtieneFiltroFeatures(_env, _tipo);
             GetOptionCBox(CbxFeatures, dmrRecords);
+            CbxFeatures.SelectedIndex = 0;
 
 
 
@@ -1280,7 +816,7 @@ namespace SigcatminProAddin.View.Modulos
                     _table = dataBaseHandler.GetObtieneUrbaDifreg(_feature);
                 }
 
-                LblCountRecords.Content = "Se encontraron " + _table.Rows.Count.ToString() + " registros";
+                L1blMissingRecords.Content = "Se encontraron " + _table.Rows.Count.ToString() + " registros";
 
                 DGridDifRegistro.ItemsSource = _table;
             }
@@ -1315,41 +851,11 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxUsuario_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            GetDiferenciaAnm();
+            RefreshDatagridByComboSelections();
+            //GetDiferenciaAnm();
         }
 
-        private void CbxUsuario_Loaded(object sender, RoutedEventArgs e)
-        {
-            //List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
-            //cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
-            //cbp.Add(new ComboBoxPairs("FLAT1065", 1));
-            //cbp.Add(new ComboBoxPairs("CARI0213", 2));
-            //cbp.Add(new ComboBoxPairs("WVAL0398", 3));
-            //cbp.Add(new ComboBoxPairs("JFLO0589", 4));
-            //cbp.Add(new ComboBoxPairs("CQUI1819", 5));
 
-            //// Asignar la lista al ComboBox
-            //CbxUsuario.DisplayMemberPath = "_Key";
-            //CbxUsuario.SelectedValuePath = "_Value";
-            //CbxUsuario.ItemsSource = cbp;
-            // Seleccionar la primera opción por defecto
-
-        }
-
-        private void CbxFiltro_Loaded(object sender, RoutedEventArgs e)
-        {
-            //List<ComboBoxPairs> cbp = new List<ComboBoxPairs>();
-            //cbp.Add(new ComboBoxPairs("--Seleccionar--", 0));
-            //cbp.Add(new ComboBoxPairs("Procesar Intermedia", 1));
-            //cbp.Add(new ComboBoxPairs("Procesar Producción", 2));
-            //cbp.Add(new ComboBoxPairs("Procesados", 3));
-            //cbp.Add(new ComboBoxPairs("Errores", 4));
-            //// Asignar la lista al ComboBox
-            //CbxFiltro.DisplayMemberPath = "_Key";
-            //CbxFiltro.SelectedValuePath = "_Value";
-            //CbxFiltro.ItemsSource = cbp;
-
-        }
 
         private void btnPlano_Click(object sender, RoutedEventArgs e)
         {
@@ -1392,7 +898,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 MessageBox.Show(ex.Message);
             }
-            
+
         }
 
 
@@ -1451,7 +957,7 @@ namespace SigcatminProAddin.View.Modulos
 
         private void CbxFiltroTipo_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-           
+
         }
 
         private void btnGuardarER_Click(object sender, RoutedEventArgs e)
@@ -1459,30 +965,49 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        private void btnBuscarH_Click(object sender, RoutedEventArgs e)
+        private void RefreshDatagridByComboSelections()
         {
-            //DataTable dmrRecords;
-            var rows = 0;
-            if (CbxFiltro.SelectedItem is ComboBoxPairs selectedOpcion)
+            try
             {
-                if (CbxUsuario.SelectedItem is DataRowView selectedUsuario)
+                if (CbxFiltro.SelectedValue == null || CbxUsuario.SelectedValue == null)
                 {
-                    var dmrRecords = dataBaseHandler.GetProGisFiltro($"{selectedOpcion._Value}", $"{selectedUsuario.Row.ItemArray[0]}");
-                    rows = dmrRecords.Rows.Count;
-                    DataGridResult.ItemsSource = dmrRecords.DefaultView;
+                    return;
                 }
-                else
+                opt = Int32.Parse(CbxFiltro.SelectedValue.ToString());
+                string SelectedUser = CbxUsuario.SelectedValue.ToString();
+
+                //Procedimiento que actualiza la tabla de procesamiento segun usuario y estados
+                DataTable table = dataBaseHandler.GetProGisFiltro($"{opt}", $"{SelectedUser}");
+                // Antes de asignarlo al DataGridResult, agrega la columna PROC
+                if (!table.Columns.Contains("PROC"))
                 {
-                    MessageBox.Show("Seleccione un valor válido usuario.");
+                    table.Columns.Add("PROC", typeof(bool)); // Asegura que sea de tipo bool
                 }
+                foreach (DataRow row in table.Rows)
+                {
+                    row["PROC"] = false; // 🔹 Valor predeterminado para que los checkboxes aparezcan desmarcados
+                }
+
+                DataGridResult.ItemsSource = table.DefaultView;
+                int numRows = table.Rows.Count;
+                LblCountRecords.Content = "Se encontraron " + numRows.ToString() + " registros";
+
+                DataGridResultTableView.ShowingEditor += GridControl_ShowingEditor;
+
             }
-            else
+            catch
             {
-                MessageBox.Show("Seleccione un valor válido opción.");
+
             }
-            LblCountRecords.Content = "Se encontraron " + rows.ToString() + " registros";
 
         }
+
+        private void CbxFiltro_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            RefreshDatagridByComboSelections();
+        }
+
+
 
         private void btnBuscarAux_Click(object sender, RoutedEventArgs e)
         {
@@ -1517,16 +1042,7 @@ namespace SigcatminProAddin.View.Modulos
 
         }
 
-        //private void rb_1_Checked(object sender, RoutedEventArgs e)
-        //{
-        //    RadioButton selectedRadioButton = sender as RadioButton;
-        //    if (selectedRadioButton != null)
-        //    {
-        //        // Mostrar el contenido del RadioButton seleccionado en el TextBox
-        //        string tb_selection = "Seleccionaste: " + selectedRadioButton.Name.ToString();
-        //        string tb_s1election = "Seleccionaste: " + selectedRadioButton.Content.ToString();
-        //    }
-        //}
+
 
         private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
@@ -1584,7 +1100,7 @@ namespace SigcatminProAddin.View.Modulos
             DevExpress.Xpf.Grid.TableView view = DataGridResult.View as DevExpress.Xpf.Grid.TableView;
             if (view == null)
                 return;
-            
+
             // Verificar si hay filas en el grid (VisibleRowCount = número de filas de datos visibles)
             if (view.DataControl.VisibleRowCount == 0)
             {
@@ -1626,7 +1142,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 if (int.Parse(estado) != _EST_ERRPROD)
                 {
-                    await MapUtils.CreateMapAsync(mapName); 
+                    await MapUtils.CreateMapAsync(mapName);
                     Map map = await MapUtils.EnsureMapViewIsActiveAsync(mapName);
                     var fLyr = await LayerUtils.AddLayerAsync(map, feature_shp);
                     //_params.Clear();
@@ -1640,7 +1156,7 @@ namespace SigcatminProAddin.View.Modulos
                     //}
                 }
             }
-                       
+
             // If opt = _FILT_PROCPROD Or _FILT_PROCESADO Or _FILT_ERRORES
             if (opt == _FILT_PROCPROD || opt == _FILT_PROCESADO || opt == _FILT_ERRORES)
             {
@@ -1708,6 +1224,88 @@ namespace SigcatminProAddin.View.Modulos
 
         private void btnProcesar_Click(object sender, RoutedEventArgs e)
         {
+
+        }
+
+        private void btnUnselectAll_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DataGridResult.ItemsSource is DataView dataView)
+                {
+                    foreach (DataRowView row in dataView)
+                    {
+                        if (row != null)
+                        {
+                            if (row[_FIELD_RE_CODEST].ToString() != _EST_ERRTEMP.ToString() && row[_FIELD_RE_CODEST].ToString() != _EST_ERRPROD.ToString())
+                            {
+                                row[_FIELD_PROCESAR] = false;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
+        private void btnSelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (DataGridResult.ItemsSource is DataView dataView)
+                {
+                    foreach (DataRowView row in dataView) 
+                    {
+                        if (row != null)
+                        {
+                            if (row[_FIELD_RE_CODEST].ToString() != _EST_ERRTEMP.ToString() && row[_FIELD_RE_CODEST].ToString() != _EST_ERRPROD.ToString())
+                            {
+                                row[_FIELD_PROCESAR] = true;
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+
+        private void tabControlRegistros_Loaded(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                CbxFiltroControlReg.SelectedIndex = 0;
+                CbxEnv.SelectedIndex = 0;
+                CbxFeatures.SelectedIndex = 0;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+
+        }
+
+        private void GridControl_ShowingEditor(object sender, ShowingEditorEventArgs e)
+        {
+            if (DataGridResult.ItemsSource is DataView dataView)
+            {
+                var row = dataView[e.RowHandle];
+                if (row != null)
+                {
+                    if ( row[_FIELD_RE_CODEST].ToString() == _EST_ERRTEMP.ToString() || row[_FIELD_RE_CODEST].ToString() == _EST_ERRPROD.ToString())
+                    {
+                        e.Cancel = true;
+                    }
+                }
+            }
 
         }
     }

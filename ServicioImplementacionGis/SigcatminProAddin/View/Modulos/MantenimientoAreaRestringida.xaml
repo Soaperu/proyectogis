@@ -6,18 +6,22 @@
       xmlns:local="clr-namespace:SigcatminProAddin.View.Modulos"       
       xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
       xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
-      xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" x:Class="SigcatminProAddin.View.Modulos.MantoAreaRestringida"
+      xmlns:dxlc="http://schemas.devexpress.com/winfx/2008/xaml/layoutcontrol" xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" x:Class="SigcatminProAddin.View.Modulos.MantenimientoAreaRestringida"
       mc:Ignorable="d"
       d:DesignHeight="470" d:DesignWidth="680"
       Title="Mantenimiento de Areas Reservadas"
+      FontSize="10"
       FontFamily="Roboto" Loaded="Page_Loaded">
+    <Page.Resources>
+
+    </Page.Resources>
 
     <Grid Margin="0,0,0,0">
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
             <RowDefinition Height="10"/>
-            <RowDefinition Height="325"/>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="350"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid VerticalAlignment="Center" Height="20">
             <Grid.ColumnDefinitions>
@@ -42,53 +46,93 @@
                     Background="#F3F3F3">
             <TabItem Header="Procesamiento" Height="20" VerticalAlignment="Bottom">
 
-                <Grid Background="#F3F3F3" Grid.Column="0" Grid.Row="0" Height="380">
+                <Grid Background="#F3F3F3" Grid.Column="0" Grid.Row="0" Height="380" >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
-                        <RowDefinition Height="220"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="150"/>
                         <RowDefinition Height="70"/>
-                        <RowDefinition Height="30"/>
-                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="65"/>
+                        <RowDefinition Height="65"/>
                     </Grid.RowDefinitions>
                     <Grid Grid.Row="0" Grid.ColumnSpan="5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="180"/>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="160"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="150"/>
                         </Grid.ColumnDefinitions>
-                        <Label Content="Resultados de Búsqueda" Foreground="#FF696969"
+                        <Label Content="Se encontraron 0 registros" Foreground="#FF696969"
                             FontWeight="Bold" FontSize="10" VerticalAlignment="Center"
                             Padding="0,0,0,0" x:Name="LblCountRecords" Height="15" />
-                        <ComboBox Margin="0,0,0,0" Grid.Column="1"  Width="130"
+                        <ComboBox Margin="0,0,0,0" Grid.Column="2"  Width="130"
                             x:Name="CbxUsuario" FontSize="10"
-                            Height="20" Padding="2,0,0,0" SelectionChanged="CbxUsuario_SelectionChanged" Loaded="CbxUsuario_Loaded"  />
-                        <ComboBox Margin="0,0,0,0" Grid.Column="2"
+                            Height="20" Padding="2,0,0,0" SelectionChanged="CbxUsuario_SelectionChanged"  />
+                        <ComboBox Margin="0,0,0,0" Grid.Column="3"
                             x:Name="CbxFiltro" FontSize="10" Width="130"
-                            Height="20" Padding="0,0,0,0" SelectionChanged="CbxFiltro_SelectionChanged" Loaded="CbxFiltro_Loaded" />
-                        <Button Content="Buscar" Width="80" Height="20" 
-                            Background="#006DA0" BorderBrush="White"
-                            Foreground="White" Grid.Column="3" HorizontalAlignment="Center"
-                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                            HorizontalContentAlignment="Center" FontFamily="Roboto"
-                            VerticalContentAlignment="Center" x:Name="btnBuscarH" 
-                            FontSize="10" FontWeight="bold" Padding="0,0,0,0" 
-                            Click="btnBuscarH_Click"  />
+                            Height="20" Padding="0,0,0,0" SelectionChanged="CbxFiltro_SelectionChanged"  />
                     </Grid>
-                    <Grid Grid.Row="1" Grid.ColumnSpan="5" >
+                    <Grid Grid.Row="1"  >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <dxg:GridControl FontSize="10" x:Name="DataGridResult" 
-                            CustomUnboundColumnData="DataGridResult_CustomUnboundColumnData">
+                        <dxg:GridControl FontSize="10" x:Name="DataGridResult">
+
+                            <!-- Agregar estilos -->
+                            <dxg:GridControl.Resources>
+                                <Style TargetType="dxg:RowControl">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding Row.CODEST}" Value="96">
+                                            <Setter Property="Background" Value="#CCFFC0CB"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding Row.CODEST}" Value="97">
+                                            <Setter Property="Background" Value="#CCFFC0CB"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+
+                            </dxg:GridControl.Resources>
+                            <dxg:GridControl.Columns >
+                                <dxg:GridColumn Header="ID" Binding="{Binding ID}" Width="40"/>
+                                <dxg:GridColumn Header="CODIGO" Binding="{Binding CODIGO}" Width="*"/>
+                                <dxg:GridColumn Header="ZONA" Binding="{Binding ZONA}" Width="40"/>
+                                <dxg:GridColumn Header="CLASE" Binding="{Binding CLASE}" Width="40"/>
+                                <dxg:GridColumn Header="ARCHIVO" Binding="{Binding ARCHIVO}" Width="*"/>
+                                <dxg:GridColumn Header="MODREG" Binding="{Binding MODREG}" Width="*"/>
+                                <dxg:GridColumn Header="USUARIO" Binding="{Binding USUARIO}" Width="*"/>
+                                <dxg:GridColumn Header="FECREG" Binding="{Binding FECREG}" Width="90">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:DateEditSettings DisplayFormat="g"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                                <dxg:GridColumn Header="CODEST" Binding="{Binding CODEST}" Width="50"/>
+                                <dxg:GridColumn Header="MINERIA" Binding="{Binding MINERIA}" Width="*"/>
+
+                                <dxg:GridColumn Header="PROC"  Width="40" AllowEditing="True" >
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:CheckEditSettings   IsThreeState="False">
+                                        </dxe:CheckEditSettings>
+                                    </dxg:GridColumn.EditSettings>
+                                    <dxg:GridColumn.Binding>
+                                        <Binding Path="PROC" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
+                                    </dxg:GridColumn.Binding>
+
+                     
+                                </dxg:GridColumn>
+                            </dxg:GridControl.Columns>
+
                             <dxg:GridControl.View>
                                 <dxg:TableView  x:Name="DataGridResultTableView" 
                                     ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
-                                    FocusedRowChanged="DataGridResultTableView_FocusedRowChanged" 
+                                    AllowEditing="True"
+                                    ShowIndicator="False"
+                                    FocusedRowChanged="DataGridResultTableView_FocusedRowChanged"
+                                    ShowingEditor="GridControl_ShowingEditor"     
                                     RowUpdated="DataGridResultTableView_RowUpdated" 
-                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" 
+                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0"
                                                 />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
@@ -103,195 +147,231 @@
                            x:Name="TbxDetalleAre" FontSize="10" Padding="0,0,0,0"
                            Background="AliceBlue" Grid.ColumnSpan="2" IsReadOnly="True"/>
                     </Grid>
-                    <Grid Grid.Row="3" Grid.ColumnSpan="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="140"/>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="130"/>
-                        </Grid.ColumnDefinitions>
-                        <ComboBox Margin="0,0,0,0" Width="110"
+                    <GroupBox Grid.Row="3" Grid.ColumnSpan="2" >
+                        <GroupBox.Header>
+                            <TextBlock Text="Control de Visualización" Margin="0"></TextBlock>
+                        </GroupBox.Header>
+                        <Grid Margin="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <ComboBox Margin="0,0,0,0" Width="110"
                             x:Name="CbxDatum" FontSize="10"
                             Height="20" Padding="0,0,0,0" 
-                            SelectionChanged="CbxDatum_SelectionChanged" />
-                        <ComboBox Margin="0,0,0,0" Width="110"
+                            SelectionChanged="CbxDatum_SelectionChanged" IsEnabled="False" />
+                            <ComboBox Margin="0,0,0,0" Width="110"
                             x:Name="CbxZona" FontSize="10"
                             Height="20" Padding="5,0,0,0"  Grid.Column="1" 
-                            SelectionChanged="CbxZona_SelectionChanged" />
-                        <Button Content="Planos" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+                            SelectionChanged="CbxZona_SelectionChanged" IsEnabled="False"/>
+                            <Button Content="Planos" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
                             Foreground="White" Grid.Column="2" HorizontalAlignment="Left"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                             HorizontalContentAlignment="Center" FontFamily="Roboto"
                             VerticalContentAlignment="Center" x:Name="btnPlano" FontSize="10" 
-                            FontWeight="Medium" Padding="0,0,0,0" />
-                        <Button Content="Remover capas" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+                            FontWeight="Medium" Padding="0,0,0,0" Click="btnPlano_Click" />
+                            <Button Content="Remover capas" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
                             Foreground="White" Grid.Column="3" HorizontalAlignment="Center"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                             HorizontalContentAlignment="Center" FontFamily="Roboto" 
                             VerticalContentAlignment="Center" x:Name="btnRemoveAllLayer" FontSize="10" FontWeight="Medium" Click="btnRemoveAllLayer_Click"/>
-                        <Button Content="Visualizar" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+                            <Button Content="Visualizar" Width="80" Height="20" Background="#006DA0" BorderBrush="White"
                             Foreground="White" Grid.Column="4" HorizontalAlignment="Center"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                             HorizontalContentAlignment="Center" FontFamily="Roboto" 
                             VerticalContentAlignment="Center" x:Name="btnVizualizar" FontSize="10" 
                             FontWeight="bold" Padding="0,0,0,0" Click="btnVizualizar_Click"  />
-                    </Grid>
-                    <Grid Grid.Row="4" Grid.ColumnSpan="2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="30"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="140"/>
-                            <ColumnDefinition Width="130"/>
-                            <ColumnDefinition Width="130"/>
-                        </Grid.ColumnDefinitions>
-                        <Button Content="Deseleccionar todo" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
-                            Foreground="White" Grid.Column="0" HorizontalAlignment="Center"
-                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                            HorizontalContentAlignment="Center" FontFamily="Roboto"
-                            VerticalContentAlignment="Center" x:Name="btnUnselectAll" FontSize="10" 
-                            FontWeight="Medium" />
-                        <Button Content="Seleccionar todo" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
-                            Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
-                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                            HorizontalContentAlignment="Center" FontFamily="Roboto" 
-                            VerticalContentAlignment="Center" x:Name="btnSelectAll" FontSize="10" FontWeight="Medium" Padding="0,0,0,0"  />
+                        </Grid>
+                    </GroupBox >
+                    <GroupBox Grid.Row="4" Grid.ColumnSpan="2" Header="Procesar">
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="140"/>
+                                <ColumnDefinition Width="130"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Content="Deseleccionar todo" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+        Foreground="White" Grid.Column="0" HorizontalAlignment="Center"
+        Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+        HorizontalContentAlignment="Center" FontFamily="Roboto"
+        VerticalContentAlignment="Center" x:Name="btnUnselectAll" FontSize="10" 
+        FontWeight="Medium" Click="btnUnselectAll_Click" />
+                            <Button Content="Seleccionar todo" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
+        Foreground="White" Grid.Column="1" HorizontalAlignment="Center"
+        Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+        HorizontalContentAlignment="Center" FontFamily="Roboto" 
+        VerticalContentAlignment="Center" x:Name="btnSelectAll" FontSize="10" FontWeight="Medium" Padding="0,0,0,0" Click="btnSelectAll_Click"  />
 
 
-                        <ComboBox Margin="0,0,0,0" Width="110"
-                            x:Name="CbxActualiza" FontSize="10" HorizontalAlignment="Left"
-                            Height="20" Padding="0,0,0,0"  Grid.Column="2" 
-                             />
+                            <ComboBox Margin="0,0,0,0" Width="110"
+        x:Name="CbxActualiza" FontSize="10" HorizontalAlignment="Left"
+        Height="20" Padding="0,0,0,0"  Grid.Column="2" Visibility="Hidden"
+         />
 
-                        <Button Content="Procesar" Width="110" Height="20" Background="#006DA0" BorderBrush="White"
-                            Foreground="White" Grid.Column="5" HorizontalAlignment="Center"
-                            Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
-                            HorizontalContentAlignment="Center" FontFamily="Roboto" 
-                            VerticalContentAlignment="Center" x:Name="btnProcesar" FontSize="10" 
-                            FontWeight="bold" Padding="0,0,0,0" Click="btnProcesar_Click"  />
-                    </Grid>
+                            <Button Content="Procesar" Width="80" Height="20" Background="#006DA0" BorderBrush="White"
+        Foreground="White" Grid.Column="4" HorizontalAlignment="Center"
+        Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
+        HorizontalContentAlignment="Center" FontFamily="Roboto" 
+        VerticalContentAlignment="Center" x:Name="btnProcesar" FontSize="10" 
+        FontWeight="bold" Padding="0,0,0,0" Click="btnProcesar_Click"  />
+                        </Grid>
+                    </GroupBox>
+
                 </Grid>
 
             </TabItem>
-            <TabItem Header="Control de registros" HorizontalAlignment="Center" Width="130">
+            <TabItem x:Name="tabControlRegistros" Header="Control de registros" HorizontalAlignment="Center" Width="120" Loaded="tabControlRegistros_Loaded">
 
-                <Grid Background="#F3F3F3" Grid.Column="0" Grid.Row="1">
+                <Grid Background="#F3F3F3" >
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="25"/>
-                        <RowDefinition Height="15"/>
-                        <RowDefinition Height="80"/>
-                        <RowDefinition Height="15"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="50"/>
+                        <RowDefinition Height="20"/>
+                        <RowDefinition Height="50"/>
                         <RowDefinition Height="60"/>
-                        <RowDefinition Height="25"/>
-                        <RowDefinition Height="150"/>
+                        <RowDefinition Height="*"/>
 
                     </Grid.RowDefinitions>
 
-                    <Grid Grid.Row="0" Grid.ColumnSpan="3">
+                    <Grid Grid.Row="0" >
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="15.972"/>
-                            <ColumnDefinition Width="15.432"/>
-                            <ColumnDefinition Width="268.596"/>
-                            <ColumnDefinition Width="190"/>
+                            <ColumnDefinition Width="59*"/>
+                            <ColumnDefinition Width="183*"/>
                             <ColumnDefinition Width="190"/>
                         </Grid.ColumnDefinitions>
-                        <ComboBox Margin="15,2,25,3" Grid.Column="4"
+                        <ComboBox  Grid.Column="2"
                         x:Name="CbxFiltroControlReg" FontSize="10" Width="150"
-                        Height="20" Padding="0,0,0,0" SelectionChanged="CbxFiltroControlReg_SelectionChanged" />
+                                   HorizontalAlignment="Right"
+                         Padding="0,0,0,0" SelectionChanged="CbxFiltroControlReg_SelectionChanged" Height="20" />
                     </Grid>
 
-                    <Grid Grid.Row="1" Grid.ColumnSpan="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300"/>
-                            <ColumnDefinition Width="190"/>
-                            <ColumnDefinition Width="190"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Registros en Feature Class Temporales" Foreground="#FF696969"
+                    <Label  Margin ="0,0,0,0"  Grid.Row="1" Content="Registros en Feature Class Temporales" Foreground="#FF696969"
                             FontWeight="Bold" FontSize="10" VerticalAlignment="Center" 
-                            Padding="0,0,0,0" Height="14"/>
-                    </Grid>
+                            Padding="0,0,0,0" />
 
 
-                    <Grid Grid.Row="2" Grid.ColumnSpan="3">
+                    <Grid Grid.Row="2" >
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <dxg:GridControl FontSize="12" 
-                            x:Name="DGridRegistroTmp"  Height="50"
-                            RenderTransformOrigin="0.302,0.964" 
-                            HorizontalAlignment="Left" 
-                            Width="659">
+                        <dxg:GridControl 
+                            x:Name="DGridRegistroTmp"                            
+                            >
+                            <dxg:GridControl.Columns >
+                                <dxg:GridColumn Header="TOTAL" Binding="{Binding TOTAL}" Width="*"/>
+                                <dxg:GridColumn Header="PSAD_17" Binding="{Binding PSAD_17}" Width="*"/>
+                                <dxg:GridColumn Header="PSAD_18" Binding="{Binding PSAD_18}" Width="*"/>
+                                <dxg:GridColumn Header="PSAD_19" Binding="{Binding PSAD_19}" Width="*"/>
+                                <dxg:GridColumn Header="WGS_17" Binding="{Binding WGS_17}" Width="*"/>
+                                <dxg:GridColumn Header="WGS_18" Binding="{Binding WGS_18}" Width="*"/>
+                                <dxg:GridColumn Header="WGS_19" Binding="{Binding WGS_19}" Width="*"/>
+                                <dxg:GridColumn Header="G56" Binding="{Binding G56}" Width="*"/>
+                                <dxg:GridColumn Header="G84" Binding="{Binding G84}" Width="*"/>
+
+                            </dxg:GridControl.Columns>
                             <dxg:GridControl.View>
                                 <dxg:TableView  x:Name="DGridRegistroTmpTableView" 
                                     ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
-                                    Margin="0,-14,0,14" />
+                                    VerticalScrollbarVisibility="Disabled"
+                                    ShowIndicator="False"
+                                    HorizontalAlignment="Left" 
+                                    Margin="0,0,0,0" />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
                     </Grid>
-                    <Grid Grid.Row="3" Grid.ColumnSpan="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300"/>
-                            <ColumnDefinition Width="190"/>
-                            <ColumnDefinition Width="190"/>
-                        </Grid.ColumnDefinitions>
-                        <Label Content="Registros en Feature Class Producción" Foreground="#FF696969"
-                            FontWeight="Bold" FontSize="10" VerticalAlignment="Center" 
-                            Padding="0,0,0,0" Height="14"/>
-                    </Grid>
-                    <Grid Grid.Row="4" Grid.ColumnSpan="3">
+
+                    <Label Grid.Row="3" Content="Registros en Feature Class Producción" Foreground="#FF696969"
+                        FontWeight="Bold" FontSize="10" VerticalAlignment="Center" 
+                        Padding="0,0,0,0" />
+
+                    <Grid Grid.Row="4">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <dxg:GridControl FontSize="12" 
+                        <dxg:GridControl 
                             x:Name="DGridRegistroProd" 
-                            RenderTransformOrigin="0.302,0.964" HorizontalAlignment="Left" Width="659">
+                            >
+                            <dxg:GridControl.Columns >
+                                <dxg:GridColumn Header="TOTAL" Binding="{Binding TOTAL}" Width="*"/>
+                                <dxg:GridColumn Header="PSAD_17" Binding="{Binding PSAD_17}" Width="*"/>
+                                <dxg:GridColumn Header="PSAD_18" Binding="{Binding PSAD_18}" Width="*"/>
+                                <dxg:GridColumn Header="PSAD_19" Binding="{Binding PSAD_19}" Width="*"/>
+                                <dxg:GridColumn Header="WGS_17" Binding="{Binding WGS_17}" Width="*"/>
+                                <dxg:GridColumn Header="WGS_18" Binding="{Binding WGS_18}" Width="*"/>
+                                <dxg:GridColumn Header="WGS_19" Binding="{Binding WGS_19}" Width="*"/>
+                                <dxg:GridColumn Header="G56" Binding="{Binding G56}" Width="*"/>
+                                <dxg:GridColumn Header="G84" Binding="{Binding G84}" Width="*"/>
+
+                            </dxg:GridControl.Columns>
                             <dxg:GridControl.View>
                                 <dxg:TableView  x:Name="DGridRegistroProdTableView" 
                                     ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
+                                    VerticalScrollbarVisibility="Disabled"
+                                    ShowIndicator="False"
                                     Margin="0,0,0,0" />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
                     </Grid>
-                    <Grid Grid.Row="5" Grid.ColumnSpan="3">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="300"/>
-                            <ColumnDefinition Width="190"/>
-                            <ColumnDefinition Width="190"/>
-                        </Grid.ColumnDefinitions>
+                    <GroupBox Margin="0,5,0,0" Grid.Row="5" Grid.ColumnSpan="3" Header="Registros excedentes o Faltantes">
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="190"/>
+                                <ColumnDefinition Width="190"/>
+                            </Grid.ColumnDefinitions>
 
-                        <Label Content="Resultados de Búsqueda" Foreground="#FF696969"
-                            FontWeight="Bold" FontSize="10" VerticalAlignment="Center" 
-                            Padding="0,0,0,0"
-                            x:Name="L1blCountRecords" Height="14"/>
-                        <ComboBox Margin="0,0,20,0" Width="150"
-                            x:Name="CbxEnv" FontSize="10" Grid.Column="1"
-                            Height="20" Padding="2,0,0,0" RenderTransformOrigin="0.507,0.805" SelectionChanged="CbxEnv_SelectionChanged" />
-                        <ComboBox Margin="0,0,20,0" Grid.Column="2"
-                            x:Name="CbxFeatures" FontSize="10" Width="150"
-                            Height="20" Padding="0,0,0,0" SelectionChanged="CbxFeatures_SelectionChanged" />
-                    </Grid>
+                            <Label Content="Se encontraron 95 Registros" Foreground="#FF696969"
+        FontWeight="Bold" FontSize="10" VerticalAlignment="Center" 
+        Padding="0,0,0,0"
+        x:Name="L1blMissingRecords" />
+                            <ComboBox Margin="0,0,0,0" Width="150"
+        x:Name="CbxEnv" FontSize="10" Grid.Column="1"
+        Height="20" Padding="0,0,0,0"  SelectionChanged="CbxEnv_SelectionChanged" HorizontalAlignment="Right" />
+                            <ComboBox Margin="0,0,0,0" Grid.Column="2"
+        x:Name="CbxFeatures" FontSize="10" Width="150"
+        Height="20" Padding="0,0,0,0" SelectionChanged="CbxFeatures_SelectionChanged" HorizontalAlignment="Right"/>
+                        </Grid>
+                    </GroupBox >
+
                     <Grid Grid.Row="6" Grid.ColumnSpan="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <dxg:GridControl FontSize="12" 
+                        <dxg:GridControl  
                                x:Name="DGridDifRegistro" 
-                               RenderTransformOrigin="0.302,0.964" HorizontalAlignment="Left" Width="659">
+                                HorizontalAlignment="Left" >
+
+                            <dxg:GridControl.Columns >
+                                <dxg:GridColumn Header="CODIGO" Binding="{Binding CODIGO}" Width="70"/>
+                                <dxg:GridColumn Header="REGISTROS EN DB" Binding="{Binding [REGISTROS EN DB]}" Width="100"/>
+                                <dxg:GridColumn Header="REGISTROS EN GDB" Binding="{Binding [REGISTROS EN GDB]}" Width="100"/>
+                                <dxg:GridColumn Header="OBSERVACIÓN" Binding="{Binding OBSERVACION}" Width="*"/>
+                                <dxg:GridColumn Header="CLASE" Binding="{Binding CLASE}" Width="60"/>
+
+                            </dxg:GridControl.Columns>
+
                             <dxg:GridControl.View>
                                 <dxg:TableView  x:Name="DGridDifRegistroTableView2" 
                                     ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
+                                    ShowIndicator="False"                                                
                                     Margin="0,0,0,0" />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
@@ -311,29 +391,27 @@
                     <Grid Grid.Row="0" Grid.ColumnSpan="3">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="200"/>
-                            <ColumnDefinition Width="160"/>
-                            <ColumnDefinition Width="160"/>
-                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
 
                         <TextBox TextWrapping="Wrap" Height="20" Width="190"  Grid.Column="0"
                             FontFamily="Roboto" FontSize="10" x:Name="txtBuscaHistorico"/>
+                        
 
 
-                        <!--<DatePicker Grid.Column="1" FontFamily="Roboto"  Height="20"
-                             Width="130" FontSize="10" x:Name="DtpFecIni" />-->
-                        <!--<DatePicker Grid.Column="2" FontFamily="Roboto" Height="20"
-                        Width="130" FontSize="10" x:Name="DtpFecFin" />-->
-
-                        <dxe:DateEdit Grid.Column="1" FontFamily="Roboto"  Height="20"
-                                    Mask="yyyy-MM-dd" Width="130" FontSize="10" x:Name="DtpFecIni"/>
 
                         <dxe:DateEdit Grid.Column="2" FontFamily="Roboto"  Height="20"
+                                    Mask="yyyy-MM-dd" Width="130" FontSize="10" x:Name="DtpFecIni"/>
+
+                        <dxe:DateEdit Grid.Column="3" FontFamily="Roboto"  Height="20"
                                     Mask="yyyy-MM-dd" Width="130" FontSize="10" x:Name="DtpFecFin"/>
 
-                        <Button Content="Buscar" Width="120" Height="20" 
+                        <Button Content="Buscar" Width="100" Height="20" 
                             Background="#006DA0" BorderBrush="White"
-                            Foreground="White" Grid.Column="3" HorizontalAlignment="center"
+                            Foreground="White" Grid.Column="4" HorizontalAlignment="Center"
                             Style="{DynamicResource Esri_Button}" VerticalAlignment="Center" 
                             HorizontalContentAlignment="Center" FontFamily="Roboto"
                             VerticalContentAlignment="Center" x:Name="btnBuscarHistorico" 
@@ -347,11 +425,25 @@
                         </Grid.ColumnDefinitions>
                         <dxg:GridControl FontSize="10" x:Name="DGResHistorico" 
                             CustomUnboundColumnData="DGResHistorico_CustomUnboundColumnData">
+                            <dxg:GridControl.Columns >
+                                <dxg:GridColumn Header="ID" Binding="{Binding ID}" Width="40"/>
+                                <dxg:GridColumn Header="CODIGO" Binding="{Binding CODIGO}" Width="*"/>
+                                <dxg:GridColumn Header="ARCHIVO" Binding="{Binding ARCHIVO}" Width="*"/>
+                                <dxg:GridColumn Header="CLASE" Binding="{Binding CLASE}" Width="40"/>
+                                <dxg:GridColumn Header="ZONA" Binding="{Binding ZONA}" Width="40"/>
+                                <dxg:GridColumn Header="MODREG" Binding="{Binding MODREG}" Width="*"/>
+                                <dxg:GridColumn Header="CODEST" Binding="{Binding CODEST}" Width="50"/>
+                                <dxg:GridColumn Header="FECREG" Binding="{Binding FECREG}" Width="90">
+                                    <dxg:GridColumn.EditSettings>
+                                        <dxe:DateEditSettings DisplayFormat="g"/>
+                                    </dxg:GridColumn.EditSettings>
+                                </dxg:GridColumn>
+                            </dxg:GridControl.Columns>
                             <dxg:GridControl.View>
                                 <dxg:TableView  x:Name="DGResHistoricoTableView" ShowAutoFilterRow="False"
                                     AllowColumnFiltering="False"
                                     ShowGroupPanel="False" 
-                                    HorizontalAlignment="Left" Width="656" Margin="0,0,0,0" />
+                                    HorizontalAlignment="Left" Margin="0,0,0,0" />
                             </dxg:GridControl.View>
                         </dxg:GridControl>
                     </Grid>
@@ -588,7 +680,7 @@
                             <ColumnDefinition Width="550"/>
                             <ColumnDefinition Width="100"/>
                         </Grid.ColumnDefinitions>
-                        
+
                         <TextBox TextWrapping="Wrap" 
                             FontFamily="Roboto" FontSize="12" 
                             x:Name="txtResePath" Margin="0,0,0,0" IsEnabled="False"/>

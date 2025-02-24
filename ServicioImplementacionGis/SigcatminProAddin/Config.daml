@@ -361,13 +361,13 @@
         </button>
         <!--Controles Selector de Modulos-->
         <comboBox id="SigcatminProAddin_View_Modulos_SelectorCategorias" condition="Logged_condition" caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectorCategorias" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
-          <tooltip heading="Tipo">Seleccione el tipo de Modulo<disabledText /></tooltip>
+          <tooltip heading="Tipo">Seleccione el tipo de Módulo<disabledText /></tooltip>
         </comboBox>
-        <comboBox id="SigcatminProAddin_View_Modulos_SelectorModulos" condition="Logged_condition" caption="Modulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
-          <tooltip heading="Modulos">Seleccione el Modulo<disabledText /></tooltip>
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectorModulos" rows="10" condition="Logged_condition" caption="Módulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+          <tooltip heading="Modulos">Seleccione el Módulo<disabledText /></tooltip>
         </comboBox>
-        <button id="SigcatminProAddin_View_Modulos_ConfirmationModule" condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
-          <tooltip heading="Confirmar">Confirmar Modulo<disabledText /></tooltip>
+        <button id="SigcatminProAddin_View_Modulos_ConfirmationModule" condition="Logged_condition" caption=" Confirmar Módulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
+          <tooltip heading="Confirmar">Confirmar Módulo<disabledText /></tooltip>
         </button>
       </controls>
       <galleries>

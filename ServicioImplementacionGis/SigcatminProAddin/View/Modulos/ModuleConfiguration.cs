@@ -53,7 +53,7 @@ namespace SigcatminProAddin.View.Modulos
                 new Modulo("Varias Cartas Nacionales", typeof(VariasCartasNacional)),
                 new Modulo("Generación Histórica DM", typeof(GeneracionHistoricaDM)),
                 new Modulo("Renuncia DM", typeof(Renuncia)),
-                new Modulo("Manto de Areas Restringidas", typeof(MantoAreaRestringida)),
+                new Modulo("Mantenimiento de Areas Restringidas", typeof(MantenimientoAreaRestringida)),
 
 
                 new Modulo("Límite Departamental", typeof(LimiteDepartamental)),
