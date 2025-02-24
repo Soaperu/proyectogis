@@ -47,6 +47,7 @@ namespace SigcatminProAddin.View.Modulos
                 new Modulo("División", typeof(Division)),
                 new Modulo("DM por Carta IGN", typeof(DMCartaIGN)),
                 new Modulo("DM por Demarcación Política", typeof(DMxDemarcacionPolitica)),
+                new Modulo("DM por PMA", typeof(DMxPMA)),
                 new Modulo("Estadística de Áreas Restringidas", typeof(EstadisticasAreasRestringidas)),
                 new Modulo("Límites de Áreas de Interés", typeof(LimiteAreaInteres)),
                 new Modulo("Simulación de Petitorios", typeof(SimulaPetitorios)),

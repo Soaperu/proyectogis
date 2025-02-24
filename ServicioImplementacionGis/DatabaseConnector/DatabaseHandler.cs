@@ -554,7 +554,7 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
-        public DataTable GetPmaPetitions(string datum)
+        public DataTable GetPmaPetitions(string datum)  // FT_petpma
         {
             string storedProcedure = "PACK_DBA_GIS.P_consulta_sc_d_petpma";
             var parameters = new OracleParameter[]
@@ -564,7 +564,7 @@ namespace DatabaseConnector
 
             return ExecuteDataTable(storedProcedure, parameters);
         }
-        public DataTable GetDmxPma(string datum)
+        public DataTable GetDmxPma(string datum) // P_SEL_DMXPMA
         {
             string storedProcedure = "PACK_DBA_GIS.P_SEL_DMXPMA";
             var parameters = new OracleParameter[]
@@ -1832,7 +1832,6 @@ namespace DatabaseConnector
             return ExecuteDataTable(storedProcedure, parameters);
         }
 
-    
 
         #region Simultaneidad
         public string VerificaSimultaneidad(string fecha)
