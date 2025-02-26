@@ -2,7 +2,7 @@
 using ArcGIS.Core.Data.DDL;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Geometry;
-using ArcGIS.Core.Internal.CIM;
+//using ArcGIS.Core.Internal.CIM;
 using ArcGIS.Core.Internal.Geometry;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Dialogs;
@@ -534,6 +534,95 @@ namespace CommonUtilities.ArcgisProUtils
             return lostrJoinCodigos;
         }
 
+        //public async static Task AgregarCampoTemaTpm(string pShapefile, string caso)
+        //{
+        //    try
+        //    {
+        //        // Obtener el mapa actual y la capa de entidad
+        //        var mapView = MapView.Active as MapView;
+        //        if (mapView == null)
+        //        {
+        //            MessageBox.Show("No se ha encontrado la vista activa.");
+        //            return;
+        //        }
+
+        //        var featureLayer = GetFeatureLayerFromMap(mapView, pShapefile);
+        //        if (featureLayer == null)
+        //        {
+        //            MessageBox.Show("No se encuentra la capa en el mapa.");
+        //            return;
+        //        }
+
+        //        //var featureClass = featureLayer.GetTable() as FeatureClass;
+
+        //        // Añadir o eliminar campos según el caso
+        //        if (caso == "CODIGO")
+        //        {
+        //            // Añadir el campo "CODIGO" si no existe
+        //            AddFieldIfNotExistsAsync(featureLayer, "CODIGO", "STRING", 16);
+        //        }
+        //        else if (caso == "ExclusionUEA")
+        //        {
+        //            // Eliminar los campos existentes "TIT_CONCES" y "LEYENDA"
+        //            _ = DeleteFieldIfExists(featureLayer, "TIT_CONCES");
+        //            _ = DeleteFieldIfExists(featureLayer, "LEYENDA");
+
+        //            // Añadir nuevos campos
+        //            await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GlobalVariables.fieldTypeString, 1);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 1);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GlobalVariables.fieldTypeString, 13);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GlobalVariables.fieldTypeString, 100);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+        //        }
+        //        else if (caso == "Catastro")
+        //        {
+        //            // Comprobamos si los campos existen, y si no, los agregamos.
+        //            await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeDouble, 20, 4); // Precision 20, escala 4
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeString, 256);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GlobalVariables.fieldTypeString, 80);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
+        //        }
+        //        else if(caso== "Cata_sim")
+        //        {
+        //            await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+        //        }
+        //        else if(caso == "Cuadri_sim")
+        //        {
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+                    
+        //        }
+        //        else if (caso == "Cuadri_dsim")
+        //        {
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+
+        //        }
+        //        // Otros casos a agregar de manera similar
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error: {ex.Message}");
+        //    }
+        //}
+
         public async static Task AgregarCampoTemaTpm(string pShapefile, string caso)
         {
             try
@@ -553,73 +642,70 @@ namespace CommonUtilities.ArcgisProUtils
                     return;
                 }
 
-                //var featureClass = featureLayer.GetTable() as FeatureClass;
+                switch (caso)
+                {
+                    case "CODIGO":
+                        await AddFieldIfNotExistsAsync(featureLayer, "CODIGO", GlobalVariables.fieldTypeString, 16);
+                        break;
 
-                // Añadir o eliminar campos según el caso
-                if (caso == "CODIGO")
-                {
-                    // Añadir el campo "CODIGO" si no existe
-                    AddFieldIfNotExistsAsync(featureLayer, "CODIGO", "STRING", 16);
-                }
-                else if (caso == "ExclusionUEA")
-                {
-                    // Eliminar los campos existentes "TIT_CONCES" y "LEYENDA"
-                    _ = DeleteFieldIfExists(featureLayer, "TIT_CONCES");
-                    _ = DeleteFieldIfExists(featureLayer, "LEYENDA");
+                    case "ExclusionUEA":
+                    case "IntegrantesUEA":
+                    case "InclusionUEA":
+                        await DeleteFieldIfExists(featureLayer, "TIT_CONCES");
+                        await DeleteFieldIfExists(featureLayer, "LEYENDA");
 
-                    // Añadir nuevos campos
-                    await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GlobalVariables.fieldTypeString, 1);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 1);
-                    await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GlobalVariables.fieldTypeString, 13);
-                    await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GlobalVariables.fieldTypeString, 100);
-                    await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
-                }
-                else if (caso == "Catastro")
-                {
-                    // Comprobamos si los campos existen, y si no, los agregamos.
-                    await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeDouble, 20, 4); // Precision 20, escala 4
-                    await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GlobalVariables.fieldTypeString, 80);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
-                }
-                else if(caso== "Cata_sim")
-                {
-                    await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
-                }
-                else if(caso == "Cuadri_sim")
-                {
-                    await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
-                    await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
-                    
-                }
-                else if (caso == "Cuadri_dsim")
-                {
-                    await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
-                    await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GlobalVariables.fieldTypeString, 1);
+                        await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 1);
+                        await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GlobalVariables.fieldTypeString, 13);
+                        await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GlobalVariables.fieldTypeString, 100);
+                        await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+                        break;
 
-                }
-                // Otros casos a agregar de manera similar
+                    case "Catastro":
+                        await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeDouble, 20, 4);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeString, 256);
+                        await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
+                        await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GlobalVariables.fieldTypeString, 80);
+                        await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
+                        break;
 
+                    case "Cata_sim":
+                        await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+                        break;
+
+                    case "Cuadri_sim":
+                    case "Cuadri_dsim":
+                        await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+                        await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+                        await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+                        break;
+
+                    case "provincia_PMA":
+                        await AddFieldIfNotExistsAsync(featureLayer, "LEYEN", GlobalVariables.fieldTypeString, 4);
+                        await AddFieldIfNotExistsAsync(featureLayer, "PROVIN", GlobalVariables.fieldTypeString, 20);
+                        break;
+
+                    default:
+                        MessageBox.Show($"El caso '{caso}' no está definido en la configuración.");
+                        break;
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}\nDetalles: {ex.InnerException?.Message}");
             }
         }
 
@@ -1241,11 +1327,239 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
+        public static async Task UpdateValueLayerAsync(string layerName, string tema, DataTable dataTable, string coduea = "")
+        {
+            await QueuedTask.Run(() =>
+            {
+                // Obtener la capa del mapa activo
+                var mapView = MapView.Active;
+                if (mapView == null)
+                {
+                    MessageBox.Show("No se ha encontrado la vista activa.");
+                    return;
+                }
 
+                var featureLayer = mapView.Map.GetLayersAsFlattenedList()
+                                             .OfType<FeatureLayer>()
+                                             .FirstOrDefault(layer => layer.Name == layerName);
 
+                if (featureLayer == null)
+                {
+                    MessageBox.Show("No se encuentra la capa en el mapa.");
+                    return;
+                }
 
+                using (var table = featureLayer.GetTable())
+                using (var rowCursor = table.Search(null, false))
+                {
+                    int i = 0, conta = 1;
+                    Dictionary<string, int> provinciaLeyenda = new Dictionary<string, int>();
+                    while (rowCursor.MoveNext())
+                    {
+                        using (var row = rowCursor.Current)
+                        {
+                            try
+                            {
+                                switch (tema)
+                                {
+                                    case "IntegrantesUEA":
+                                    case "InclusionUEA":
+                                    case "ExclusionUEA":
+                                        UpdateFeatureValues(row, dataTable, i, "MOVIMIENTO", "SITUACION", "COD_UEA", "NOM_UEA");
+                                        break;
 
+                                    case "Catastro_circulo":
+                                        row["CONTADOR"] = i + 1;
+                                        break;
 
+                                    case "Area_Externa":
+                                        row["ID_AREA"] = "Area" + (i + 1);
+                                        row["CODI_UEA"] = coduea;
+                                        break;
+
+                                    case "clase_tipoUEA":
+                                        row["ORDEN"] = row["TIP_MOV"].ToString() switch
+                                        {
+                                            "C" => "A",
+                                            "Z" => "B",
+                                            "S" => "C",
+                                            _ => row["ORDEN"]
+                                        };
+                                        break;
+
+                                    case "orden_integranUEA":
+                                        row["NRO"] = i + 1;
+                                        break;
+
+                                    case "provincia_PMA":
+                                        if (dataTable.Columns.Contains("CODDEM") && dataTable.Columns.Contains("CODDEM_G"))
+                                        {
+                                            string v_cd_prov = row["CD_PROV"].ToString();
+                                            foreach (DataRow dr in dataTable.Rows)
+                                            {
+                                                if (v_cd_prov == dr["CODDEM"].ToString() || v_cd_prov == dr["CODDEM_G"].ToString())
+                                                {
+                                                    row["PROVIN"] = $"{dr["CODDEM"]}_{dr["CODDEM_G"]}";
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case "estilo":
+                                        // 🔹 Extraer valores únicos del campo LEYEN y guardarlos en un DataTable
+                                        DataTable dtPMA = new DataTable();
+                                        dtPMA.Columns.Add("LEYEN", typeof(string));
+
+                                        string v_id = row["LEYEN"].ToString();
+                                        if (!dtPMA.AsEnumerable().Any(r => r.Field<string>("LEYEN") == v_id))
+                                        {
+                                            DataRow newRow = dtPMA.NewRow();
+                                            newRow["LEYEN"] = v_id;
+                                            dtPMA.Rows.Add(newRow);
+                                        }
+                                        GlobalVariables.currentTable = dtPMA;
+                                        break;
+
+                                    case "provincias_PMA":
+                                        //row["LEYEN"] = $"L{conta:D3}";
+                                        //conta++;
+                                        string v_provin = row["PROVIN"].ToString();
+
+                                        // Si la provincia no tiene un identificador asignado, le damos uno nuevo
+                                        if (!provinciaLeyenda.ContainsKey(v_provin))
+                                        {
+                                            provinciaLeyenda[v_provin] = conta;
+                                            conta++; // Incrementamos para la próxima provincia
+                                        }
+
+                                        // Asignamos el mismo identificador a todas las filas de la provincia
+                                        row["LEYEN"] = $"L{provinciaLeyenda[v_provin]:D3}";
+                                        break;
+
+                                    case "rese_dm_int":
+                                    case "urba_dm_int":
+                                    case "caram_dm_int":
+                                        row["CODIGOU"] = dataTable.Rows[i]["CODIGOU"].ToString();
+                                        break;
+
+                                    case "cata_uea":
+                                        if (dataTable.Columns.Contains("CG_CODPET") && dataTable.Columns.Contains("CG_CODIGO"))
+                                        {
+                                            string codUEA = row["CODIGOU"].ToString();
+                                            foreach (DataRow dr in dataTable.Rows)
+                                            {
+                                                if (dr["CG_CODPET"].ToString() == codUEA)
+                                                {
+                                                    row["CODI_UEA"] = dr["CG_CODIGO"];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case "caram_acum":
+                                    case "caram_renun":
+                                    case "caram_sim":
+                                        if (dataTable.Columns.Contains("ESTILO") && dataTable.Columns.Contains("NM_AREA"))
+                                        {
+                                            string vestilo = row["ESTILO"].ToString();
+                                            string nm_area = row["NM_AREA"].ToString();
+
+                                            if (vestilo == "ZONA URBANA")
+                                            {
+                                                dataTable.Rows.Add(nm_area);
+                                            }
+                                            else if (vestilo == "ZONA RESERVADA")
+                                            {
+                                                dataTable.Rows.Add(nm_area);
+                                            }
+                                        }
+                                        break;
+
+                                    default:
+                                        UpdateFeatureValues(row, dataTable, i, "MOVIMIENTO", "SITUACION", "COD_UEA", "NOM_UEA");
+                                        row["LEYENDA"] = row["MOVIMIENTO"].ToString() switch
+                                        {
+                                            "C" => "G3",
+                                            "I" => "G1",
+                                            "X" => "G2",
+                                            _ => row["LEYENDA"]
+                                        };
+                                        break;
+                                }
+
+                                row.Store(); // Guardar cambios
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error en {tema}: {ex.Message}");
+                            }
+                            i++;
+                        }
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Método auxiliar para actualizar valores de atributos.
+        /// </summary>
+        private static void UpdateFeatureValues(Row row, DataTable dataTable, int index, params string[] fieldNames)
+        {
+            foreach (var field in fieldNames)
+            {
+                if (dataTable.Columns.Contains(field))
+                    row[field] = dataTable.Rows[index][field].ToString();
+            }
+        }
+
+        /// <summary>
+        /// Ordena una capa usando el campo especificado y guarda el resultado en una nueva capa.
+        /// </summary>
+        /// <param name="layerIn">Nombre de la capa de entrada.</param>
+        /// <param name="layerOut">Nombre de la capa de salida.</param>
+        /// <param name="fieldName">Nombre del campo por el cual se ordenará la capa.</param>
+        /// <param name="addToMap">Determina si la capa ordenada se agregará al mapa.</param>
+        public static async Task LayerTableSortAsync(string layerIn, string layerOut, string fieldName, bool addToMap = false)
+        {
+            await QueuedTask.Run(async () =>
+            {
+                try
+                {
+                    string pathTemp = GlobalVariables.pathFileTemp;
+                    // Ruta de las capas (asumiendo que glo_pathTEMP es una variable global)
+                    string inputPath = $"{layerIn}.shp";
+                    string outputPath = $"{layerOut}.shp";
+                    string sort_fields = $"{fieldName} ASCENDING";
+                    // Parámetros del geoproceso
+                    var parameters = Geoprocessing.MakeValueArray(inputPath, outputPath, sort_fields);
+
+                    // Configuración del entorno
+                    var env = Geoprocessing.MakeEnvironmentArray(workspace: pathTemp);
+
+                    // Ejecutar herramienta Sort
+                    var gpResult = await Geoprocessing.ExecuteToolAsync("Sort_management", parameters, env, null, null, GPExecuteToolFlags.None);
+
+                    // Verificar si la ejecución fue exitosa
+                    if (gpResult.IsFailed)
+                    {
+                        MessageBox.Show("Error al ejecutar Sort_management.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Agregar la capa al mapa si se especifica
+                    if (addToMap)
+                    {
+                        outputPath = Path.Combine(pathTemp, outputPath);
+                        await LayerUtils.AddLayerAsync(await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro), outputPath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error en LayerTableSortAsync: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+        }
 
 
 

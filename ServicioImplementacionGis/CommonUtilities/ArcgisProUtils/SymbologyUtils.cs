@@ -25,7 +25,20 @@ namespace CommonUtilities.ArcgisProUtils
         private string val_opcion_plano_Ar = "tu_valor"; // Asigna el valor correspondiente
         private string loStrShapefile_dm = "tu_valor"; // Asigna el valor correspondiente
         //private static List<string> fields;
-
+        private SymbolConfiguration symbolPolygonBlue = new SymbolConfiguration { 
+                                                                                    FillStyle = SimpleFillStyle.Null,
+                                                                                    FillColor = new CIMRGBColor { R = 0, G = 0, B = 230},
+                                                                                    LineStyle = SimpleLineStyle.Solid,
+                                                                                    LineColor = new CIMRGBColor { R = 0, G = 0, B = 230},
+                                                                                    LineWidth = 1.2
+                                                                                };
+        private SymbolConfiguration symbolPolygonRed = new SymbolConfiguration {
+                                                                                    FillStyle = SimpleFillStyle.Null,
+                                                                                    FillColor = new CIMRGBColor { R = 230, G = 0, B = 0 },
+                                                                                    LineStyle = SimpleLineStyle.Solid,
+                                                                                    LineColor = new CIMRGBColor { R = 230, G = 0, B = 0 },
+                                                                                    LineWidth = 1.2
+                                                                                };
         /// <summary>
         /// Aplica una simbología simple a una capa de puntos.
         /// </summary>
@@ -66,7 +79,7 @@ namespace CommonUtilities.ArcgisProUtils
         }
         public static async void CustomLinePolygonLayer(FeatureLayer layer, SimpleLineStyle style, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2 = null)
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 var trans = 75.0;//semi transparent
@@ -86,12 +99,12 @@ namespace CommonUtilities.ArcgisProUtils
                 // Actualiza la simbologia 
                 layer.SetRenderer(symbol);
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async void CustomLinePolygonGraphic(ArcGIS.Core.Geometry.Geometry geomPolygon, CIMColor colorFill, CIMColor colorLine1, CIMColor colorLine2)
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 Map activeMap = MapView.Active.Map;
@@ -113,12 +126,12 @@ namespace CommonUtilities.ArcgisProUtils
                 };
                 MapView.Active.AddOverlay(cimGraphicElement);
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async Task ApplySymbologyFromStyleAsync(string layerName, string styleFilePath, string fieldName, StyleItemType styleGeomItem,string codeValue="")
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 //Obtener el mapa y la capa
@@ -216,13 +229,13 @@ namespace CommonUtilities.ArcgisProUtils
                 featureLayer.SetRenderer(uniqueValueRenderer);
 
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
 
         public static async Task ApplyUniqueSymbologyFromStyleAsync(string layerName, string styleFilePath, StyleItemType styleGeomItem)
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 // Obtener el mapa y la capa
@@ -279,7 +292,7 @@ namespace CommonUtilities.ArcgisProUtils
                 // Aplicar el renderizador a la capa
                 featureLayer.SetRenderer(simpleRenderer);
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>
@@ -364,7 +377,7 @@ namespace CommonUtilities.ArcgisProUtils
                     break;
                 // Puedes agregar más casos según sea necesario
                 default:
-                    value = ""; // Valor predeterminado si no se encuentra el caso
+                    value = styleItemName; // Valor predeterminado si no se encuentra el caso
                     break;
             }
 
@@ -377,6 +390,7 @@ namespace CommonUtilities.ArcgisProUtils
         /// <param name="layerName">Nombre de la capa a simbologizar.</param>
         public static async Task ColorPolygonSimple(FeatureLayer featureLayer)//string layerName)
         {
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 string layerName = featureLayer.Name;
@@ -408,11 +422,12 @@ namespace CommonUtilities.ArcgisProUtils
                     MessageBox.Show($"Error al asignar simbología a la capa '{layerName}': {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         public static async Task ColorLineSimple(FeatureLayer featureLayer)//string layerName)
         {
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
             await QueuedTask.Run(() =>
             {
                 string layerName = featureLayer.Name;
@@ -444,7 +459,7 @@ namespace CommonUtilities.ArcgisProUtils
                     MessageBox.Show($"Error al asignar simbología a la capa '{layerName}': {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
 
         /// <summary>
@@ -522,6 +537,8 @@ namespace CommonUtilities.ArcgisProUtils
                     
         private static Dictionary<string, SymbolConfiguration> GetSymbolConfigurations()
         {
+            var symbologyUtils = new SymbologyUtils();
+
             Func<int, int, int, CIMRGBColor> GetRGBColor = (r, g, b) => new CIMRGBColor
             {
                 R = r,
@@ -984,6 +1001,12 @@ namespace CommonUtilities.ArcgisProUtils
                         LineWidth = 0.75
                     }
                 },
+                {
+                    "titular_catastro", symbologyUtils.symbolPolygonBlue
+                },
+                {
+                    "catastro_PMA", symbologyUtils.symbolPolygonRed
+                }
                 // Agrega más configuraciones según sea necesario...
 
                 // Configuraciones compartidas por múltiples capas

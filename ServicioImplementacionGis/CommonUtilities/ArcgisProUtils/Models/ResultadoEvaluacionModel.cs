@@ -77,6 +77,15 @@ namespace CommonUtilities.ArcgisProUtils.Models
         public string CodigoU { get; set; }
         public string TitConces { get; set; }
         public string Hectarea { get; set; }
+    }
+
+    public class ResultadoPetitorioPma
+    {
+        public string CodTitular { get; set; }
+        public string Titular { get; set; }
+        public string DemCal { get; set; }
+        public string DemGis { get; set; }
+        public string CodDm { get; set; }
 
     }
 }

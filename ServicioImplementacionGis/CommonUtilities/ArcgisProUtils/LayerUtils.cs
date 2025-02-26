@@ -148,11 +148,11 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        public static async Task RemoveLayersFromMapNameAsync(string nameMap, List<string> layersToRemove = null)
+        public static async Task RemoveLayersFromMapNameAsync(string nameMap, List<string> layersList = null, bool removeMatching = true)
         {
-            if (layersToRemove == null)
+            if (layersList == null)
             {
-                layersToRemove = new List<string>();
+                layersList = new List<string>();
             }
 
             await QueuedTask.Run(async() =>
@@ -161,7 +161,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                 var layers = targetMap.GetLayersAsFlattenedList();
 
-                if (layersToRemove.Count == 0)
+                if (layersList.Count == 0)
                 {
                     // Si la lista de capas está vacía, eliminar todas las capas
                     foreach (var layer in layers)
@@ -174,8 +174,12 @@ namespace CommonUtilities.ArcgisProUtils
                     // Eliminar solo las capas que están en la lista layersToRemove
                     foreach (var layer in layers)
                     {
-                        // Verificar si el nombre de la capa está en la lista
-                        if (layersToRemove.Contains(layer.Name, StringComparer.OrdinalIgnoreCase))
+                        //targetMap.RemoveLayer(layer);
+                        bool isInList = layersList.Contains(layer.Name, StringComparer.OrdinalIgnoreCase);
+
+                        // Si removeMatching es true → eliminamos las capas que coinciden con la lista.
+                        // Si removeMatching es false → eliminamos las capas que NO coincidan con la lista.
+                        if ((removeMatching && isInList) || (!removeMatching && !isInList))
                         {
                             targetMap.RemoveLayer(layer);
                         }
@@ -224,32 +228,39 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
-        // Método para cambiar el nombre de una capa por un nuevo nombre
-        public static async Task ChangeLayerNameAsync(string oldLayerName, string newLayerName)
+        /// <summary>
+        /// Cambia el nombre de una capa en el mapa activo y devuelve la capa modificada.
+        /// </summary>
+        /// <param name="oldLayerName">Nombre actual de la capa.</param>
+        /// <param name="newLayerName">Nuevo nombre que se asignará a la capa.</param>
+        /// <returns>El objeto <see cref="FeatureLayer"/> con el nuevo nombre, o <c>null</c> si la capa no fue encontrada.</returns>
+        public static async Task<FeatureLayer?> ChangeLayerNameAsync(string oldLayerName, string newLayerName)
         {
             // Ejecutamos el cambio de nombre dentro de un contexto de cola (para asegurarnos de que se ejecute en el hilo correcto)
-#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
-            await QueuedTask.Run(() =>
+            #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+            return await QueuedTask.Run(() =>
             {
                 // Obtener el mapa activo en ArcGIS Pro
-                Map map = MapView.Active.Map;
-
+                Map map = MapView.Active?.Map;
+                if (map == null) return null; // Si no hay un mapa activo, retornar null
                 // Buscar la capa con el nombre original (oldLayerName)
-                var layer = map.Layers.FirstOrDefault(l => l.Name == oldLayerName);
+                var layer = map.Layers.FirstOrDefault(l => l.Name == oldLayerName) as FeatureLayer;
 
                 // Si se encuentra la capa, cambiar el nombre
                 if (layer != null)
                 {
                     layer.SetName(newLayerName);
+                    return layer;
                 }
-                else
-                {
-                    // Si la capa no se encuentra, mostramos un mensaje de error (opcional)
-                    //System.Windows.MessageBox.Show($"Capa con nombre '{oldLayerName}' no encontrada.");
-                    return;
-                }
+                //else
+                //{
+                //    // Si la capa no se encuentra, mostramos un mensaje de error (opcional)
+                //    //System.Windows.MessageBox.Show($"Capa con nombre '{oldLayerName}' no encontrada.");
+                //    return;
+                //}
+                return null;
             });
-#pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
+            #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
         public static async Task ChangeLayerNameByFeatureLayerAsync(FeatureLayer fLayer ,string newName)
         {

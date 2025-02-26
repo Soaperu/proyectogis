@@ -86,6 +86,7 @@ namespace CommonUtilities
         public static string listaCatastroforestal { get; set; }
 
         public static ExtentModel currentExtentDM { get; set; }
+        public static DataTable currentTable { get; set; }
 
         //Contenedor de Capas Fijas
         public static string ContaninerFixedLayers = @"U:\\DATOS\\SHAPE\\WGS_84";
@@ -121,6 +122,8 @@ namespace CommonUtilities
         public static string styleMalla = "MALLA.stylx";
         public static string styleCForestal = "CATA_FORESTAL.stylx";
         public static string styleSituacionDM = "SITUACIONDM.stylx";
+        public static string styleProvinciaPMA = "provincia_PMA.stylx";
+
 
         //Lista de FeatureClass generales
         public static List<string> generalFeatureClass = new List<string>{ "Vías", "Drenaje", "Centro Poblado" };

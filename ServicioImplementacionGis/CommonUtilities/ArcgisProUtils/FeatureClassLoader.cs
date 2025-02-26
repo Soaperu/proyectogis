@@ -1679,7 +1679,7 @@ namespace CommonUtilities.ArcgisProUtils
                     return tema.GetFeatureClass();
                 });
                 // Definir la ruta de salida y el nombre del archivo
-                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
+                string outputFolder = GlobalVariables.pathFileTemp;
                 string outputPath = Path.Combine(outputFolder, outputLayerName + ".shp");
                 // Ejecutar la exportación dentro de un QueuedTask
                 //await QueuedTask.Run(() =>
