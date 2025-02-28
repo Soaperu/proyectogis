@@ -1,1 +1,57 @@
+name: SonarQube Analysis
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  sonarQube:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 7.0.x  # Ajusta según tu versión de .NET
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'  # Ajusta según tu versión
+
+      - name: Install SonarScanner for .NET
+        run: |
+          dotnet tool install --global dotnet-sonarscanner
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+
+      - name: Build C# project
+        run: |
+          dotnet restore
+          dotnet build --configuration Release
+
+      - name: Run SonarQube Analysis
+        run: |
+          dotnet-sonarscanner begin /k:"NOMBRE_DEL_PROYECTO" /d:sonar.host.url="https://<TU-NGROK>.ngrok-free.app" /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet build
+          dotnet-sonarscanner end /d:sonar.login="${{ secrets.SONAR_TOKEN }}"
+
+      - name: Check SonarQube Quality Gate
+        run: |
+          sleep 10  # Espera unos segundos para que SonarQube procese los resultados
+          STATUS=$(curl -s -u "${{ secrets.SONAR_TOKEN }}:" "https://<TU-NGROK>.ngrok-free.app/api/qualitygates/project_status?projectKey=NOMBRE_DEL_PROYECTO" | jq -r .projectStatus.status)
+          if [[ "$STATUS" != "OK" ]]; then
+            echo "❌ Quality Gate FAILED. Bloqueando la build."
+            exit 1
+          fi
+          echo "✅ Quality Gate PASSED."
 
