@@ -1,0 +1,170 @@
+﻿<Window x:Class="SigcatminProAddin.View.Toolbars.Evaluacion.UI.ResultadoEvaluacionWpf"
+        xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core"  
+        xmlns:dxe="http://schemas.devexpress.com/winfx/2008/xaml/editors" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SigcatminProAddin.View.Toolbars.Evaluacion.UI"
+        xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
+        xmlns:dxg="http://schemas.devexpress.com/winfx/2008/xaml/grid"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen" Background="#F3F3F3" ResizeMode="NoResize"
+        Title="ResultadoEvaluacionWpf" Height="420" Width="480" 
+        FontFamily="Roboto" FontSize="10" WindowStyle="None" Loaded="Window_Loaded">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid Margin="0,0,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" Background="#006DA0" Height="50" VerticalAlignment="Top"
+        x:Name="gridHeader" Margin="0,0,0,0" MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="140"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="SIGCATMIN" Foreground="White" FontSize="16" 
+        FontWeight="Bold" Margin="0,0,0,0" VerticalAlignment="Center"
+        HorizontalAlignment="Center"/>
+            <TextBlock Text="Sistema de Graficación de Catastro Minero" TextWrapping="Wrap"
+        Foreground="White" FontSize="12" Grid.Column="2" FontFamily="Roboto"
+        Margin="0,0,5,0" VerticalAlignment="Center" TextAlignment="Right"/>
+        </Grid>
+        <Grid Grid.Row="1" VerticalAlignment="Top" Margin="10,0,10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="80"/>
+                <RowDefinition Height="25"/>
+                <RowDefinition Height="120"/>
+                <RowDefinition Height="10"/>
+                <RowDefinition Height="20"/>
+            </Grid.RowDefinitions>
+            <Label x:Name="lblDatosDM" Grid.Row="0" Content="Datos del DM:" Foreground="#FF696969" Padding="0,0,0,3"
+       FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+            <Grid Grid.Row="1" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Padding="10,0,0,0">Código</Label>
+                <Label Grid.Row="0" Grid.Column="2" VerticalAlignment="Bottom" Padding="10,0,0,0">Nombre</Label>
+                <TextBox x:Name="TbxCodigo" Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" VerticalContentAlignment="Bottom"></TextBox>
+                <TextBox x:Name="TbxNombre" Grid.Row="0" Grid.Column="3" VerticalAlignment="Bottom" IsReadOnly="True" Height="20" Grid.ColumnSpan="3" VerticalContentAlignment="Bottom"></TextBox>
+            </Grid>
+            <Label x:Name="lblEvaluacion" Grid.Row="2" Content="Datos de Evaluación:" Foreground="#FF696969" Padding="0,0,0,3"
+       FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+            <TabControl x:Name="TcEvaluacion" Grid.Row="3" SelectionChanged="TcEvaluacion_SelectionChanged">
+                <TabItem Header="Prioritarios" Tag="PR"/>
+                <TabItem Header="Posterior" Tag="PO"/>
+                <TabItem Header="Simultáneo" Tag="SI"/>
+                <TabItem Header="Extinguido" Tag="EX"/>
+                <TabItem Header="Redenuncio" Tag="RD"/>
+            </TabControl>
+
+            <Grid Margin="0,0,0,0" VerticalAlignment="Stretch"
+            Grid.Column="0" Grid.Row="4" HorizontalAlignment="Stretch">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="11*"/>
+                    <ColumnDefinition Width="34*"/>
+                </Grid.ColumnDefinitions>
+                <dxg:GridControl FontSize="10" x:Name="DataGridEvaluacion" Grid.ColumnSpan="2" >
+                    <dxg:GridControl.Columns>
+                        <dxg:GridColumn Binding="{Binding Contador}" Header="N°" UnboundType="Integer" Width="30" />
+                        <dxg:GridColumn Header="Evaluación" Binding="{Binding Eval, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="60" >
+                            <dxg:GridColumn.EditSettings>
+                                <dxe:ComboBoxEditSettings ItemsSource="{Binding EvalOptions}" 
+                                              DisplayMember="Nombre" 
+                                              ValueMember="Valor" 
+                                              ImmediatePopup="True"
+                                              AllowNullInput="False" />
+                            </dxg:GridColumn.EditSettings>
+                        </dxg:GridColumn>
+                        <dxg:GridColumn Header="Estado" Binding="{Binding Estado}" Width="60"/>
+                        <dxg:GridColumn Header="Concesión" Binding="{Binding Concesion}" Width="160" />
+                        <dxg:GridColumn Header="Código" Binding="{Binding CodigoU}" Width="60" />
+                        <dxg:GridColumn Header="Eliminar" Width="60">
+                            <dxg:GridColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="🗑"
+                                        Background="White"
+                                        Foreground="Red"
+                                        Padding="5,2"
+                                        Tag="{Binding}"
+                                        Click="BtnEliminar_Click"/>     
+                                </DataTemplate>
+                            </dxg:GridColumn.CellTemplate>
+                        </dxg:GridColumn>
+                    </dxg:GridControl.Columns>
+                    <dxg:GridControl.View>
+                        <dxg:TableView  x:Name="DataGridEvaluacionTableView" ShowAutoFilterRow="False"
+                 AllowColumnFiltering="False"
+                 ShowGroupPanel="False" CellValueChanged="DataGridEvaluacionTableView_CellValueChanged" />
+                    </dxg:GridControl.View>
+                </dxg:GridControl>
+            </Grid>
+
+            <Label  Grid.Row="5" Content="Catastro No Minero" Foreground="#FF696969" Padding="0,0,0,3"
+       FontWeight="Bold" FontFamily="Roboto" FontSize="10" VerticalAlignment="Bottom" HorizontalAlignment="Stretch" />
+
+            <Grid Grid.Row="6" VerticalAlignment="Top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="25"/>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+
+                <Label Grid.ColumnSpan="3" Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Padding="5,0,0,0">Límites Fronterizos (Fuente IGN)</Label>
+                <TextBox x:Name="TbxFrontera" Grid.Column="3" Grid.Row="0" Grid.ColumnSpan="5" Margin="0,0,0,0" IsReadOnly="True" Height="20" VerticalContentAlignment="Bottom"/>
+
+                <Label Grid.ColumnSpan="4" Grid.Row="1" Grid.Column="0" VerticalAlignment="Bottom" Padding="5,0,0,0">Zona Reservada:</Label>
+                <Label Grid.ColumnSpan="4" Grid.Row="1" Grid.Column="4" VerticalAlignment="Bottom" Padding="10,0,0,0">Zona Urbana:</Label>
+                <Border Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" BorderThickness="1" Margin="0,0,10,0" BorderBrush="Gray">
+                    <TextBlock x:Name="TbxZonaReservada" TextWrapping="Wrap" Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="4" Padding="10,0,10,0"  VerticalAlignment="Top"/>
+                </Border>
+                <Border Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="4" BorderThickness="1" Margin="0,0,10,0" BorderBrush="Gray">
+                    <TextBlock x:Name="TbxZonaUrbana" TextWrapping="Wrap"  Grid.Column="4" Grid.Row="2" Grid.ColumnSpan="4" Padding="10,0,10,0"  VerticalAlignment="Top"/>
+                </Border>
+            </Grid>
+
+
+            <Grid Grid.Row="8" Margin="0,0,0,0" Grid.RowSpan="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button x:Name="btnGuardar" Margin="0,0,3,0" Grid.Column="0" Foreground="White" Background="#006DA0" Click="btnGuardar_Click" >Guardar Datos de Evaluación</Button>
+                <Button x:Name="btnCerrar" Margin="0,0,3,0" Grid.Column="1" Click="BtnCerrar_Click">Cerrar</Button>
+            </Grid>
+
+
+        </Grid>
+
+
+
+
+    </Grid>
+</Window>
+

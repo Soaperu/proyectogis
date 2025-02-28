@@ -1,0 +1,68 @@
+﻿<Window x:Class="SigcatminProAddin.View.Contenedor.MainContainer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SigcatminProAddin.View.Contenedor"
+        mc:Ignorable="d" WindowStartupLocation="CenterScreen"
+        xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions"
+        Title="Sigcatmin Pro" Height="532" Width="720" WindowStyle="None"
+        ResizeMode="NoResize" Background="#F3F3F3">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
+                <ResourceDictionary Source="TemplatesAndStylesContenedor.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid x:Name="gridMainContainer">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="472"/>
+            <RowDefinition Height="10"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="20"/>
+            <ColumnDefinition Width="680"/>
+            <ColumnDefinition Width="20"/>
+        </Grid.ColumnDefinitions>
+        <Grid Background="#006DA0" Height="50"
+              Grid.Column="0" Grid.ColumnSpan="4" x:Name="gridHeader"
+              MouseLeftButtonDown="gridHeader_MouseLeftButtonDown">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="410"/>
+                <ColumnDefinition Width="20"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="SIGCATMIN" Foreground="White" FontSize="24" 
+                        FontWeight="Bold" Margin="0,0,0,0" VerticalAlignment="Center"
+                        HorizontalAlignment="Center" FontFamily="Roboto" Grid.Column="1"/>
+            <TextBlock Text="Sistema de Graficación de Catastro Minero" TextWrapping="Wrap"
+                        Foreground="White" FontSize="9" Grid.Column="2" 
+                        Margin="0,0,0,0" VerticalAlignment="Center" FontFamily="Roboto"/>
+            <Image Grid.Column="3" Width="150" HorizontalAlignment="Right" Margin="0,0,8,0"
+                Source="/SigcatminProAddin;component/Images/Login/logoINGEMMET_white.png" />
+            <!--<Canvas Grid.Column="4" x:Name="btnCloseContainer" HorizontalAlignment="Stretch">-->
+                <Button Width="15" Height="15" VerticalAlignment="Top"
+                        HorizontalAlignment="Right" Click="btnCloseContainer_Click"
+                        HorizontalContentAlignment="Center" Padding="0,0,0,0" 
+                        BorderBrush="#006DA0" Cursor="Hand"
+                        Grid.Column="4" x:Name="btnCloseContainer"
+                        Style="{DynamicResource closeBtnStyle}">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/SigcatminProAddin;component/Images/Login/close16.png"
+                        Stretch="Fill" />
+                    </Button.Background>
+                </Button>
+            <!--</Canvas>-->
+        </Grid>
+        <Frame x:Name="frameContainer" Grid.Column="1" Grid.Row="1" VerticalAlignment="Stretch"
+               HorizontalAlignment="Stretch" VerticalContentAlignment="Center"
+               NavigationUIVisibility="Hidden" Navigating="frameContainer_Navigating" Width="680" HorizontalContentAlignment="Stretch" >
+        </Frame>
+    </Grid>
+</Window>

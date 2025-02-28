@@ -1,0 +1,64 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:ribbon="http://schemas.actiprosoftware.com/winfx/xaml/ribbon"
+                    xmlns:extensions="clr-namespace:ArcGIS.Desktop.Extensions;assembly=ArcGIS.Desktop.Extensions">
+    <ResourceDictionary.MergedDictionaries>
+        <extensions:DesignOnlyResourceDictionary Source="pack://application:,,,/ArcGIS.Desktop.Framework;component\Themes\Default.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+    <DataTemplate x:Key="EvaluacionGalleryItemTemplate">
+        <StackPanel Orientation="Vertical" Margin="3,0,3,0">
+            <Grid x:Name="grid" SnapsToDevicePixels="True" Width="68" Height="68" UseLayoutRounding="True" Margin="0"
+              ribbon:ScreenTipService.ScreenTipHeader="{Binding PlugInWrapper.TooltipHeading}"
+              ribbon:ScreenTipService.ScreenTipDescription="{Binding PlugInWrapper.Tooltip}">
+                <Grid Margin="0" VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="36" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <Image x:Name="Image" Margin="3,0,3,0" Width="32" 
+                       Height="32" HorizontalAlignment="Center" 
+                       VerticalAlignment="Top" Stretch="None" 
+                       Source="{Binding Icon32}" SnapsToDevicePixels="True">
+                        <Image.Resources>
+                            <Style TargetType="{x:Type Image}">
+                                <Setter Property="Opacity" Value="1.0"/>
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PlugInWrapper.Enabled}" Value="False">
+                                        <Setter Property="Opacity" Value="0.4"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Resources>
+                    </Image>
+
+                    <TextBlock Grid.Row="1" Text="{Binding Path=PlugInWrapper.Caption}"
+                   MaxWidth="68" Margin="1,0,1,0"
+                   HorizontalAlignment="Center" VerticalAlignment="Top" TextWrapping="Wrap" TextAlignment="Center" LineHeight="12" LineStackingStrategy="BlockLineHeight">
+                    </TextBlock>
+                </Grid>
+            </Grid>
+        </StackPanel>
+    </DataTemplate>
+    
+    <Style x:Key="RadioButtonAsCheckBox" TargetType="{x:Type RadioButton}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type RadioButton}">
+                    <Grid>
+                        <CheckBox
+                            IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, 
+                                        Path=IsChecked, Mode=TwoWay}"
+                            IsHitTestVisible="False" Content="{TemplateBinding Content}" />
+                        <CheckBox
+                            IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, 
+                                        Path=IsChecked, Mode=TwoWay}"   
+                            Content="{TemplateBinding Content}" Opacity="0"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
+    
+    

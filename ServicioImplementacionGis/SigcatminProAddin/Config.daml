@@ -1,0 +1,397 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ArcGIS defaultAssembly="SigcatminProAddin.dll" defaultNamespace="SigcatminProAddin" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <AddInInfo id="{36341280-dadf-4d50-9827-a7f25d2b9e5a}" version="1.0" desktopVersion="3.3.52636" product="ArcGISPro">
+    <Name>SigcatminProAddin</Name>
+    <Description>SigcatminProAddin description</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>AVANZA SOLUCIONES [Julio Cruz, Jorge Yupanqui]</Author>
+    <Company>Acme</Company>
+    <Date>29/10/2024 13:13:22</Date>
+    <Subject>Framework</Subject>
+    <!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+  <categories>
+    <!--Step 1-->
+    <!--Create a new category to hold new commands in a a Gallery-->
+    <insertCategory id="InformeTecnicoTools"></insertCategory>
+    <insertCategory id="BDGeocatminTools"></insertCategory>
+    <insertCategory id="ModuloUEAsTools"></insertCategory>
+    <insertCategory id="EvaluacionTools"></insertCategory>
+  </categories>
+  <modules>
+    <insertModule id="SigcatminProAddin_Module" className="Module1" autoLoad="true" caption="Module1">
+      <!-- uncomment to have the control hosted on a separate tab-->
+      <tabs>
+        <tab id="SigcatminProAddin_Tab1" caption="SIGCATMIN" keytip="t0">
+          <group refID="SigcatminProAddin_Group1" />
+          <!--Tool BDGeocatmin-->
+          <group refID="SigcatminProAddin_Group3" />
+          <!--Tool Evaluacion-->
+          <group refID="SigcatminProAddin_Group5" />
+          <!--Tool Modulo UEAs-->
+          <group refID="SigcatminProAddin_Group4" />
+          <!--Tool Informes Tecnicos-->
+          <group refID="SigcatminProAddin_Group2" />
+        </tab>
+      </tabs>
+      <groups>
+        <!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+        <group id="SigcatminProAddin_Group1" caption="Sigcatmin" appearsOnAddInTab="false" keytip="gr1">
+          <!-- host controls within groups -->
+          <button refID="SigcatminProAddin_View_Botones_LoginButton" size="large" />
+          <subgroup refID="SigcatminProAddin_Subgroup1" />
+          <subgroup refID="SigcatminProAddin_Subgroup2" />
+          <!--<button refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminButton" size="large" />
+          <gallery refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" inline="false" size="large" />-->
+          <!--<button refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsButton" size="large" />
+          <gallery refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_Gallery1" inline="false" size="large" />
+          <gallery refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsGallery" inline="false" size="large" />-->
+          <!--<button refID="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionButton" size="large" />
+          <gallery refID="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" inline="false" size="large" />-->
+          <!--<comboBox refID="SigcatminProAddin_View_Modulos_SelectionModulos" />-->
+        </group>
+        <group id="SigcatminProAddin_Group2" caption="Informes Técnicos" appearsOnAddInTab="false" keytip="gr2">
+          <gallery refID="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" inline="true" size="large" />
+        </group>
+        <group id="SigcatminProAddin_Group3" caption="BDGeocatmin" appearsOnAddInTab="false" keytip="gr3">
+          <gallery refID="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" inline="true" size="large" />
+        </group>
+        <group id="SigcatminProAddin_Group4" caption="Modulo UEAs" appearsOnAddInTab="false" keytip="gr4">
+          <gallery refID="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsGallery" inline="true" size="large" />
+        </group>
+        <group id="SigcatminProAddin_Group5" caption="Evaluacion" appearsOnAddInTab="false" keytip="gr5">
+          <gallery refID="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" inline="true" size="large" />
+        </group>
+      </groups>
+      <subgroups>
+        <subgroup id="SigcatminProAddin_Subgroup1" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <button refID="SigcatminProAddin_View_Botones_LogoutButton" size="middle" />
+          <button refID="SigcatminProAddin_View_Botones_GraficarExcelBtn" size="middle" />
+          <button refID="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" size="middle" />
+        </subgroup>
+        <subgroup id="SigcatminProAddin_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <comboBox refID="SigcatminProAddin_View_Modulos_SelectorCategorias" />
+          <comboBox refID="SigcatminProAddin_View_Modulos_SelectorModulos" />
+          <button refID="SigcatminProAddin_View_Modulos_ConfirmationModule" size="large" />
+        </subgroup>
+      </subgroups>
+      <controls>
+        <!-- Controles Principales -->
+        <button id="SigcatminProAddin_View_Botones_LoginButton" caption="Iniciar Sesión" className="SigcatminProAddin.View.Botones.LoginButton" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png" keytip="a1">
+          <tooltip heading="Tooltip Heading">Iniciar Sesión<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddin_View_Botones_LogoutButton" condition="Logged_condition" caption="Cerrar Sesión" className="SigcatminProAddin.View.Botones.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a2">
+          <tooltip heading="Tooltip Heading">Cerrar Sesión<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddin_View_Botones_GraficarExcelBtn" condition="Logged_condition" caption="Graficar Excel" className="SigcatminProAddin.View.Botones.GraficarExcelBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a3">
+          <tooltip heading="Tooltip Heading">Graficar Excel<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddin_View_Botones_GenerarPlanosMasivosBtn" condition="Logged_condition" caption="Planos Masivos" className="SigcatminProAddin.View.Botones.GenerarPlanosMasivosBtn" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a4">
+          <tooltip heading="Tooltip Heading">Generar Planos Masivos<disabledText /></tooltip>
+        </button>
+        <!--Controles Informes Técnicos-->
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_ValidarResultado" caption="Validar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.ValidarResultado" loadOnClick="true" smallImage="Images\Contenido32.png" largeImage="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-32x32.png" keytip="i1">
+          <tooltip heading="Tooltip Heading">Validar resultado<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_AreaSuperpuesta" caption="Superpuesta" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.AreaSuperpuesta" loadOnClick="true" smallImage="Images\Contenido32nuevo.png" largeImage="Images\Toolbars\InformesTecnicos\02-area-superpuesta-bd-32x32.png" keytip="i2">
+          <tooltip heading="Tooltip Heading">Área superpuesta<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_SuperposicionAreaRestringida" caption="Superposición A.R." categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.SuperposicionAreaRestringida" loadOnClick="true" smallImage="pack://application:,,,/SigcatminProAddin;component/Images/Recurso.png" largeImage="Images\Toolbars\InformesTecnicos\05-superposicion-a-areas-restringidas-32x32.png" keytip="i3">
+          <tooltip heading="Tooltip Heading">Superposición área restringida<disabledText /></tooltip>
+          <content version="1.0" group="Group B" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GuardarInformeFA" caption="Guardar" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GuardarInformeFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="Images\Toolbars\InformesTecnicos\06-guardar-informe-32x32.png" keytip="i4">
+          <tooltip heading="Tooltip Heading">Guardar informe F.A.<disabledText /></tooltip>
+          <content version="1.0" group="Group B" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_InformeTecnico_GenerarHistoricoFA" caption="Generar Histórico" categoryRefID="InformeTecnicoTools" className="SigcatminProAddin.View.Toolbars.InformeTecnico.GenerarHistoricoFA" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="Images\Toolbars\InformesTecnicos\08-generar-historico-32x32.png" keytip="i5">
+          <tooltip heading="Tooltip Heading">Generar histórico F.A.<disabledText /></tooltip>
+          <content version="1.0" group="Group B" />
+        </button>
+        <!--Controles BDGeocatmin-->
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ReporteDerechosMineros" caption="Reporte D.M." categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ReporteDerechosMineros" loadOnClick="true" keytip="BDG-1" smallImage="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-32x32.png">
+          <tooltip heading="Reporte DM">Reporte De Derechos Mineros<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ListarCoordenadasTool" caption="Listar Coord..." categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ListarCoordenadasTool" loadOnClick="true" keytip="BDG-2" smallImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Listar Coordenadas">
+            Listar Coordenadas<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </tool>
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_ConsultaDmTool" caption="Consulta DM" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.ConsultaDmTool" loadOnClick="true" keytip="BDG-3" smallImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Tooltip Heading">
+            Consulta DM<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </tool>
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegionTool" caption="Porcentaje Región" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegionTool" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Porcentaje Región">
+            Calcular Porcentaje Región<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </tool>
+        <!--<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_CalculaPorcentajeRegion" caption="Calcula Porcentaje Region" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.CalculaPorcentajeRegion" loadOnClick="true" keytip="BDG-4" smallImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png">
+          <tooltip heading="Tooltip Heading">Porcentaje Región<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>-->
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_LimitesRegionales" caption="Límites Regionales" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.LimitesRegionales" loadOnClick="true" keytip="BDG-5" smallImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png">
+          <tooltip heading="Tooltip Heading">
+				  Límites Regionales<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoAreasSuperpuestas" caption="Área Superpuesta" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoAreasSuperpuestas" loadOnClick="true" keytip="BDG-6" smallImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png">
+          <tooltip heading="Plano de Áreas Superpuestas">
+				  Plano de Áreas Superpuestas<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoEvaluacion" caption="Plano Evaluación" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoEvaluacion" loadOnClick="true" keytip="BDG-7" smallImage="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-32x32.png">
+          <tooltip heading="Plano de Evaluación">
+				  Plano de Evaluación<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoDemarcacion" caption="Plano Demarcación" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoDemarcacion" loadOnClick="true" keytip="BDG-8" smallImage="Images\Toolbars\BDGeocatmin\08-plano-demarca-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\08-plano-demarca-32x32.png">
+          <tooltip heading="Plano de Demarcación">
+				  Plano de Demarcación<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoCarta" caption="Plano de Carta" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoCarta" loadOnClick="true" keytip="BDG-9" smallImage="Images\Toolbars\BDGeocatmin\09-plano-carta-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\09-plano-carta-32x32.png">
+          <tooltip heading="Plano de Carta">
+				  Plano de Carta<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_DibujarPoligono" caption="Dibujar Polígono" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.DibujarPoligono" loadOnClick="true" keytip="BDG-10" smallImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png">
+          <tooltip heading="Tooltip Heading">
+				  Dibujar Polígono<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_DmGoogleEarth" caption="DM en GoogleEarth" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.DmGoogleEarth" loadOnClick="true" keytip="BDG-11" smallImage="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-32x32.png">
+          <tooltip heading="Tooltip Heading">
+				  DM en GoogleEarth<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_BorrarTemas" caption="Borrar Temas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.BorrarTemas" loadOnClick="true" keytip="BDG-12" smallImage="Images\Toolbars\BDGeocatmin\12-borrar-temas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\12-borrar-temas-32x32.png">
+          <tooltip heading="Tooltip Heading">
+				  Borrar Temas<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_VerCapas" caption="Ver Capas" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.VerCapas" loadOnClick="true" keytip="BDG-13" smallImage="Images\Toolbars\BDGeocatmin\13-ver-capas-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\13-ver-capas-32x32.png">
+          <tooltip heading="Tooltip Heading">
+				  Ver Capas<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_GenerarNumeroResolucionDm" caption="Resolución DM" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.GenerarNumeroResolucionDm" loadOnClick="true" keytip="BDG-14" smallImage="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-32x32.png">
+          <tooltip heading="Resolución DM">
+				  Generar Número de Resolución de DM<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <tool id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotularVerticesTool" caption="Rotular Vértices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotularVerticesTool" loadOnClick="true" keytip="BDG-15" smallImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" condition="esri_mapping_mapPane">
+          <tooltip heading="Rotular Vértices">
+            Rotular Vértices<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </tool>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RetirarVertices" caption="Retirar Vértices" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RetirarVertices" loadOnClick="true" keytip="BDG-16" smallImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png">
+          <tooltip heading="Tooltip Heading">
+				  Retirar Vértices<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_GenerarDemarcacionMultiple" caption="Demarcación Multiple" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.GenerarDemarcacionMultiple" loadOnClick="true" keytip="BDG-17" smallImage="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png">
+          <tooltip heading="Demarcación Múltiple">
+				 Generar Demarcación Múltiple<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_RotulaTextoDemarcacion" caption="Rotula Demarcación" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.RotulaTextoDemarcacion" loadOnClick="true" keytip="BDG-18" smallImage="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png">
+          <tooltip heading="Rotula Demarcación">
+				  Rotula Texto Demarcación<disabledText /></tooltip>
+          <content version="1.0" group="Group A" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanoSimultaneidad" caption="Plano Simulta..." categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanoSimultaneidad" loadOnClick="true" keytip="BDG-20" smallImage="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-32x32.png">
+          <tooltip heading="Plano Simultaneidad">
+				  Plano de Simultaneidad<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosEvaluacionReduccion" caption="Evaluación y Reduccion" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosEvaluacionReduccion" loadOnClick="true" keytip="BDG-20" smallImage="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-32x32.png">
+          <tooltip heading="Evaluación y Reducción">
+				  Planos de Evaluación y Reducción<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+		<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_PlanosDiversosFormatos" caption="Diversos Formatos" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.PlanosDiversosFormatos" loadOnClick="true" keytip="BDG-26" smallImage="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-32x32.png">
+			<tooltip heading="Diversos Formatos">
+				Planos de Diversos Formatos<disabledText />
+			</tooltip>
+			<content version="1.0" group="Planos" />
+		</button>
+		<button id="SigcatminProAddin_View_Toolbars_BDGeocatmin_SituacionDM" caption="Situación DM" categoryRefID="BDGeocatminTools" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.SituacionDM" loadOnClick="true" keytip="BDG-27" smallImage="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-16x16.png" largeImage="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-32x32.png">
+			<tooltip heading="Situación DM">
+				SituacionDM<disabledText />
+			</tooltip>
+			<content version="1.0" group="Group A" />
+		</button>
+		  
+        <!--Controles Modulo UEAs-->
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegranteUEA" caption="Reporte de Integrante de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegranteUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\01-reporte-integrante-uea-32x32.png" keytip="UEA-1">
+          <tooltip heading="Tooltip Heading">Reporte de Integrante de UEA<disabledText /></tooltip>
+          <content version="1.0" group="Reportes" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmIncluidosUEA" caption="Reporte DM Incluidos UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmIncluidosUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\02-reporte-dm-incluidos-uea-32x32.png" keytip="UEA-2">
+          <tooltip heading="Tooltip Heading">Reporte DM Incluidos UEA<disabledText /></tooltip>
+          <content version="1.0" group="Reportes" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmExcluidosUEA" caption="Reporte DM Excluidos UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmExcluidosUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\03-reporte-dm-excluidos-uea-32x32.png" keytip="UEA-3">
+          <tooltip heading="Tooltip Heading">Reporte DM Excluidos UEA<disabledText /></tooltip>
+          <content version="1.0" group="Reportes" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteDmCirculo" caption="Reporte DM Circulo" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteDmCirculo" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\04-reporte-dm-en-circulo-32x32.png" keytip="UEA-4">
+          <tooltip heading="Tooltip Heading">
+				  Reporte DM Círculo<disabledText /></tooltip>
+          <content version="1.0" group="Reportes" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_GraficasDmsSegunRadio" caption="Graficas DM Segun Radio Circunferencia" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.GraficasDmsSegunRadio" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\05-graficas-dm-segun-radio-de-circulo-32x32.png" keytip="UEA-5">
+          <tooltip heading="Tooltip Heading">
+				  Graficar DM Según Radio Circunferencia<disabledText /></tooltip>
+          <content version="1.0" group="Graficas" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegrantesUEA" caption="Plano Integrantes de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegrantesUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\06-plano-integrantes-de-uea-32x32.png" keytip="UEA-6">
+          <tooltip heading="Tooltip Heading">
+				  Plano Integrantes de UEA<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoDmInclusionExclusionUEA" caption="Plano DM Inclusion/Exclusion de UEAs" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoDmInclusionExclusionUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\07-plano-dm-a-incluirse-en-uea-32x32.png" keytip="UEA-7">
+          <tooltip heading="Tooltip Heading">
+				  Plano DM Inclusion/Exclusion de UEAs<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoDmExcluirseUEA" caption="Plano DM a Excluirse de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoDmExcluirseUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\08-plano-dm-a-excluirse-en-uea-32x32.png" keytip="UEA-8">
+          <tooltip heading="Tooltip Heading">
+				  Plano DM a Excluirse de UEA<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoAnalisisUEA" caption="Plano de Analisis de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoAnalisisUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\09-plano-analisis-de-uea-32x32.png" keytip="UEA-9">
+          <tooltip heading="Tooltip Heading">
+				  Plano de Análisis de UEA<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_PlanoIntegradoUEA" caption="Plano Integrado de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.PlanoIntegradoUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\10-plano-integrado-de-uea-32x32.png" keytip="UEA-10">
+          <tooltip heading="Tooltip Heading">
+				  Plano Integrado de UEA<disabledText /></tooltip>
+          <content version="1.0" group="Planos" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ReporteIntegradoUEA" caption="Reporte Integrado de UEA" categoryRefID="ModuloUEAsTools" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ReporteIntegradoUEA" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-32x32.png" keytip="UEA-11">
+          <tooltip heading="Tooltip Heading">
+				  Reporte Integrado de UEA<disabledText /></tooltip>
+          <content version="1.0" group="Reportes" />
+        </button>
+        <!--Controles Evaluacion-->
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerTodos" caption="Todos (AN, PO, SI, ETC)" categoryRefID="EvaluacionTools" keytip="EV-1" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerTodos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\01-ver-todos-32x32.png">
+          <tooltip heading=" Todos (AN, PO, SI, ETC)">Ver Todos (AN, PO, SI, ETC)<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntPostColin" caption="Ant., Post., Colin" categoryRefID="EvaluacionTools" keytip="EV-2" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntPostColin" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-32x32.png">
+          <tooltip heading="Ver DM Ant., Post., Colin">Ver DM Ant., Post., Colin<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntPost" caption="Ant. y Post." categoryRefID="EvaluacionTools" keytip="EV-3" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntPost" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\03-ver-ant-post-32x32.png">
+          <tooltip heading="Ver DM Ant. y Post">Ver DM Ant. y Post<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_VerAnteriores" caption="Anteriores" categoryRefID="EvaluacionTools" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAnteriores" keytip="EV-4" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\04-ver-anteriores-32x32.png">
+          <tooltip heading="Ver Anteriores">Ver Anteriores<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerPosteriores" caption="Posteriores" categoryRefID="EvaluacionTools" keytip="EV-5" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerPosteriores" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\05-ver-posteriores-32x32.png">
+          <tooltip heading="Ver DM Posteriores">Ver DM Posteriores<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_CargarCapasIntegrales" caption="Cargar Capas Integrales" categoryRefID="EvaluacionTools" keytip="EV-6" className="SigcatminProAddin.View.Toolbars.Evaluacion.CargarCapasIntegrales" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\06-cargar-capas-integrales-32x32.png">
+          <tooltip heading="Cargar Capas Integrales">Cargar Capas Integrales<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerSimultaneos" caption="Simultáneos" categoryRefID="EvaluacionTools" keytip="EV-7" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerSimultaneos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\07-ver-simultaneos-32x32.png">
+          <tooltip heading="Ver DM Simultáneos">Ver DM Simultáneos<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerExtinguidos" caption="Extinguidos" categoryRefID="EvaluacionTools" keytip="EV-8" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerExtinguidos" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\08-ver-extinguidos-32x32.png">
+          <tooltip heading="Ver DM Extinguidos">Ver DM Extinguidos<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerAntecesorRD" caption="Antecesor RD" categoryRefID="EvaluacionTools" keytip="EV-9" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerAntecesorRD" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\09-ver-antecesor-rd-32x32.png">
+          <tooltip heading="Ver DM Antecesor RD">Ver DM Antecesor RD<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerColindantes" caption="Colindantes" categoryRefID="EvaluacionTools" keytip="EV-10" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerColindantes" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\10-ver-colindantes-32x32.png">
+          <tooltip heading="Ver DM Colindantes">Ver DM Colindantes<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerEvaluado" caption="Ver Evaluado" categoryRefID="EvaluacionTools" keytip="EV-11" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerEvaluado" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\11-ver-evaluado-32x32.png">
+          <tooltip heading="Ver DM Evaluado">Ver DM Evaluado<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GenerarResultadosEvaluacion" caption="Resultados Evaluación" categoryRefID="EvaluacionTools" keytip="EV-12" className="SigcatminProAddin.View.Toolbars.Evaluacion.GenerarResultadosEvaluacion" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\12-generar-resultados-de-evaluacion-32x32.png">
+          <tooltip heading="Generar Resultados Evaluación">Generar Resultados Evaluación<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_CalculoAreaDisponible" caption="Área Disponible" categoryRefID="EvaluacionTools" keytip="EV-13" className="SigcatminProAddin.View.Toolbars.Evaluacion.CalculoAreaDisponible" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\13-calculo-area-disponible-32x32.png">
+          <tooltip heading="Cálculo de Área Disponible">Cálculo de Área Disponible<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_ObservacionesCartaIGN" caption="Observaciones Carta IGN" categoryRefID="EvaluacionTools" keytip="EV-14" className="SigcatminProAddin.View.Toolbars.Evaluacion.ObservacionesCartaIGN" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\14-observaciones-carta-ign-32x32.png">
+          <tooltip heading="Observaciones de Carta IGN">Observaciones de Carta IGN<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_VerCapas" caption="Ver Capas" categoryRefID="EvaluacionTools" keytip="EV-15" className="SigcatminProAddin.View.Toolbars.Evaluacion.VerCapas" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\15-ver-capas-32x32.png">
+          <tooltip heading="Ver Capas">Ver Capas<disabledText /></tooltip>
+          <content version="1.0" group="Visualización" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GenerarMallaCuadriculas" caption="Malla Cuadrículas" categoryRefID="EvaluacionTools" keytip="EV-16" className="SigcatminProAddin.View.Toolbars.Evaluacion.GenerarMallaCuadriculas" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\16-generar-malla-cuadriculas-32x32.png">
+          <tooltip heading="Generar Malla de Cuadrículas">Generar Malla de Cuadrículas<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_PlanoCuadriculas" caption="Plano de Cuadriculas" categoryRefID="EvaluacionTools" keytip="EV-17" className="SigcatminProAddin.View.Toolbars.Evaluacion.PlanoCuadriculas" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\17-plano-cuadriculas-32x32.png">
+          <tooltip heading="Plano de Cuadrículas">Plano de Cuadrículas<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_GraficaDesdeExcel" caption="Grafica Desde Excel" categoryRefID="EvaluacionTools" keytip="EV-18" className="SigcatminProAddin.View.Toolbars.Evaluacion.GraficaDesdeExcel" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="Images\Toolbars\Evaluacion\18-grafica-desde-excel-32x32.png">
+          <tooltip heading="Grafica desde Excel">Grafica desde Excel<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <button id="SigcatminProAddin_View_Toolbars_Evaluacion_ConsultaAreaDisponible" caption="Consulta Área Disponible" categoryRefID="EvaluacionTools" keytip="EV-19" className="SigcatminProAddin.View.Toolbars.Evaluacion.ConsultaAreaDisponible" loadOnClick="true" smallImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue16.png" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonBlue32.png">
+          <tooltip heading="Consulta Área Disponible">Consulta Área Disponible<disabledText /></tooltip>
+          <content version="1.0" group="Otros" />
+        </button>
+        <!--Controles Selector de Modulos-->
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectorCategorias" condition="Logged_condition" caption="Tipos" className="SigcatminProAddin.View.Modulos.SelectorCategorias" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+          <tooltip heading="Tipo">Seleccione el tipo de Módulo<disabledText /></tooltip>
+        </comboBox>
+        <comboBox id="SigcatminProAddin_View_Modulos_SelectorModulos" rows="10" condition="Logged_condition" caption="Módulos" className="SigcatminProAddin.View.Modulos.SelectorModulos" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+          <tooltip heading="Modulos">Seleccione el Módulo<disabledText /></tooltip>
+        </comboBox>
+        <button id="SigcatminProAddin_View_Modulos_ConfirmationModule" condition="Logged_condition" caption=" Confirmar Módulo " className="SigcatminProAddin.View.Modulos.ConfirmationModule" extendedCaption="Extended Caption" keytip="ConfirmarModule">
+          <tooltip heading="Confirmar">Confirmar Módulo<disabledText /></tooltip>
+        </button>
+      </controls>
+      <galleries>
+        <gallery id="SigcatminProAddin_View_Toolbars_InformeTecnico_InformeTecnicoGallery" condition="Logged_condition" showGroup="true" caption="InformeTecnicoGallery" className="SigcatminProAddin.View.Toolbars.InformeTecnico.InformeTecnicoGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/InformeTecnico/InformeTecnicoGalleryTemplate.xaml" templateID="LargeGalleryItemTemplate" resizable="true" largeImage="GenericButtonOrange32" keytip="g1">
+          <tooltip heading="Tooltip Heading">Informe Técnico ToolBar<disabledText /></tooltip>
+        </gallery>
+        <gallery id="SigcatminProAddin_View_Toolbars_BDGeocatmin_BDGeocatminGallery" condition="Logged_condition" showGroup="true" caption="BDGeocatminGallery" className="SigcatminProAddin.View.Toolbars.BDGeocatmin.BDGeocatminGallery" itemsInRow="4" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/BDGeocatmin/BDGeocatminGalleryTemplate.xaml" templateID="BDGeocatminGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g2">
+          <tooltip heading="Tooltip Heading">BDGeocatmin ToolBar<disabledText /></tooltip>
+        </gallery>
+        <gallery id="SigcatminProAddin_View_Toolbars_ModuloUEAs_ModuloUEAsGallery" condition="Logged_condition" showGroup="true" caption="ModuloUEAsGallery" className="SigcatminProAddin.View.Toolbars.ModuloUEAs.ModuloUEAsGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/ModuloUEAs/ModuloUEAsGalleryTemplate.xaml" templateID="ModuloUEAsGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g3">
+          <tooltip heading="Tooltip Heading">Modulo UEAs ToolBar<disabledText /></tooltip>
+        </gallery>
+        <gallery id="SigcatminProAddin_View_Toolbars_Evaluacion_EvaluacionGallery" condition="Logged_condition" showGroup="true" caption="EvaluacionGallery" className="SigcatminProAddin.View.Toolbars.Evaluacion.EvaluacionGallery" itemsInRow="3" dataTemplateFile="pack://application:,,,/SigcatminProAddin;component/View/Toolbars/Evaluacion/EvaluacionGalleryTemplate.xaml" templateID="EvaluacionGalleryItemTemplate" resizable="true" largeImage="pack://application:,,,/ArcGIS.Desktop.Resources;component/Images/GenericButtonOrange32.png" keytip="g4">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </gallery>
+      </galleries>
+    </insertModule>
+  </modules>
+  <conditions>
+    <insertCondition id="Logged_condition" caption="Example state">
+      <state id="isLoggedIn"></state>
+    </insertCondition>
+    <insertCondition id="InformeTecnico_condition" caption="Informe técnico Condition">
+      <state id="isDMgraficado"></state>
+    </insertCondition>
+  </conditions>
+</ArcGIS>

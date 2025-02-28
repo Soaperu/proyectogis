@@ -1,0 +1,469 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <NoWarn>CA1416</NoWarn>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Scripts\aprx\**" />
+    <Compile Remove="Scripts\sde\**" />
+    <EmbeddedResource Remove="Scripts\aprx\**" />
+    <EmbeddedResource Remove="Scripts\sde\**" />
+    <None Remove="Scripts\aprx\**" />
+    <None Remove="Scripts\sde\**" />
+    <Page Remove="Scripts\aprx\**" />
+    <Page Remove="Scripts\sde\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="View\Modulos\ConLimiteInteres.xaml.cs" />
+    <Compile Remove="View\Modulos\ConsultaSimulaPetitorio.xaml.cs" />
+    <Compile Remove="View\Modulos\ConsultaVariasCartasNac.xaml.cs" />
+    <Compile Remove="View\Modulos\Prueba.xaml.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Remove="Config.daml" />
+    <None Remove="Images\EvaluacionDM\mapa100.png" />
+    <None Remove="Images\EvaluacionDM\usuario32.png" />
+    <None Remove="Images\EvaluacionDM\usuario32_gris.png" />
+    <None Remove="Images\Login\candado16.png" />
+    <None Remove="Images\Login\close16.png" />
+    <None Remove="Images\Login\closeOrange16.png" />
+    <None Remove="Images\Login\logoINGEMMET.png" />
+    <None Remove="Images\Login\logoINGEMMET_white.png" />
+    <None Remove="Images\Login\usuario16.png" />
+    <None Remove="Images\Login\visible16_blue.png" />
+    <None Remove="Images\Login\visible16_white.png" />
+    <None Remove="Images\Login\warningblue32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\08-plano-demarca-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\08-plano-demarca-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\09-plano-carta-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\09-plano-carta-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\12-borrar-temas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\12-borrar-temas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\13-ver-capas-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\13-ver-capas-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-16x16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-32x32.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\plano1.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\plano2.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\planoX16.png" />
+    <None Remove="Images\Toolbars\BDGeocatmin\prueba32.svg" />
+    <None Remove="Images\Toolbars\Evaluacion\01-ver-todos-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\01-ver-todos-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\03-ver-ant-post-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\03-ver-ant-post-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\04-ver-anteriores-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\04-ver-anteriores-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\05-ver-posteriores-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\05-ver-posteriores-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\06-cargar-capas-integrales-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\06-cargar-capas-integrales-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\07-ver-simultaneos-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\07-ver-simultaneos-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\08-ver-extinguidos-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\08-ver-extinguidos-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\09-ver-antecesor-rd-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\09-ver-antecesor-rd-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\10-ver-colindantes-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\10-ver-colindantes-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\11-ver-evaluado-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\11-ver-evaluado-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\12-generar-resultados-de-evaluacion-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\12-generar-resultados-de-evaluacion-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\13-calculo-area-disponible-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\13-calculo-area-disponible-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\14-observaciones-carta-ign-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\14-observaciones-carta-ign-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\15-ver-capas-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\15-ver-capas-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\16-generar-malla-cuadriculas-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\16-generar-malla-cuadriculas-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\17-plano-cuadriculas-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\17-plano-cuadriculas-32x32.png" />
+    <None Remove="Images\Toolbars\Evaluacion\18-grafica-desde-excel-16x16.png" />
+    <None Remove="Images\Toolbars\Evaluacion\18-grafica-desde-excel-32x32.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-16x16.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-32x32.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\02-area-superpuesta-bd-16x16.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\02-area-superpuesta-bd-32x32.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\05-superposicion-a-areas-restringidas-16x16.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\05-superposicion-a-areas-restringidas-32x32.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\06-guardar-informe-16x16.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\06-guardar-informe-32x32.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\08-generar-historico-16x16.png" />
+    <None Remove="Images\Toolbars\InformesTecnicos\08-generar-historico-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\01-reporte-integrante-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\01-reporte-integrante-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\02-reporte-dm-incluidos-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\02-reporte-dm-incluidos-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\03-reporte-dm-excluidos-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\03-reporte-dm-excluidos-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\04-reporte-dm-en-circulo-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\04-reporte-dm-en-circulo-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\05-graficas-dm-segun-radio-de-circulo-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\05-graficas-dm-segun-radio-de-circulo-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\06-plano-integrantes-de-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\06-plano-integrantes-de-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\07-plano-dm-a-incluirse-en-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\07-plano-dm-a-incluirse-en-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\08-plano-dm-a-excluirse-en-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\08-plano-dm-a-excluirse-en-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\09-plano-analisis-de-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\09-plano-analisis-de-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\10-plano-integrado-de-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\10-plano-integrado-de-uea-32x32.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-16x16.png" />
+    <None Remove="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-32x32.png" />
+    <None Remove="Models\Constants\DatagridDetailsConstants.cs~RF7e8bddc.TMP" />
+    <None Remove="View\Modulos\AreaRestringida.PNG" />
+    <None Remove="View\Modulos\CodCartaNacional.png" />
+    <None Remove="View\Modulos\Diseño100.png" />
+    <None Remove="View\Modulos\CooPuntoCentral.PNG" />
+    <None Remove="View\Modulos\images.jpg" />
+    <None Remove="View\Modulos\LimiteAreas.PNG" />
+    <None Remove="View\Modulos\mapa100.png" />
+    <None Remove="View\Modulos\VariasHojas.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Remove="View\Modulos\Prueba.xaml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Config.daml" />    
+    <Content Include="Images\AddInDesktop16.png" />
+    <Content Include="Images\AddInDesktop32.png" />
+    <Content Include="DarkImages\AddInDesktop16.png" />
+    <Content Include="DarkImages\AddInDesktop32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\01-reporte-de-derechos-minero-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\02-listar-coordenadas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\04-calcula-porcentaje-region-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\05-limites-regionales-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\05-limites-regionales-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\06-plano-areas-superpuestas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\07-plano-evaluacion-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\08-plano-demarca-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\08-plano-demarca-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\09-plano-carta-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\09-plano-carta-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\10-dibujar-poligono-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\11-dm-en-google-earth-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\12-borrar-temas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\12-borrar-temas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\13-ver-capas-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\13-ver-capas-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\14-generar-numero-de-resolucion-de-dm-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\15-rotular-vertices-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\15-rotular-vertices-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\16-retirar-rotulos-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\17-generar-demarcacion-multiple-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\18-rotula-texto-demarcacion-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-a-planos-de-evaluacion-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\19-funcionalidad-en-desarrollo-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\20-plano-de-simultaneidad-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\21-generar-plano-venta-32x32.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-16x16.png" />
+    <Content Include="Images\Toolbars\BDGeocatmin\22-generar-situacion-dm-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\01-ver-todos-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\01-ver-todos-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\02-ver-ant-post-y-colin-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\03-ver-ant-post-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\03-ver-ant-post-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\04-ver-anteriores-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\04-ver-anteriores-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\05-ver-posteriores-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\05-ver-posteriores-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\06-cargar-capas-integrales-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\06-cargar-capas-integrales-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\07-ver-simultaneos-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\07-ver-simultaneos-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\08-ver-extinguidos-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\08-ver-extinguidos-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\09-ver-antecesor-rd-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\09-ver-antecesor-rd-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\10-ver-colindantes-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\10-ver-colindantes-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\11-ver-evaluado-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\11-ver-evaluado-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\12-generar-resultados-de-evaluacion-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\12-generar-resultados-de-evaluacion-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\13-calculo-area-disponible-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\13-calculo-area-disponible-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\14-observaciones-carta-ign-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\14-observaciones-carta-ign-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\15-ver-capas-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\15-ver-capas-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\16-generar-malla-cuadriculas-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\16-generar-malla-cuadriculas-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\17-plano-cuadriculas-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\17-plano-cuadriculas-32x32.png" />
+    <Content Include="Images\Toolbars\Evaluacion\18-grafica-desde-excel-16x16.png" />
+    <Content Include="Images\Toolbars\Evaluacion\18-grafica-desde-excel-32x32.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-16x16.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\01-validar-resultado-bd-32x32.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\02-area-superpuesta-bd-16x16.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\02-area-superpuesta-bd-32x32.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\05-superposicion-a-areas-restringidas-16x16.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\05-superposicion-a-areas-restringidas-32x32.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\06-guardar-informe-16x16.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\06-guardar-informe-32x32.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\08-generar-historico-16x16.png" />
+    <Content Include="Images\Toolbars\InformesTecnicos\08-generar-historico-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\01-reporte-integrante-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\01-reporte-integrante-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\02-reporte-dm-incluidos-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\02-reporte-dm-incluidos-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\03-reporte-dm-excluidos-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\03-reporte-dm-excluidos-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\04-reporte-dm-en-circulo-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\04-reporte-dm-en-circulo-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\05-graficas-dm-segun-radio-de-circulo-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\05-graficas-dm-segun-radio-de-circulo-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\06-plano-integrantes-de-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\06-plano-integrantes-de-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\07-plano-dm-a-incluirse-en-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\07-plano-dm-a-incluirse-en-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\08-plano-dm-a-excluirse-en-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\08-plano-dm-a-excluirse-en-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\09-plano-analisis-de-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\09-plano-analisis-de-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\10-plano-integrado-de-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\10-plano-integrado-de-uea-32x32.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-16x16.png" />
+    <Content Include="Images\Toolbars\ModuloUEAs\11-reporte-integrado-de-uea-32x32.png" />    
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\launchSettings.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="DevExpress.Reporting.Core" Version="23.1.12" />
+    <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
+    <PackageReference Include="EPPlus" Version="7.5.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="ArcGIS.Desktop.Framework">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Framework.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Core">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Core.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Core">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Core\ArcGIS.Desktop.Core.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Mapping">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Mapping\ArcGIS.Desktop.Mapping.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Catalog">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Catalog\ArcGIS.Desktop.Catalog.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Editing">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Editing\ArcGIS.Desktop.Editing.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Extensions">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\DesktopExtensions\ArcGIS.Desktop.Extensions.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.GeoProcessing">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\GeoProcessing\ArcGIS.Desktop.GeoProcessing.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Layouts">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\Layout\ArcGIS.Desktop.Layouts.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+	<Reference Include="ArcGIS.Desktop.KnowledgeGraph">
+		<HintPath>C:\Program Files\ArcGIS\Pro\bin\Extensions\KnowledgeGraph\ArcGIS.Desktop.KnowledgeGraph.dll</HintPath>
+		<CopyLocal>False</CopyLocal>
+		<Private>False</Private>
+	</Reference>
+	<Reference Include="ArcGIS.Desktop.Shared.Wpf">
+        <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Shared.Wpf.dll</HintPath>
+        <CopyLocal>False</CopyLocal>
+        <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Ribbon.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Ribbon.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.DataGrid.Contrib.Wpf">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.DataGrid.Contrib.Wpf.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ArcGIS.Desktop.Resources">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ArcGIS.Desktop.Resources.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ESRI.ArcGIS.ItemIndex">
+      <HintPath>C:\Program Files\ArcGIS\Pro\bin\ESRI.ArcGIS.ItemIndex.dll</HintPath>
+      <CopyLocal>False</CopyLocal>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CommonUtilities\CommonUtilities.csproj" />
+    <ProjectReference Include="..\DatabaseConnector\DatabaseConnector.csproj" />
+    <ProjectReference Include="..\ReportGenerator\ReportGenerator.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\EvaluacionDM\mapa100.png" />
+    <Resource Include="Images\EvaluacionDM\usuario32.png" />
+    <Resource Include="Images\Login\candado16.png" />
+    <Resource Include="Images\Login\close16.png" />
+    <Resource Include="Images\Login\closeOrange16.png" />
+    <Resource Include="Images\Login\logoINGEMMET.png" />
+    <Resource Include="Images\Login\logoINGEMMET_white.png" />
+    <Resource Include="Images\Login\usuario16.png" />
+    <Resource Include="Images\Login\visible16_blue.png" />
+    <Resource Include="Images\Login\visible16_white.png" />
+    <Resource Include="Images\Login\warningblue32.png" />
+    <Resource Include="View\Modulos\AreaRestringida.PNG" />
+    <Resource Include="View\Modulos\CodCartaNacional.png" />
+    <Resource Include="View\Modulos\CooPuntoCentral.PNG" />
+    <Resource Include="View\Modulos\LimiteAreas.PNG" />
+    <Resource Include="View\Modulos\VariasHojas.PNG" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Models\Constants\FeatureClass\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Images\Toolbars\BDGeocatmin\03-consulta-dm-16x16.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="View\Toolbars\BDGeocatmin\UI\CalcularPorcentajeRegionWpf.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Update="Scripts\areaReduccionDm.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\calculoAreasSuperpuestasDisponibles.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\CMIN_EVAL.atbx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\config.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\cuadriculasRegionales.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\insumosCuadriculas.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\model.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\cuadriculas\worker_functions.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\data_cat.sde">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\estadisticasAreasRestringidasCalculoNo_rd.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\estadisticasAreasRestringidasCalculoNo_za.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\estadisticasAreasRestringidasCalculoSi_pu.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\ProcessLibreDenuCode.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\evaluarPrioritariosLibreDenu.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\evaluarPrioritarios.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\exportarImagenDemarcacion.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\exportarKmz.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Scripts\ObtenerDepartamentos.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+   <Import Project="C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets" Condition="Exists('C:\Program Files\ArcGIS\Pro\bin\Esri.ProApp.SDK.Desktop.targets') AND !Exists('Esri.ArcGISPro.Extensions.targets')" />
+</Project>
