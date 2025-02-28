@@ -448,6 +448,66 @@ namespace CommonUtilities.ArcgisProUtils
 
 
 
+        public static void AnnotateVerticesOfLayer(string layerName)
+        {
+            //var featureclass = layer.GetFeatureClass();
+            var map = MapView.Active.Map;
+            var selectedLayers = MapView.Active.GetSelectedLayers();
+            FeatureLayer layer = FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, layerName);
+            //var featureclass = layer.GetFeatureClass();
+            GraphicsLayer? graphicsLayer = null;
+
+            QueuedTask.Run(() =>
+            {
+                if (layer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
+                    return;
+                }
+               
+
+                // Crear un cursor para iterar sobre las características de la capa
+                using (var rowCursor = layer.Search(null))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        using (Row row = rowCursor.Current)
+                        {
+                            var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                            var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                            //string fieldValue = Convert.ToString(row[field]);
+
+                            
+                                var gl_param = new GraphicsLayerCreationParams { Name = $"Vertices: {layerName}" };
+                                var graphicsLayerItem = LayerFactory.Instance.CreateLayer<ArcGIS.Desktop.Mapping.GraphicsLayer>(gl_param, map);
+
+                                graphicsLayer = map.GetLayersAsFlattenedList()
+                                    .OfType<ArcGIS.Desktop.Mapping.GraphicsLayer>().FirstOrDefault();
+                                int contador = 1;
+                                for (int i = 0; i < polygon.PointCount - 1; i++)
+                                {
+                                    var vertex = polygon.Points[i];
+                                    var textGraphic = new CIMTextGraphic();
+                                    textGraphic.Symbol = SymbolFactory.Instance.ConstructTextSymbol
+                                                                                (CIMColor.CreateRGBColor(255, 0, 0), 9, "Arial", "Regular").MakeSymbolReference();
+                                    textGraphic.Shape = vertex;
+                                    textGraphic.Text = contador.ToString();
+                                    graphicsLayer.AddElement(textGraphic, contador.ToString());
+                                    contador += 1;
+                                }
+
+                            
+
+                        }
+                    }
+                }
+            });
+            if (graphicsLayer is not null) graphicsLayer.ClearSelection();
+
+        }
+
+
+
         public static void LoadFeatureClassToMap(string featureClassName, string layerName, bool isVisible, int mapIndex=0)
         {
             QueuedTask.Run(() =>

@@ -74,7 +74,7 @@ namespace CommonUtilities.ArcgisProUtils
         {
             try
             {
-                #pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
+#pragma warning disable CA1416 // Validar la compatibilidad de la plataforma
                 return await QueuedTask.Run(() =>
                 {
                     // Buscar la información de la Feature Class en la lista
@@ -161,11 +161,11 @@ namespace CommonUtilities.ArcgisProUtils
                     pFeatureLayer_Actmin = featureLayer;
                     loFeature = "DM_Actividad_Minera";
                     break;
-                case "pfeatureLayer_Cuadriculas":
+                case "pFeatureLayer_cuadriculas":
                     pFeatureLayer_cuadriculas = featureLayer;
                     loFeature = "Cuadriculas";
                     break;
-                case "pfeatureLayer_CuadriculasR":
+                case "pFeatureLayer_cuadriculasR":
                     pFeatureLayer_cuadriculasR = featureLayer;
                     loFeature = "Cuadricula Regional";
                     break;
@@ -437,29 +437,29 @@ namespace CommonUtilities.ArcgisProUtils
             },
 
             // Cuadriculas Individuales
+            //new FeatureClassInfo
+            //{
+            //    FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_WGS84 + v_zona_dm,
+            //    LayerName = "Cuadriculas",
+            //    VariableName = "pFeatureLayer_cuadriculas"
+            //},
             new FeatureClassInfo
             {
-                FeatureClassNameGenerator = (v_zona_dm) => FeatureClassConstants.gstrFC_Cuadricula_Z + v_zona_dm,
+                FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_17",
                 LayerName = "Cuadriculas",
                 VariableName = "pFeatureLayer_cuadriculas"
             },
             new FeatureClassInfo
             {
-                FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_17",
-                LayerName = "Cuadriculas",
-                VariableName = "pfeaturelayer_cuadriculas"
-            },
-            new FeatureClassInfo
-            {
                 FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_18",
                 LayerName = "Cuadriculas",
-                VariableName = "pfeaturelayer_cuadriculas"
+                VariableName = "pFeatureLayer_cuadriculas"
             },
             new FeatureClassInfo
             {
                 FeatureClassName = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_19",
                 LayerName = "Cuadriculas",
-                VariableName = "pfeaturelayer_cuadriculas"
+                VariableName = "pFeatureLayer_cuadriculas"
             },
 
             // Ríos
@@ -1404,9 +1404,9 @@ namespace CommonUtilities.ArcgisProUtils
 
                                 string codigo = "000000001";
                                 string codigosp = row[row.FindField("CODIGOU")].ToString();
-                                string  concesion = row[row.FindField("CONCESION")].ToString();
+                                string concesion = row[row.FindField("CONCESION")].ToString();
                                 string zona = row[row.FindField("ZONA")].ToString();
-                                string  tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                string tipoex = row[row.FindField("TIPO_EX")].ToString();
                                 decimal areasup = Convert.ToDecimal(area / 10000);/// Convert.ToDecimal(row[row.FindField("AREA")]);
                                 dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
 
@@ -1494,6 +1494,7 @@ namespace CommonUtilities.ArcgisProUtils
                         await ExportSpatialTemaAsync(loFeature, GlobalVariables.stateDmY, shapeFileOut);
                     }
                     // Buscar las entidades con ambos filtros: espacial y de atributo
+                    string tipoex = "";
                     using (RowCursor rowCursor = pFLayer.Search(spatialFilter))
                     {
                         while (rowCursor.MoveNext())
@@ -1504,7 +1505,15 @@ namespace CommonUtilities.ArcgisProUtils
                                 string codigosp = row[row.FindField("CODIGOU")].ToString();
                                 string concesion = row[row.FindField("CONCESION")].ToString();
                                 string zona = row[row.FindField("ZONA")].ToString();
-                                string tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                try
+                                {
+                                     tipoex = row[row.FindField("TIPO_EX")].ToString();
+                                }
+                                catch (Exception)
+                                {
+                                     tipoex = "";
+                                }
+                                
                                 decimal areasup = Convert.ToDecimal(row[row.FindField("AREA")]);
                                 dataTable.Rows.Add(codigo, codigosp, concesion, zona, tipoex, areasup);
 
@@ -1670,7 +1679,7 @@ namespace CommonUtilities.ArcgisProUtils
                     return tema.GetFeatureClass();
                 });
                 // Definir la ruta de salida y el nombre del archivo
-                string outputFolder = Path.Combine(GlobalVariables.pathFileContainerOut, GlobalVariables.fileTemp);
+                string outputFolder = GlobalVariables.pathFileTemp;
                 string outputPath = Path.Combine(outputFolder, outputLayerName + ".shp");
                 // Ejecutar la exportación dentro de un QueuedTask
                 //await QueuedTask.Run(() =>
@@ -1753,6 +1762,48 @@ namespace CommonUtilities.ArcgisProUtils
             }
         }
 
+        public async Task ZoomToEnvelopeAsync(string loFeature, double xMin, double yMin, double xMax, double yMax)
+
+        {
+            try
+
+            {
+                FeatureLayer pFLayer;
+                //// Obtener el FeatureLayer desde el diccionario
+
+                pFLayer = CommonUtilities.ArcgisProUtils.FeatureProcessorUtils.GetFeatureLayerFromMap(MapView.Active as MapView, loFeature);
+
+                if (pFLayer == null)
+                {
+                    return;
+                }
+
+                //await QueuedTask.Run(async () =>
+                //{
+                // Crear el envolvente
+                Envelope envelope = EnvelopeBuilder.CreateEnvelope(xMin, yMin, xMax, yMax, pFLayer.GetSpatialReference());
+
+
+                // Get the active map view
+                MapView mapView = MapView.Active;
+
+                if (mapView != null)
+                {
+                    // Zoom to the specified envelope (bounding box)
+                    mapView.ZoomTo(envelope);
+
+                }
+
+
+            }
+            catch
+            {
+                return;
+            }
+
+        }
+
+
         public static DataTable GetDataForElemento(
                                                 string sele_elemento,
                                                 string v_sistema,
@@ -1771,7 +1822,7 @@ namespace CommonUtilities.ArcgisProUtils
             string table2 = string.Empty;
             string elementoParaConsulta = sele_elemento;
 
-            
+
             // Sólo un ejemplo de switch para "sele_elemento".
             // Ajusta según tus necesidades reales:
             switch (sele_elemento)
@@ -2030,8 +2081,8 @@ namespace CommonUtilities.ArcgisProUtils
         public const string gstrFC_CuadriculaR_PSAD56 = "DATA_GIS.GPO_CRE_CUADRICULA_REGIONAL";
 
         // Cuadrículas
-        public const string gstrFC_Cuadricula = "DATA_GIS.GPO_CUA_CUADRICULAS";
-        public const string gstrFC_Cuadricula_Z = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_PSAD56 = "DATA_GIS.GPO_CUA_CUADRICULAS_";
+        public const string gstrFC_Cuadricula_WGS84 = "DATA_GIS.GPO_CUA_CUADRICULAS_WGS_";
 
         // Caram
         public const string gstrFC_Caram56 = "DATA_GIS.GPO_CAR_CARAM_"; // PSAD56

@@ -594,47 +594,6 @@ namespace SigcatminProAddin.View.Modulos
             
         }
 
-        private ExtentModel ObtenerExtent(string codigoValue, int datum, int radioKm=0)
-        {
-            // Obtener las coordenadas usando la función ObtenerCoordenadas
-            DataTable coordenadasTable = ObtenerCoordenadas(codigoValue, datum);
-
-            // Asegurarse de que la tabla contiene filas
-            if (coordenadasTable.Rows.Count == 0)
-            {
-                throw new Exception("No se encontraron coordenadas para calcular el extent.");
-            }
-            double radioMeters = radioKm*1000;
-            // Inicializar las variables para almacenar los valores extremos
-            double xmin = int.MaxValue;
-            double xmax = int.MinValue;
-            double ymin = int.MaxValue;
-            double ymax = int.MinValue;
-
-            // Iterar sobre las filas para calcular los valores extremos
-            foreach (DataRow row in coordenadasTable.Rows)
-            {
-                double este = Convert.ToDouble(row["ESTE"]);
-                double norte = Convert.ToDouble(row["NORTE"]);
-
-                if (este < xmin) xmin = este;
-                if (este > xmax) xmax = este;
-                if (norte < ymin) ymin = norte;
-                if (norte > ymax) ymax = norte;
-            }
-
-            // Crear el objeto ExtentModel con los valores calculados
-            ExtentModel extent = new ExtentModel
-            {
-                xmin = xmin - radioMeters,
-                xmax = xmax + radioMeters,
-                ymin = ymin - radioMeters,
-                ymax = ymax + radioMeters
-            };
-
-            return extent;
-        }
-
         private void DataGridResultTableView_FocusedRowChanged(object sender, FocusedRowChangedEventArgs e)
         {
             ClearCanvas();
@@ -756,14 +715,7 @@ namespace SigcatminProAddin.View.Modulos
                 GlobalVariables.stateDmY = false;
             }
 
-            //List<string> mapsToDelete = new List<string>()
-            //{
-            //    GlobalVariables.mapNameCatastro,
-            //    GlobalVariables.mapNameDemarcacionPo,
-            //    GlobalVariables.mapNameCartaIgn
-            //};
-
-            //await MapUtils.DeleteSpecifiedMapsAsync(mapsToDelete);
+            
             int datum = (int)CbxSistema.SelectedValue;
             string datumStr = CbxSistema.Text;
             int radio = int.Parse(TbxRadio.Text);

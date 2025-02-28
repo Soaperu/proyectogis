@@ -39,12 +39,15 @@ namespace SigcatminProAddin.View.Modulos
             new CategoriaModulo("Consultas", new List<Modulo>
             {
                 new Modulo("Actualización Cuadriculas Regionales", typeof(ActualizacionCuadriculasRegionales)),
+                new Modulo("Acumulación", typeof(Acumulacion)),
                 new Modulo("Áreas Restringidas", typeof(AreasRestringidas), "Áreas Restringidas"),
                 new Modulo("Código Carta Nacional", typeof(CodigoCartaNacional)),
                 new Modulo("Código de DM", typeof(CodigoDM)),
                 new Modulo("Coordenadas del Punto Central", typeof(Coordenadas_Punto_Central)),
+                new Modulo("División", typeof(Division)),
                 new Modulo("DM por Carta IGN", typeof(DMCartaIGN)),
                 new Modulo("DM por Demarcación Política", typeof(DMxDemarcacionPolitica)),
+                new Modulo("DM por PMA", typeof(DMxPMA)),
                 new Modulo("Estadística de Áreas Restringidas", typeof(EstadisticasAreasRestringidas)),
                 new Modulo("Límites de Áreas de Interés", typeof(LimiteAreaInteres)),
                 new Modulo("Simulación de Petitorios", typeof(SimulaPetitorios)),
@@ -72,6 +75,7 @@ namespace SigcatminProAddin.View.Modulos
             {
                 new Modulo("Evaluación DM", typeof(EvaluacionDM)),
                 new Modulo("Libre Denunciabilidad", typeof(LibreDenunciabilidad)),
+                new Modulo("Simultaneidad de Petitorios", typeof(SimultaneidadPetitorios)),
             })
         };
       }

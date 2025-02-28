@@ -646,6 +646,76 @@ namespace CommonUtilities.ArcgisProUtils
             });
         }
 
+        public static Task<string> GeneratorTextListVerticesSimul(RowCursor rowCursor)
+        {
+            string texto = "";
+
+            return QueuedTask.Run(() =>
+            {
+                using (Row row = rowCursor.Current)
+                {
+                    var geometry = row["SHAPE"] as ArcGIS.Core.Geometry.Geometry;
+                    var polygon = geometry as ArcGIS.Core.Geometry.Polygon;
+                    //texto += $"Nombre = {row["RESULTADO"]} - {row["CONCATENAT"]}\n";
+
+                    //texto += "--------------------------------------------------\n";
+                    //texto += new string(' ', 3) + " Vert." + new string(' ', 10) + "Norte" + new string(' ', 10) + "Este\n";
+                    //texto += "--------------------------------------------------\n";
+                    for (int i = 0; i < polygon.PointCount - 1; i++)
+                    {
+                        var vertex = polygon.Points[i];
+
+                        var este = Math.Round(vertex.X, 3);
+                        var norte = Math.Round(vertex.Y, 3);
+                        var esteFormateado = string.Format("{0:### ###.#0}", este);
+                        var norteFormateado = string.Format("{0:# ### ###.#0}", norte);
+                        texto += new string(' ', 5) + (i + 1).ToString().PadLeft(3, '0');
+                        texto += new string(' ', 5) + esteFormateado;
+                        texto += new string(' ', 5) + norteFormateado + "\n";
+                    }
+                    texto += "--------------------------------------------------\n";
+                    texto += new string(' ', 10) + $"Área UTM = {Math.Round(polygon.Area / 10000, 4)} Ha.\n";
+                    texto += "--------------------------------------------------\n";
+
+                    return texto;
+                }
+                //}
+                //}
+            });
+        }
+
+        public static async Task AddTextListVerticesToLayoutSim(FeatureLayer featureLayer, LayoutProjectItem layoutItem, string filter = "1=1")
+        {
+            double x = 20.0;
+            double y = 12.8;
+            await QueuedTask.Run(async () =>
+            {
+                var layer = featureLayer.GetFeatureClass();
+                if (layer == null)
+                {
+                    ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("Por favor, selecciona una capa en el panel de contenido.", "Advertencia");
+                    return;
+                }
+                // Definir un filtro de consulta (actualmente recupera todas las funciones, ajustar según sea necesario)
+                ArcGIS.Core.Data.QueryFilter queryFilter = new ArcGIS.Core.Data.QueryFilter { WhereClause = filter };
+                // Crear un cursor para iterar sobre las características de la capa
+                using (var rowCursor = layer.Search(queryFilter, false))
+                {
+                    while (rowCursor.MoveNext())
+                    {
+                        var textList = await GeneratorTextListVerticesSimul(rowCursor);
+                        var color = new CIMRGBColor { R = 0, G = 0, B = 0, Alpha = 100 };
+                        var _layout = layoutItem.GetLayout();
+                        Coordinate2D coord = new Coordinate2D(x, y);
+                        var mapPoint = MapPointBuilderEx.CreateMapPoint(coord);
+                        CIMTextSymbol textSymbol = SymbolFactory.Instance.ConstructTextSymbol(color, 8, "Tahoma", "Regular");
+                        ElementFactory.Instance.CreateTextGraphicElement(_layout, TextType.PointText, mapPoint, textSymbol, textList);
+                        y -= 1.5;
+                    }
+                }
+            });
+        }
+
 
     }
     public class LayoutConfiguration

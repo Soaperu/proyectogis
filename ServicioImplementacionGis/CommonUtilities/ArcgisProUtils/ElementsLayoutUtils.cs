@@ -12,6 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using CommonUtilities.ArcgisProUtils.Models;
+using System.Data;
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -73,6 +74,28 @@ namespace CommonUtilities.ArcgisProUtils
                         yPre = item.Y;
                     }
                 }
+                else if (seleReporte == "Simultaneo")
+                {
+                    var textos = await GetTextDefinitionsForSimultaneo(y);
+                    foreach (var item in textos)
+                    {
+                        CIMTextSymbol textSymbol = CrearSimboloTexto(item.color, item.fontSize, "Tahoma");
+                        CrearTextElement(item.Texto, item.X, item.Y, textSymbol);
+                        yPre = item.Y;
+                    }
+                    await TextElementsSimAsync();
+                }
+                else if (seleReporte == "petitorios_PMA")
+                {
+                    var textos = await GetTextDefinitionsForPetitoriosPMA(y);
+                    foreach (var item in textos)
+                    {
+                        CIMTextSymbol textSymbol = CrearSimboloTexto(item.color, item.fontSize, "Tahoma");
+                        CrearTextElement(item.Texto, item.X, item.Y, textSymbol);
+                        yPre = item.Y;
+                    }
+                    TextElementsPetitoriosPma(GlobalVariables.currentTable);
+                }
                 return yPre;
             });
             
@@ -115,11 +138,20 @@ namespace CommonUtilities.ArcgisProUtils
             return $"{res.Contador.PadRight(3)} {res.Concesion.PadRight(30)} {res.CodigoU.PadRight(15)} {res.TipoEx.PadRight(10)} {res.Eval.PadRight(10)} {res.Estado}";
         }
 
-        private string FormatearTextoResultadoList(string vCampo1, string vCampo2, string vCampo3, string vCampo4, string vCampo5, string vCampo6, string vCampo7, string vCampo8, string vCampo9)
+        private string FormatearTextoResultadoSim(ResultadoSimultaneo res)
         {
             // Lógica de formateo de texto
-            return $"{vCampo1.PadRight(3)} {vCampo2.PadRight(25)} {vCampo3.PadRight(20)} {vCampo5.PadRight(5)} {vCampo6.PadRight(5)} {vCampo7}";
+            //return $"{res.Contador.PadRight(3)} {res.Concesion.PadRight(25)} {res.CodigoU.PadRight(20)} {res.TipoEx.PadRight(10)} {res.Eval.PadRight(10)} {res.Estado}";
+            return $"{res.CodigoU.PadRight(10)} {res.Concesion.PadRight(20)} {res.TitConces.PadRight(10)} {res.Hectarea}";
         }
+
+        private string FormatearTextoResultadoPetPma(ResultadoPetitorioPma res)
+        {
+            // Lógica de formateo de texto
+            //return $"{res.Contador.PadRight(3)} {res.Concesion.PadRight(25)} {res.CodigoU.PadRight(20)} {res.TipoEx.PadRight(10)} {res.Eval.PadRight(10)} {res.Estado}";
+            return $"{res.CodTitular.PadRight(10)} {res.Titular.PadRight(35)} {res.DemCal.PadRight(10)} {res.DemGis.PadRight(10)} {res.CodDm.PadRight(1)}";
+        }
+
         private string FormatearTexto(string vCampo1, string vCampo2, string vCampo3, string vCampo4, string vCampo5, string vCampo6, string vCampo7, string vCampo8, string vCampo9)
         {
             // Basado en la lógica original, ajusta el espaciado según la longitud de v_campo1, etc.
@@ -510,6 +542,52 @@ namespace CommonUtilities.ArcgisProUtils
             return textList.ToArray();
         }
 
+        private async Task<(string Texto, double X, double Y, CIMColor color, int fontSize)[]> GetTextDefinitionsForSimultaneo(double posY)
+        {
+            // Aquí simplificamos. Ajusta las coordenadas según el codigo anterior.
+            CIMColor colorMagenta = ColorFromRGB(197, 0, 255);
+            int fontSizeMagenta = 8;
+            CIMColor colorRed = ColorFromRGB(230, 0, 0);
+            int fontSizeBlue = 15;
+            CIMColor colorBlue = ColorFromRGB(71, 61, 255);
+            CIMColor colorBlack = ColorFromRGB(0, 0, 0);
+            int fontSizeBlack = 7;
+            var textList = new List<(string Texto, double X, double Y, CIMColor color, int fontSize)>()
+            {
+            ("Carta: " + v_carta_dm, 9.2, 18.0, colorBlue, fontSizeBlack),
+            ("Fecha_libdenu: " + fecha, 14.8, 17.8, colorBlue, fontSizeBlack),
+            ("CÓDIGO:  " + v_codigo, 18.8, 17.3, colorBlue, fontSizeBlue),
+            //("NOMBRE DEL DM: " + v_nombre_dm, 18.8, 16.7, colorMagenta, fontSizeMagenta),
+            };
+
+            //posY -= 0.4;
+          
+            return textList.ToArray();
+        }
+
+        private async Task<(string Texto, double X, double Y, CIMColor color, double fontSize)[]> GetTextDefinitionsForPetitoriosPMA(double posY)
+        {
+            // Aquí simplificamos. Ajusta las coordenadas según el codigo anterior.
+            double fontSizeBlue = 15;
+            CIMColor colorBlue = ColorFromRGB(71, 61, 255);
+            CIMColor colorBlack = ColorFromRGB(0, 0, 0);
+            double fontSizeBlack = 7;
+            var textList = new List<(string Texto, double X, double Y, CIMColor color, double fontSize)>()
+            {
+            //("Carta: " + v_carta_dm, 9.2, 18.0, colorBlue, fontSizeBlack),
+            ("Fecha: " + fecha, 14.8, 17.8, colorBlack, fontSizeBlack),
+            (GlobalVariables.CurrentDatumDm, 9.0, 1.35, colorBlue, fontSizeBlue),
+            ("PLANO DE PETITORIOS PMA FUERA DE LA DEMARCACIÓN CALIFICADA", 11.5, 18.8, colorBlue, 9.75),
+            ($"Petitorios PMA Fuera de Demarcación Calificada: ({GlobalVariables.currentTable.Rows.Count})", 18.2, 16.9, colorBlue, 8.25),
+            ("CodTit     Titular                                         DemCal  DemGIS  Cod_DM", 18.2, 16.4, colorBlue, 8.25),
+
+            };
+
+            //posY -= 0.4;
+
+            return textList.ToArray();
+        }
+
         public async Task<(double finalPosX, double finalPosY)> TextElementsEvalAsync(LayoutProjectItem layoutItem, double posX = 18.2, double posY = 15.2)
         {
             //var layoutItem = Project.Current.GetItems<LayoutProjectItem>()
@@ -573,6 +651,94 @@ namespace CommonUtilities.ArcgisProUtils
 
             // Devuelve las coordenadas finales después de recorrer todos los criterios
             return (posX, posY);
+        }
+
+        public async Task<List<ResultadoSimultaneo>> TextElementsDmSimultaneos(string dmLayer)
+        {
+            List<ResultadoSimultaneo> resultados = new List<ResultadoSimultaneo>();
+            await QueuedTask.Run(async () =>
+            {
+                Map mapCatastro = await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro);
+
+                var zoomNameLayer = mapCatastro.GetLayersAsFlattenedList().OfType<Layer>().FirstOrDefault(l => l.Name == dmLayer);
+                var catastroLayer = (FeatureLayer)zoomNameLayer;
+                // Obtener la FeatureClass asociada
+                FeatureClass featureClass = catastroLayer.GetFeatureClass();
+                if (featureClass == null)
+                    throw new Exception("No se pudo obtener la FeatureClass de la capa 'catastro'.");
+
+                //// Crear el QueryFilter con la cláusula WHERE
+                //QueryFilter queryFilter = new QueryFilter
+                //{
+                //    WhereClause = $"EVAL = '{criterio}'"
+                //};
+
+                // Buscar los campos necesarios
+                // Suponemos que existen todos los campos: "CONTADOR", "CONCESION", "TIPO_EX", "CODIGOU", "ESTADO", "EVAL"
+                int idxConcesion = featureClass.GetDefinition().FindField("CONCESION");
+                int idxCodigoU = featureClass.GetDefinition().FindField("CODIGOU");
+                int idxTitConces = featureClass.GetDefinition().FindField("TIT_CONCES");
+                int idxHasDatum = featureClass.GetDefinition().FindField("HASDATUM");
+
+                if (idxConcesion < 0 || idxCodigoU < 0 || idxTitConces < 0 || idxHasDatum < 0)
+                    throw new Exception("No se encontraron todos los campos requeridos en la FeatureClass 'catastro'.");
+
+                // Ejecutar la consulta
+                using (RowCursor cursor = featureClass.Search(null, false))
+                {
+                    while (cursor.MoveNext())
+                    {
+                        using (Feature feature = (Feature)cursor.Current)
+                        {
+                            // Leer los valores de los campos
+                            string concesion = feature[idxConcesion]?.ToString() ?? string.Empty;
+                            string codigoU = feature[idxCodigoU]?.ToString() ?? string.Empty;
+                            string titConces = feature[idxTitConces]?.ToString() ?? string.Empty;
+                            string hasDatum = feature[idxHasDatum]?.ToString() ?? string.Empty;
+
+                            // Crear un objeto ResultadoEval y agregarlo a la lista
+                            var resultado = new ResultadoSimultaneo
+                            {
+                                Concesion = concesion,
+                                CodigoU = codigoU,
+                                TitConces = titConces,
+                                Hectarea = hasDatum
+                            };
+                            resultados.Add(resultado);
+                        }
+                    }
+                }
+            });
+            return resultados;
+        }
+
+        public void TextElementsPetitoriosPma(DataTable petPma, double X = 18.25, double Y = 16.0)
+        {
+            List<ResultadoPetitorioPma> resultados = new List<ResultadoPetitorioPma>();
+            foreach (DataRow row in petPma.Rows)
+            {
+                var resultado = new ResultadoPetitorioPma
+                {
+                    CodTitular = row["TI_CODTIT"].ToString(),
+                    Titular = row["TITULAR"].ToString(),
+                    DemCal = row["CODDEM"].ToString(),
+                    DemGis = row["CODDEM_G"].ToString(),
+                    CodDm = row["CG_CODIGO"].ToString()
+
+                };
+                resultados.Add(resultado);
+            }
+
+            CIMTextSymbol textSymbol = CrearSimboloTexto(ColorFromRGB(0, 0, 0), 6.0, "Courier New");
+            //var resultados = await TextElementsDmSimultaneos("Catastro_sim");
+            foreach (var res in resultados)
+            {
+                string texto = FormatearTextoResultadoPetPma(res);
+                CrearTextElement(texto, X, Y, textSymbol);
+                //var coord = new ArcGIS.Core.Geometry.Coordinate2D(x, y);
+                //ElementFactory.Instance.CrearTextElement(layout, textSymbol, coord, texto);
+                Y -= 0.35;
+            }
         }
 
         public async Task<List<ResultadoEval>> ObtenerResultadosEval(string criterio)
@@ -829,6 +995,22 @@ namespace CommonUtilities.ArcgisProUtils
             });
             #pragma warning restore CA1416 // Validar la compatibilidad de la plataforma
         }
+
+        public async Task<double> TextElementsSimAsync(double X = 18.2, double Y = 7.80)
+        {
+            CIMTextSymbol textSymbol = CrearSimboloTexto(ColorFromRGB(0, 0, 0), 6.0, "Courier New");
+            var resultados = await TextElementsDmSimultaneos("Catastro_sim");
+            foreach (var res in resultados)
+            {
+                string texto = FormatearTextoResultadoSim(res);
+                CrearTextElement(texto, X, Y, textSymbol);
+                //var coord = new ArcGIS.Core.Geometry.Coordinate2D(x, y);
+                //ElementFactory.Instance.CrearTextElement(layout, textSymbol, coord, texto);
+                Y -= 0.35;
+            }
+            return Y;
+        }
+
         public async Task<double> TextElementsEvalByCriteroAsync(string criterio, double X = 18.2, double Y = 15.2)
         {
             //var layoutItem = Project.Current.GetItems<LayoutProjectItem>()

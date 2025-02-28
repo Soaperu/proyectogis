@@ -2,7 +2,7 @@
 using ArcGIS.Core.Data.DDL;
 using ArcGIS.Core.Data.UtilityNetwork.Trace;
 using ArcGIS.Core.Geometry;
-using ArcGIS.Core.Internal.CIM;
+//using ArcGIS.Core.Internal.CIM;
 using ArcGIS.Core.Internal.Geometry;
 using ArcGIS.Desktop.Core.Geoprocessing;
 using ArcGIS.Desktop.Framework.Dialogs;
@@ -17,6 +17,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using MessageBox = ArcGIS.Desktop.Framework.Dialogs.MessageBox;
+/**/
+
 
 namespace CommonUtilities.ArcgisProUtils
 {
@@ -93,14 +95,14 @@ namespace CommonUtilities.ArcgisProUtils
             // Ejecutamos la herramienta AddField_management de Geoprocessing
             await QueuedTask.Run(() =>
             {
-            // Verificamos si el campo ya existe
-            var featureClass = featureLayer.GetTable() as FeatureClass;
-            var fieldIndex = featureClass.GetDefinition().FindField(fieldName);
+                // Verificamos si el campo ya existe
+                var featureClass = featureLayer.GetTable() as FeatureClass;
+                var fieldIndex = featureClass.GetDefinition().FindField(fieldName);
 
-            if (fieldIndex == -1)  // El campo no existe, lo vamos a crear
-            {
-                // Construimos los parámetros para la herramienta AddField_management
-                var parameters = new List<object>
+                if (fieldIndex == -1)  // El campo no existe, lo vamos a crear
+                {
+                    // Construimos los parámetros para la herramienta AddField_management
+                    var parameters = new List<object>
                 {
                     featureLayer,         // Feature Layer donde agregar el campo
                     fieldName,            // Nombre del nuevo campo
@@ -109,22 +111,22 @@ namespace CommonUtilities.ArcgisProUtils
                     fieldPrecision ?? -1, // Precisión (si aplica, por ejemplo para campos numéricos)
                     fieldScale ?? -1      // Escala (si aplica, por ejemplo para campos numéricos)
                 };
-                var toolParams = Geoprocessing.MakeValueArray(parameters.ToArray());
-                Geoprocessing.ExecuteToolAsync("AddField_management", toolParams);
-            }
-            else
-            {
-                // Si el campo ya existe, no es necesario agregarlo
-                System.Diagnostics.Debug.WriteLine($"El campo {fieldName} ya existe en la Feature Layer.");
-            }
+                    var toolParams = Geoprocessing.MakeValueArray(parameters.ToArray());
+                    Geoprocessing.ExecuteToolAsync("AddField_management", toolParams);
+                }
+                else
+                {
+                    // Si el campo ya existe, no es necesario agregarlo
+                    System.Diagnostics.Debug.WriteLine($"El campo {fieldName} ya existe en la Feature Layer.");
+                }
             });
-            
+
         }
 
         /// <summary>
         /// Añade un campo si no existe en un featureClass dentro de un GDB.
         /// </summary>
-        public static async void AddFieldIfNotExistsGdb(FeatureLayer featureLayer, string fieldName, FieldType fieldType, int length, int scale=0, int precision=0)
+        public static async void AddFieldIfNotExistsGdb(FeatureLayer featureLayer, string fieldName, FieldType fieldType, int length, int scale = 0, int precision = 0)
         {
             var result = await QueuedTask.Run(() =>
             {
@@ -146,10 +148,10 @@ namespace CommonUtilities.ArcgisProUtils
                         {
                             fieldDescription.Length = length;
                         }
-                        else if (FieldType.Integer == fieldType) 
+                        else if (FieldType.Integer == fieldType)
                         {
                             fieldDescription.Scale = scale;
-                            fieldDescription.Precision = precision; 
+                            fieldDescription.Precision = precision;
                         }
 
                         var fieldDescriptions = new List<ArcGIS.Core.Data.DDL.FieldDescription>() {
@@ -360,7 +362,7 @@ namespace CommonUtilities.ArcgisProUtils
 
                 case "Catastro Forestal":
                     return $"CD_CONCE IN ({lostrJoinCodigos})";
-                
+
                 case "Carta IGN":
                     return $"CD_HOJA IN ({lostrJoinCodigos})";
 
@@ -532,6 +534,95 @@ namespace CommonUtilities.ArcgisProUtils
             return lostrJoinCodigos;
         }
 
+        //public async static Task AgregarCampoTemaTpm(string pShapefile, string caso)
+        //{
+        //    try
+        //    {
+        //        // Obtener el mapa actual y la capa de entidad
+        //        var mapView = MapView.Active as MapView;
+        //        if (mapView == null)
+        //        {
+        //            MessageBox.Show("No se ha encontrado la vista activa.");
+        //            return;
+        //        }
+
+        //        var featureLayer = GetFeatureLayerFromMap(mapView, pShapefile);
+        //        if (featureLayer == null)
+        //        {
+        //            MessageBox.Show("No se encuentra la capa en el mapa.");
+        //            return;
+        //        }
+
+        //        //var featureClass = featureLayer.GetTable() as FeatureClass;
+
+        //        // Añadir o eliminar campos según el caso
+        //        if (caso == "CODIGO")
+        //        {
+        //            // Añadir el campo "CODIGO" si no existe
+        //            AddFieldIfNotExistsAsync(featureLayer, "CODIGO", "STRING", 16);
+        //        }
+        //        else if (caso == "ExclusionUEA")
+        //        {
+        //            // Eliminar los campos existentes "TIT_CONCES" y "LEYENDA"
+        //            _ = DeleteFieldIfExists(featureLayer, "TIT_CONCES");
+        //            _ = DeleteFieldIfExists(featureLayer, "LEYENDA");
+
+        //            // Añadir nuevos campos
+        //            await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GlobalVariables.fieldTypeString, 1);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 1);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GlobalVariables.fieldTypeString, 13);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GlobalVariables.fieldTypeString, 100);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+        //        }
+        //        else if (caso == "Catastro")
+        //        {
+        //            // Comprobamos si los campos existen, y si no, los agregamos.
+        //            await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeDouble, 20, 4); // Precision 20, escala 4
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeString, 256);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GlobalVariables.fieldTypeString, 80);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 20);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
+        //        }
+        //        else if(caso== "Cata_sim")
+        //        {
+        //            await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+        //        }
+        //        else if(caso == "Cuadri_sim")
+        //        {
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+                    
+        //        }
+        //        else if (caso == "Cuadri_dsim")
+        //        {
+        //            await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+        //            await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+
+        //        }
+        //        // Otros casos a agregar de manera similar
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show($"Error: {ex.Message}");
+        //    }
+        //}
+
         public async static Task AgregarCampoTemaTpm(string pShapefile, string caso)
         {
             try
@@ -551,64 +642,79 @@ namespace CommonUtilities.ArcgisProUtils
                     return;
                 }
 
-                //var featureClass = featureLayer.GetTable() as FeatureClass;
-
-                // Añadir o eliminar campos según el caso
-                if ( caso == "CODIGO")
+                switch (caso)
                 {
-                    // Añadir el campo "CODIGO" si no existe
-                    AddFieldIfNotExistsAsync(featureLayer, "CODIGO", "STRING", 16);
-                }
-                else if (caso == "ExclusionUEA")
-                {
-                    // Eliminar los campos existentes "TIT_CONCES" y "LEYENDA"
-                    _ = DeleteFieldIfExists(featureLayer, "TIT_CONCES");
-                    _ = DeleteFieldIfExists(featureLayer, "LEYENDA");
+                    case "CODIGO":
+                        await AddFieldIfNotExistsAsync(featureLayer, "CODIGO", GlobalVariables.fieldTypeString, 16);
+                        break;
 
-                    // Añadir nuevos campos
-                    await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GlobalVariables.fieldTypeString, 1);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 1);
-                    await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GlobalVariables.fieldTypeString, 13);
-                    await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GlobalVariables.fieldTypeString, 100);
-                    await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
-                }
-                else if (caso == "Catastro")
-                {
-                    // Comprobamos si los campos existen, y si no, los agregamos.
-                    await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeDouble, 20, 4); // Precision 20, escala 4
-                    await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
-                    await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GlobalVariables.fieldTypeString, 80);
-                    await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 20);
-                    await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
-                    await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
-                }
-                // Otros casos a agregar de manera similar
+                    case "ExclusionUEA":
+                    case "IntegrantesUEA":
+                    case "InclusionUEA":
+                        await DeleteFieldIfExists(featureLayer, "TIT_CONCES");
+                        await DeleteFieldIfExists(featureLayer, "LEYENDA");
 
+                        await AddFieldIfNotExistsAsync(featureLayer, "MOVIMIENTO", GlobalVariables.fieldTypeString, 1);
+                        await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 1);
+                        await AddFieldIfNotExistsAsync(featureLayer, "COD_UEA", GlobalVariables.fieldTypeString, 13);
+                        await AddFieldIfNotExistsAsync(featureLayer, "NOM_UEA", GlobalVariables.fieldTypeString, 100);
+                        await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+                        break;
+
+                    case "Catastro":
+                        await AddFieldIfNotExistsAsync(featureLayer, "EVAL", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CALCULO", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "AREA_INT", GlobalVariables.fieldTypeDouble, 20, 4);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DPTO", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "PROV", GlobalVariables.fieldTypeString, 40);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DIST", GlobalVariables.fieldTypeString, 50);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CONTADOR", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "NUM_RESOL", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "FEC_RESOL", GlobalVariables.fieldTypeDate, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CALIF", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DISTS", GlobalVariables.fieldTypeString, 256);
+                        await AddFieldIfNotExistsAsync(featureLayer, "PROVS", GlobalVariables.fieldTypeString, 256);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DPTOS", GlobalVariables.fieldTypeString, 256);
+                        await AddFieldIfNotExistsAsync(featureLayer, "TIPO", GlobalVariables.fieldTypeString, 80);
+                        await AddFieldIfNotExistsAsync(featureLayer, "SITUACION", GlobalVariables.fieldTypeString, 20);
+                        await AddFieldIfNotExistsAsync(featureLayer, "DATUM", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "BLOQUEO", GlobalVariables.fieldTypeString, 10);
+                        await AddFieldIfNotExistsAsync(featureLayer, "CASO", GlobalVariables.fieldTypeString, 40);
+                        break;
+
+                    case "Cata_sim":
+                        await AddFieldIfNotExistsAsync(featureLayer, "LEYENDA", GlobalVariables.fieldTypeString, 2);
+                        break;
+
+                    case "Cuadri_sim":
+                    case "Cuadri_dsim":
+                        await AddFieldIfNotExistsAsync(featureLayer, "CD_CUAD", GlobalVariables.fieldTypeString, 13);
+                        await AddFieldIfNotExistsAsync(featureLayer, "SUBGRUPO", GlobalVariables.fieldTypeString, 3);
+                        await AddFieldIfNotExistsAsync(featureLayer, "COD_REMATE", GlobalVariables.fieldTypeString, 20);
+                        break;
+
+                    case "provincia_PMA":
+                        await AddFieldIfNotExistsAsync(featureLayer, "LEYEN", GlobalVariables.fieldTypeString, 4);
+                        await AddFieldIfNotExistsAsync(featureLayer, "PROVIN", GlobalVariables.fieldTypeString, 20);
+                        break;
+
+                    default:
+                        MessageBox.Show($"El caso '{caso}' no está definido en la configuración.");
+                        break;
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}\nDetalles: {ex.InnerException?.Message}");
             }
         }
 
-         public static void ProcessOverlapAreaDm(
-                                        DataTable tableExistDm,
-                                        out string listCodigoColin,
-                                        out string listCodigoSup,
-                                        out List<string> colectionAreaOverlap)
-         {
+        public static void ProcessOverlapAreaDm(
+                                       DataTable tableExistDm,
+                                       out string listCodigoColin,
+                                       out string listCodigoSup,
+                                       out List<string> colectionAreaOverlap)
+        {
             // Inicializar las salidas
             listCodigoColin = string.Empty;
             listCodigoSup = string.Empty;
@@ -672,7 +778,7 @@ namespace CommonUtilities.ArcgisProUtils
                 listCodigoColin = codigoColinBuilder.ToString();
                 listCodigoSup = codigoSupBuilder.ToString();
             }
-         }
+        }
 
         public async static Task UpdateRecordsDmAsync(string capa, string listCodigoColin, string listCodigoSup, List<string> colectionAreaOverlap)
         {
@@ -755,7 +861,7 @@ namespace CommonUtilities.ArcgisProUtils
                                         ArcGIS.Desktop.Framework.Dialogs.MessageBox.Show("No se pudo obtener el Registro para actualizar.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                                         continue;
                                     }
-                                                                   
+
                                     switch (seleccionTema)
                                     {
                                         case "Superpuesto":
@@ -808,8 +914,8 @@ namespace CommonUtilities.ArcgisProUtils
                         }
 
                         // Actualizar campos
-                        row[indexEVAL]= "IN";
-                        row[indexAREA_INT]= areaSup;
+                        row[indexEVAL] = "IN";
+                        row[indexAREA_INT] = areaSup;
                     }
                 }
             }
@@ -823,8 +929,8 @@ namespace CommonUtilities.ArcgisProUtils
         /// <param name="indexAREA_INT">Índice del campo AREA_INT.</param>
         private static void UpdateNeighboring(Row feature, int indexEVAL, int indexAREA_INT)
         {
-            feature[indexEVAL]= "CO";
-            feature[indexAREA_INT]= 0.0;
+            feature[indexEVAL] = "CO";
+            feature[indexAREA_INT] = 0.0;
         }
 
         /// <summary>
@@ -840,7 +946,7 @@ namespace CommonUtilities.ArcgisProUtils
 
             if (codigoOU == GlobalVariables.CurrentCodeDm)
             {
-                feature[indexEVAL]= "EV";
+                feature[indexEVAL] = "EV";
             }
             else
             {
@@ -1033,6 +1139,61 @@ namespace CommonUtilities.ArcgisProUtils
             });
 
         }
+
+        public static async Task UpdateValueSimultaneoAsync(string capa, string subgrupo, string codRemate)
+        {
+            await QueuedTask.Run(() =>
+            {
+                try
+                {
+                    // Obtener la clase de entidades de la capa
+                    DatabaseHandler dataBaseHandler = new DatabaseHandler();
+                    // Obtener el documento del mapa y la capa
+                    Map pMap = MapView.Active.Map;
+                    FeatureLayer pFeatLayer1 = null;
+                    foreach (var layer in pMap.Layers)
+                    {
+                        if (layer.Name.ToUpper() == capa.ToUpper())
+                        {
+                            pFeatLayer1 = layer as FeatureLayer;
+                            break;
+                        }
+                    }
+
+                    if (pFeatLayer1 == null)
+                    {
+                        System.Windows.MessageBox.Show("No se encuentra el Layer");
+                        return;
+                    }
+
+                    // Obtener la clase de entidades de la capa
+                    FeatureClass pFeatureClas1 = pFeatLayer1.GetTable() as FeatureClass;
+
+                    // Comenzar la transacción
+                    using (RowCursor pUpdateFeatures = pFeatureClas1.Search(null, false))
+                    {
+                        int contador = 0;
+                        while (pUpdateFeatures.MoveNext())
+                        {
+                            contador++;
+                            using (Row row = pUpdateFeatures.Current)
+                            {
+
+                                row["SUBGRUPO"] = subgrupo;
+                                row["COD_REMATE"] = codRemate;
+
+                                row.Store();
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Windows.MessageBox.Show("Error en UpdateValue: " + ex.Message);
+                }
+            });
+
+        }
         public async static Task<string> IntersectFeatureLayerWithEnvelope(FeatureLayer featureLayer, ExtentModel extent, string fieldName)
         {
             // Cadena de texto para almacenar los resultados
@@ -1048,7 +1209,7 @@ namespace CommonUtilities.ArcgisProUtils
                 var queryFilter = new ArcGIS.Core.Data.SpatialQueryFilter
                 {
                     WhereClause = "", // Si no hay filtro de atributos, se puede dejar vacío
-                    FilterGeometry= envelope, // Establece la geometría de la intersección
+                    FilterGeometry = envelope, // Establece la geometría de la intersección
                     SpatialRelationship = SpatialRelationship.Intersects
                 };
 
@@ -1064,7 +1225,7 @@ namespace CommonUtilities.ArcgisProUtils
                     var row = rowCursor.Current;
 
                     // Obtén el valor del campo 'ubigeo'
-                    if (row != null )
+                    if (row != null)
                     {
                         string ubigeoValue = row[fieldName] as string;
                         if (!string.IsNullOrEmpty(ubigeoValue))
@@ -1135,6 +1296,273 @@ namespace CommonUtilities.ArcgisProUtils
             // Devuelve el resultado como una cadena separada por comas
             return result;
         }
+
+
+        public static async Task ClipLayersAsync(string inpLayer, string clpLayer, string outLayer)
+        {
+            var layers = new[] { inpLayer};
+            var clipLayer = MapView.Active.Map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name == clpLayer);
+
+            if (clipLayer == null || layers.Any(name => MapView.Active.Map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name == name) == null))
+            {
+                MessageBox.Show("Faltan capas necesarias en el TOC.");
+                return;
+            }
+
+            foreach (var layerName in layers)
+            {
+                //if (layerName == "Zona Urbana")
+                //{
+                    var featureLayer = MapView.Active.Map.Layers.OfType<FeatureLayer>().FirstOrDefault(l => l.Name == layerName);
+                    await QueuedTask.Run(() =>
+                    {
+                        var result = Geoprocessing.ExecuteToolAsync("analysis.Clip", 
+                            Geoprocessing.MakeValueArray(featureLayer, clipLayer, outLayer));
+                        result.Wait();
+                    });
+                //}
+
+
+                //MessageBox.Show($"{layerName} cortada.");
+            }
+        }
+
+        public static async Task UpdateValueLayerAsync(string layerName, string tema, DataTable dataTable, string coduea = "")
+        {
+            await QueuedTask.Run(() =>
+            {
+                // Obtener la capa del mapa activo
+                var mapView = MapView.Active;
+                if (mapView == null)
+                {
+                    MessageBox.Show("No se ha encontrado la vista activa.");
+                    return;
+                }
+
+                var featureLayer = mapView.Map.GetLayersAsFlattenedList()
+                                             .OfType<FeatureLayer>()
+                                             .FirstOrDefault(layer => layer.Name == layerName);
+
+                if (featureLayer == null)
+                {
+                    MessageBox.Show("No se encuentra la capa en el mapa.");
+                    return;
+                }
+
+                using (var table = featureLayer.GetTable())
+                using (var rowCursor = table.Search(null, false))
+                {
+                    int i = 0, conta = 1;
+                    Dictionary<string, int> provinciaLeyenda = new Dictionary<string, int>();
+                    while (rowCursor.MoveNext())
+                    {
+                        using (var row = rowCursor.Current)
+                        {
+                            try
+                            {
+                                switch (tema)
+                                {
+                                    case "IntegrantesUEA":
+                                    case "InclusionUEA":
+                                    case "ExclusionUEA":
+                                        UpdateFeatureValues(row, dataTable, i, "MOVIMIENTO", "SITUACION", "COD_UEA", "NOM_UEA");
+                                        break;
+
+                                    case "Catastro_circulo":
+                                        row["CONTADOR"] = i + 1;
+                                        break;
+
+                                    case "Area_Externa":
+                                        row["ID_AREA"] = "Area" + (i + 1);
+                                        row["CODI_UEA"] = coduea;
+                                        break;
+
+                                    case "clase_tipoUEA":
+                                        row["ORDEN"] = row["TIP_MOV"].ToString() switch
+                                        {
+                                            "C" => "A",
+                                            "Z" => "B",
+                                            "S" => "C",
+                                            _ => row["ORDEN"]
+                                        };
+                                        break;
+
+                                    case "orden_integranUEA":
+                                        row["NRO"] = i + 1;
+                                        break;
+
+                                    case "provincia_PMA":
+                                        if (dataTable.Columns.Contains("CODDEM") && dataTable.Columns.Contains("CODDEM_G"))
+                                        {
+                                            string v_cd_prov = row["CD_PROV"].ToString();
+                                            foreach (DataRow dr in dataTable.Rows)
+                                            {
+                                                if (v_cd_prov == dr["CODDEM"].ToString() || v_cd_prov == dr["CODDEM_G"].ToString())
+                                                {
+                                                    row["PROVIN"] = $"{dr["CODDEM"]}_{dr["CODDEM_G"]}";
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case "estilo":
+                                        // 🔹 Extraer valores únicos del campo LEYEN y guardarlos en un DataTable
+                                        DataTable dtPMA = new DataTable();
+                                        dtPMA.Columns.Add("LEYEN", typeof(string));
+
+                                        string v_id = row["LEYEN"].ToString();
+                                        if (!dtPMA.AsEnumerable().Any(r => r.Field<string>("LEYEN") == v_id))
+                                        {
+                                            DataRow newRow = dtPMA.NewRow();
+                                            newRow["LEYEN"] = v_id;
+                                            dtPMA.Rows.Add(newRow);
+                                        }
+                                        GlobalVariables.currentTable = dtPMA;
+                                        break;
+
+                                    case "provincias_PMA":
+                                        //row["LEYEN"] = $"L{conta:D3}";
+                                        //conta++;
+                                        string v_provin = row["PROVIN"].ToString();
+
+                                        // Si la provincia no tiene un identificador asignado, le damos uno nuevo
+                                        if (!provinciaLeyenda.ContainsKey(v_provin))
+                                        {
+                                            provinciaLeyenda[v_provin] = conta;
+                                            conta++; // Incrementamos para la próxima provincia
+                                        }
+
+                                        // Asignamos el mismo identificador a todas las filas de la provincia
+                                        row["LEYEN"] = $"L{provinciaLeyenda[v_provin]:D3}";
+                                        break;
+
+                                    case "rese_dm_int":
+                                    case "urba_dm_int":
+                                    case "caram_dm_int":
+                                        row["CODIGOU"] = dataTable.Rows[i]["CODIGOU"].ToString();
+                                        break;
+
+                                    case "cata_uea":
+                                        if (dataTable.Columns.Contains("CG_CODPET") && dataTable.Columns.Contains("CG_CODIGO"))
+                                        {
+                                            string codUEA = row["CODIGOU"].ToString();
+                                            foreach (DataRow dr in dataTable.Rows)
+                                            {
+                                                if (dr["CG_CODPET"].ToString() == codUEA)
+                                                {
+                                                    row["CODI_UEA"] = dr["CG_CODIGO"];
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        break;
+
+                                    case "caram_acum":
+                                    case "caram_renun":
+                                    case "caram_sim":
+                                        if (dataTable.Columns.Contains("ESTILO") && dataTable.Columns.Contains("NM_AREA"))
+                                        {
+                                            string vestilo = row["ESTILO"].ToString();
+                                            string nm_area = row["NM_AREA"].ToString();
+
+                                            if (vestilo == "ZONA URBANA")
+                                            {
+                                                dataTable.Rows.Add(nm_area);
+                                            }
+                                            else if (vestilo == "ZONA RESERVADA")
+                                            {
+                                                dataTable.Rows.Add(nm_area);
+                                            }
+                                        }
+                                        break;
+
+                                    default:
+                                        UpdateFeatureValues(row, dataTable, i, "MOVIMIENTO", "SITUACION", "COD_UEA", "NOM_UEA");
+                                        row["LEYENDA"] = row["MOVIMIENTO"].ToString() switch
+                                        {
+                                            "C" => "G3",
+                                            "I" => "G1",
+                                            "X" => "G2",
+                                            _ => row["LEYENDA"]
+                                        };
+                                        break;
+                                }
+
+                                row.Store(); // Guardar cambios
+                            }
+                            catch (Exception ex)
+                            {
+                                MessageBox.Show($"Error en {tema}: {ex.Message}");
+                            }
+                            i++;
+                        }
+                    }
+                }
+            });
+        }
+
+        /// <summary>
+        /// Método auxiliar para actualizar valores de atributos.
+        /// </summary>
+        private static void UpdateFeatureValues(Row row, DataTable dataTable, int index, params string[] fieldNames)
+        {
+            foreach (var field in fieldNames)
+            {
+                if (dataTable.Columns.Contains(field))
+                    row[field] = dataTable.Rows[index][field].ToString();
+            }
+        }
+
+        /// <summary>
+        /// Ordena una capa usando el campo especificado y guarda el resultado en una nueva capa.
+        /// </summary>
+        /// <param name="layerIn">Nombre de la capa de entrada.</param>
+        /// <param name="layerOut">Nombre de la capa de salida.</param>
+        /// <param name="fieldName">Nombre del campo por el cual se ordenará la capa.</param>
+        /// <param name="addToMap">Determina si la capa ordenada se agregará al mapa.</param>
+        public static async Task LayerTableSortAsync(string layerIn, string layerOut, string fieldName, bool addToMap = false)
+        {
+            await QueuedTask.Run(async () =>
+            {
+                try
+                {
+                    string pathTemp = GlobalVariables.pathFileTemp;
+                    // Ruta de las capas (asumiendo que glo_pathTEMP es una variable global)
+                    string inputPath = $"{layerIn}.shp";
+                    string outputPath = $"{layerOut}.shp";
+                    string sort_fields = $"{fieldName} ASCENDING";
+                    // Parámetros del geoproceso
+                    var parameters = Geoprocessing.MakeValueArray(inputPath, outputPath, sort_fields);
+
+                    // Configuración del entorno
+                    var env = Geoprocessing.MakeEnvironmentArray(workspace: pathTemp);
+
+                    // Ejecutar herramienta Sort
+                    var gpResult = await Geoprocessing.ExecuteToolAsync("Sort_management", parameters, env, null, null, GPExecuteToolFlags.None);
+
+                    // Verificar si la ejecución fue exitosa
+                    if (gpResult.IsFailed)
+                    {
+                        MessageBox.Show("Error al ejecutar Sort_management.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                        return;
+                    }
+
+                    // Agregar la capa al mapa si se especifica
+                    if (addToMap)
+                    {
+                        outputPath = Path.Combine(pathTemp, outputPath);
+                        await LayerUtils.AddLayerAsync(await MapUtils.FindMapByNameAsync(GlobalVariables.mapNameCatastro), outputPath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Error en LayerTableSortAsync: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+            });
+        }
+
+
+
     }
 }
 

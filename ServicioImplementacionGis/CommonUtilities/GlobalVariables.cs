@@ -17,6 +17,12 @@ namespace CommonUtilities
         public static string idExport = "";
         public static string mapNameCatastro = "CATASTRO MINERO";
         public static string mapNameDemarcacionPo = "DEMARCACION POLITICA";
+        public static string mapNameRenunciaDM = "RENUNCIA DM";
+        public static string mapNameRenunciaAR = "RENUNCIA ARESTRINGIDA";
+        public static string mapNameIntegranteAcum = "INTEGRANTES ACUMULACION";
+        public static string mapNameAcumulaDM = "ACUMULACION DM";
+        public static string mapNameAcumulaAR = "ACUMULACION AREA RESTRINGIDA";
+        public static string mapNameAcumulaAF = "ACUMULACION AFECTACION";
         public static string mapNameCartaIgn = "CARTA IGN";
         public static string fieldTypeString = "STRING";
         public static string fieldTypeLong = "LONG";
@@ -80,6 +86,7 @@ namespace CommonUtilities
         public static string listaCatastroforestal { get; set; }
 
         public static ExtentModel currentExtentDM { get; set; }
+        public static DataTable currentTable { get; set; }
 
         //Contenedor de Capas Fijas
         public static string ContaninerFixedLayers = @"U:\\DATOS\\SHAPE\\WGS_84";
@@ -115,6 +122,8 @@ namespace CommonUtilities
         public static string styleMalla = "MALLA.stylx";
         public static string styleCForestal = "CATA_FORESTAL.stylx";
         public static string styleSituacionDM = "SITUACIONDM.stylx";
+        public static string styleProvinciaPMA = "provincia_PMA.stylx";
+
 
         //Lista de FeatureClass generales
         public static List<string> generalFeatureClass = new List<string>{ "Vías", "Drenaje", "Centro Poblado" };
