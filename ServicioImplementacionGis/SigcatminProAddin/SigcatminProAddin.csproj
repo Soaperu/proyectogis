@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
@@ -290,6 +290,7 @@
   <ItemGroup>
     <PackageReference Include="DevExpress.Reporting.Core" Version="23.1.12" />
     <PackageReference Include="devexpress.wpf.grid.core" Version="23.1.12" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.0" />
     <PackageReference Include="EPPlus" Version="7.5.2" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>

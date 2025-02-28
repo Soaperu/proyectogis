@@ -1,0 +1,84 @@
+﻿<ArcGIS defaultAssembly="SigcatminProAddinUI.dll" defaultNamespace="SigcatminProAddinUI" xmlns="http://schemas.esri.com/DADF/Registry" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schemas.esri.com/DADF/Registry file:///C:/Program%20Files/ArcGIS/Pro/bin/ArcGIS.Desktop.Framework.xsd">
+  <AddInInfo id="{407e332d-965a-4304-b617-9c2bd7fabf63}" version="1.0" desktopVersion="3.3.52636" product="ArcGISPro">
+    <Name>SigcatminProAddinUI</Name>
+    <Description>SigcatminProAddinUI description</Description>
+    <Image>Images\AddinDesktop32.png</Image>
+    <Author>proavanzaid</Author>
+    <Company>Acme</Company>
+    <Date>05/12/2024 20:37:47</Date>
+    <Subject>Framework</Subject>
+    <!-- Note subject can be one or more of these topics:
+                    Content, Framework, Editing, Geodatabase, Geometry, Geoprocessing, Layouts, Map Authoring, Map Exploration -->
+  </AddInInfo>
+  <modules>
+    <insertModule id="SigcatminProAddinUI_Module" className="Program" autoLoad="true" caption="Program">
+      <!-- uncomment to have the control hosted on a separate tab-->
+      <tabs>
+        <tab id="SigcatminProAddinUI_Tab1" caption="Sigcatmin3" keytip="t0">
+          <group refID="SigcatminProAddinUI_Group1" />
+          <!--<group refID="SigcatminProAddinUI_Group2" />-->
+        </tab>
+      </tabs>
+      <groups>
+        <!-- comment this out if you have no controls on the Addin tab to avoid
+              an empty group-->
+        <group id="SigcatminProAddinUI_Group1" caption="Sigcatmin" appearsOnAddInTab="true" keytip="gr1">
+          <!-- host controls within groups -->
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" size="large" />
+          <subgroup refID="SigcatminProAddinUI_Subgroup1" />
+          <subgroup refID="SigcatminProAddinUI_Subgroup2" />
+          <!--<subgroup refID="SigcatminProAddin_Subgroup2" />-->
+
+        </group>
+      </groups>
+      <subgroups>
+        <subgroup id="SigcatminProAddinUI_Subgroup1" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" size="middle" />
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GraficarExcelButton" size="middle" />
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GenerarPlanoMasivoButton" size="middle" />
+        </subgroup>
+        <subgroup id="SigcatminProAddinUI_Subgroup2" verticalAlignment="Center" horizontalAlignment="Left" size="MediumThenSmallWhenSmall">
+          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoryComboBox" />
+          <comboBox refID="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuleComboBox" />
+          <button refID="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_ConfirmModuleButton" size="large" />
+        </subgroup>
+      </subgroups>
+      <controls>
+        <!-- add your controls here -->
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_LoginButton" caption="Iniciar Session" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LoginButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a1">
+          <tooltip heading="Tooltip Heading">Tooltip text<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_LogoutButton" condition="Logged_condition" caption="Cerrar Sesión" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.LogoutButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a2">
+          <tooltip heading="Tooltip Heading">
+				  Cerrar Sesión<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GraficarExcelButton" caption="Graficar Excel" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.GraficarExcelButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a3">
+          <tooltip heading="Tooltip Heading">
+				  Graficar Excel<disabledText /></tooltip>
+        </button>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_GenerarPlanoMasivoButton" condition="Logged_condition" caption="Planos Masivos" className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.GenerarPlanoMasivoButton" loadOnClick="true" smallImage="GenericButtonBlue16" largeImage="GenericButtonBlue32" keytip="a4">
+          <tooltip heading="Tooltip Heading">
+				  Generar Planos Masivos<disabledText /></tooltip>
+        </button>
+        <!--Controles Selector de Modulos-->
+        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_CategoryComboBox" condition="Logged_condition" caption="Tipos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.CategoryComboBox" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="TypeModule">
+          <tooltip heading="Tipo">
+				  Seleccione el tipo de Modulo<disabledText /></tooltip>
+        </comboBox>
+        <comboBox id="SigcatminProAddinUI_Views_ArgisPro_Views_ComboBoxs_ModuleComboBox" condition="Logged_condition" caption="Modulos" className="SigcatminProAddinUI.Views.ArgisPro.Views.ComboBoxs.ModuleComboBox" itemWidth="140" extendedCaption="Extended Caption" isEditable="false" isReadOnly="true" resizable="true" keytip="Module">
+          <tooltip heading="Modulos">
+				  Seleccione el Modulo<disabledText /></tooltip>
+        </comboBox>
+        <button id="SigcatminProAddinUI_Views_ArgisPro_Views_Buttons_ConfirmModuleButton" condition="Logged_condition" caption=" Confirmar Modulo " className="SigcatminProAddinUI.Views.ArgisPro.Views.Buttons.ConfirmModuleButton" extendedCaption="Extended Caption" keytip="ConfirmarModule">
+          <tooltip heading="Confirmar">
+				  Confirmar Modulo<disabledText /></tooltip>
+        </button>
+      </controls>
+    </insertModule>
+  </modules>
+  <conditions>
+    <insertCondition id="Logged_condition" caption="Example state">
+      <state id="isLoggedIn"></state>
+    </insertCondition>
+  </conditions>
+</ArcGIS>

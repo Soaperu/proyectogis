@@ -598,6 +598,7 @@ namespace SigcatminProAddin.View.Modulos
         {
             ClearCanvas();
             //var tableView = sender as TableView;
+            
             var tableView = sender as DevExpress.Xpf.Grid.TableView;
             if (tableView != null && tableView.Grid.VisibleRowCount>0)
             {
