@@ -3,38 +3,41 @@ name: SonarQube Analysis
 on:
   push:
     branches:
-      - develop  # Se ejecutará en cada push a 'develop'
+      - develop
   pull_request:
     branches:
-      - develop  # Se ejecutará en PR hacia 'develop'
+      - develop
 
 jobs:
   sonarqube:
-    name: SonarQube Analysis
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout del código
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Configurar .NET (para proyectos C#)
+      - name: Setup .NET Core (para proyectos C#)
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x  # Ajusta a la versión de tu proyecto
+          dotnet-version: '6.0'
 
-      - name: Instalar SonarScanner para .NET
-        run: dotnet tool install --global dotnet-sonarscanner
+      - name: Setup Python (para proyectos Python)
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
 
-      - name: Ejecutar SonarQube Scanner (C#)
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      - name: Run SonarQube Scanner
         run: |
-          dotnet-sonarscanner begin /k:"GIS-System" \
-          /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
-          /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
+          dotnet tool install --global dotnet-sonarscanner
+          dotnet sonarscanner begin \
+            /k:"GIS-System" \
+            /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
+            /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
           dotnet build
-          dotnet-sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-
-      - name: Ejecutar SonarQube Scanner (Python)
-        run: |
-          sonar-scanner \
-          -Dsonar.projectKey=GIS-System \
-          -Dsonar.source
+          dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
