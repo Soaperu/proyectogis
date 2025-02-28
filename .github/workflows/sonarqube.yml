@@ -39,5 +39,6 @@ jobs:
             /k:"GIS-System" \
             /d:sonar.host.url="${{ secrets.SONAR_HOST_URL }}" \
             /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
-          dotnet build
+          - name: Build Solution
+            run: dotnet build ServicioImplementacionGis.sln
           dotnet sonarscanner end /d:sonar.token="${{ secrets.SONAR_TOKEN }}"
